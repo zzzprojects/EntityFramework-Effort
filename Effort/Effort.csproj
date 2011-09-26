@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E612D252-9081-4995-B717-5DBEF8240FB6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MMDB.EntityFrameworkProvider</RootNamespace>
+    <AssemblyName>MMDB.EntityFrameworkProvider</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\MMDB.EntityFrameworkProvider.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\MMDB.EntityFrameworkProvider.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'No Opt|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\No Opt\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\MMDB.EntityFrameworkProvider.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'No Opt|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\No Opt\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\MMDB.EntityFrameworkProvider.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MMDB">
+      <HintPath>..\Imports\MMDB.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Caching\ConnectionStringKey.cs" />
+    <Compile Include="Caching\ConnectionStringStore.cs" />
+    <Compile Include="Caching\DbSchemaKey.cs" />
+    <Compile Include="Caching\TableInitialDataKey.cs" />
+    <Compile Include="Caching\TableInitialDataStore.cs" />
+    <Compile Include="Caching\DbSchemaStore.cs" />
+    <Compile Include="Configuration\MMDBCacheConfiguration.cs" />
+    <Compile Include="DatabaseManagement\DatabaseExtensions.cs" />
+    <Compile Include="DatabaseManagement\TableInitialData.cs" />
+    <Compile Include="DatabaseManagement\DatabaseSchema.cs" />
+    <Compile Include="DatabaseManagement\DatabaseWrapper.cs" />
+    <Compile Include="DatabaseManagement\MethodProvider.cs" />
+    <Compile Include="DatabaseManagement\TableInformation.cs" />
+    <Compile Include="DataInitialization\CachedCsvDataSource.cs" />
+    <Compile Include="DataInitialization\CsvDataSource.cs" />
+    <Compile Include="DataInitialization\CsvDataSourceFactory.cs" />
+    <Compile Include="DataInitialization\DataSourceBase.cs" />
+    <Compile Include="DataInitialization\DbDataSource.cs" />
+    <Compile Include="DataInitialization\DbDataSourceFactory.cs" />
+    <Compile Include="DataInitialization\IDataSource.cs" />
+    <Compile Include="DataInitialization\IDataSourceFactory.cs" />
+    <Compile Include="DbCommandTreeTransform\CanonicalFunctions.cs" />
+    <Compile Include="DbCommandTreeTransform\ContextHandler.cs" />
+    <Compile Include="DbCommandTreeTransform\DbExpressionTransformVisitor.cs" />
+    <Compile Include="DbCommandTreeTransform\Join\DbJoinConditionVisitor.cs" />
+    <Compile Include="DbCommandTreeTransform\EdmTypeConverter.cs" />
+    <Compile Include="DbCommandTreeTransform\Context.cs" />
+    <Compile Include="DbCommandTreeTransform\IMethodProvider.cs" />
+    <Compile Include="DbCommandTreeTransform\Join\PropertyList.cs" />
+    <Compile Include="DbCommandTreeTransform\PostProcessing\DummyVisitor.cs" />
+    <Compile Include="DbCommandTreeTransform\PostProcessing\EnumerableNullableSum.cs" />
+    <Compile Include="DbCommandTreeTransform\PostProcessing\ExcrescentInitializationCleanserVisitor.cs" />
+    <Compile Include="DbCommandTreeTransform\PostProcessing\ExcrescentSingleResultCleanserVisitor.cs" />
+    <Compile Include="DbCommandTreeTransform\PostProcessing\SumTransformerVisitor.cs" />
+    <Compile Include="DbCommandTreeTransform\QueryMethodExpressionBuilder.cs" />
+    <Compile Include="DbCommandTreeTransform\ITableProvider.cs" />
+    <Compile Include="DbCommandTreeTransform\SingleResult.cs" />
+    <Compile Include="DbCommandTreeTransform\TableScanVisitor.cs" />
+    <Compile Include="Caching\ConcurrentCache.cs" />
+    <Compile Include="Csv\CsvReader.cs" />
+    <Compile Include="Csv\CsvReader.DataReaderValidations.cs" />
+    <Compile Include="Csv\CsvReader.RecordEnumerator.cs" />
+    <Compile Include="Csv\Events\ParseErrorEventArgs.cs" />
+    <Compile Include="Csv\Exceptions\MalformedCsvException.cs" />
+    <Compile Include="Csv\Exceptions\MissingFieldCsvException.cs" />
+    <Compile Include="Csv\MissingFieldAction.cs" />
+    <Compile Include="Csv\ParseErrorAction.cs" />
+    <Compile Include="Csv\Resources\ExceptionMessage.Designer.cs" />
+    <Compile Include="Csv\ValueTrimmingOptions.cs" />
+    <Compile Include="Helpers\CultureScope.cs" />
+    <Compile Include="Helpers\ExpressionHelper.cs" />
+    <Compile Include="Helpers\LambdaExpressionHelper.cs" />
+    <Compile Include="Helpers\MetadataWorkspaceHelper.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Helpers\TypeHelper.cs" />
+    <Compile Include="Tdd\EntityConnectionFactory.cs" />
+    <Compile Include="Tdd\ObjectContextFactory.cs" />
+    <Compile Include="TypeGeneration\AnonymousTypeFactory.cs" />
+    <Compile Include="Helpers\EmitHelper.cs" />
+    <Compile Include="Helpers\CommandTreeBuilder.cs" />
+    <Compile Include="Helpers\ConnectionStringHelper.cs" />
+    <Compile Include="DatabaseEmulatorProviderConfiguration.cs" />
+    <Compile Include="DatabaseEmulatorProviderFactory.cs" />
+    <Compile Include="Components\Logger.cs" />
+    <Compile Include="Components\MMDBDataReader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\DatabaseReflectionHelper.cs" />
+    <Compile Include="Caching\DbInstanceStore.cs" />
+    <Compile Include="TypeGeneration\TupleTypeFactory.cs" />
+    <Compile Include="DatabaseAcceleratorProviderConfiguration.cs" />
+    <Compile Include="DatabaseAcceleratorProviderFactory.cs" />
+    <Compile Include="Components\MMDBWrapperProviderServices.cs" />
+    <Compile Include="Components\MMDBWrapperTransaction.cs" />
+    <Compile Include="Components\ProviderModes.cs" />
+    <Compile Include="Components\MMDBWrapperCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\MMDBWrapperConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EFProviderWrapperToolkit\EFProviderWrapperToolkit.csproj">
+      <Project>{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}</Project>
+      <Name>EFProviderWrapperToolkit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Csv\Resources\ExceptionMessage.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

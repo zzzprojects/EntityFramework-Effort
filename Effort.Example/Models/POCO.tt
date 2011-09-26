@@ -1,0 +1,818 @@
+<#
+//*********************************************************
+//
+//    Copyright (c) Microsoft. All rights reserved.
+//    This code is licensed under the Microsoft Public License.
+//    THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
+//    ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
+//    IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
+//    PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
+//
+//*********************************************************
+#>
+<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ include file="EF.Utility.CS.ttinclude"#><#@
+ output extension=".cs"#><#
+
+CodeGenerationTools code = new CodeGenerationTools(this);
+MetadataLoader loader = new MetadataLoader(this);
+CodeRegion region = new CodeRegion(this, 1);
+MetadataTools ef = new MetadataTools(this);
+
+string inputFile = @"Northwind.edmx";
+EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
+string namespaceName = code.VsNamespaceSuggestion();
+
+EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+// Write out support code to primary template output file
+WriteHeader(fileManager);
+BeginNamespace(namespaceName, code);
+WriteCustomObservableCollection();
+EndNamespace(namespaceName);
+
+// Emit Entity Types
+foreach (EntityType entity in ItemCollection.GetItems<EntityType>().OrderBy(e => e.Name))
+{
+    fileManager.StartNewFile(entity.Name + ".cs");
+    BeginNamespace(namespaceName, code);
+    bool entityHasNullableFKs = entity.NavigationProperties.Any(np => np.GetDependentProperties().Any(p=>ef.IsNullable(p)));
+#>
+<#=Accessibility.ForType(entity)#> <#=code.SpaceAfter(code.AbstractOption(entity))#>partial class <#=code.Escape(entity)#><#=code.StringBefore(" : ", code.Escape(entity.BaseType))#>
+{
+<#
+    region.Begin("Primitive Properties");
+
+    foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == entity))
+    {
+        bool isForeignKey = entity.NavigationProperties.Any(np=>np.GetDependentProperties().Contains(edmProperty));
+        bool isDefaultValueDefinedInModel = (edmProperty.DefaultValue != null);
+        bool generateAutomaticProperty = false;
+
+
+
+#>
+
+    <#=PropertyVirtualModifier(Accessibility.ForProperty(edmProperty))#> <#=code.Escape(edmProperty.TypeUsage)#> <#=code.Escape(edmProperty)#>
+    {
+<#
+        if (isForeignKey)
+        {
+#>
+        <#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get { return <#=code.FieldName(edmProperty)#>; }
+        <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set
+        {
+<#
+            if (entityHasNullableFKs)
+            {
+#>
+            try
+            {
+                _settingFK = true;
+<#
+                PushIndent(CodeRegion.GetIndent(1));
+            }
+            if (((PrimitiveType)edmProperty.TypeUsage.EdmType).PrimitiveTypeKind == PrimitiveTypeKind.Binary)
+            {
+#>
+            if (!StructuralComparisons.StructuralEqualityComparer.Equals(<#=code.FieldName(edmProperty)#>, value))
+<#
+            }
+            else
+            {
+#>
+            if (<#=code.FieldName(edmProperty)#> != value)
+<#
+            }
+#>
+            {
+<#
+            foreach (var np in entity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(edmProperty)))
+            {
+                EdmProperty principalProperty = ef.GetCorrespondingPrincipalProperty(np, edmProperty);
+                if (((PrimitiveType)principalProperty.TypeUsage.EdmType).PrimitiveTypeKind == PrimitiveTypeKind.Binary)
+                {
+#>
+                if ((<#=code.Escape(np)#> != null) && !StructuralComparisons.StructuralEqualityComparer.Equals(<#=code.Escape(np)#>.<#=code.Escape(principalProperty)#>, value))
+<#
+                }
+                else
+                {
+#>
+                if (<#=code.Escape(np)#> != null && <#=code.Escape(np)#>.<#=code.Escape(principalProperty)#> != value)
+<#
+                }
+#>
+                {
+<#
+                if (!(np.GetDependentProperties().Where(p=>ef.IsNullable(p)).Any() &&
+                      np.GetDependentProperties().Count() > 1))
+                {
+#>
+                    <#=code.Escape(np)#> = null;
+<#
+                }
+                else
+                {
+#>
+                    var previousValue = <#=code.FieldName(np)#>;
+                    <#=code.FieldName(np)#> = null;
+                    Fixup<#=np.Name#>(previousValue, skipKeys: true);
+<#
+                }
+#>
+                }
+<#
+            }
+#>
+                <#=code.FieldName(edmProperty)#> = value;
+            }
+<#
+            if (entityHasNullableFKs)
+            {
+                PopIndent();
+#>
+            }
+            finally
+            {
+                _settingFK = false;
+            }
+<#
+            }
+#>
+        }
+<#
+        }
+        else if (isDefaultValueDefinedInModel)
+        {
+#>
+        <#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get { return <#=code.FieldName(edmProperty)#>; }
+        <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set { <#=code.FieldName(edmProperty)#> = value; }
+<#
+        }
+        else
+        {
+            generateAutomaticProperty = true;
+#>
+        <#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get;
+        <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set;
+<#
+        }
+#>
+    }
+<#
+        if (!generateAutomaticProperty)
+        {
+#>
+    private <#=code.Escape(edmProperty.TypeUsage)#> <#=code.FieldName(edmProperty)#><#=code.StringBefore(" = ", code.CreateLiteral(edmProperty.DefaultValue))#>;
+<#
+        }
+    }
+    region.End();
+
+    region.Begin("Complex Properties");
+
+    foreach(EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is ComplexType && p.DeclaringType == entity))
+    {
+#>
+
+    <#=PropertyVirtualModifier(Accessibility.ForProperty(edmProperty))#> <#=code.Escape(edmProperty.TypeUsage)#> <#=code.Escape(edmProperty)#>
+    {
+        <#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get { return <#=code.FieldName(edmProperty)#>; }
+        <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set { <#=code.FieldName(edmProperty)#> = value; }
+    }
+    private <#=code.Escape(edmProperty.TypeUsage)#> <#=code.FieldName(edmProperty)#> = new <#=code.Escape(edmProperty.TypeUsage)#>();
+<#
+    }
+
+    region.End();
+
+    ////////
+    //////// Write Navigation properties -------------------------------------------------------------------------------------------
+    ////////
+
+    region.Begin("Navigation Properties");
+
+    foreach (NavigationProperty navProperty in entity.NavigationProperties.Where(np => np.DeclaringType == entity))
+    {
+        NavigationProperty inverse = ef.Inverse(navProperty);
+        if (inverse != null &&  !IsReadWriteAccessibleProperty(inverse))
+        {
+            inverse = null;
+        }
+#>
+
+<#
+        if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+        {
+#>
+    <#=PropertyVirtualModifier(Accessibility.ForReadOnlyProperty(navProperty))#> ICollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>> <#=code.Escape(navProperty)#>
+    {
+        get
+        {
+            if (<#=code.FieldName(navProperty)#> == null)
+            {
+<#
+                if (inverse != null || ((AssociationType)navProperty.RelationshipType).IsForeignKey)
+                {
+#>
+                var newCollection = new FixupCollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>>();
+                newCollection.CollectionChanged += Fixup<#=navProperty.Name#>;
+                <#=code.FieldName(navProperty)#> = newCollection;
+<#
+                }
+                else
+                {
+#>
+                <#=code.FieldName(navProperty)#> = new FixupCollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>>();
+<#
+                }
+#>
+            }
+            return <#=code.FieldName(navProperty)#>;
+        }
+        set
+        {
+<#
+            if (inverse != null || ((AssociationType)navProperty.RelationshipType).IsForeignKey)
+            {
+#>
+            if (!ReferenceEquals(<#=code.FieldName(navProperty)#>, value))
+            {
+                var previousValue = <#=code.FieldName(navProperty)#> as FixupCollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= Fixup<#=navProperty.Name#>;
+                }
+                <#=code.FieldName(navProperty)#> = value;
+                var newValue = value as FixupCollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += Fixup<#=navProperty.Name#>;
+                }
+            }
+<#
+            }
+            else
+            {
+#>
+            <#=code.FieldName(navProperty)#> = value;
+<#
+            }
+#>
+        }
+    }
+    private ICollection<<#=code.Escape(navProperty.ToEndMember.GetEntityType())#>> <#=code.FieldName(navProperty)#>;
+<#
+        }
+        else
+        {
+#>
+    <#=PropertyVirtualModifier(Accessibility.ForProperty(navProperty))#> <#=code.Escape(navProperty.ToEndMember.GetEntityType())#> <#=code.Escape(navProperty)#>
+    {
+<#
+            if (inverse != null || ((AssociationType)navProperty.RelationshipType).IsForeignKey)
+            {
+#>
+        <#=code.SpaceAfter(Accessibility.ForGetter(navProperty))#>get { return <#=code.FieldName(navProperty)#>; }
+        <#=code.SpaceAfter(Accessibility.ForSetter(navProperty))#>set
+        {
+            if (!ReferenceEquals(<#=code.FieldName(navProperty)#>, value))
+            {
+                var previousValue = <#=code.FieldName(navProperty)#>;
+                <#=code.FieldName(navProperty)#> = value;
+                Fixup<#=navProperty.Name#>(previousValue);
+            }
+        }
+    }
+    private <#=code.Escape(navProperty.ToEndMember.GetEntityType())#> <#=code.FieldName(navProperty)#>;
+<#
+            }
+            else
+            {
+#>
+        <#=code.SpaceAfter(Accessibility.ForGetter(navProperty))#>get;
+        <#=code.SpaceAfter(Accessibility.ForSetter(navProperty))#>set;
+    }
+<#
+            }
+        }
+    }
+    region.End();
+
+    region.Begin("Association Fixup");
+
+    if (entityHasNullableFKs)
+    {
+#>
+
+    private bool _settingFK = false;
+<#
+    }
+    foreach (NavigationProperty navProperty in entity.NavigationProperties.Where(np => np.DeclaringType == entity))
+    {
+        NavigationProperty inverse = ef.Inverse(navProperty);
+
+        if (inverse != null && !IsReadWriteAccessibleProperty(inverse))
+        {
+            inverse = null;
+        }
+
+        if ( (inverse != null || ((AssociationType)navProperty.RelationshipType).IsForeignKey) &&
+             (navProperty.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many) )
+        {
+            var skipKeysArgument = (navProperty.GetDependentProperties().Where(p=>ef.IsNullable(p)).Any() && navProperty.GetDependentProperties().Count() > 1)
+                ? ", bool skipKeys = false"
+                : String.Empty;
+#>
+
+    private void Fixup<#=navProperty.Name#>(<#=code.Escape(navProperty.ToEndMember.GetEntityType())#> previousValue<#= skipKeysArgument #>)
+    {
+<#
+        if (inverse != null)
+        {
+            if (inverse.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+            {
+#>
+        if (previousValue != null && previousValue.<#=code.Escape(inverse)#>.Contains(this))
+        {
+            previousValue.<#=code.Escape(inverse)#>.Remove(this);
+        }
+<#
+            }
+            else
+            {
+#>
+        if (previousValue != null && ReferenceEquals(previousValue.<#=code.Escape(inverse)#>, this))
+        {
+            previousValue.<#=code.Escape(inverse)#> = null;
+        }
+<#
+            }
+
+            if (inverse.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+            {
+#>
+
+        if (<#=code.Escape(navProperty)#> != null)
+        {
+            if (!<#=code.Escape(navProperty)#>.<#=code.Escape(inverse)#>.Contains(this))
+            {
+                <#=code.Escape(navProperty)#>.<#=code.Escape(inverse)#>.Add(this);
+            }
+<#
+                foreach (var dependentProperty in navProperty.GetDependentProperties())
+                {
+                    EdmProperty principalProperty = ef.GetCorrespondingPrincipalProperty(navProperty, dependentProperty);
+                    if (((PrimitiveType)principalProperty.TypeUsage.EdmType).PrimitiveTypeKind == PrimitiveTypeKind.Binary)
+                    {
+#>
+            if (!StructuralComparisons.StructuralEqualityComparer.Equals(<#=code.Escape(dependentProperty)#>, <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>))
+<#
+                    }
+                    else
+                    {
+#>
+            if (<#=code.Escape(dependentProperty)#> != <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>)
+<#
+                    }
+#>
+            {
+                <#=code.Escape(dependentProperty)#> = <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>;
+            }
+<#
+                }
+#>
+        }
+<#
+                if (navProperty.GetDependentProperties().Where(p=>ef.IsNullable(p)).Any())
+                {
+                    if (navProperty.GetDependentProperties().Count() > 1)
+                    {
+#>
+        else if (!_settingFK && !skipKeys)
+<#
+                    }
+                    else
+                    {
+#>
+        else if (!_settingFK)
+<#
+                    }
+#>
+        {
+<#
+                    foreach (var dependentProperty in navProperty.GetDependentProperties().Where(p => ef.IsNullable(p)))
+                    {
+#>
+            <#=code.Escape(dependentProperty)#> = null;
+<#
+                    }
+#>
+        }
+<#
+                }
+            }
+            else
+            {
+#>
+
+        if (<#=code.Escape(navProperty)#> != null)
+        {
+            <#=code.Escape(navProperty)#>.<#=code.Escape(inverse)#> = this;
+<#
+                foreach (var dependentProperty in navProperty.GetDependentProperties())
+                {
+                    EdmProperty principalProperty = ef.GetCorrespondingPrincipalProperty(navProperty, dependentProperty);
+                    if (((PrimitiveType)principalProperty.TypeUsage.EdmType).PrimitiveTypeKind == PrimitiveTypeKind.Binary)
+                    {
+#>
+            if (!StructuralComparisons.StructuralEqualityComparer.Equals(<#=code.Escape(dependentProperty)#>, <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>))
+<#
+                    }
+                    else
+                    {
+#>
+            if (<#=code.Escape(dependentProperty)#> != <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>)
+<#
+                    }
+#>
+            {
+                <#=code.Escape(dependentProperty)#> = <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>;
+            }
+<#
+                }
+#>
+        }
+<#
+            }
+        }
+        else
+        {
+            if (navProperty.GetDependentProperties().Any())
+            {
+#>
+        if (<#=code.Escape(navProperty)#> != null)
+        {
+<#
+                foreach (var dependentProperty in navProperty.GetDependentProperties())
+                {
+                    EdmProperty principalProperty = ef.GetCorrespondingPrincipalProperty(navProperty, dependentProperty);
+                    if (((PrimitiveType)principalProperty.TypeUsage.EdmType).PrimitiveTypeKind == PrimitiveTypeKind.Binary)
+                    {
+#>
+            if (!StructuralComparisons.StructuralEqualityComparer.Equals(<#=code.Escape(dependentProperty)#>, <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>))
+<#
+                    }
+                    else
+                    {
+#>
+            if (<#=code.Escape(dependentProperty)#> != <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>)
+<#
+                    }
+#>
+            {
+                <#=code.Escape(dependentProperty)#> = <#=code.Escape(navProperty)#>.<#=code.Escape(principalProperty)#>;
+            }
+<#
+                }
+#>
+        }
+<#
+                if (navProperty.GetDependentProperties().Where(p => ef.IsNullable(p)).Any())
+                {
+                    if (navProperty.GetDependentProperties().Count() > 1)
+                    {
+#>
+        else if (!_settingFK && !skipKeys)
+<#
+                    }
+                    else
+                    {
+#>
+        else if (!_settingFK)
+<#
+                    }
+#>
+        {
+<#
+                    foreach (var dependentProperty in navProperty.GetDependentProperties().Where(p => ef.IsNullable(p)))
+                    {
+#>
+            <#=code.Escape(dependentProperty)#> = null;
+<#
+                    }
+#>
+        }
+<#
+                }
+            }
+            else if (((AssociationType)navProperty.RelationshipType).IsForeignKey)
+            {
+#>
+        if (<#=code.Escape(navProperty)#> != null)
+        {
+<#
+                foreach (var fromProperty in ef.GetPrincipalProperties(navProperty))
+                {
+#>
+            <#=code.Escape(navProperty)#>.<#=code.Escape(ef.GetCorrespondingDependentProperty(navProperty, fromProperty))#> = <#=code.Escape(fromProperty)#>;
+<#
+                }
+#>
+        }
+<#
+            }
+        }
+#>
+    }
+<#
+        }
+    }
+
+    foreach (NavigationProperty navProperty in entity.NavigationProperties.Where(np => np.DeclaringType == entity))
+    {
+        NavigationProperty inverse = ef.Inverse(navProperty);
+
+        if (inverse != null && !IsReadWriteAccessibleProperty(inverse))
+        {
+            inverse = null;
+        }
+
+        if ( (inverse != null || ((AssociationType)navProperty.RelationshipType).IsForeignKey) &&
+             (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many) )
+        {
+#>
+
+    private void Fixup<#=navProperty.Name#>(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (<#=code.Escape(navProperty.ToEndMember.GetEntityType())#> item in e.NewItems)
+            {
+<#
+                if (inverse != null)
+                {
+                    if (inverse.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
+                    {
+#>
+                item.<#=code.Escape(inverse)#> = this;
+<#
+                    }
+                    else
+                    {
+#>
+                if (!item.<#=code.Escape(inverse)#>.Contains(this))
+                {
+                    item.<#=code.Escape(inverse)#>.Add(this);
+                }
+<#
+                    }
+                }
+                else if (((AssociationType)navProperty.RelationshipType).IsForeignKey)
+                {
+                    foreach (var fromProperty in ef.GetPrincipalProperties(navProperty))
+                    {
+#>
+                item.<#=code.Escape(ef.GetCorrespondingDependentProperty(navProperty, fromProperty))#> = <#=code.Escape(fromProperty)#>;
+<#
+                    }
+                }
+#>
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (<#=code.Escape(navProperty.ToEndMember.GetEntityType())#> item in e.OldItems)
+            {
+<#
+                if (inverse != null)
+                {
+                    if (inverse.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
+                    {
+#>
+                if (ReferenceEquals(item.<#=code.Escape(inverse)#>, this))
+                {
+                    item.<#=code.Escape(inverse)#> = null;
+                }
+<#
+                    }
+                    else
+                    {
+#>
+                if (item.<#=code.Escape(inverse)#>.Contains(this))
+                {
+                    item.<#=code.Escape(inverse)#>.Remove(this);
+                }
+<#
+                    }
+                }
+                else if (((AssociationType)navProperty.RelationshipType).IsForeignKey)
+                {
+                    foreach (var fromProperty in ef.GetPrincipalProperties(navProperty))
+                    {
+                        var p = ef.GetCorrespondingDependentProperty(navProperty, fromProperty);
+                        if (ef.IsNullable(p.TypeUsage))
+                        {
+#>
+                item.<#=code.Escape(p)#> = null;
+<#
+                        }
+                    }
+                }
+;#>
+            }
+        }
+    }
+<#
+        }
+    }
+
+    region.End();
+#>
+}
+<#
+    EndNamespace(namespaceName);
+}
+
+foreach (ComplexType complex in ItemCollection.GetItems<ComplexType>().OrderBy(e => e.Name))
+{
+    fileManager.StartNewFile(complex.Name + ".cs");
+    BeginNamespace(namespaceName, code);
+#>
+<#=Accessibility.ForType(complex)#> partial class <#=code.Escape(complex)#>
+{
+<#
+    region.Begin("Primitive Properties");
+
+    foreach(EdmProperty edmProperty in complex.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == complex))
+    {
+        bool isDefaultValueDefinedInModel = (edmProperty.DefaultValue != null);
+#>
+
+    <#=Accessibility.ForProperty(edmProperty)#> <#=code.Escape(edmProperty.TypeUsage)#> <#=code.Escape(edmProperty)#>
+<#
+        if (isDefaultValueDefinedInModel)
+        {
+#>
+    {
+        <#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get { return <#=code.FieldName(edmProperty)#>; }
+        <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set { <#=code.FieldName(edmProperty)#> = value; }
+    }
+    private <#=code.Escape(edmProperty.TypeUsage)#> <#=code.FieldName(edmProperty)#><#=code.StringBefore(" = ", code.CreateLiteral(edmProperty.DefaultValue))#>;
+<#
+        }
+        else
+        {
+#>
+    {
+        <#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get;
+        <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set;
+    }
+<#
+        }
+    }
+
+    region.End();
+
+    region.Begin("Complex Properties");
+
+    foreach(EdmProperty edmProperty in complex.Properties.Where(p => p.TypeUsage.EdmType is ComplexType && p.DeclaringType == complex))
+    {
+#>
+
+    <#=Accessibility.ForProperty(edmProperty)#> <#=code.Escape(edmProperty.TypeUsage)#> <#=code.Escape(edmProperty)#>
+    {
+        <#=code.SpaceAfter(Accessibility.ForGetter(edmProperty))#>get { return <#=code.FieldName(edmProperty)#>; }
+        <#=code.SpaceAfter(Accessibility.ForSetter(edmProperty))#>set { <#=code.FieldName(edmProperty)#> = value; }
+    }
+    private <#=code.Escape(edmProperty.TypeUsage)#> <#=code.FieldName(edmProperty)#> = new <#=code.Escape(edmProperty.TypeUsage)#>();
+<#
+    }
+
+    region.End();
+#>
+}
+<#
+    EndNamespace(namespaceName);
+}
+
+if (!VerifyTypesAreCaseInsensitiveUnique(ItemCollection))
+{
+    return "";
+}
+
+fileManager.Process();
+
+#>
+<#+
+void WriteHeader(EntityFrameworkTemplateFileManager fileManager, params string[] extraUsings)
+{
+    fileManager.StartHeader();
+#>
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated from a template.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+<#=String.Join(String.Empty, extraUsings.Select(u => "using " + u + ";" + Environment.NewLine).ToArray())#>
+<#+
+    fileManager.EndBlock();
+}
+
+void BeginNamespace(string namespaceName, CodeGenerationTools code)
+{
+    CodeRegion region = new CodeRegion(this);
+    if (!String.IsNullOrEmpty(namespaceName))
+    {
+#>
+namespace <#=code.EscapeNamespace(namespaceName)#>
+{
+<#+
+        PushIndent(CodeRegion.GetIndent(1));
+    }
+}
+
+
+void EndNamespace(string namespaceName)
+{
+    if (!String.IsNullOrEmpty(namespaceName))
+    {
+        PopIndent();
+#>
+}
+<#+
+    }
+}
+
+bool IsReadWriteAccessibleProperty(EdmMember member)
+{
+    string setter = Accessibility.ForWriteOnlyProperty(member);
+    string getter = Accessibility.ForReadOnlyProperty(member);
+
+    return getter != "private" && getter != "protected" && setter != "private" && setter != "protected";
+}
+
+string PropertyVirtualModifier(string accessibility)
+{
+    return accessibility + (accessibility != "private" ? " virtual" : "");
+}
+
+void WriteCustomObservableCollection()
+{
+#>
+// An System.Collections.ObjectModel.ObservableCollection that raises
+// individual item removal notifications on clear and prevents adding duplicates.
+public class FixupCollection<T> : ObservableCollection<T>
+{
+    protected override void ClearItems()
+    {
+        new List<T>(this).ForEach(t => Remove(t));
+    }
+
+    protected override void InsertItem(int index, T item)
+    {
+        if (!this.Contains(item))
+        {
+            base.InsertItem(index, item);
+        }
+    }
+}
+<#+
+}
+
+bool VerifyTypesAreCaseInsensitiveUnique(EdmItemCollection itemCollection)
+{
+    Dictionary<string, bool> alreadySeen = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+    foreach(StructuralType type in itemCollection.GetItems<StructuralType>())
+    {
+        if (!(type is EntityType || type is ComplexType))
+        {
+            continue;
+        }
+
+        if (alreadySeen.ContainsKey(type.FullName))
+        {
+            Error(String.Format(CultureInfo.CurrentCulture, "This template does not support types that differ only by case, the types {0} are not supported", type.FullName));
+            return false;
+        }
+        else
+        {
+            alreadySeen.Add(type.FullName, true);
+        }
+
+    }
+
+    return true;
+}
+#>

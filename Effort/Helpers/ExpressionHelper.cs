@@ -5,10 +5,10 @@ using System.Reflection;
 using System.Text;
 using System.Linq.Expressions;
 using MMDB.Linq.Visitors;
-using MMDB.EntityFrameworkProvider.DbCommandTreeTransform;
+using Effort.DbCommandTreeTransform;
 using MMDB.Linq;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal class ExpressionHelper
     {

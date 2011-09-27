@@ -5,7 +5,7 @@ using System.Text;
 using System.Globalization;
 using System.Threading;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal class CultureScope : IDisposable
     {

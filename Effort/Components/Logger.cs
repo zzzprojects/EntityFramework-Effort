@@ -5,9 +5,9 @@ using System.Text;
 using MMDB.Logging;
 using System.Diagnostics;
 
-namespace MMDB.EntityFrameworkProvider.Components
+namespace Effort.Components
 {
-    public class Logger : ILoggingPort
+    internal class Logger : ILoggingPort
     {
         public static bool Enabled { set; get; }
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.TypeGeneration
+namespace Effort.TypeGeneration
 {
-    public class TupleTypeFactory
+    internal class TupleTypeFactory
     {
         public static Type Create(params Type[] typeArguments)
         {

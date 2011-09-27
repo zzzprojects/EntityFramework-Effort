@@ -5,12 +5,12 @@ using System.Text;
 using System.IO;
 using System.Data;
 using LumenWorks.Framework.IO.Csv;
-using MMDB.EntityFrameworkProvider.Helpers;
+using Effort.Helpers;
 using System.Globalization;
 
-namespace MMDB.EntityFrameworkProvider.DataInitialization
+namespace Effort.DataInitialization
 {
-    public class CsvDataSource : DataSourceBase
+    internal class CsvDataSource : DataSourceBase
     {
         private FileInfo file;
 

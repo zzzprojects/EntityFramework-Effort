@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests.Utils
+namespace Effort.Test.Utils
 {
-    class TypeSafeEnumerator<T> : IEnumerable<T>, IEnumerator<T>
+    internal class TypeSafeEnumerator<T> : IEnumerable<T>, IEnumerator<T>
     {
         private IEnumerator e;
 

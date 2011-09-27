@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.DataInitialization
+namespace Effort.DataInitialization
 {
-    public interface IDataSourceFactory : IDisposable
+    internal interface IDataSourceFactory : IDisposable
     {
         IDataSource Create(string tableName, Type entityType);
     }

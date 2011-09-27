@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.Caching
+namespace Effort.Caching
 {
-    public class TableInitialDataKey : IEquatable<TableInitialDataKey>
+    internal class TableInitialDataKey : IEquatable<TableInitialDataKey>
     {
         private ConnectionStringKey con;
         private string tableName;

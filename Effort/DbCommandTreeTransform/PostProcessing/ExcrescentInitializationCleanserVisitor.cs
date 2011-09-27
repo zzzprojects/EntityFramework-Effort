@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform.PostProcessing
+namespace Effort.DbCommandTreeTransform.PostProcessing
 {
-    public class ExcrescentInitializationCleanserVisitor : ExpressionVisitor
+    internal class ExcrescentInitializationCleanserVisitor : ExpressionVisitor
     {
         
 

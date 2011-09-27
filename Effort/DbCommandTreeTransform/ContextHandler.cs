@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
-    public class ContextHandler : IDisposable
+    internal class ContextHandler : IDisposable
     {
         private Stack<ContextHandler> owner;
         private Context context;

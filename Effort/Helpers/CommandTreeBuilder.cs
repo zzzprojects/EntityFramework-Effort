@@ -6,7 +6,7 @@ using System.Data.Metadata.Edm;
 using System.Reflection;
 using System.Data.Common.CommandTrees;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal static class CommandTreeBuilder
     {

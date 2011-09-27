@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MMDB.EntityFrameworkProvider.TddTest.Models;
+using Effort.Example.Models;
 
-namespace MMDB.EntityFrameworkProvider.TddTest.Services
+namespace Effort.Example.Services
 {
     public interface IProductService
     {

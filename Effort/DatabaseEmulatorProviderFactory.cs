@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Data.Common;
 using EFProviderWrapperToolkit;
-using MMDB.EntityFrameworkProvider.Components;
+using Effort.Components;
 
-namespace MMDB.EntityFrameworkProvider
+namespace Effort
 {
     public class DatabaseEmulatorProviderFactory : DbProviderFactoryBase
     {
@@ -14,13 +14,13 @@ namespace MMDB.EntityFrameworkProvider
         public static readonly DatabaseEmulatorProviderFactory Instance = new DatabaseEmulatorProviderFactory();
 
         private DatabaseEmulatorProviderFactory() 
-            : base(MMDBWrapperProviderServices.Instance)
+            : base(EffortWrapperProviderServices.Instance)
         {
         }
 
         public override DbConnection CreateConnection()
         {
-            return new MMDBWrapperConnection(ProviderModes.DatabaseEmulator);
+            return new EffortWrapperConnection(ProviderModes.DatabaseEmulator);
         }
     }
 }

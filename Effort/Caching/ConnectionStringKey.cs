@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.Caching
+namespace Effort.Caching
 {
-    public class ConnectionStringKey : IEquatable<ConnectionStringKey>
+    internal class ConnectionStringKey : IEquatable<ConnectionStringKey>
     {
         private string connectionString;
 

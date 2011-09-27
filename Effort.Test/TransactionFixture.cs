@@ -3,11 +3,11 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MMDB.EntityFrameworkProvider.UnitTests.Data;
+using Effort.Test.Data;
 using System.Transactions;
-using MMDB.EntityFrameworkProvider.UnitTests.Utils;
+using Effort.Test.Utils;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests
+namespace Effort.Test
 {
     [TestClass]
     public class TransactionFixture

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using EFProviderWrapperToolkit;
 
-namespace MMDB.EntityFrameworkProvider
+namespace Effort
 {
     public static class DatabaseAcceleratorProviderConfiguration
     {

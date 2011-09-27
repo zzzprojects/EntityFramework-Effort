@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.EntityClient;
-using MMDB.EntityFrameworkProvider.Components;
-using EFProviderWrapperToolkit;
 using System.Configuration;
-using MMDB.EntityFrameworkProvider.Caching;
 using System.Data.Common;
-using System.Globalization;
+using System.Data.EntityClient;
+using Effort.Caching;
+using EFProviderWrapperToolkit;
 
-namespace MMDB.EntityFrameworkProvider.Tdd
+namespace Effort.Tdd
 {
     public static class EntityConnectionFactory
     {

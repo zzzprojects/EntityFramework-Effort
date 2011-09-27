@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Collections.Concurrent;
 
-namespace MMDB.EntityFrameworkProvider.Caching
+namespace Effort.Caching
 {
-    public class ConcurrentCache<TKey, TElement> 
+    internal class ConcurrentCache<TKey, TElement> 
     {
         private Func<TKey, TElement> defaultFactory;
 

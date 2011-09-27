@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform.PostProcessing
+namespace Effort.DbCommandTreeTransform.PostProcessing
 {
     /// <summary>
     /// Transforms SingleResult<>(x).FirstOrDefault() to x
     /// </summary>
-    public class ExcrescentSingleResultCleanserVisitor : ExpressionVisitor
+    internal class ExcrescentSingleResultCleanserVisitor : ExpressionVisitor
     {
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {

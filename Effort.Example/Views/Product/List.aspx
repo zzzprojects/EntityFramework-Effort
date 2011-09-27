@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<MMDB.EntityFrameworkProvider.TddTest.Models.ProductListModel>" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<Effort.Example.Models.ProductListModel>" %>
 
 <asp:Content ContentPlaceHolderID="TitleContent" runat="server">
 	Products

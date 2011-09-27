@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Common;
 using System.Reflection;
 
-namespace MMDB.DatabaseExport.ViewModels
+namespace Effort.CsvTool.ViewModels
 {
     public class ProviderViewModel
     {

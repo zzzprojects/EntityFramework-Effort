@@ -11,7 +11,7 @@ using System;
 using System.Data.Objects;
 using System.Data.EntityClient;
 
-namespace MMDB.EntityFrameworkProvider.TddTest.Models
+namespace Effort.Example.Models
 {
     public partial class NorthwindEntities : ObjectContext
     {

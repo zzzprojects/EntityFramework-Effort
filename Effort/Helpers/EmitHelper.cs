@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using System.Reflection;
 using System.Threading;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal static class EmitHelper
     {

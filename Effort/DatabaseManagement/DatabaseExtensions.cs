@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MMDB.Table;
+using MMDB;
 
-namespace MMDB.EntityFrameworkProvider.DatabaseManagement
+namespace Effort.DatabaseManagement
 {
-    public static class DatabaseExtensions
+    internal static class DatabaseExtensions
     {
         public static IReflectionTable GetTable(this Database database, string name)
         {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform.PostProcessing
+namespace Effort.DbCommandTreeTransform.PostProcessing
 {
-    public static class EnumerableNullableSum
+    internal static class EnumerableNullableSum
     {
         public static decimal? Sum<TSource>(IEnumerable<TSource> source, Func<TSource, decimal?> selector)
         {

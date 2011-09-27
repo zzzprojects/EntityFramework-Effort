@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Data.Common;
 using System.Data.Metadata.Edm;
-using MMDB.EntityFrameworkProvider.Helpers;
+using Effort.Helpers;
 using System.Data.EntityClient;
 
-namespace MMDB.EntityFrameworkProvider.DataInitialization
+namespace Effort.DataInitialization
 {
-    public class DbDataSourceFactory : IDataSourceFactory
+    internal class DbDataSourceFactory : IDataSourceFactory
     {
         private Func<EntityConnection> connectionFactory;
 

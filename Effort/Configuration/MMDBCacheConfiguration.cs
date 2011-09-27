@@ -7,7 +7,7 @@ using System.Text;
 using System.Configuration;
 using System.Xml;
 
-namespace MMDB.EntityFrameworkProvider.Configuration
+namespace Effort.Configuration
 {
     public class MMDBCacheConfigurationSection : ConfigurationSection
     {

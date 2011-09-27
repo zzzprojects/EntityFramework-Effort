@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform.PostProcessing
+namespace Effort.DbCommandTreeTransform.PostProcessing
 {
-    public class DummyVisitor : ExpressionVisitor
+    /// <summary>
+    /// This is visitor is for testing purpose
+    /// </summary>
+    internal class DummyVisitor : ExpressionVisitor
     {
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {

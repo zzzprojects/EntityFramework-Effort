@@ -5,11 +5,11 @@ using System.Text;
 using System.Data;
 using System.Reflection;
 using MMDB.Table;
-using MMDB.EntityFrameworkProvider.Helpers;
+using Effort.Helpers;
 
-namespace MMDB.EntityFrameworkProvider.DataInitialization
+namespace Effort.DataInitialization
 {
-    public abstract class DataSourceBase : IDataSource
+    internal abstract class DataSourceBase : IDataSource
     {
         private string[] propertyNames;
         private Type[] propertyTypes;

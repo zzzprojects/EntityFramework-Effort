@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Objects;
 using System.Data.EntityClient;
+using System.Data.Objects;
+using System.Linq;
 using EFProviderWrapperToolkit;
-using MMDB.EntityFrameworkProvider.Components;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests.Utils
+namespace Effort.Test.Utils
 {
-    public class QueryTestRuntime<TObjectContext> where TObjectContext : ObjectContext
+    internal class QueryTestRuntime<TObjectContext> where TObjectContext : ObjectContext
     {
         private static object lockObject = new object();
 

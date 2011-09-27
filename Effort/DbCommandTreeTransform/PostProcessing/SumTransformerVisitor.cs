@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
-using MMDB.EntityFrameworkProvider.Helpers;
+using Effort.Helpers;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform.PostProcessing
+namespace Effort.DbCommandTreeTransform.PostProcessing
 {
-    public class SumTransformerVisitor : ExpressionVisitor
+    internal class SumTransformerVisitor : ExpressionVisitor
     {
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             Type returnType = node.Method.ReturnType;
             
-            //There is no scenario when Queryable.Sum is used
+            // There is no scenario when Queryable.Sum is used
             if (node.Method.DeclaringType == typeof(Enumerable) && 
                 node.Method.Name == "Sum" && 
                 TypeHelper.IsNullable(returnType))

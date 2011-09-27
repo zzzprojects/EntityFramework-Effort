@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
 using System.Diagnostics;
+using System.Windows.Input;
 
-namespace MMDB.DatabaseExport
+namespace Effort.CsvTool
 {
     public class RelayCommand : ICommand
     {
@@ -31,6 +28,7 @@ namespace MMDB.DatabaseExport
             _execute = execute;
             _canExecute = canExecute;           
         }
+
         #endregion // Constructors
 
         #region ICommand Members

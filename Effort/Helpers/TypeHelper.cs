@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal static class TypeHelper
     {

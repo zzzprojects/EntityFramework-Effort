@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MMDB.EntityFrameworkProvider.DbCommandTreeTransform;
+using Effort.DbCommandTreeTransform;
+using MMDB;
 
-namespace MMDB.EntityFrameworkProvider.DatabaseManagement
+namespace Effort.DatabaseManagement
 {
-    public class DatabaseWrapper : ITableProvider
+    internal class DatabaseWrapper : ITableProvider
     {
         private Database database;
 

@@ -1,9 +1,9 @@
-﻿<Window x:Class="MMDB.DatabaseExport.MainWindow"
+﻿<Window x:Class="Effort.CsvTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Database Exporter" Height="407" Width="525"
         
-        xmlns:vm="clr-namespace:MMDB.DatabaseExport.ViewModels" xmlns:my="clr-namespace:WPG;assembly=WPG">
+        xmlns:vm="clr-namespace:Effort.CsvTool.ViewModels" xmlns:my="clr-namespace:WPG;assembly=WPG">
     
     <Window.DataContext>
         <vm:MainViewModel />

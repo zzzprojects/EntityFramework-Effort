@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Common.CommandTrees;
-using System.Linq.Expressions;
 using System.Data.Metadata.Edm;
-using MMDB.EntityFrameworkProvider.TypeGeneration;
-using MMDB.EntityFrameworkProvider.Helpers;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using System.Data.SqlClient;
-using System.Data.Common;
-using MMDB.EntityFrameworkProvider.DbCommandTreeTransform.Join;
-using MMDB.Linq.Visitors;
+using Effort.DbCommandTreeTransform.Join;
+using Effort.Helpers;
+using Effort.TypeGeneration;
 using MMDB.Linq.StoredProcedures;
+using MMDB.Linq.Visitors;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
-    public class DbExpressionTransformVisitor : DbExpressionVisitor<Expression>
+    internal class DbExpressionTransformVisitor : DbExpressionVisitor<Expression>
     {
         private Dictionary<string, Tuple<TypeUsage, int>> parameters;
         private ParameterExpression[] parameterExpressions;
@@ -25,7 +22,7 @@ namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
         private IMethodProvider methodProvider;
 
 
-        private QueryMethodExpressionBuilder queryMethodExpressionBuilder;
+        private LinqMethodExpressionBuilder queryMethodExpressionBuilder;
         private EdmTypeConverter typeConverter;
         private CanonicalFunctionMapper functionMapper;
 
@@ -33,14 +30,14 @@ namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
 
         public DbExpressionTransformVisitor()
         {
-            this.queryMethodExpressionBuilder = new QueryMethodExpressionBuilder();
+            this.queryMethodExpressionBuilder = new LinqMethodExpressionBuilder();
             this.typeConverter = new EdmTypeConverter();
             this.contextStack = new Stack<ContextHandler>();
             this.parameters = new Dictionary<string, Tuple<TypeUsage, int>>();
             this.functionMapper = new CanonicalFunctionMapper();
 
-            //TODO: Set from outside
-            this.methodProvider = new MMDB.EntityFrameworkProvider.DatabaseManagement.MethodProvider();
+            // TODO: Should set this from outside
+            this.methodProvider = new Effort.DatabaseManagement.MethodProvider();
         }
 
         public ITableProvider TableProvider
@@ -951,7 +948,7 @@ namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
                 args[i] = this.Visit(expression.Arguments[i]);
             }
 
-            //UnaryMinus has single argument, avoid it
+            // This check needs because of UnaryMinus, which has a single argument
             if (args.Length == 2)
             {
                 ExpressionHelper.TryUnifyValueTypes(ref args[0], ref args[1]);

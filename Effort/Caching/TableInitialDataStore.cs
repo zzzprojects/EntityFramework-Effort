@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MMDB.EntityFrameworkProvider.DatabaseManagement;
+using Effort.DatabaseManagement;
 
-namespace MMDB.EntityFrameworkProvider.Caching
+namespace Effort.Caching
 {
-    public static class TableInitialDataStore
+    internal static class TableInitialDataStore
     {
         private static ConcurrentCache<TableInitialDataKey, TableInitialData> store;
 

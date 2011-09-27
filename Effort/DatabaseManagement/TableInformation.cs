@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace MMDB.EntityFrameworkProvider.DatabaseManagement
+namespace Effort.DatabaseManagement
 {
-    public class TableInformation
+    internal class TableInformation
     {
         public TableInformation(Type entityType, PropertyInfo[] primaryKeys)
         {

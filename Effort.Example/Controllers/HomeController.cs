@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace MMDB.EntityFrameworkProvider.TddTest.Controllers
+namespace Effort.Example.Controllers
 {
     [HandleError]
     public class HomeController : Controller

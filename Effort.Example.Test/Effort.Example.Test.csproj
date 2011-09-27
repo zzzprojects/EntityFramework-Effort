@@ -9,8 +9,8 @@
     <ProjectGuid>{69AAB926-431E-4659-BAB3-3F0F1B0773C5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MMDB.EntityFrameworkProvider.TddTest.UnitTest</RootNamespace>
-    <AssemblyName>MMDB.EntityFrameworkProvider.TddTest.UnitTest</AssemblyName>
+    <RootNamespace>Effort.Example.Test</RootNamespace>
+    <AssemblyName>Effort.Example.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

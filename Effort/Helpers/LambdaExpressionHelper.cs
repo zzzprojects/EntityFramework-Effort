@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
-using MMDB.EntityFrameworkProvider.TypeGeneration;
+using Effort.TypeGeneration;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal static class LambdaExpressionHelper
     {

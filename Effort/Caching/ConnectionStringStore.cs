@@ -5,9 +5,9 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Data.EntityClient;
 
-namespace MMDB.EntityFrameworkProvider.Caching
+namespace Effort.Caching
 {
-    public static class ConnectionStringStore
+    internal static class ConnectionStringStore
     {
         private static ConcurrentDictionary<ConnectionStringKey, string> store;
 

@@ -5,9 +5,9 @@ using System.Text;
 using System.Data.Common.CommandTrees;
 using System.Linq.Expressions;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
-    public class DbJoinConditionVisitor : DbExpressionVisitor<Expression>
+    internal class DbJoinConditionVisitor : DbExpressionVisitor<Expression>
     {
         public List<DbExpression> LeftSide = new List<DbExpression>();
         public List<DbExpression> RightSide = new List<DbExpression>();

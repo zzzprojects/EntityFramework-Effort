@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MMDB.EntityFrameworkProvider.Caching;
-using MMDB.EntityFrameworkProvider.DatabaseManagement;
+using Effort.Caching;
+using Effort.DatabaseManagement;
 
-namespace MMDB.EntityFrameworkProvider.DataInitialization
+namespace Effort.DataInitialization
 {
-    public class CachedCsvDataSource : CsvDataSource
+    internal class CachedCsvDataSource : CsvDataSource
     {
         private string connectionString;
         private string tableName;

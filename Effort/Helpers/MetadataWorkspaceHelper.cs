@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data.Metadata.Edm;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal static class MetadataWorkspaceHelper
     {

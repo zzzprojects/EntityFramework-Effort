@@ -9,7 +9,7 @@ using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests.Utils
+namespace Effort.Test.Utils
 {
     public class EntityComparer : IEqualityComparer
     {

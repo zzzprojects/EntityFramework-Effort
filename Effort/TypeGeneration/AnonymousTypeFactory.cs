@@ -6,13 +6,13 @@ using System.Threading;
 using System.Reflection.Emit;
 using System.Reflection;
 using System.Diagnostics;
-using MMDB.EntityFrameworkProvider.Helpers;
-using MMDB.EntityFrameworkProvider.Caching;
+using Effort.Helpers;
+using Effort.Caching;
 
-namespace MMDB.EntityFrameworkProvider.TypeGeneration
+namespace Effort.TypeGeneration
 {
 
-    public class AnonymousTypeFactory
+    internal class AnonymousTypeFactory
     {
         private static int typeCount;
         private static AssemblyBuilder assemblyBuilder;

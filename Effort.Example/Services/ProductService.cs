@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using MMDB.EntityFrameworkProvider.TddTest.Models;
+using Effort.Example.Models;
 using Microsoft.Practices.Unity;
 
-namespace MMDB.EntityFrameworkProvider.TddTest.Services
+namespace Effort.Example.Services
 {
     public class ProductService : IProductService
     {

@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MMDB.DatabaseExport
+namespace Effort.CsvTool
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

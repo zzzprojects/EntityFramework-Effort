@@ -5,11 +5,11 @@ using System.Text;
 using System.Data.Metadata.Edm;
 using System.Reflection;
 using System.Linq.Expressions;
-using MMDB.EntityFrameworkProvider.Helpers;
+using Effort.Helpers;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
-    public class CanonicalFunctionMapper
+    internal class CanonicalFunctionMapper
     {
         private Dictionary<string, Func<EdmFunction, Expression[], MethodCallExpression>> mappings;
         private EdmTypeConverter converter;

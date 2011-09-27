@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.Caching
+namespace Effort.Caching
 {
-    public class DbSchemaKey : IEquatable<DbSchemaKey>
+    internal class DbSchemaKey : IEquatable<DbSchemaKey>
     {
         private string[] metadataFiles;
 

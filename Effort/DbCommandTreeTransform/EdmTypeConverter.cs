@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.Metadata.Edm;
-using MMDB.EntityFrameworkProvider.TypeGeneration;
+using Effort.TypeGeneration;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
 
-    public class EdmTypeConverter
+    internal class EdmTypeConverter
     {
 
         public Type GetEncapsulatedType(TypeUsage type)

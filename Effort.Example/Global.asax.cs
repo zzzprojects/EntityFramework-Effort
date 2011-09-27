@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Microsoft.Practices.Web.UnityExtensions.Mvc;
+using Effort.Example.Models;
+using Effort.Example.Services;
+using Effort.Tdd;
 using Microsoft.Practices.Unity;
-using MMDB.EntityFrameworkProvider.TddTest.Services;
-using MMDB.EntityFrameworkProvider.TddTest.Models;
-using MMDB.EntityFrameworkProvider.Tdd;
+using Microsoft.Practices.Web.UnityExtensions.Mvc;
+using System.IO;
 
-namespace MMDB.EntityFrameworkProvider.TddTest
+namespace Effort.Example
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
@@ -39,7 +37,10 @@ namespace MMDB.EntityFrameworkProvider.TddTest
 
             di.RegisterType<IProductService, ProductService>();
 
-            Type emulator = ObjectContextFactory.CreateEmulator<NorthwindEntities>(@"C:\Users\user\Desktop\db", true);
+
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\Effort.Example.Test\\Data");
+            Type emulator = ObjectContextFactory.CreateEmulator<NorthwindEntities>(path, true);
+
             di.RegisterType(typeof(NorthwindEntities), emulator);
             //di.RegisterType<NorthwindEntities, NorthwindEntities>(new InjectionConstructor());
 

@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace MMDB.DatabaseExport
+namespace Effort.CsvTool
 {
     /// <summary>
     /// Interaction logic for App.xaml

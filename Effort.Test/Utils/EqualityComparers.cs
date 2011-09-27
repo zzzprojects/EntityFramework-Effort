@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests.Utils
+namespace Effort.Test.Utils
 {
     public static class EqualityComparers
     {

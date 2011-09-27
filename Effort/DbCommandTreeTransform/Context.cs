@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
-    public class Context
+    internal class Context
     {
         public Expression SourceExpression { set; get; }
         public string Name { set; get; }

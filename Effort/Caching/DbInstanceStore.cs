@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading;
 using MMDB.Locking;
 using MMDB.Logging;
-using MMDB.EntityFrameworkProvider.Helpers;
-using MMDB.EntityFrameworkProvider.Caching;
+using Effort.Helpers;
+using Effort.Caching;
+using MMDB;
 
-namespace MMDB.EntityFrameworkProvider.DatabaseManagement
+namespace Effort.DatabaseManagement
 {
-    public class DbInstanceStore
+    internal class DbInstanceStore
     {
         private static ConcurrentCache<ConnectionStringKey, Database> store;
 

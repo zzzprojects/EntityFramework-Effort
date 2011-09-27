@@ -5,9 +5,12 @@ using System.Text;
 using System.Data.Common.CommandTrees;
 using System.Linq.Expressions;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
-    class TableScanVisitor : DbExpressionVisitor<Expression>
+    /// <summary>
+    /// A visitor, that searches for tables in the DbExpressionTree
+    /// </summary>
+    internal class TableScanVisitor : DbExpressionVisitor<Expression>
     {
         public List<string> Tables { get; set; }
 

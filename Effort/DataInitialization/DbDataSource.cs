@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data;
 using System.Data.Common;
-using System.Data.Metadata.Edm;
-
-using MMDB.EntityFrameworkProvider.Helpers;
 using System.Data.EntityClient;
+using System.Data.Metadata.Edm;
+using Effort.Helpers;
 
-namespace MMDB.EntityFrameworkProvider.DataInitialization
+namespace Effort.DataInitialization
 {
-    public class DbDataSource : DataSourceBase
+    internal class DbDataSource : DataSourceBase
     {
         private EntityConnection connection;
         private MetadataWorkspace workspace;

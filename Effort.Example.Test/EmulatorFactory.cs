@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MMDB.EntityFrameworkProvider.TddTest.Models;
-using MMDB.EntityFrameworkProvider.Tdd;
 using System.IO;
+using Effort.Example.Models;
+using Effort.Tdd;
 
-namespace MMDB.EntityFrameworkProvider.TddTest.UnitTest
+namespace Effort.Example.Test.UnitTest
 {
     public static class EmulatorFactory
     {

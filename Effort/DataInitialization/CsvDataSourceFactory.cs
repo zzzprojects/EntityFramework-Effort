@@ -5,9 +5,9 @@ using System.Text;
 using System.Data.Common;
 using System.IO;
 
-namespace MMDB.EntityFrameworkProvider.DataInitialization
+namespace Effort.DataInitialization
 {
-    public class CsvDataSourceFactory : IDataSourceFactory
+    internal class CsvDataSourceFactory : IDataSourceFactory
     {
         private string connectionString;
         private DirectoryInfo source;

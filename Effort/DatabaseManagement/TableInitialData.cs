@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
-using MMDB.EntityFrameworkProvider.Helpers;
+using Effort.Helpers;
 using System.Reflection;
 
-namespace MMDB.EntityFrameworkProvider.DatabaseManagement
+namespace Effort.DatabaseManagement
 {
-    public class TableInitialData
+    internal class TableInitialData
     {
         private List<object> data;
         private IEntityCloner dataCloner;

@@ -11,7 +11,7 @@ using System;
 using System.Data.Objects;
 using System.Data.EntityClient;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests.Data
+namespace Effort.Test.Data
 {
     public class NorthwindEntities : ObjectContext, IDisposable
     {
@@ -102,6 +102,11 @@ namespace MMDB.EntityFrameworkProvider.UnitTests.Data
         private ObjectSet<Territories> _territories;
 
         #endregion
+    
+    	public void Dispose()
+    	{
+    		base.Dispose(true);
+    	}
     
     }
 }

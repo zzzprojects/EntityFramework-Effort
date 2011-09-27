@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.DbCommandTreeTransform
+namespace Effort.DbCommandTreeTransform
 {
-    public class SingleResult<T> : IQueryable<T>
+    internal class SingleResult<T> : IQueryable<T>
     {
         private List<T> innerList;
         private IQueryable<T> innerQueryable; 

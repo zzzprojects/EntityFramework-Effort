@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data.Common;
 
-namespace MMDB.EntityFrameworkProvider
+namespace Effort
 {
     internal class ConnectionStringHelper
     {

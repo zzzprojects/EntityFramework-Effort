@@ -1,16 +1,9 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MMDB.EntityFrameworkProvider.TddTest.Models;
-using MMDB.EntityFrameworkProvider.TddTest.Services;
-using MMDB.EntityFrameworkProvider.TddTest.Controllers;
+﻿using Effort.Example.Models;
+using Effort.Example.Services;
 using Microsoft.Practices.Unity;
-using MMDB.EntityFrameworkProvider.Tdd;
-using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MMDB.EntityFrameworkProvider.TddTest.UnitTest
+namespace Effort.Example.Test.UnitTest
 {
     [TestClass]
     public class ProductFixture
@@ -22,7 +15,7 @@ namespace MMDB.EntityFrameworkProvider.TddTest.UnitTest
         {
             UnityContainer di = new UnityContainer();
 
-            //di.RegisterType(typeof(NorthwindEntities), new InjectionConstructor());
+            ////di.RegisterType(typeof(NorthwindEntities), new InjectionConstructor());
             di.RegisterType(typeof(NorthwindEntities), EmulatorFactory.Create());
 
             this.dependencies = di;

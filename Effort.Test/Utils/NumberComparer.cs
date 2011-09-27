@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests.Utils
+namespace Effort.Test.Utils
 {
-    public class NumberComparer : IEqualityComparer
+    internal class NumberComparer : IEqualityComparer
     {
         public new bool Equals(object x, object y)
         {

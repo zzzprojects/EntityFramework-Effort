@@ -7,10 +7,10 @@ using System.Data.EntityClient;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using MMDB.EntityFrameworkProvider.Helpers;
+using Effort.Helpers;
 using System.Linq.Expressions;
 
-namespace MMDB.EntityFrameworkProvider.Tdd
+namespace Effort.Tdd
 {
     public static class ObjectContextFactory
     {

@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace MMDB.EntityFrameworkProvider.TddTest.Models
+namespace Effort.Example.Models
 {
     public partial class Products
     {

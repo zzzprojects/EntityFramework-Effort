@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
 
-namespace MMDB.DatabaseExport
+namespace Effort.CsvTool
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

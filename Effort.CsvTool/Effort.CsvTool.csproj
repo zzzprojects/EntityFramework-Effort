@@ -8,8 +8,8 @@
     <ProjectGuid>{E0FD26F8-DE04-4D6A-8EAD-1BB3001DF6D0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MMDB.DatabaseExport</RootNamespace>
-    <AssemblyName>MMDB.DatabaseExport</AssemblyName>
+    <RootNamespace>Effort.CsvTool</RootNamespace>
+    <AssemblyName>Effort.CsvTool</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>

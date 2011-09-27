@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Linq.Expressions;
-using System.Reflection.Emit;
 using System.Data.Metadata.Edm;
-
-using MMDB.Table;
-using MMDB.EntityFrameworkProvider.DatabaseManagement;
-using MMDB.EntityFrameworkProvider.TypeGeneration;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using Effort.DatabaseManagement;
+using MMDB;
 using MMDB.Index;
+using MMDB.Table;
 
-namespace MMDB.EntityFrameworkProvider.Helpers
+namespace Effort.Helpers
 {
     internal static class DatabaseReflectionHelper
     {

@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MMDB.EntityFrameworkProvider.UnitTests.Data;
-using MMDB.EntityFrameworkProvider.UnitTests.Utils;
+using Effort.Test.Data;
+using Effort.Test.Utils;
 
-namespace MMDB.EntityFrameworkProvider.UnitTests
+namespace Effort.Test
 {
     [TestClass]
     public class BasicFixture

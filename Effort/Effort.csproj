@@ -175,8 +175,8 @@
     <Compile Include="Helpers\MetadataWorkspaceHelper.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Helpers\TypeHelper.cs" />
-    <Compile Include="Tdd\EntityConnectionFactory.cs" />
-    <Compile Include="Tdd\ObjectContextFactory.cs" />
+    <Compile Include="EntityConnectionFactory.cs" />
+    <Compile Include="ObjectContextFactory.cs" />
     <Compile Include="TypeGeneration\AnonymousTypeFactory.cs" />
     <Compile Include="Helpers\EmitHelper.cs" />
     <Compile Include="Helpers\CommandTreeBuilder.cs" />
@@ -209,6 +209,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Csv\Resources\ExceptionMessage.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tdd\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

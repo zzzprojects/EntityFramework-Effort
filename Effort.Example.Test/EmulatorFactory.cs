@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Effort.Example.Models;
-using Effort.Tdd;
 
 namespace Effort.Example.Test.UnitTest
 {

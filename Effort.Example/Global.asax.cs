@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Effort.Example.Models;
 using Effort.Example.Services;
-using Effort.Tdd;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Web.UnityExtensions.Mvc;
 using System.IO;

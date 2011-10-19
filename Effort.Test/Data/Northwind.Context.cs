@@ -102,11 +102,6 @@ namespace Effort.Test.Data
         private ObjectSet<Territories> _territories;
 
         #endregion
-    
-    	public void Dispose()
-    	{
-    		base.Dispose(true);
-    	}
-    
+  
     }
 }

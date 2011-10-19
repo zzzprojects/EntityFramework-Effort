@@ -7,7 +7,7 @@ namespace Effort.Test.Utils
 {
     public class BasicComparer : IEqualityComparer
     {
-        public bool Equals(object x, object y)
+        public new bool Equals(object x, object y)
         {
             return object.Equals(x, y);
         }

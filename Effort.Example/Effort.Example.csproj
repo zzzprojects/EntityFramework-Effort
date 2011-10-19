@@ -104,10 +104,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>POCO.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ProductListModel.cs" />
-    <Compile Include="Models\Products.cs">
+    <Compile Include="Models\Product.cs">
       <DependentUpon>POCO.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IProductService.cs" />
     <Compile Include="Services\ProductService.cs" />
@@ -120,7 +120,7 @@
     <Content Include="DependencyInjection\Microsoft.Practices.Web.UnityExtensions.dll" />
     <Content Include="Global.asax" />
     <Content Include="Views\Product\List.aspx" />
-    <Content Include="Views\Product\ViewPage1.aspx" />
+    <Content Include="Views\Product\Details.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -33,7 +33,7 @@ namespace Effort.DbCommandTreeTransform
             }
             catch( KeyNotFoundException exp )
             {
-                throw new InvalidOperationException( "There is no matching CLR function in MMDB for function " + function.FullName + '.' );
+                throw new InvalidOperationException( "There is no matching CLR function in MMDB for function " + function.FullName + '.' , exp);
             }
         }
         private MethodInfo FindMethod( Type type, string methodName, params Type[] parameterTypes )

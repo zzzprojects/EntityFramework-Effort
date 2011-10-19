@@ -78,7 +78,7 @@ namespace Effort.Test.Utils
             this.y = y;
         }
 
-        public bool Equals(object x, object y)
+        public new bool Equals(object x, object y)
         {
             return object.ReferenceEquals(this.x, x) && object.ReferenceEquals(this.y, y);
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Effort.Example.Models;
 using Microsoft.Practices.Unity;
+using System.IO;
 
 namespace Effort.Example.Services
 {
@@ -12,17 +13,17 @@ namespace Effort.Example.Services
         [Dependency]
         public NorthwindEntities Context { set; get; }
 
-        public IList<Products> GetAllProducts()
+        public IList<Product> GetAllProducts()
         {
             return Context.Products.ToList();
         }
 
-        public Products GetProduct(int id)
+        public Product GetProduct(int id)
         {
             return Context.Products.FirstOrDefault(p => p.ProductID == id);
         }
 
-        public void DeleteProduct(Products product)
+        public void DeleteProduct(Product product)
         {
             Context.Products.Attach(product);
 

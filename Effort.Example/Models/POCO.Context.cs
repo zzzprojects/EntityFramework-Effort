@@ -42,12 +42,18 @@ namespace Effort.Example.Models
     
         #region ObjectSet Properties
     
-        public ObjectSet<Products> Products
+        public ObjectSet<Product> Products
         {
-            get { return _products  ?? (_products = CreateObjectSet<Products>("Products")); }
+            get { return _products  ?? (_products = CreateObjectSet<Product>("Products")); }
         }
-        private ObjectSet<Products> _products;
+        private ObjectSet<Product> _products;
 
         #endregion
+
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
     }
 }

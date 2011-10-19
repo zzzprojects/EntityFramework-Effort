@@ -11,6 +11,19 @@ namespace Effort.DbCommandTreeTransform
     internal class EdmTypeConverter
     {
 
+        public Type Convert(TypeUsage type)
+        {
+            TypeFacets facets = this.GetTypeFacets(type);
+            return ConvertWithFacets(type, facets);
+        }
+
+        public Type ConvertNotNull(TypeUsage type)
+        {
+            TypeFacets facets = new TypeFacets();
+
+            return ConvertWithFacets(type, facets);
+
+        }
         public Type GetEncapsulatedType(TypeUsage type)
         {
             CollectionType collectionType = type.EdmType as CollectionType;
@@ -33,14 +46,10 @@ namespace Effort.DbCommandTreeTransform
         }
 
 
-        public Type Convert(TypeUsage type)
-        {
-            TypeFacets facets = this.GetTypeFacets(type);
-            return ConvertWithFacets( type, ref facets );
-        }
 
 
-        private Type ConvertWithFacets( TypeUsage type, ref TypeFacets facets )
+
+        private Type ConvertWithFacets( TypeUsage type, TypeFacets facets )
         {
 
             if( type.EdmType.BuiltInTypeKind == BuiltInTypeKind.PrimitiveType )
@@ -61,12 +70,7 @@ namespace Effort.DbCommandTreeTransform
             throw new NotSupportedException();
         }
 
-        public Type ConvertNotNull( TypeUsage type )
-        {
-            TypeFacets facets = new TypeFacets();
 
-            return ConvertWithFacets( type, ref facets );
-        }
 
         private Type CreatePrimitiveType(PrimitiveType primitiveType, TypeFacets facets)
         {
@@ -96,7 +100,7 @@ namespace Effort.DbCommandTreeTransform
 
         private Type CreateCollectionType( CollectionType cType, TypeFacets facets )
         {
-            Type elementType = this.ConvertWithFacets( cType.TypeUsage, ref facets );
+            Type elementType = this.ConvertWithFacets( cType.TypeUsage, facets );
 
             return elementType.MakeArrayType();
         }

@@ -9,6 +9,8 @@ using System.Reflection.Emit;
 using System.Threading;
 using Effort.Helpers;
 using System.Linq.Expressions;
+using System.ComponentModel;
+using Effort.Caching;
 
 namespace Effort
 {
@@ -44,60 +46,49 @@ namespace Effort
 
         public static Type CreateEmulator<T>(string connectionString, string source, bool shared) where T : ObjectContext
         {
-            // Get method info
-            MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a => 
-
-                EntityConnectionFactory.CreateEmulator(string.Empty, string.Empty, false));
-
-            Action<ILGenerator> factoryArguments = gen =>
+            return ObjectContextTypeStore.GetEmulator(connectionString, source, shared, () =>
                 {
-                    gen.Emit(OpCodes.Ldstr, connectionString);
-                    gen.Emit(OpCodes.Ldstr, source);
-                    gen.Emit(shared ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
-                };
+                    // Get method info
+                    MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a =>
 
-            return CreateType<T>(entityConnectionFactory, factoryArguments);
+                        EntityConnectionFactory.CreateEmulator(string.Empty, string.Empty, false));
 
+                    Action<ILGenerator> factoryArguments = gen =>
+                        {
+                            gen.Emit(OpCodes.Ldstr, connectionString);
+                            gen.Emit(OpCodes.Ldstr, source);
+                            gen.Emit(shared ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
+                        };
+
+                    return CreateType<T>(entityConnectionFactory, factoryArguments);
+                });
         }
 
 
-        private static Type CreateType<T>(MethodInfo entityConnectionFactoryMethod, Action<ILGenerator> methodArgs)
+        public static Type CreateAccelerator<T>() where T : ObjectContext
         {
-            TypeBuilder builder = null;
+            string connectionString = GetDefaultConnectionString<T>();
 
-            lock (objectContextContainer)
-            {
-                objectContextCounter++;
-                builder = objectContextContainer.DefineType(
-                    string.Format("DynamicObjectContext{0}", objectContextCounter), 
-                    TypeAttributes.Public,
-                    typeof(T));
-            }
+            return CreateAccelerator<T>(connectionString);
+        }
 
-            ConstructorBuilder ctor = builder.DefineConstructor(MethodAttributes.Public | MethodAttributes.HideBySig, CallingConventions.Standard, new Type[] {});
+        public static Type CreateAccelerator<T>(string connectionString) where T : ObjectContext
+        {
+            return ObjectContextTypeStore.GetAccelerator(connectionString, () =>
+                {
+                    // Get method info
+                    MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a =>
 
-            ConstructorInfo baseCtor = typeof(T).GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                null,
-                new Type[] { typeof(EntityConnection) },
-                null
-                );
+                        EntityConnectionFactory.CreateEmulator(string.Empty, string.Empty, false));
 
-            // Adding parameters
-            ILGenerator gen = ctor.GetILGenerator();
-            // Writing body
-            gen.Emit(OpCodes.Ldarg_0);
+                    Action<ILGenerator> factoryArguments = gen =>
+                    {
+                        gen.Emit(OpCodes.Ldstr, connectionString);
+                    };
 
-            methodArgs.Invoke(gen);
+                    return CreateType<T>(entityConnectionFactory, factoryArguments);
 
-            gen.Emit(OpCodes.Call, entityConnectionFactoryMethod);
-            gen.Emit(OpCodes.Call, baseCtor);
-            gen.Emit(OpCodes.Nop);
-            gen.Emit(OpCodes.Nop);
-            gen.Emit(OpCodes.Nop);
-            gen.Emit(OpCodes.Ret);
-
-            return builder.CreateType();
+                });
         }
 
         #endregion
@@ -113,11 +104,27 @@ namespace Effort
 
         public static T CreateAcceleratorInstance<T>(string connectionString) where T : ObjectContext
         {
-            EntityConnection conn = EntityConnectionFactory.CreateAccelerator(connectionString);
+            Type type = CreateAccelerator<T>(connectionString);
 
-            return Activator.CreateInstance(typeof(T), new object[] { conn }) as T;
+            return Activator.CreateInstance(type) as T;
         }
 
+
+
+        public static T CreateEmulatorInstance<T>() where T : ObjectContext
+        {
+            return CreateEmulatorInstance<T>(true);
+        }
+
+        public static T CreateEmulatorInstance<T>(bool shared) where T : ObjectContext
+        {
+            return CreateEmulatorInstance<T>(string.Empty, shared);
+        }
+
+        public static T CreateEmulatorInstance<T>(string source) where T : ObjectContext
+        {
+            return CreateEmulatorInstance<T>(source, true);
+        }
 
         public static T CreateEmulatorInstance<T>(string source, bool shared) where T : ObjectContext
         {
@@ -128,9 +135,9 @@ namespace Effort
 
         public static T CreateEmulatorInstance<T>(string connectionString, string source, bool shared) where T : ObjectContext
         {
-            EntityConnection conn = EntityConnectionFactory.CreateEmulator(connectionString, source, shared);
+            Type type = CreateEmulator<T>(connectionString, source, shared);
 
-            return Activator.CreateInstance(typeof(T), new object[] { conn }) as T;
+            return Activator.CreateInstance(type) as T;
         }
 
         #endregion
@@ -138,6 +145,98 @@ namespace Effort
         private static string GetDefaultConnectionString<T>() where T : ObjectContext
         {
             return Activator.CreateInstance<T>().Connection.ConnectionString;
+        }
+
+        private static Type CreateType<T>(MethodInfo entityConnectionFactoryMethod, Action<ILGenerator> methodArgs)
+        {
+            TypeBuilder builder = null;
+
+            lock (objectContextContainer)
+            {
+                objectContextCounter++;
+                builder = objectContextContainer.DefineType(
+                    string.Format("DynamicObjectContext{0}", objectContextCounter),
+                    TypeAttributes.Public,
+                    typeof(T));
+            }
+
+            ConstructorBuilder ctor = builder.DefineConstructor(MethodAttributes.Public | MethodAttributes.HideBySig, CallingConventions.Standard, new Type[] { });
+
+            ConstructorInfo baseCtor = typeof(T).GetConstructor(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new Type[] { typeof(EntityConnection) },
+                null
+                );
+
+
+            ILGenerator gen = ctor.GetILGenerator();
+            // Writing body
+            gen.Emit(OpCodes.Ldarg_0);
+
+            methodArgs.Invoke(gen);
+
+            gen.Emit(OpCodes.Call, entityConnectionFactoryMethod);
+            gen.Emit(OpCodes.Call, baseCtor);
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Ret);
+
+
+            MethodInfo baseDispose = typeof(T).GetMethod(
+                "Dispose",
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null,
+                new Type[] { typeof(bool) },
+                null);
+
+            MethodInfo connectionDispose = typeof(Component).GetMethod(
+                "Dispose",
+                BindingFlags.Instance | BindingFlags.Public,
+                null,
+                Type.EmptyTypes,
+                null);
+
+            MethodInfo connectionGetter = typeof(T).GetProperty("Connection").GetGetMethod();
+
+            MethodBuilder overridedDispose = builder.DefineMethod(
+                "Dispose",
+                MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot);
+
+            overridedDispose.SetReturnType(typeof(void));
+            // Adding parameters
+            overridedDispose.SetParameters(typeof(bool));
+
+            gen = overridedDispose.GetILGenerator();
+            LocalBuilder l0 = gen.DeclareLocal(typeof(bool));
+
+            Label label = gen.DefineLabel();
+
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Ldarg_1);
+            gen.Emit(OpCodes.Ldc_I4_0);
+            gen.Emit(OpCodes.Ceq);
+            gen.Emit(OpCodes.Stloc_0);
+            gen.Emit(OpCodes.Ldloc_0);
+            gen.Emit(OpCodes.Brtrue_S, label);
+
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Ldarg_0);
+            gen.Emit(OpCodes.Call, connectionGetter);
+            gen.Emit(OpCodes.Callvirt, connectionDispose);
+
+            gen.MarkLabel(label);
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Ldarg_0);
+            gen.Emit(OpCodes.Ldarg_1);
+            gen.Emit(OpCodes.Call, baseDispose);
+
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Nop);
+            gen.Emit(OpCodes.Ret);
+
+            return builder.CreateType();
         }
     }
 }

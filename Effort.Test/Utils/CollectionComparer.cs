@@ -83,7 +83,7 @@ namespace Effort.Test.Utils
             return 0;
         }
 
-        public bool Equals(object x, object y)
+        public new bool Equals(object x, object y)
         {
             return this.Equals(
                 x as IEnumerable<T>,

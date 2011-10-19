@@ -15,16 +15,26 @@ namespace Effort.Components
     {
         static EffortWrapperProviderServices()
         {
-            EffortWrapperProviderServices.Instance = new EffortWrapperProviderServices();
+            string invariantName = string.Empty;
+
+            invariantName = DatabaseAcceleratorProviderConfiguration.ProviderInvariantName;
+            EffortWrapperProviderServices.EmulatorInstance = new EffortWrapperProviderServices(invariantName);
+
+            invariantName = DatabaseEmulatorProviderConfiguration.ProviderInvariantName;
+            EffortWrapperProviderServices.AcceleratorInstance = new EffortWrapperProviderServices(invariantName);
         }
 
-        internal static EffortWrapperProviderServices Instance { private set; get; }
+        internal static EffortWrapperProviderServices EmulatorInstance { private set; get; }
+        internal static EffortWrapperProviderServices AcceleratorInstance { private set; get; }
+
+        private string invariantName;
 
         /// <summary>
         /// Prevents a default instance of the EFSampleProviderServices class from being created.
         /// </summary>
-        private EffortWrapperProviderServices()
+        private EffortWrapperProviderServices(string invariantName)
         {
+            this.invariantName = invariantName;
         }
 
 
@@ -44,11 +54,10 @@ namespace Effort.Components
         /// Gets the provider invariant iname.
         /// </summary>
         /// <returns>Provider invariant name.</returns>
-        protected override string ProviderInvariantName
+        protected override string ProviderInvariantName 
         {
-            get { return DatabaseAcceleratorProviderConfiguration.ProviderInvariantName; }
+            get { return this.invariantName; }
         }
-
 
         /// <summary>
         /// Creates the command definition wrapper.

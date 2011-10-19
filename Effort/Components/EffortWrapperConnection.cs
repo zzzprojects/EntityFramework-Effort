@@ -32,7 +32,7 @@ namespace Effort.Components
         #region Private members
 
         private Database databaseCache;
-        //Virtual connection state
+        // Virtual connection state
         private ConnectionState connectionState;
 
         private string connectionString;
@@ -76,9 +76,11 @@ namespace Effort.Components
 
         #region Properties
 
+        /// <summary>
+        /// Gets the reference if the in-memory database that connection object is using.
+        /// </summary>
         internal Database DatabaseCache
         {
-            private set { this.databaseCache = value; }
             get
             {
                 if (this.databaseCache == null)
@@ -88,8 +90,19 @@ namespace Effort.Components
 
                 return this.databaseCache;
             }
+            private set 
+            { 
+                this.databaseCache = value; 
+            }
         }
 
+        /// <summary>
+        /// Gets or sets the string used to open the connection.
+        /// </summary>
+        /// <value></value>
+        /// <returns>
+        /// The connection string used to establish the initial connection. The exact contents of the connection string depend on the specific data source for this connection. The default value is an empty string.
+        /// </returns>
         public override string ConnectionString
         {
             get
@@ -121,6 +134,13 @@ namespace Effort.Components
             }
         }
 
+        /// <summary>
+        /// Gets the time to wait while establishing a connection before terminating the attempt and generating an error.
+        /// </summary>
+        /// <value></value>
+        /// <returns>
+        /// The time (in seconds) to wait for a connection to open. The default value is determined by the specific type of connection that you are using.
+        /// </returns>
         public override int ConnectionTimeout
         {
             get
@@ -137,7 +157,13 @@ namespace Effort.Components
             }
         }
 
-
+        /// <summary>
+        /// Gets a string that describes the state of the connection.
+        /// </summary>
+        /// <value></value>
+        /// <returns>
+        /// The state of the connection. The format of the string returned depends on the specific type of connection you are using.
+        /// </returns>
         public override ConnectionState State
         {
             get
@@ -151,6 +177,13 @@ namespace Effort.Components
             }
         }
 
+        /// <summary>
+        /// Gets the mode of the wrapper connection.
+        /// </summary>
+        /// <value></value>
+        /// <returns>
+        /// The mode of the wrapper connection.
+        /// </returns>
         public ProviderModes ProviderMode
         {
             get
@@ -163,6 +196,9 @@ namespace Effort.Components
 
         #region Public methods
 
+        /// <summary>
+        /// Opens a database connection with the settings specified by the <see cref="P:System.Data.Common.DbConnection.ConnectionString"/>.
+        /// </summary>
         public override void Open()
         {
             if (this.DesignMode)
@@ -198,6 +234,12 @@ namespace Effort.Components
             this.connectionState = ConnectionState.Open;
         }
 
+        /// <summary>
+        /// Closes the connection to the database. This is the preferred method of closing any open connection.
+        /// </summary>
+        /// <exception cref="T:System.Data.Common.DbException">
+        /// The connection-level error that occurred while opening the connection.
+        /// </exception>
         public override void Close()
         {
             if (this.DesignMode)
@@ -219,12 +261,23 @@ namespace Effort.Components
 
         #region Overrided virtual methods
 
+        /// <summary>
+        /// Enlists in the specified transaction.
+        /// </summary>
+        /// <param name="transaction">A reference to an existing <see cref="T:System.Transactions.Transaction"/> in which to enlist.</param>
         public override void EnlistTransaction(System.Transactions.Transaction transaction)
         {
             // Transaction enlistment is delayed
             ////base.EnlistTransaction(transaction);
         }
 
+        /// <summary>
+        /// Starts a database transaction.
+        /// </summary>
+        /// <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+        /// <returns>
+        /// An object representing the new transaction.
+        /// </returns>
         protected override DbTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel)
         {
             if (this.DesignMode)
@@ -235,6 +288,7 @@ namespace Effort.Components
             return new EffortWrapperTransaction(this, isolationLevel);
         }
 
+
         protected override DbProviderFactory DbProviderFactory
         {
             get
@@ -244,7 +298,15 @@ namespace Effort.Components
                     return DbProviderFactories.GetFactory(this.WrappedProviderInvariantName);
                 }
 
-                return DatabaseAcceleratorProviderFactory.Instance;
+                switch (this.ProviderMode)
+                {
+                    case ProviderModes.DatabaseAccelerator:
+                        return DatabaseAcceleratorProviderFactory.Instance;
+                    case ProviderModes.DatabaseEmulator:
+                        return DatabaseEmulatorProviderFactory.Instance;
+                    default:
+                        throw new NotSupportedException();
+                }
             }
         }
 
@@ -281,7 +343,7 @@ namespace Effort.Components
 
             if (exception != null)
             {
-                throw new MMDBException(ErrorCodes.GenericError, exception);
+                throw new DataException("An unhandled exception occured during the database initialization", exception);
             }
 
             return database;
@@ -361,6 +423,16 @@ namespace Effort.Components
         {
             if (this.ProviderMode == ProviderModes.DatabaseEmulator)
             {
+                DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
+                builder.ConnectionString = this.ConnectionString;
+
+                bool hasSource = builder.ContainsKey("Data Source") && !string.IsNullOrEmpty(builder["Data Source"] as string);
+
+                if (!hasSource)
+                {
+                    return new EmptyDataSourceFactory();
+                }
+
                 return new CsvDataSourceFactory(this.ConnectionString);
             }
 
@@ -403,7 +475,7 @@ namespace Effort.Components
                 List<PropertyInfo> primaryKeyFields = new List<PropertyInfo>();
 
                 // Add properties as entity fields
-                foreach (var field in entitySet.ElementType.Properties)
+                foreach (EdmProperty field in entitySet.ElementType.Properties)
                 {
                     Type fieldClrType = typeConverter.Convert(field.TypeUsage);
 

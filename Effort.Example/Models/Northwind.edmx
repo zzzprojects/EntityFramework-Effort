@@ -29,9 +29,9 @@
     <edmx:ConceptualModels>
       <Schema Namespace="NorthwindModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="NorthwindEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Products" EntityType="NorthwindModel.Products" />
+          <EntitySet Name="Products" EntityType="NorthwindModel.Product" />
         </EntityContainer>
-        <EntityType Name="Products">
+        <EntityType Name="Product">
           <Key>
             <PropertyRef Name="ProductID" />
           </Key>
@@ -52,7 +52,7 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="NorthwindModelStoreContainer" CdmEntityContainer="NorthwindEntities">
-          <EntitySetMapping Name="Products"><EntityTypeMapping TypeName="NorthwindModel.Products"><MappingFragment StoreEntitySet="Products">
+          <EntitySetMapping Name="Products"><EntityTypeMapping TypeName="NorthwindModel.Product"><MappingFragment StoreEntitySet="Products">
             <ScalarProperty Name="ProductID" ColumnName="ProductID" />
             <ScalarProperty Name="ProductName" ColumnName="ProductName" />
             <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
@@ -86,7 +86,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="Northwind">
-        <EntityTypeShape EntityType="NorthwindModel.Products" Width="1.5" PointX="0.75" PointY="0.75" Height="2.9417936197916665" IsExpanded="true" />
+        <EntityTypeShape EntityType="NorthwindModel.Product" Width="1.5" PointX="0.75" PointY="0.75" Height="2.9417936197916665" IsExpanded="true" />
       </Diagram>
     </Diagrams>
   </Designer>

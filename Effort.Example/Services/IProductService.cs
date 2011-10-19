@@ -8,10 +8,10 @@ namespace Effort.Example.Services
 {
     public interface IProductService
     {
-        IList<Products> GetAllProducts();
+        IList<Product> GetAllProducts();
 
-        Products GetProduct(int id);
+        Product GetProduct(int id);
 
-        void DeleteProduct(Products product);
+        void DeleteProduct(Product product);
     }
 }

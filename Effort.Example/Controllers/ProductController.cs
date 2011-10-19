@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Effort.Example.Services;
 using Microsoft.Practices.Unity;
 using Effort.Example.Models;
+using System.Data.EntityClient;
 
 namespace Effort.Example.Controllers
 {
@@ -28,7 +29,19 @@ namespace Effort.Example.Controllers
 
         public ActionResult Details(int id)
         {
-            var result = this.ProductService.GetProduct(id);
+            Product product = new Product();
+
+            product.ProductName = "Brand new product";
+
+
+            Product result = null;
+
+            using (NorthwindEntities ctx = ObjectContextFactory.CreateEmulatorInstance<NorthwindEntities>())
+            {
+                var q = ctx.Products.Where(p => p.ProductID == id);
+
+                result = q.FirstOrDefault();
+            }
 
             return View(result);
         }

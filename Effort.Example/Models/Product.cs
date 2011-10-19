@@ -15,7 +15,7 @@ using System.Collections.Specialized;
 
 namespace Effort.Example.Models
 {
-    public partial class Products
+    public partial class Product
     {
         #region Primitive Properties
     

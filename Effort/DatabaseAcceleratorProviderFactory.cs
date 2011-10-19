@@ -14,7 +14,7 @@ namespace Effort
         public static readonly DatabaseAcceleratorProviderFactory Instance = new DatabaseAcceleratorProviderFactory();
 
         private DatabaseAcceleratorProviderFactory() 
-            : base(EffortWrapperProviderServices.Instance)
+            : base(EffortWrapperProviderServices.AcceleratorInstance)
         {
         }
 

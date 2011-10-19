@@ -119,6 +119,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\EmulatorTypeKey.cs" />
+    <Compile Include="Caching\ObjectContextTypeStore.cs" />
     <Compile Include="Caching\ConnectionStringKey.cs" />
     <Compile Include="Caching\ConnectionStringStore.cs" />
     <Compile Include="Caching\DbSchemaKey.cs" />
@@ -138,6 +140,8 @@
     <Compile Include="DataInitialization\DataSourceBase.cs" />
     <Compile Include="DataInitialization\DbDataSource.cs" />
     <Compile Include="DataInitialization\DbDataSourceFactory.cs" />
+    <Compile Include="DataInitialization\EmptyDataSource.cs" />
+    <Compile Include="DataInitialization\EmptyDataSourceFactory.cs" />
     <Compile Include="DataInitialization\IDataSource.cs" />
     <Compile Include="DataInitialization\IDataSourceFactory.cs" />
     <Compile Include="DbCommandTreeTransform\CanonicalFunctions.cs" />
@@ -210,9 +214,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Csv\Resources\ExceptionMessage.resx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tdd\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

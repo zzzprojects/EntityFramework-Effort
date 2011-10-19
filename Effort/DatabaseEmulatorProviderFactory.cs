@@ -14,7 +14,7 @@ namespace Effort
         public static readonly DatabaseEmulatorProviderFactory Instance = new DatabaseEmulatorProviderFactory();
 
         private DatabaseEmulatorProviderFactory() 
-            : base(EffortWrapperProviderServices.Instance)
+            : base(EffortWrapperProviderServices.EmulatorInstance)
         {
         }
 

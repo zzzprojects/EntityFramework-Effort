@@ -41,7 +41,7 @@ namespace Effort.Example.Test.UnitTest
             // Arrange
             ProductService service = dependencies.Resolve<ProductService>();
 
-            Products product = new Products();
+            Product product = new Product();
             product.ProductID = 1;
 
             // Act
@@ -60,7 +60,7 @@ namespace Effort.Example.Test.UnitTest
             ProductService service = dependencies.Resolve<ProductService>();
 
             // Act
-            Products product = service.GetProduct(1);
+            Product product = service.GetProduct(1);
 
             // Assert
             Assert.AreEqual(product.ProductName, "Chai", "Name of the product");

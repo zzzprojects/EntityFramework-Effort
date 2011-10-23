@@ -34,15 +34,21 @@ namespace Effort.Example
 
             IUnityContainer di = new UnityContainer();
 
+            // Register data services
             di.RegisterType<IProductService, ProductService>();
+            di.RegisterType<ICategoryService, CategoryService>();
 
-
+            // Path of the CSV files
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\Effort.Example.Test\\Data");
+            // Define emulator object context type
             Type emulator = ObjectContextFactory.CreateEmulator<NorthwindEntities>(path, true);
 
+            // Register emulator object context type
             di.RegisterType(typeof(NorthwindEntities), emulator);
-            //di.RegisterType<NorthwindEntities, NorthwindEntities>(new InjectionConstructor());
+            // Register normal object context type
+            ////di.RegisterType<NorthwindEntities, NorthwindEntities>(new InjectionConstructor());
 
+            // Initialize Mvc application bootstrapper
             UnityMvcBootstrapper bootstrapper = new UnityMvcBootstrapper(di);
         }
     }

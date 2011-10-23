@@ -13,6 +13,7 @@ namespace Effort.Components
         private System.Data.IsolationLevel isolationLevel;
 
         private System.Transactions.CommittableTransaction transaction;
+        private MMDB.Transaction.Transaction mmdbTransaction;
 
         public EffortWrapperTransaction(EffortWrapperConnection connection, System.Data.IsolationLevel isolationLevel) 
         {
@@ -44,18 +45,17 @@ namespace Effort.Components
                 connection.WrappedConnection.EnlistTransaction(transaction);
             }
 
-            // Enlist the MMDB transaction to this transaction
-            try
+            if (MMDB.Transaction.TransactionScope.CurrentTransaction != null)
             {
-                System.Transactions.Transaction.Current = this.transaction;
+                throw new InvalidOperationException();
+            }
 
-                // This will create an MMDB transaction and enlist to our ambient transaction
-                bool isOpen = MMDB.Transaction.TransactionScope.IsOpen;
-            }
-            finally
-            {
-                System.Transactions.Transaction.Current = null;
-            }
+            // Create an MMDB transaction
+            mmdbTransaction = new MMDB.Transaction.Transaction(this.transaction);
+
+            // Set as the current transaction
+            MMDB.Transaction.TransactionScope.CurrentTransaction = mmdbTransaction;
+
         }
 
         public override void Commit()
@@ -83,6 +83,7 @@ namespace Effort.Components
             if (disposing)
             {
                 this.transaction.Dispose();
+                this.mmdbTransaction.Dispose();
             }
 
             base.Dispose(disposing);

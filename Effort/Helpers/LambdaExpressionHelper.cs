@@ -13,13 +13,12 @@ namespace Effort.Helpers
         public static LambdaExpression CreateSelectorExpression(Type sourceType, PropertyInfo[] selectorFields)
         {
             object selectorExpression = null;
-            Type resultType = null;
 
-            //Single field primary key:
-            //Expression:  x => x.Field
+            // Single field primary key:
+            // Expression:  x => x.Field
             if (selectorFields.Length == 1)
             {
-                resultType = selectorFields[0].PropertyType;
+                Type resultType = selectorFields[0].PropertyType;
 
                 selectorExpression =
                     typeof(LambdaExpressionHelper.WrapperMethods)
@@ -27,21 +26,21 @@ namespace Effort.Helpers
                     .MakeGenericMethod(sourceType, resultType)
                     .Invoke(null, new object[] { selectorFields[0].Name });
             }
-            //Multiple field primary key:
-            //Expression: x => new { x.Field1, x.Field2 }
+            // Multiple field primary key:
+            // Expression: x => new { x.Field1, x.Field2 }
             else
             {
 
-                //Build anonymous type
-                resultType =
+                // Build anonymous type
+                Type resultType =
                     AnonymousTypeFactory.Create(
                         selectorFields.ToDictionary(
                             pi => pi.Name,
                             pi => pi.PropertyType));
 
-                //resultType =
-                //    TupleTypeFactory.Create(
-                //        selectorFields.Select(pi => pi.PropertyType).ToArray());
+                ////resultType =
+                ////    TupleTypeFactory.Create(
+                ////        selectorFields.Select(pi => pi.PropertyType).ToArray());
 
                 selectorExpression =
                     typeof(LambdaExpressionHelper.WrapperMethods)
@@ -89,7 +88,8 @@ namespace Effort.Helpers
                     Expression.Lambda<Func<TSource, TResult>>(
                         Expression.New(
                             typeof(TResult).GetConstructors().Single(),
-                            fields.Select(f => Expression.Property(expressionParameter, f)).ToArray()
+                            fields.Select(f => Expression.Property(expressionParameter, f)),
+                            fields.Select(f => typeof(TResult).GetProperty(f))
                         )
                         ,
                         expressionParameter

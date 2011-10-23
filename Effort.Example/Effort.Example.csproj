@@ -84,11 +84,16 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Category.cs">
+      <DependentUpon>POCO.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CategoryListModel.cs" />
     <Compile Include="Models\Northwind.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -109,16 +114,14 @@
     </Compile>
     <Compile Include="Models\ProductListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\ICategoryService.cs" />
     <Compile Include="Services\IProductService.cs" />
     <Compile Include="Services\ProductService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DependencyInjection\Microsoft.Practices.ObjectBuilder2.dll" />
-    <Content Include="DependencyInjection\Microsoft.Practices.ServiceLocation.dll" />
-    <Content Include="DependencyInjection\Microsoft.Practices.Unity.dll" />
-    <Content Include="DependencyInjection\Microsoft.Practices.Web.dll" />
-    <Content Include="DependencyInjection\Microsoft.Practices.Web.UnityExtensions.dll" />
     <Content Include="Global.asax" />
+    <Content Include="Views\Category\List.aspx" />
     <Content Include="Views\Product\List.aspx" />
     <Content Include="Views\Product\Details.aspx" />
     <Content Include="Web.config" />

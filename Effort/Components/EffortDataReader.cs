@@ -12,13 +12,12 @@ namespace Effort.Components
     {
         private IEnumerable source;
         private IEnumerator enumerator;
-        private bool isPrimitive;
 
         private bool closed = true;
 
-        public string PrimitiveName { get; set; }
 
         private object[] currentValues;
+        private string[] fieldNames;
 
         public EffortDataReader(IEnumerable source)
         {
@@ -26,10 +25,11 @@ namespace Effort.Components
             this.enumerator = this.source.GetEnumerator();
             this.closed = false;
         }
-        public EffortDataReader(IEnumerable source, bool isPrimitive)
+
+        public EffortDataReader(IEnumerable source, string[] fieldNames)
             : this(source)
         {
-            this.isPrimitive = isPrimitive;
+            this.fieldNames = fieldNames;
         }
 
         public override void Close()
@@ -47,7 +47,7 @@ namespace Effort.Components
 
         protected override void Dispose(bool disposing)
         {
-            //The Dispose method of the base class invokes Close method
+            // The Dispose method of the base class invokes Close method
             base.Dispose(disposing);
         }
 
@@ -60,13 +60,13 @@ namespace Effort.Components
         {
             get
             {
-                if (isPrimitive == false)
+                if (fieldNames == null)
                 {
                     throw new NotImplementedException();
                 }
                 else
                 {
-                    return 1;
+                    return fieldNames.Length;
                 }
             }
         }
@@ -148,7 +148,12 @@ namespace Effort.Components
 
         public override string GetName( int ordinal )
         {
-            return this.PrimitiveName;
+            if (fieldNames == null)
+            {
+                throw new NotSupportedException();
+            }
+
+            return fieldNames[ordinal];
         }
 
         public override int GetOrdinal( string name )
@@ -168,27 +173,16 @@ namespace Effort.Components
 
         public override string GetString( int ordinal )
         {
-            // Ezt meg ki kell tapasztalni, hogyan mukodjon
-            // amikor maga a bejart elem primitiv akkor is ez hivodik
-            if (this.enumerator.Current is string)
-            {
-                return (string)this.enumerator.Current;
-            }
-
             return (string)this.GetValue( ordinal );
         }
 
         public override object GetValue( int ordinal )
         {
-            object result = null;
+            object result = this.currentValues[ordinal];
 
-            if (this.enumerator.Current.GetType().IsPrimitive)
+            if (result == null)
             {
-                result = this.enumerator.Current;
-            }
-            else
-            {
-                result = this.currentValues[ordinal];
+                result = DBNull.Value;
             }
 
             return result;
@@ -206,7 +200,10 @@ namespace Effort.Components
 
         public override bool IsClosed
         {
-            get { return this.closed; }
+            get 
+            { 
+                return this.closed; 
+            }
         }
 
         public override bool IsDBNull( int ordinal )
@@ -249,13 +246,31 @@ namespace Effort.Components
         private void EnsureValues()
         {
             object current = this.enumerator.Current;
-            PropertyInfo[] props = current.GetType().GetProperties();
 
-            this.currentValues = new object[props.Length];
-
-            for (int i = 0; i < props.Length; i++)
+            if (current is Dictionary<string, object>)
             {
-                this.currentValues[i] = props[i].GetValue(current, null);
+                var dict = current as Dictionary<string, object>;
+
+                List<string> names = fieldNames.ToList();
+
+                this.currentValues = new object[names.Count];
+
+                foreach (var item in dict)
+	            {
+                    int index = names.IndexOf(item.Key);
+		            this.currentValues[index] = item.Value;
+	            }
+            }
+            else
+            {
+                PropertyInfo[] props = current.GetType().GetProperties();
+
+                this.currentValues = new object[props.Length];
+
+                for (int i = 0; i < props.Length; i++)
+                {
+                    this.currentValues[i] = props[i].GetValue(current, null);
+                }
             }
         }
     }

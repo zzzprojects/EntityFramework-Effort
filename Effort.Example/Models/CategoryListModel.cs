@@ -5,9 +5,8 @@ using System.Web;
 
 namespace Effort.Example.Models
 {
-   
-    public class ProductListModel
+    public class CategoryListModel
     {
-        public IList<Product> Products { get; set; }
+        public IList<Category> Categories { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Effort.Example.Services;
 using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Effort.Example.Test.UnitTest
+namespace Effort.Example.Test
 {
     [TestClass]
     public class ProductFixture
@@ -15,11 +15,26 @@ namespace Effort.Example.Test.UnitTest
         {
             UnityContainer di = new UnityContainer();
 
-            ////di.RegisterType(typeof(NorthwindEntities), new InjectionConstructor());
+            // Register fake object context
             di.RegisterType(typeof(NorthwindEntities), EmulatorFactory.Create());
 
             this.dependencies = di;
         }
+
+
+        [TestMethod]
+        public void ProductExist()
+        {
+            // Arrange
+            ProductService service = dependencies.Resolve<ProductService>();
+
+            // Act
+            var result = service.GetProduct(1);
+
+            // Assert
+            Assert.AreNotEqual(result, null, "Product does not exist");
+        }
+
 
         [TestMethod]
         public void AllProduct()
@@ -31,7 +46,7 @@ namespace Effort.Example.Test.UnitTest
             var result = service.GetAllProducts();
             
             // Assert
-            Assert.AreEqual(result.Count, 81, "Size of the result set");
+            Assert.AreEqual(result.Count, 77, "Size of the result set");
 
         }
 

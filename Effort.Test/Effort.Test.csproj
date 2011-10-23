@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
+    <Compile Include="InsertFixture.cs" />
     <Compile Include="JoinFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicFixture.cs" />

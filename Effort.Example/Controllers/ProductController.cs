@@ -26,24 +26,11 @@ namespace Effort.Example.Controllers
             return View(model);
         }
 
-
         public ActionResult Details(int id)
         {
-            Product product = new Product();
+            var model = this.ProductService.GetProduct(id);
 
-            product.ProductName = "Brand new product";
-
-
-            Product result = null;
-
-            using (NorthwindEntities ctx = ObjectContextFactory.CreateEmulatorInstance<NorthwindEntities>())
-            {
-                var q = ctx.Products.Where(p => p.ProductID == id);
-
-                result = q.FirstOrDefault();
-            }
-
-            return View(result);
+            return View(model);
         }
 
     }

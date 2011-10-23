@@ -8,12 +8,20 @@ using Effort.DatabaseManagement;
 using MMDB;
 using MMDB.Index;
 using MMDB.Table;
+using System.Diagnostics;
 
 namespace Effort.Helpers
 {
     internal static class DatabaseReflectionHelper
     {
-        public static IReflectionTable CreateTable(Database database, Type entityType, PropertyInfo[] primaryKeyFields, IEnumerable<object> initialEntities)
+        public static IReflectionTable CreateTable(
+            Database database, 
+            Type entityType, 
+            
+            PropertyInfo[] primaryKeyFields, 
+            PropertyInfo identityField, 
+            
+            IEnumerable<object> initialEntities)
         {
             if (primaryKeyFields.Length == 0)
             {
@@ -23,10 +31,23 @@ namespace Effort.Helpers
             LambdaExpression primaryKeyExpression = LambdaExpressionHelper.CreateSelectorExpression(entityType, primaryKeyFields.OrderBy(f => f.Name).ToArray());
             Type primaryKeyType = primaryKeyExpression.Body.Type;
 
+            object identity = null;
+
+            if (identityField != null)
+            {
+                ParameterExpression p = Expression.Parameter(entityType, "x");
+
+                identity = Expression.Lambda(
+                    Expression.Convert(         
+                        Expression.Property(p, identityField.Name),
+                        typeof(long)),
+                    p);
+            }
+
             object table = typeof(DatabaseReflectionHelper.WrapperMethods)
                             .GetMethod("CreateTable")
                             .MakeGenericMethod(entityType, primaryKeyType)
-                            .Invoke(null, new object[] { database, primaryKeyExpression, initialEntities});
+                            .Invoke(null, new object[] { database, primaryKeyExpression, identity, initialEntities});
 
             return table as IReflectionTable;
         }
@@ -45,21 +66,21 @@ namespace Effort.Helpers
 
         public static void CreateAssociation(Database database, ReferentialConstraint constraint)
         {
+            if (1 < constraint.FromProperties.Count || 1 < constraint.ToProperties.Count)
+            {
+                // Complex association is not supported
+                Debug.Print("Complex association is not supported");
+                return;
+            }
+
             // Get the referenced tables
             IReflectionTable fromTable = GetTable(database, constraint.FromRole);
             IReflectionTable toTable = GetTable(database, constraint.ToRole);
 
             Type[] toTableGenericsArgs = toTable.GetType().GetGenericArguments();
 
-            // Get the properties of the foreign key
-            MemberInfo[] foreignKeyProps = constraint
-                .ToProperties
-                .Select(ep => toTable.EntityType.GetProperty(ep.Name))
-                .OrderBy(mi => mi.Name)
-                .ToArray();
-
-            IIndex toTablePrimaryIndex = toTable.Indexes.FirstOrDefault();
-            IIndex fromTablePrimaryIndex = fromTable.Indexes.FirstOrDefault();
+            IIndex toTablePrimaryIndex = toTable.PrimaryKeyIndex;
+            IIndex fromTablePrimaryIndex = fromTable.PrimaryKeyIndex;
 
             // Check if the primary index exist
             if (fromTablePrimaryIndex == null)
@@ -67,10 +88,15 @@ namespace Effort.Helpers
                 return;
             }
 
+            // Get the properties of the foreign key
+            PropertyInfo foreignKeyProp = toTable.EntityType.GetProperty(constraint.ToProperties[0].Name);
+
             IIndex foreignKeyIndex = null;
 
             // Consider if the foreign key is also a primary key
-            if (toTablePrimaryIndex != null && toTablePrimaryIndex.KeyMembers.OrderBy(mi => mi.Name).SequenceEqual(foreignKeyProps))
+            if (toTablePrimaryIndex != null && 
+                toTablePrimaryIndex.KeyMembers.Length == 1 &&
+                toTablePrimaryIndex.KeyMembers[0].Name == foreignKeyProp.Name)
             {
                 foreignKeyIndex = toTablePrimaryIndex;
             }
@@ -80,7 +106,7 @@ namespace Effort.Helpers
                 LambdaExpression toExpression =
                     LambdaExpressionHelper.CreateSelectorExpression(
                         toTable.EntityType,
-                        constraint.ToProperties.Select(ep => toTable.EntityType.GetProperty(ep.Name)).ToArray());
+                        new PropertyInfo[] { foreignKeyProp });
 
 
                 // Build foreign key index
@@ -104,7 +130,7 @@ namespace Effort.Helpers
             }
             // Identical, but foreign key is nullable
             else if (
-                TypeHelper.IsNullable(foreignKeyIndex.KeyType) && 
+                TypeHelper.IsNullable(foreignKeyIndex.KeyType) &&
                 TypeHelper.MakeNotNullable(foreignKeyIndex.KeyType) == fromTablePrimaryIndex.KeyType)
             {
                 typeof(DatabaseReflectionHelper.WrapperMethods)
@@ -112,14 +138,21 @@ namespace Effort.Helpers
                    .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyType, toTable.EntityType)
                    .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
             }
-            // Not identical => probably multifield index
             else
             {
-                typeof(DatabaseReflectionHelper.WrapperMethods)
-                    .GetMethod("CreateRelation")
-                    .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyType, toTable.EntityType, foreignKeyIndex.KeyType)
-                    .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
+                throw new NotSupportedException();
             }
+
+
+
+            ////// Not identical => probably multifield index
+            ////else
+            ////{
+            ////    typeof(DatabaseReflectionHelper.WrapperMethods)
+            ////        .GetMethod("CreateRelation")
+            ////        .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyType, toTable.EntityType, foreignKeyIndex.KeyType)
+            ////        .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
+            ////}
 
         }
 
@@ -135,23 +168,22 @@ namespace Effort.Helpers
             public static Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
                 Database database, 
                 Expression<Func<TEntity, TPrimaryKey>> primaryKey,
+                Expression<Func<TEntity, long>> identity,
                 IEnumerable<object> initialEntities)
 
                 where TEntity : class
             {
                 return database.CreateTable<TEntity, TPrimaryKey>(
                     primaryKey,
-                    null,
+                    identity != null ? new IdentitySpecification<TEntity>(identity) : null,
                     initialEntities.Cast<TEntity>());
             }
 
             public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, Expression<Func<TEntity, TForeignKey>> foreignKey)
                 where TEntity : class
             {
-				// zoldl: legyen inkább hashtable
-				// tamas: nem jo, mert FK lehet null is
                 var indexFactory = new RedBlackTreeIndexFactory<TEntity, TPrimaryKey, TEntity>();
-				//var indexFactory = new DictionaryIndexFactory<TEntity, TPrimaryKey, TEntity>();
+				////var indexFactory = new DictionaryIndexFactory<TEntity, TPrimaryKey, TEntity>();
 
                 return table.CreateIndex<TForeignKey>(indexFactory, foreignKey);
             }

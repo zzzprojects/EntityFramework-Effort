@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Effort.Caching
 {
-    public class EmulatorTypeKey : IEquatable<EmulatorTypeKey>
+    internal class EmulatorTypeKey : IEquatable<EmulatorTypeKey>
     {
         private ConnectionStringKey connectionStringKey;
         private string source;

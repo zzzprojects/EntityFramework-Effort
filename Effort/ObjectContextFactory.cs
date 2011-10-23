@@ -113,7 +113,7 @@ namespace Effort
 
         public static T CreateEmulatorInstance<T>() where T : ObjectContext
         {
-            return CreateEmulatorInstance<T>(true);
+            return CreateEmulatorInstance<T>(string.Empty, true);
         }
 
         public static T CreateEmulatorInstance<T>(bool shared) where T : ObjectContext

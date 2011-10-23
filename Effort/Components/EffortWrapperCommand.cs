@@ -149,7 +149,7 @@ namespace Effort.Components
             }
             #endregion
 
-            //Setup expression tranformer
+            // Setup expression tranformer
             DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor();
             visitor.SetParameters( commandTree.Parameters.ToArray() );
             visitor.TableProvider = new DatabaseWrapper( this.DatabaseCache );
@@ -274,17 +274,17 @@ namespace Effort.Components
 
             DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor();
 
-            //Setup context for the predicate
+            // Setup context for the predicate
             ParameterExpression context = Expression.Parameter( type, "context" );
             using( transform.CreateContext( context, commandTree.Target.VariableName ) )
             {
                 //Initialize member bindings
                 foreach( PropertyInfo property in type.GetProperties() )
                 {
-                    //Check if member has set clause
+                    // Check if member has set clause
                     if( setClauses.ContainsKey( property.Name ) )
                     {
-                        //Set the clause
+                        // Set the clause
                         memberBindings.Add(
                             Expression.Bind(
                                 property,
@@ -292,7 +292,7 @@ namespace Effort.Components
                     }
                     else
                     {
-                        //Copy member
+                        // Copy member
                         memberBindings.Add(
                             Expression.Bind(
                                 property,
@@ -310,7 +310,7 @@ namespace Effort.Components
 
             int counter = 0;
 
-            //Execute update on the table
+            // Execute update on the table
             foreach( object entity in entitiesToUpdate )
             {
                 object updatedEntity = updater.DynamicInvoke( entity );
@@ -349,20 +349,12 @@ namespace Effort.Components
             IReflectionTable table = null;
 
             Expression linqExpression = this.GetEnumeratorExpression( commandTree.Predicate, commandTree, out table );
-            IEnumerable entitiesToDeleteQuery = this.CreateQuery( linqExpression );
-
-            List<object> entitiesToDeleteList = entitiesToDeleteQuery.Cast<object>().ToList();
-
-            // Compare the delete in accelerator mode
-            if( result.HasValue && result != entitiesToDeleteList.Count )
-            {
-                throw new InvalidOperationException();
-            }
+            IEnumerable entitiesToDelete = this.CreateQuery( linqExpression );
 
             int count = 0;
 
             //Execute delete on the table
-            foreach( object entity in entitiesToDeleteList )
+            foreach (object entity in entitiesToDelete)
             {
                 table.Delete( entity );
                 count++;
@@ -391,17 +383,17 @@ namespace Effort.Components
             }
 
             DbInsertCommandTree commandTree = base.Definition.CommandTree as DbInsertCommandTree;
-            //Get the source table
+            // Get the source table
             IReflectionTable table = this.GetTable( commandTree );
 
-            //Collect the SetClause DbExpressions into a dictionary
+            // Collect the SetClause DbExpressions into a dictionary
             IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions( commandTree.SetClauses, table );
 
-            //Collection for collection member bindings
+            // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
             DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor();
 
-            //Initialize member bindings
+            // Initialize member bindings
             foreach( PropertyInfo property in table.EntityType.GetProperties() )
             {
                 //Check if member has set clause
@@ -422,98 +414,114 @@ namespace Effort.Components
 
         private DbDataReader PerformInsert( CommandBehavior behavior )
         {
-            if( this.WrapperConnection.ProviderMode == ProviderModes.DatabaseEmulator )
-            {
-                // Identity is not supported yet
-                throw new NotSupportedException();
-            }
-
             this.EnsureOpenConnection();
 
-            DbDataReader reader = base.WrappedCommand.ExecuteReader( behavior );
-            object returnValue = null;
-
-            using( reader )
-            {
-                if( !reader.Read() )
-                {
-                    throw new InvalidOperationException();
-                }
-
-                returnValue = reader.GetValue( 0 );
-            }
-
             DbInsertCommandTree commandTree = base.Definition.CommandTree as DbInsertCommandTree;
-            //Get the source table
-            IReflectionTable table = this.GetTable( commandTree );
+            Dictionary<string, object> returnedValues = new Dictionary<string, object>();
 
-            //Determine the returning field
-            string keyPropertyName = null;
+            // Find the returning properties
+            DbNewInstanceExpression returnExpression = commandTree.Returning as DbNewInstanceExpression;
 
-            if( commandTree.Returning != null )
+            if (returnExpression == null)
             {
-                DbNewInstanceExpression returnExpression = commandTree.Returning as DbNewInstanceExpression;
-
-                if( returnExpression == null )
-                {
-                    throw new NotSupportedException( "The type of the Returning properties is not DbNewInstanceExpression" );
-                }
-
-                if( returnExpression.Arguments.Count > 1 )
-                {
-                    throw new NotSupportedException( "The DbNewInstanceExpression contains more than one argument" );
-                }
-
-                DbPropertyExpression propertyExpression = returnExpression.Arguments[0] as DbPropertyExpression;
-
-                if( propertyExpression == null )
-                {
-                    throw new NotSupportedException( "The type of the argument of the DbNewInstanceExpression is not PropertyExpression" );
-                }
-
-                keyPropertyName = propertyExpression.Property.Name;
+                throw new NotSupportedException("The type of the Returning properties is not DbNewInstanceExpression");
             }
 
-            //Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions( commandTree.SetClauses, table );
+            // Add the returning property names
+            foreach (DbPropertyExpression propertyExpression in returnExpression.Arguments)
+            {
+                returnedValues.Add(propertyExpression.Property.Name, null);
+            }
 
-            //Collection for collection member bindings
+            // In accelerator mode, execute the wrapped command, and marshal the returned values
+            if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
+            {
+                DbDataReader reader = base.WrappedCommand.ExecuteReader(behavior);
+
+                returnedValues = new Dictionary<string, object>();
+
+                using (reader)
+                {
+                    if (!reader.Read())
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        object value = reader.GetValue(i);
+
+                        if (!(value is DBNull))
+                        {
+                            returnedValues[reader.GetName(i)] = value;
+                        }
+                    }
+                }
+            }
+
+
+            IReflectionTable table = this.GetTable(commandTree);
+
+            // Collect the SetClause DbExpressions into a dictionary
+            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions(commandTree.SetClauses, table);
+
+            // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
             DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor();
 
-            //Initialize member bindings
-            foreach( PropertyInfo property in table.EntityType.GetProperties() )
+            // Initialize member bindings
+            foreach (PropertyInfo property in table.EntityType.GetProperties())
             {
-                //Check if member has set clause
-                if( setClauses.ContainsKey( property.Name ) )
+                // Check if member has set clause
+                if (setClauses.ContainsKey(property.Name))
                 {
-                    Expression value = transform.Visit( setClauses[property.Name] );
+                    Expression value = transform.Visit(setClauses[property.Name]);
 
                     // zsvarnai: Megint nullable gondok vannak es nem lehet updatelni pl boolt
-                    if( property.PropertyType.IsGenericType == false || property.PropertyType.GetGenericTypeDefinition() != typeof( Nullable<> ) )
+                    if (property.PropertyType.IsGenericType == false ||
+                        property.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>))
                     {
-                        value = Expression.Convert( value, property.PropertyType );
+                        value = Expression.Convert(value, property.PropertyType);
                     }
 
                     //Set the clause
                     memberBindings.Add(
                         Expression.Bind(
                             property,
-                            value ) );
+                            value));
                 }
-                else if( property.Name == keyPropertyName )
+                else if (returnedValues.ContainsKey(property.Name))
                 {
-                    //Set the clause
-                    memberBindings.Add(
-                        Expression.Bind(
-                            property,
-                            Expression.Constant( returnValue ) ) );
+                    // In accelerator mode, the missing value is filled with the returned value
+                    if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
+                    {
+                        // Set the clause
+                        memberBindings.Add(
+                            Expression.Bind(
+                                property,
+                                Expression.Constant(returnedValues[property.Name])));
+                    }
                 }
             }
 
-            CreateAndInsertEntity( table, memberBindings );
+            object entity = CreateAndInsertEntity(table, memberBindings);
 
-            return new EffortDataReader(new[] { returnValue }, true) { PrimitiveName = keyPropertyName };
+            string[] returnedFields = returnedValues.Keys.ToArray();
+
+            // In emulator mode, the generated values are gathered from the MMDB
+            if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseEmulator)
+            {
+                for (int i = 0; i < returnedFields.Length; i++)
+                {
+                    string property = returnedFields[i];
+
+                    object value = entity.GetType().GetProperty(property).GetValue(entity, null);
+
+                    returnedValues[property] = value;
+                }
+            }
+
+            return new EffortDataReader(new[] { returnedValues }, returnedFields);
         }
 
         private IReflectionTable GetTable( DbInsertCommandTree commandTree )
@@ -528,7 +536,7 @@ namespace Effort.Components
             return this.DatabaseCache.GetTable( source.Target.Name );
         }
 
-        private void CreateAndInsertEntity( IReflectionTable table, IList<MemberBinding> memberBindings )
+        private object CreateAndInsertEntity( IReflectionTable table, IList<MemberBinding> memberBindings )
         {
             Delegate factory =
                Expression.Lambda(
@@ -540,6 +548,8 @@ namespace Effort.Components
             object newEntity = factory.DynamicInvoke();
 
             table.Insert( newEntity );
+
+            return newEntity;
         }
 
         #endregion
@@ -649,8 +659,11 @@ namespace Effort.Components
             if( IsQueryable( methodCall ) == false )
             {
                 var baseCall = methodCall.Arguments[0];
-                if( IsQueryable( baseCall ) == false )
-                    throw new InvalidOperationException( "Aggregation has to be called on a collection." );
+
+                if (IsQueryable(baseCall) == false)
+                {
+                    throw new InvalidOperationException("Aggregation has to be called on a collection.");
+                }
 
                 throw new InvalidOperationException();
             }
@@ -660,10 +673,17 @@ namespace Effort.Components
         private static bool IsQueryable( Expression methodCall )
         {
             bool isQueryable = false;
-            if( methodCall.Type == typeof( IQueryable ) )
+
+            if (methodCall.Type == typeof(IQueryable))
+            {
                 isQueryable = true;
-            if( methodCall.Type.IsGenericType && methodCall.Type.GetGenericTypeDefinition() == typeof( IQueryable<> ) )
+            }
+
+            if (methodCall.Type.IsGenericType && methodCall.Type.GetGenericTypeDefinition() == typeof(IQueryable<>))
+            {
                 isQueryable = true;
+            }
+
             return isQueryable;
         }
 

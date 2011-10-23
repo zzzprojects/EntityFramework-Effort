@@ -47,13 +47,13 @@ namespace Effort.Example.Models
             get { return _products  ?? (_products = CreateObjectSet<Product>("Products")); }
         }
         private ObjectSet<Product> _products;
+    
+        public ObjectSet<Category> Categories
+        {
+            get { return _categories  ?? (_categories = CreateObjectSet<Category>("Categories")); }
+        }
+        private ObjectSet<Category> _categories;
 
         #endregion
-
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
     }
 }

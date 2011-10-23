@@ -39,8 +39,25 @@ namespace Effort.DbCommandTreeTransform
         public TypeFacets GetTypeFacets(TypeUsage type)
         {
             TypeFacets facets = new TypeFacets();
+            Facet facet = null;
 
-            facets.Nullable = type.Facets.Any(f => f.Name == "Nullable" && (bool)f.Value == true);
+            if (type.Facets.TryGetValue("Nullable", false, out facet))
+            {
+                facets.Nullable = (bool)facet.Value == true;
+            }
+
+            if (type.Facets.TryGetValue("StoreGeneratedPattern", false, out facet))
+            {
+                switch ((StoreGeneratedPattern)facet.Value)
+                {
+                    case StoreGeneratedPattern.Computed:
+                        facets.Computed = true;
+                        break;
+                    case StoreGeneratedPattern.Identity:
+                        facets.Identity = true;
+                        break;
+                }
+            }
 
             return facets;
         }
@@ -106,8 +123,13 @@ namespace Effort.DbCommandTreeTransform
         }
     }
 
-    public struct TypeFacets
+    internal struct TypeFacets
     {
         public bool Nullable { set; get; }
+
+        public bool Identity { get; set; }
+
+        public bool Computed { get; set; }
     }
 }
+

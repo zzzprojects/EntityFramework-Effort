@@ -39,9 +39,28 @@ namespace Effort.Example.Models
     
         public virtual Nullable<int> CategoryID
         {
-            get;
-            set;
+            get { return _categoryID; }
+            set
+            {
+                try
+                {
+                    _settingFK = true;
+                    if (_categoryID != value)
+                    {
+                        if (Categories != null && Categories.CategoryID != value)
+                        {
+                            Categories = null;
+                        }
+                        _categoryID = value;
+                    }
+                }
+                finally
+                {
+                    _settingFK = false;
+                }
+            }
         }
+        private Nullable<int> _categoryID;
     
         public virtual string QuantityPerUnit
         {
@@ -77,6 +96,53 @@ namespace Effort.Example.Models
         {
             get;
             set;
+        }
+
+        #endregion
+        #region Navigation Properties
+    
+        public virtual Category Categories
+        {
+            get { return _categories; }
+            set
+            {
+                if (!ReferenceEquals(_categories, value))
+                {
+                    var previousValue = _categories;
+                    _categories = value;
+                    FixupCategories(previousValue);
+                }
+            }
+        }
+        private Category _categories;
+
+        #endregion
+        #region Association Fixup
+    
+        private bool _settingFK = false;
+    
+        private void FixupCategories(Category previousValue)
+        {
+            if (previousValue != null && previousValue.Products.Contains(this))
+            {
+                previousValue.Products.Remove(this);
+            }
+    
+            if (Categories != null)
+            {
+                if (!Categories.Products.Contains(this))
+                {
+                    Categories.Products.Add(this);
+                }
+                if (CategoryID != Categories.CategoryID)
+                {
+                    CategoryID = Categories.CategoryID;
+                }
+            }
+            else if (!_settingFK)
+            {
+                CategoryID = null;
+            }
         }
 
         #endregion

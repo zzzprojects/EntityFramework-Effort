@@ -5,22 +5,15 @@ using System.Text;
 using System.IO;
 using Effort.Example.Models;
 
-namespace Effort.Example.Test.UnitTest
+namespace Effort.Example.Test
 {
     public static class EmulatorFactory
     {
-        private static Type emulator;
-
         public static Type Create()
         {
-            if (emulator == null)
-            {
-                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
+            string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Example.Test\\Data");
 
-                emulator = ObjectContextFactory.CreateEmulator<NorthwindEntities>(baseDir, false);
-            }
-
-            return emulator;
+            return ObjectContextFactory.CreateEmulator<NorthwindEntities>(baseDir, false);
         }
     }
 }

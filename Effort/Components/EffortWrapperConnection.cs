@@ -389,7 +389,12 @@ namespace Effort.Components
                     IDataSource source = sourceFactory.Create(tableName, tableInfo.EntityType);
 
                     // Initialize the table
-                    IReflectionTable table = DatabaseReflectionHelper.CreateTable(database, tableInfo.EntityType, tableInfo.PrimaryKeys, source.GetInitialRecords());
+                    DatabaseReflectionHelper.CreateTable(
+                        database, 
+                        tableInfo.EntityType, 
+                        tableInfo.PrimaryKeyFields,
+                        this.ProviderMode == ProviderModes.DatabaseEmulator ? tableInfo.IdentityField : null,
+                        source.GetInitialRecords());
 
                     swTable.Stop();
                     database.LoggingPort.Send(new StandardMMDBMessage("{1} loaded in {0:0.0} ms", swTable.Elapsed.TotalMilliseconds, tableName));
@@ -468,29 +473,47 @@ namespace Effort.Components
             // Initialize type converter
             EdmTypeConverter typeConverter = new EdmTypeConverter();
 
-            foreach (var entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
+            foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
+                EntityType type = entitySet.ElementType;
                 TypeBuilder entityTypeBuilder = entityModule.DefineType(entitySet.Name, TypeAttributes.Public);
 
                 List<PropertyInfo> primaryKeyFields = new List<PropertyInfo>();
+                List<PropertyInfo> identityFields = new List<PropertyInfo>();
 
                 // Add properties as entity fields
-                foreach (EdmProperty field in entitySet.ElementType.Properties)
+                foreach (EdmProperty field in type.Properties)
                 {
+                    TypeFacets facets = typeConverter.GetTypeFacets(field.TypeUsage);
                     Type fieldClrType = typeConverter.Convert(field.TypeUsage);
-
-                    PropertyBuilder prop = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
+                    
+                    PropertyInfo prop = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
 
                     // Register primary key field
-                    if (entitySet.ElementType.KeyMembers.Contains(field))
+                    if (type.KeyMembers.Contains(field))
                     {
                         primaryKeyFields.Add(prop);
                     }
+
+                    // Register identity field
+                    if (facets.Identity)
+                    {
+                        identityFields.Add(prop);
+                    }
+                }
+
+                if (identityFields.Count > 1)
+                {
+                    throw new InvalidOperationException("More than one identity fields are not supported");
                 }
 
                 Type entityType = entityTypeBuilder.CreateType();
 
-                schema.Register(entityType.Name, entityType, primaryKeyFields.ToArray());
+                schema.Register(
+                    entityType.Name, 
+                    entityType, 
+                    primaryKeyFields.ToArray(), 
+                    identityFields.FirstOrDefault());
             }
 
             return schema;

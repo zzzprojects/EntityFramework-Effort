@@ -15,9 +15,9 @@ namespace Effort.DatabaseManagement
             this.schemaDetails = new Dictionary<string, TableInformation>();
         }
 
-        public void Register(string tableName, Type entityType, PropertyInfo[] primaryKeys)
+        public void Register(string tableName, Type entityType, PropertyInfo[] primaryKeyFields, PropertyInfo identityField)
         {
-            this.schemaDetails.Add(tableName, new TableInformation(entityType, primaryKeys));
+            this.schemaDetails.Add(tableName, new TableInformation(entityType, primaryKeyFields, identityField));
         }
 
         public TableInformation GetInformation(string tableName)

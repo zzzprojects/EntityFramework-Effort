@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Effort.Caching
 {
-    public class ObjectContextTypeStore
+    internal class ObjectContextTypeStore
     {
         private static ConcurrentCache<ConnectionStringKey, Type> accelerators;
         private static ConcurrentCache<EmulatorTypeKey, Type> emulators;

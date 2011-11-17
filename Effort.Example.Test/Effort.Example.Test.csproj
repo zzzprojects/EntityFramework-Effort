@@ -58,7 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CategoryFixture.cs" />
-    <Compile Include="EmulatorFactory.cs" />
+    <Compile Include="TypeStore.cs" />
+    <Compile Include="ProductControllerFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProductFixture.cs" />
   </ItemGroup>

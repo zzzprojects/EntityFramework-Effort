@@ -30,6 +30,11 @@ namespace Effort.Example.Controllers
         {
             var model = this.ProductService.GetProduct(id);
 
+            if (model == null)
+            {
+                return View("NotFound");
+            }
+
             return View(model);
         }
 

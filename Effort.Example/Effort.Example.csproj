@@ -124,6 +124,7 @@
     <Content Include="Views\Category\List.aspx" />
     <Content Include="Views\Product\List.aspx" />
     <Content Include="Views\Product\Details.aspx" />
+    <Content Include="Views\Product\NotFound.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

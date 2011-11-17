@@ -195,7 +195,10 @@ namespace EFProviderWrapperToolkit
                 }
             }
 
-            foreach (Assembly asm in assembliesToConsider.Where(asm => !IsEcmaAssembly(asm) && !IsSystemAssembly(asm)))
+            foreach (Assembly asm in assembliesToConsider.Where(asm => 
+                !IsEcmaAssembly(asm) && 
+                !IsSystemAssembly(asm) &&
+                !asm.IsDynamic))
             {
                 using (Stream stream = asm.GetManifestResourceStream(resourceName))
                 {

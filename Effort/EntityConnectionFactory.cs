@@ -32,10 +32,10 @@ namespace Effort
             return Create(DatabaseEmulatorProviderConfiguration.ProviderInvariantName, ecsb.ConnectionString);
         }
 
-        public static EntityConnection CreateEmulator(string entityConnectionString)
-        {
-            return Create(DatabaseEmulatorProviderConfiguration.ProviderInvariantName, entityConnectionString);
-        }
+        ////public static EntityConnection CreateEmulator(string entityConnectionString)
+        ////{
+        ////    return Create(DatabaseEmulatorProviderConfiguration.ProviderInvariantName, entityConnectionString);
+        ////}
 
         public static EntityConnection CreateAccelerator(string entityConnectionString)
         {
@@ -59,7 +59,7 @@ namespace Effort
 
             if (!string.IsNullOrWhiteSpace(builder.Name))
             {
-                string connectionStringName = entityConnectionString.Substring(5, entityConnectionString.Length - 5);
+                string connectionStringName = builder.Name;
 
                 ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings[connectionStringName];
 

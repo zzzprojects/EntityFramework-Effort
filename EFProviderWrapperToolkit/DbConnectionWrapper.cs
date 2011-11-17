@@ -254,21 +254,21 @@ namespace EFProviderWrapperToolkit
             throw new NotSupportedException();
         }
 
-        /////// <summary>
-        /////// Finds the connection at the root.
-        /////// </summary>
-        /////// <returns>The store connection.</returns>
-        ////public DbConnection GetStoreConnection()
-        ////{
-        ////    DbConnectionWrapper con = this;
+        /// <summary>
+        /// Finds the connection at the root.
+        /// </summary>
+        /// <returns>The store connection.</returns>
+        public DbConnection GetStoreConnection()
+        {
+            DbConnectionWrapper con = this;
 
-        ////    while (con.WrappedConnection is DbConnectionWrapper)
-        ////    {
-        ////        con = con.WrappedConnection as DbConnectionWrapper;
-        ////    }
+            while (con.WrappedConnection is DbConnectionWrapper)
+            {
+                con = con.WrappedConnection as DbConnectionWrapper;
+            }
 
-        ////    return con.WrappedConnection;
-        ////}
+            return con.WrappedConnection;
+        }
 
 
         /// <summary>

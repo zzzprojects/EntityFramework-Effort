@@ -26,6 +26,9 @@ using MMDB.Table;
 
 namespace Effort.Components
 {
+    /// <summary>
+    /// Wrapper for <see cref="DbConnection"/> objects, makes possible to run data operations in a generated in-memory database instead of the physical database.
+    /// </summary>
     public class EffortWrapperConnection : DbConnectionWrapper
     {
 
@@ -37,11 +40,11 @@ namespace Effort.Components
 
         private string connectionString;
         private ProviderModes mode;
-
-        public List<string> NonCached { get; set; }
-        public List<string> Cached { get; set; }
-        public bool DefaultCacheMode { get; set; }
-
+        
+        ////private List<string> nonCached { get; set; }
+        ////private List<string> cached { get; set; }
+        ////private bool defaultCacheMode { get; set; }
+        
         #endregion
 
         #region Ctor
@@ -54,21 +57,23 @@ namespace Effort.Components
         public EffortWrapperConnection(ProviderModes mode)
         {
             this.mode = mode;
-            var config = System.Configuration.ConfigurationManager.GetSection( "MMDBCacheConfiguration" ) as MMDBCacheConfigurationSection;
-            if( config != null )
-            {
-                var tables = config.Tables.Cast<TableElement>();
-                this.DefaultCacheMode = config.DefaultCacheMode;
+
+            ////var config = System.Configuration.ConfigurationManager.GetSection( "MMDBCacheConfiguration" ) as EffortConfigurationSection;
+            ////if( config != null )
+            ////{
+            ////    var tables = config.Tables.Cast<TableElement>();
+            ////    this.defaultCacheMode = config.DefaultCacheMode;
                 
-                this.NonCached = tables.Where( t => t.Cached == false ).Select( t => t.Name ).ToList();
-                this.Cached = tables.Where( t => t.Cached ).Select( t => t.Name ).ToList();
-            }
-            else
-            {
-                this.Cached = new List<string>();
-                this.NonCached = new List<string>();
-                this.DefaultCacheMode = true;
-            }
+            ////    this.nonCached = tables.Where( t => t.Cached == false ).Select( t => t.Name ).ToList();
+            ////    this.cached = tables.Where( t => t.Cached ).Select( t => t.Name ).ToList();
+            ////}
+            ////else
+            ////{
+            ////    this.cached = new List<string>();
+            ////    this.nonCached = new List<string>();
+            ////    this.defaultCacheMode = true;
+            ////}
+            
         }
 
         #endregion

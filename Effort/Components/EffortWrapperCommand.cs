@@ -128,25 +128,30 @@ namespace Effort.Components
 
             #region Skip Cache
 
-            if( this.WrapperConnection.DefaultCacheMode == false || this.WrapperConnection.NonCached.Any() )
+            if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
             {
-                TableScanVisitor tableScanVisitor = new TableScanVisitor();
-                tableScanVisitor.Visit( commandTree.Query );
+                ////if( this.WrapperConnection.defaultCacheMode == false || this.WrapperConnection.nonCached.Any() )
+                ////{
+                ////    TableScanVisitor tableScanVisitor = new TableScanVisitor();
+                ////    tableScanVisitor.Visit( commandTree.Query );
 
-                bool skipCache = false;
-                if( this.WrapperConnection.DefaultCacheMode && tableScanVisitor.Tables.Any( t => this.WrapperConnection.NonCached.Contains( t ) ) )
-                    skipCache = true;
-                if( this.WrapperConnection.DefaultCacheMode == false && tableScanVisitor.Tables.Any( t => this.WrapperConnection.Cached.Contains( t ) ) == false )
-                    skipCache = true;
+                ////    bool skipCache = false;
+                ////    if( this.WrapperConnection.defaultCacheMode && tableScanVisitor.Tables.Any( t => this.WrapperConnection.nonCached.Contains( t ) ) )
+                ////        skipCache = true;
+                ////    if( this.WrapperConnection.defaultCacheMode == false && tableScanVisitor.Tables.Any( t => this.WrapperConnection.cached.Contains( t ) ) == false )
+                ////        skipCache = true;
 
-                if( skipCache )
-                {
-                    // Not using MMDB Cache
-                    Console.WriteLine( "Not using MMDB Cache for the current query." );
-                    this.EnsureOpenConnection();
-                    return base.WrappedCommand.ExecuteReader( behavior );
-                }
+                ////    if( skipCache )
+                ////    {
+                ////        // Not using MMDB Cache
+                ////        Console.WriteLine( "Not using MMDB Cache for the current query." );
+                ////        this.EnsureOpenConnection();
+                ////        return base.WrappedCommand.ExecuteReader( behavior );
+                ////    }
+                ////}
+
             }
+             
             #endregion
 
             // Setup expression tranformer

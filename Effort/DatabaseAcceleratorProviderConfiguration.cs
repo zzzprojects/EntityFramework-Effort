@@ -8,7 +8,7 @@ namespace Effort
 {
     public static class DatabaseAcceleratorProviderConfiguration
     {
-        public static readonly string ProviderInvariantName = "MMDBDatabaseAcceleratorProvider";
+        public static readonly string ProviderInvariantName = "EffortDatabaseAcceleratorProvider";
 
         private static volatile bool registered = false;
         private static object synch = new object();
@@ -21,7 +21,7 @@ namespace Effort
                 {
                     if (!registered)
                     {
-                        DbProviderFactoryBase.RegisterProvider("MMDB Database Accelerator Provider", ProviderInvariantName, typeof(DatabaseAcceleratorProviderFactory));
+                        DbProviderFactoryBase.RegisterProvider("Effort Database Accelerator Provider", ProviderInvariantName, typeof(DatabaseAcceleratorProviderFactory));
                         registered = true;
                     }
                 }

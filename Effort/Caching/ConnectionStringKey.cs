@@ -31,6 +31,11 @@ namespace Effort.Caching
                 return false;
             }
 
+            if (connectionString == null || other.connectionString == null)
+            {
+                return connectionString == null && other.connectionString == null; 
+            }
+
             return ConnectionStringHelper.HasIdenticalAttributes(other.connectionString, this.connectionString);
         }
     }

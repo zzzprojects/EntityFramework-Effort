@@ -39,15 +39,18 @@ namespace Effort
 
         public static Type CreateEmulator<T>(string source, bool shared) where T : ObjectContext
         {
-            string connectionString = GetDefaultConnectionString<T>();
-
-            return CreateEmulator<T>(connectionString, source, shared);
+            return CreateEmulator<T>(null, source, shared);
         }
 
         public static Type CreateEmulator<T>(string connectionString, string source, bool shared) where T : ObjectContext
         {
-            return ObjectContextTypeStore.GetEmulator(connectionString, source, shared, () =>
+            return ObjectContextTypeStore.GetEmulator(connectionString, typeof(T), source, shared, () =>
                 {
+                    if (connectionString == null)
+                    {
+                        connectionString = GetDefaultConnectionString<T>();
+                    }
+
                     // Get method info
                     MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a =>
 
@@ -67,19 +70,22 @@ namespace Effort
 
         public static Type CreateAccelerator<T>() where T : ObjectContext
         {
-            string connectionString = GetDefaultConnectionString<T>();
-
-            return CreateAccelerator<T>(connectionString);
+            return CreateAccelerator<T>(null);
         }
 
         public static Type CreateAccelerator<T>(string connectionString) where T : ObjectContext
         {
-            return ObjectContextTypeStore.GetAccelerator(connectionString, () =>
+            return ObjectContextTypeStore.GetAccelerator(connectionString, typeof(T), () =>
                 {
+                    if (connectionString == null)
+                    {
+                        connectionString = GetDefaultConnectionString<T>();
+                    }
+
                     // Get method info
                     MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a =>
 
-                        EntityConnectionFactory.CreateEmulator(string.Empty, string.Empty, false));
+                        EntityConnectionFactory.CreateAccelerator(string.Empty));
 
                     Action<ILGenerator> factoryArguments = gen =>
                     {
@@ -184,6 +190,7 @@ namespace Effort
             gen.Emit(OpCodes.Ret);
 
 
+            // protected void Dispose(bool disposing)
             MethodInfo baseDispose = typeof(T).GetMethod(
                 "Dispose",
                 BindingFlags.Instance | BindingFlags.NonPublic,
@@ -191,6 +198,7 @@ namespace Effort
                 new Type[] { typeof(bool) },
                 null);
 
+            // public void Dispose()
             MethodInfo connectionDispose = typeof(Component).GetMethod(
                 "Dispose",
                 BindingFlags.Instance | BindingFlags.Public,
@@ -202,7 +210,10 @@ namespace Effort
 
             MethodBuilder overridedDispose = builder.DefineMethod(
                 "Dispose",
-                MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot);
+                MethodAttributes.Family | 
+                MethodAttributes.Virtual | 
+                MethodAttributes.HideBySig | 
+                MethodAttributes.ReuseSlot);
 
             overridedDispose.SetReturnType(typeof(void));
             // Adding parameters

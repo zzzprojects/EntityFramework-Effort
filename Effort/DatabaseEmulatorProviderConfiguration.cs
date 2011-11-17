@@ -8,7 +8,7 @@ namespace Effort
 {
     public static class DatabaseEmulatorProviderConfiguration
     {
-        public static readonly string ProviderInvariantName = "MMDBDatabaseEmulatorProvider";
+        public static readonly string ProviderInvariantName = "EffortDatabaseEmulatorProvider";
 
         private static volatile bool registered = false;
         private static object synch = new object();
@@ -21,7 +21,7 @@ namespace Effort
                 {
                     if (!registered)
                     {
-                        DbProviderFactoryBase.RegisterProvider("MMDB Database Emulator Provider", ProviderInvariantName, typeof(DatabaseEmulatorProviderFactory));
+                        DbProviderFactoryBase.RegisterProvider("Effort Database Emulator Provider", ProviderInvariantName, typeof(DatabaseEmulatorProviderFactory));
                         registered = true;
                     }
                 }

@@ -21,7 +21,7 @@ namespace Effort.Example.Test
             UnityContainer di = new UnityContainer();
 
             // Register fake object context
-            di.RegisterType(typeof(NorthwindEntities), EmulatorFactory.Create());
+            di.RegisterType(typeof(NorthwindEntities), TypeStore.EmulatorContext);
 
             this.dependencies = di;
         }

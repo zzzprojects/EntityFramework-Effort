@@ -58,8 +58,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EffortCodeFirstProviderServices.cs" />
-    <Compile Include="EmptyDataSource.cs" />
-    <Compile Include="EmptyDataSourceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

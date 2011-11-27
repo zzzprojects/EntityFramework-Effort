@@ -13,6 +13,13 @@ namespace Effort.CodeFirst.Test
 
 			using (var db = new ProductContext())
 			{
+				Console.WriteLine("{0} categories found.", db.Categories.Count());
+
+				foreach (var cat in db.Categories)
+				{
+					Console.WriteLine(cat.Name);
+				}
+
 				// Use Find to locate the Food category 
 				var food = db.Categories.Find("FOOD");
 				if (food == null)
@@ -36,7 +43,7 @@ namespace Effort.CodeFirst.Test
 
 				// Query for all Food products using LINQ 
 				var allFoods = from p in db.Products
-							   where p.CategoryId == "FOOD"
+							   where p.Category.CategoryId == "FOOD"
 							   orderby p.Name
 							   select p;
 

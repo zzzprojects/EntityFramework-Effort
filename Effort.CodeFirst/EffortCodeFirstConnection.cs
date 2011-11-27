@@ -88,18 +88,8 @@ namespace Effort.CodeFirst
 			return context.ObjectContext.MetadataWorkspace;
 		}
 
-		internal override DataInitialization.IDataSourceFactory CreateDataSourceFactory(MetadataWorkspace workspace)
-		{
-			// TODO_ZSOLT	
-			return new EmptyDataSourceFactory(this.ConnectionString);
-
-			return base.CreateDataSourceFactory(workspace);
-		}
-
 		protected override void Dispose(bool disposing)
 		{
 		}
-
-		
 	}
 }

@@ -34,12 +34,12 @@ namespace Effort.Components
 
         #region Private members
 
-        private Database databaseCache;
+		protected Database databaseCache;
         // Virtual connection state
-        private ConnectionState connectionState;
+		protected ConnectionState connectionState;
 
-        private string connectionString;
-        private ProviderModes mode;
+		protected string connectionString;
+		protected ProviderModes mode;
         
         ////private List<string> nonCached { get; set; }
         ////private List<string> cached { get; set; }
@@ -84,7 +84,7 @@ namespace Effort.Components
         /// <summary>
         /// Gets the reference if the in-memory database that connection object is using.
         /// </summary>
-        internal Database DatabaseCache
+        internal virtual Database DatabaseCache
         {
             get
             {
@@ -95,7 +95,7 @@ namespace Effort.Components
 
                 return this.databaseCache;
             }
-            private set 
+			set 
             { 
                 this.databaseCache = value; 
             }
@@ -324,7 +324,7 @@ namespace Effort.Components
 
         #region Database creation
 
-        private Database CreateDatabaseSandboxed()
+        internal Database CreateDatabaseSandboxed()
         {
             Database database = null;
             Exception exception = null;
@@ -355,28 +355,18 @@ namespace Effort.Components
         }
 
 
-        private Database CreateDatabase()
+		internal Database CreateDatabase()
         {
             Stopwatch swDatabase = Stopwatch.StartNew();
 
             Database database = new Database(new ReaderWriterLockSlimFactory(), EnumDeadlockManagement.DeadlockDetection);
             database.LoggingPort = new Logger();
 
-            var entityConnectionString = this.FindEntityConnectionString();
+			string[] metadataFiles;
+			MetadataWorkspace workspace = this.getWorkspace(out metadataFiles);
 
-            // Get metadata paths
-            string[] metadataFiles = entityConnectionString
-                .Metadata
-                .Split('|')
-                .Select(p => p.Trim())
-                .ToArray();
-
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            // Parse metadata
-            MetadataWorkspace workspace = new MetadataWorkspace(metadataFiles, assemblies);
-            // Get entity container
-            EntityContainer entityContainer = MetadataWorkspaceHelper.GetEntityContainer(workspace);
+			// Get entity container
+			EntityContainer entityContainer = MetadataWorkspaceHelper.GetEntityContainer(workspace);
 
             // Get or create the schema
             DatabaseSchema schema = DbSchemaStore.GetDbSchema(metadataFiles, () => GenerateSchema(entityContainer));
@@ -429,7 +419,7 @@ namespace Effort.Components
             return database;
         }
 
-        private IDataSourceFactory CreateDataSourceFactory(MetadataWorkspace workspace)
+		internal virtual IDataSourceFactory CreateDataSourceFactory(MetadataWorkspace workspace)
         {
             if (this.ProviderMode == ProviderModes.DatabaseEmulator)
             {
@@ -455,7 +445,7 @@ namespace Effort.Components
             throw new NotSupportedException("Current mode is not supported");
         }
 
-        private DbConnection CreateNewWrappedConnection()
+		internal DbConnection CreateNewWrappedConnection()
         {
             DbConnection con = DbProviderServices.GetProviderFactory(this.WrappedConnection).CreateConnection();
             con.ConnectionString = this.WrappedConnection.ConnectionString;
@@ -463,7 +453,7 @@ namespace Effort.Components
             return con;
         }
 
-        private DatabaseSchema GenerateSchema(EntityContainer entityContainer)
+		internal DatabaseSchema GenerateSchema(EntityContainer entityContainer)
         {
             DatabaseSchema schema = new DatabaseSchema();
 
@@ -524,7 +514,7 @@ namespace Effort.Components
             return schema;
         }
 
-        private EntityConnectionStringBuilder FindEntityConnectionString()
+		internal EntityConnectionStringBuilder FindEntityConnectionString()
         {
             // First try to get the entity connectionstring from OUR storage
             {
@@ -575,6 +565,23 @@ namespace Effort.Components
 
             return result;
         }
+
+		internal virtual MetadataWorkspace getWorkspace( out string[] metadataFiles)
+		{
+			var entityConnectionString = this.FindEntityConnectionString();
+
+			// Get metadata paths
+			metadataFiles = entityConnectionString
+				.Metadata
+				.Split('|')
+				.Select(p => p.Trim())
+				.ToArray();
+
+			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+			// Parse metadata
+			return new MetadataWorkspace(metadataFiles, assemblies);
+		}
 
         #endregion
 

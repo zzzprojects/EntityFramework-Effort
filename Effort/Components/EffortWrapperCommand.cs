@@ -128,29 +128,36 @@ namespace Effort.Components
 
             #region Skip Cache
 
-            if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
-            {
-                ////if( this.WrapperConnection.defaultCacheMode == false || this.WrapperConnection.nonCached.Any() )
-                ////{
-                ////    TableScanVisitor tableScanVisitor = new TableScanVisitor();
-                ////    tableScanVisitor.Visit( commandTree.Query );
+			TableScanVisitor tableScanVisitor = new TableScanVisitor();
+			tableScanVisitor.Visit(commandTree.Query);
 
-                ////    bool skipCache = false;
-                ////    if( this.WrapperConnection.defaultCacheMode && tableScanVisitor.Tables.Any( t => this.WrapperConnection.nonCached.Contains( t ) ) )
-                ////        skipCache = true;
-                ////    if( this.WrapperConnection.defaultCacheMode == false && tableScanVisitor.Tables.Any( t => this.WrapperConnection.cached.Contains( t ) ) == false )
-                ////        skipCache = true;
+			// CodeFirst-hoz kell
+			if (tableScanVisitor.Tables.Contains("EdmMetadata"))
+				return new EffortDataReader(new List<object>());
 
-                ////    if( skipCache )
-                ////    {
-                ////        // Not using MMDB Cache
-                ////        Console.WriteLine( "Not using MMDB Cache for the current query." );
-                ////        this.EnsureOpenConnection();
-                ////        return base.WrappedCommand.ExecuteReader( behavior );
-                ////    }
-                ////}
+			// TODO_ZSOLT: why is this uncommented?
+			//if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
+			//{
+			//    if (this.WrapperConnection.defaultCacheMode == false || this.WrapperConnection.nonCached.Any())
+			//    {
+			////        TableScanVisitor tableScanVisitor = new TableScanVisitor();
+			////        tableScanVisitor.Visit(commandTree.Query);
 
-            }
+			//        bool skipCache = false;
+			//        if (this.WrapperConnection.defaultCacheMode && tableScanVisitor.Tables.Any(t => this.WrapperConnection.nonCached.Contains(t)))
+			//            skipCache = true;
+			//        if (this.WrapperConnection.defaultCacheMode == false && tableScanVisitor.Tables.Any(t => this.WrapperConnection.cached.Contains(t)) == false)
+			//            skipCache = true;
+
+			//        if (skipCache)
+			//        {
+			//            // Not using MMDB Cache
+			//            Console.WriteLine("Not using MMDB Cache for the current query.");
+			//            this.EnsureOpenConnection();
+			//            return base.WrappedCommand.ExecuteReader(behavior);
+			//        }
+			//    }
+			//}
              
             #endregion
 
@@ -404,11 +411,19 @@ namespace Effort.Components
                 //Check if member has set clause
                 if( setClauses.ContainsKey( property.Name ) )
                 {
+					var value = transform.Visit(setClauses[property.Name]);
+
+					if (property.PropertyType.IsGenericType == false ||
+					   property.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>))
+					{
+						value = Expression.Convert(value, property.PropertyType);
+					}
+
                     //Set the clause
                     memberBindings.Add(
                         Expression.Bind(
                             property,
-                            transform.Visit( setClauses[property.Name] ) ) );
+                            value ) );
                 }
             }
 

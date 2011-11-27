@@ -32,7 +32,7 @@ namespace Effort.Components
         /// <summary>
         /// Prevents a default instance of the EFSampleProviderServices class from being created.
         /// </summary>
-        private EffortWrapperProviderServices(string invariantName)
+        protected EffortWrapperProviderServices(string invariantName)
         {
             this.invariantName = invariantName;
         }

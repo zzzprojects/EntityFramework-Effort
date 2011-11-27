@@ -70,7 +70,7 @@ namespace EFProviderWrapperToolkit
         {
             DbConnectionWrapper wrapper = (DbConnectionWrapper)connection;
             DbConnection wrappedConnection = wrapper.WrappedConnection;
-            DbProviderServices services = DbProviderServices.GetProviderServices(wrappedConnection);
+			DbProviderServices services = DbProviderServices.GetProviderServices(wrappedConnection);
 
             string token = wrapper.WrappedProviderInvariantName + ";" + services.GetProviderManifestToken(wrappedConnection);
             return token;
@@ -218,7 +218,7 @@ namespace EFProviderWrapperToolkit
         /// </summary>
         /// <param name="providerInvariantName">Provider invariant name.</param>
         /// <returns><see cref="DbProviderServices"/> object for a given invariant name.</returns>
-        private static DbProviderServices GetProviderServicesByName(string providerInvariantName)
+        protected static DbProviderServices GetProviderServicesByName(string providerInvariantName)
         {
             DbProviderFactory factory = DbProviderFactories.GetFactory(providerInvariantName);
             if (factory == null)

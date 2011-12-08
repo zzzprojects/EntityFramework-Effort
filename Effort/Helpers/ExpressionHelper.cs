@@ -54,10 +54,36 @@ namespace Effort.Helpers
 
         public static Expression ConvertToNotNull( Expression exp )
         {
-            if(TypeHelper.IsNullable( exp.Type ) )
-                return Expression.Convert(exp, TypeHelper.MakeNotNullable( exp.Type ));
+            if (TypeHelper.IsNullable(exp.Type))
+            {
+                return Expression.Convert(exp, TypeHelper.MakeNotNullable(exp.Type));
+            }
             else
+            {
                 return exp;
+            }
+        }
+
+        public static Expression CorrectType(Expression exp, Type desiredType)
+        {
+            Type type = exp.Type;
+
+            if (type.Equals(desiredType))
+            {
+                return exp;
+            }
+
+            if (TypeHelper.IsNullable(type) && TypeHelper.MakeNotNullable(type) == desiredType)
+            {
+                return Expression.Convert(exp, desiredType);
+            }
+
+            if (TypeHelper.IsNullable(desiredType) && TypeHelper.MakeNotNullable(desiredType) == type)
+            {
+                return Expression.Convert(exp, desiredType);
+            }
+
+            throw new NotSupportedException();
         }
 
     }

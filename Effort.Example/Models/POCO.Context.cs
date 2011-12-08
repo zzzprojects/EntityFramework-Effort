@@ -13,7 +13,7 @@ using System.Data.EntityClient;
 
 namespace Effort.Example.Models
 {
-    public partial class NorthwindEntities : ObjectContext
+    public class NorthwindEntities : ObjectContext, INorthwindEntities
     {
         public const string ConnectionString = "name=NorthwindEntities";
         public const string ContainerName = "NorthwindEntities";
@@ -42,13 +42,13 @@ namespace Effort.Example.Models
     
         #region ObjectSet Properties
     
-        public ObjectSet<Product> Products
+        public IObjectSet<Product> Products
         {
             get { return _products  ?? (_products = CreateObjectSet<Product>("Products")); }
         }
         private ObjectSet<Product> _products;
     
-        public ObjectSet<Category> Categories
+        public IObjectSet<Category> Categories
         {
             get { return _categories  ?? (_categories = CreateObjectSet<Category>("Categories")); }
         }
@@ -56,4 +56,20 @@ namespace Effort.Example.Models
 
         #endregion
     }
+    
+    public partial interface INorthwindEntities
+    {
+        IObjectSet<Product> Products
+        {
+            get;
+        }
+        IObjectSet<Category> Categories
+        {
+            get;
+        }
+    
+    	int SaveChanges();
+    }
+    
+    
 }

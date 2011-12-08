@@ -145,11 +145,12 @@
     <Compile Include="DataInitialization\IDataSource.cs" />
     <Compile Include="DataInitialization\IDataSourceFactory.cs" />
     <Compile Include="DbCommandTreeTransform\CanonicalFunctions.cs" />
-    <Compile Include="DbCommandTreeTransform\ContextHandler.cs" />
+    <Compile Include="DbCommandTreeTransform\Variables\VariableCollection.cs" />
+    <Compile Include="DbCommandTreeTransform\Variables\VariableHandler.cs" />
     <Compile Include="DbCommandTreeTransform\DbExpressionTransformVisitor.cs" />
     <Compile Include="DbCommandTreeTransform\Join\DbJoinConditionVisitor.cs" />
     <Compile Include="DbCommandTreeTransform\EdmTypeConverter.cs" />
-    <Compile Include="DbCommandTreeTransform\Context.cs" />
+    <Compile Include="DbCommandTreeTransform\Variables\Variable.cs" />
     <Compile Include="DbCommandTreeTransform\IDbMethodProvider.cs" />
     <Compile Include="DbCommandTreeTransform\Join\PropertyList.cs" />
     <Compile Include="DbCommandTreeTransform\PostProcessing\DummyVisitor.cs" />

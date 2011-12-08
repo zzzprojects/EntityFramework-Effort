@@ -24,7 +24,7 @@ namespace Effort.DbCommandTreeTransform
             return ConvertWithFacets(type, facets);
 
         }
-        public Type GetEncapsulatedType(TypeUsage type)
+        public Type GetElementType(TypeUsage type)
         {
             CollectionType collectionType = type.EdmType as CollectionType;
 

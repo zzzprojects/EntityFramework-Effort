@@ -20,7 +20,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Select(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Select;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -30,7 +30,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression SelectMany(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.SelectMany;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -40,7 +40,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Where(Expression source, LambdaExpression predicate)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Where;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -50,7 +50,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Take(Expression source, Expression count)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Take;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -60,7 +60,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Skip(Expression source, Expression count)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Skip;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -70,7 +70,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression OrderBy(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.OrderBy;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -80,7 +80,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression OrderByDescending( Expression source, LambdaExpression selector )
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType( source.Type );
+            Type sourceType = TypeHelper.GetElementType( source.Type );
 
             MethodInfo genericMethod = this.queryMethods.OrderByDescending;
             MethodInfo method = genericMethod.MakeGenericMethod( sourceType, selector.Body.Type );
@@ -90,7 +90,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression ThenBy(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.ThenBy;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -100,7 +100,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression ThenByDescending(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.ThenByDescending;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -110,7 +110,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression GroupBy(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.GroupBy;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -120,7 +120,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Distinct(Expression source)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Distinct;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -130,7 +130,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression FirstOrDefault(Expression source)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.FirstOrDefault;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -140,7 +140,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression First(Expression source)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.First;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -150,7 +150,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Any(Expression source)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Any;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -160,7 +160,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Except(Expression first, Expression second)
         {
-            Type firstType = TypeHelper.GetEncapsulatedType(first.Type);
+            Type firstType = TypeHelper.GetElementType(first.Type);
 
             MethodInfo genericMethod = this.queryMethods.Except;
             MethodInfo method = genericMethod.MakeGenericMethod(firstType);
@@ -170,7 +170,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Intersect(Expression first, Expression second)
         {
-            Type firstType = TypeHelper.GetEncapsulatedType(first.Type);
+            Type firstType = TypeHelper.GetElementType(first.Type);
 
             MethodInfo genericMethod = this.queryMethods.Intersect;
             MethodInfo method = genericMethod.MakeGenericMethod(firstType);
@@ -180,7 +180,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Union(Expression first, Expression second)
         {
-            Type firstType = TypeHelper.GetEncapsulatedType(first.Type);
+            Type firstType = TypeHelper.GetElementType(first.Type);
 
             MethodInfo genericMethod = this.queryMethods.Union;
             MethodInfo method = genericMethod.MakeGenericMethod(firstType);
@@ -190,7 +190,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Concat(Expression first, Expression second)
         {
-            Type firstType = TypeHelper.GetEncapsulatedType(first.Type);
+            Type firstType = TypeHelper.GetElementType(first.Type);
 
             MethodInfo genericMethod = this.queryMethods.Concat;
             MethodInfo method = genericMethod.MakeGenericMethod(firstType);
@@ -205,7 +205,7 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression Count(Expression source)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Count;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
@@ -237,7 +237,7 @@ namespace Effort.DbCommandTreeTransform
 
         private Expression Aggregate(Expression source, LambdaExpression selector, string name)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
             Type selectorType = selector.Body.Type;
 
             //Check if the type is "native"
@@ -302,8 +302,8 @@ namespace Effort.DbCommandTreeTransform
 
         public Expression SelectMany(Expression first, Expression second, string name1, string name2)
         {
-            Type firstType = TypeHelper.GetEncapsulatedType(first.Type);
-            Type secondType = TypeHelper.GetEncapsulatedType(second.Type);
+            Type firstType = TypeHelper.GetElementType(first.Type);
+            Type secondType = TypeHelper.GetElementType(second.Type);
 
             Dictionary<string, Type> resultTypeProps = 
                 new Dictionary<string, Type>
@@ -341,8 +341,8 @@ namespace Effort.DbCommandTreeTransform
         }
         public Expression Join(Expression left, Expression right, string name1, string name2, LambdaExpression leftKeySelector, LambdaExpression rightKeySelector, DbExpressionKind joinType)
         {
-            Type rightType = TypeHelper.GetEncapsulatedType(right.Type);
-            Type leftType = TypeHelper.GetEncapsulatedType(left.Type);
+            Type rightType = TypeHelper.GetElementType(right.Type);
+            Type leftType = TypeHelper.GetElementType(left.Type);
 
             Dictionary<string, Type> resultTypeProps =
                 new Dictionary<string, Type>() 

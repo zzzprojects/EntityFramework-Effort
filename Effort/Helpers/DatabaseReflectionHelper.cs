@@ -52,6 +52,48 @@ namespace Effort.Helpers
             return table as IReflectionTable;
         }
 
+        public static int UpdateEntities(IQueryable source, Expression updater)
+        {
+            int count = (int)
+                typeof(DatabaseReflectionHelper.WrapperMethods)
+                .GetMethod("UpdateEntities")
+                .MakeGenericMethod(source.ElementType)
+                .Invoke(null, new object[] { source, updater });
+
+            return count;
+        }
+
+        public static int DeleteEntities(IQueryable source)
+        {
+            int count = (int)
+                typeof(DatabaseReflectionHelper.WrapperMethods)
+                .GetMethod("DeleteEntities")
+                .MakeGenericMethod(source.ElementType)
+                .Invoke(null, new object[] { source });
+
+            return count;
+        }
+
+        public static IQueryable CreateTableQuery(Expression query, Database database)
+        {
+
+            if (query.Type.GetGenericTypeDefinition() != typeof(IQueryable<>))
+            {
+                throw new ArgumentException("query is not IQueryable<>");
+            }
+
+            Type entityType = TypeHelper.GetElementType(query.Type);
+
+            IQueryable tableQuery =
+                typeof(DatabaseReflectionHelper.WrapperMethods)
+                    .GetMethod("CreateTableQuery")
+                    .MakeGenericMethod(entityType)
+                    .Invoke(null, new object[] { query, database }) as IQueryable;
+
+            return tableQuery;
+        }
+
+
         private static IReflectionTable GetTable(Database database, RelationshipEndMember rel)
         {
             if (rel.TypeUsage.EdmType.BuiltInTypeKind != BuiltInTypeKind.RefType)
@@ -188,6 +230,25 @@ namespace Effort.Helpers
                 return table.CreateIndex<TForeignKey>(indexFactory, foreignKey);
             }
 
+            public static TableQuery<T> CreateTableQuery<T>(Expression expression, Database database)
+            {
+                TableQueryProvider<T> provider = new TableQueryProvider<T>(database);
+                TableQuery<T> query = new TableQuery<T>(provider, expression);
+
+                return query;
+            }
+
+            public static int UpdateEntities<TEntity>(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updater)
+                where TEntity : class
+            {
+                return MMDB.Linq.QueryableEx.Update(query, updater);
+            }
+
+            public static int DeleteEntities<TEntity>(IQueryable<TEntity> query)
+                where TEntity : class
+            {
+                return MMDB.Linq.QueryableEx.Delete(query);
+            }
 
 
             public static void CreateRelation<TPrimary, TPrimaryKey, TForeign, TForeignKey>(Database database, UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, IIndex<TForeign, TForeignKey> foreignIndex)

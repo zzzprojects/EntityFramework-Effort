@@ -28,6 +28,9 @@ namespace Effort.Example
 
         protected void Application_Start()
         {
+            bool production = false;
+            bool useDb = false;
+
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
@@ -38,15 +41,23 @@ namespace Effort.Example
             di.RegisterType<IProductService, ProductService>();
             di.RegisterType<ICategoryService, CategoryService>();
 
-            // Path of the CSV files
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\Effort.Example.Test\\Data");
-            // Define emulator object context type
-            Type emulator = ObjectContextFactory.CreateEmulator<NorthwindEntities>(path, true);
+            
 
-            // Register emulator object context type
-            di.RegisterType(typeof(NorthwindEntities), emulator);
-            // Register normal object context type
-            ////di.RegisterType<NorthwindEntities, NorthwindEntities>(new InjectionConstructor());
+            if (production || useDb)
+            {
+                // Register normal object context type
+                di.RegisterType<INorthwindEntities, NorthwindEntities>(new InjectionConstructor());
+            }
+            else
+            {
+                // Path of the CSV files
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\Effort.Example.Test\\Data");
+                // Define emulator object context type
+                Type emulator = ObjectContextFactory.CreateEmulator<NorthwindEntities>(path, true);
+
+                // Register emulator object context type
+                di.RegisterType(typeof(INorthwindEntities), emulator);
+            }
 
             // Initialize Mvc application bootstrapper
             UnityMvcBootstrapper bootstrapper = new UnityMvcBootstrapper(di);

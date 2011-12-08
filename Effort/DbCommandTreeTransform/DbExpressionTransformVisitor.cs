@@ -10,6 +10,7 @@ using Effort.Helpers;
 using Effort.TypeGeneration;
 using MMDB.Linq.StoredProcedures;
 using MMDB.Linq.Visitors;
+using Effort.DbCommandTreeTransform.Variables;
 
 namespace Effort.DbCommandTreeTransform
 {
@@ -26,17 +27,18 @@ namespace Effort.DbCommandTreeTransform
         private EdmTypeConverter typeConverter;
         private CanonicalFunctionMapper functionMapper;
 
-        private Stack<ContextHandler> contextStack;
+        private VariableCollection currentVariables;
 
         public DbExpressionTransformVisitor()
         {
             this.queryMethodExpressionBuilder = new LinqMethodExpressionBuilder();
             this.typeConverter = new EdmTypeConverter();
-            this.contextStack = new Stack<ContextHandler>();
+            this.currentVariables = new VariableCollection();
             this.parameters = new Dictionary<string, Tuple<TypeUsage, int>>();
-            this.functionMapper = new CanonicalFunctionMapper();
+            
 
             // TODO: Should set this from outside
+            this.functionMapper = new CanonicalFunctionMapper();
             this.methodProvider = new Effort.DatabaseManagement.MethodProvider();
         }
 
@@ -57,9 +59,9 @@ namespace Effort.DbCommandTreeTransform
             this.parameters.Clear();
 
             for (int i = 0; i < parameters.Length; i++)
-			{
-			    this.parameters.Add(parameters[i].Key, new Tuple<TypeUsage, int>(parameters[i].Value, i));
-			}
+            {
+                this.parameters.Add(parameters[i].Key, new Tuple<TypeUsage, int>(parameters[i].Value, i));
+            }
 
             this.parameterExpressions = new ParameterExpression[parameters.Length];
         }
@@ -76,43 +78,15 @@ namespace Effort.DbCommandTreeTransform
 
         #region Context management
 
-        public ContextHandler CreateContext(Expression contextParam, string name)
+        public VariableHandler CreateVariable(Expression contextParam, string name)
         {
-            Context context = new Context();
-            context.SourceExpression = contextParam;
+            Variable context = new Variable();
+            context.Expression = contextParam;
             context.Name = name;
 
-            ContextHandler handler = new ContextHandler(context, this.contextStack);
-            this.contextStack.Push(handler);
+            VariableHandler handler = new VariableHandler(context, this.currentVariables);
+
             return handler;
-        }
-
-        private Context GetContext(string name)
-        {
-            if (contextStack.Count == 0)
-            {
-                throw new InvalidOperationException("No context has been created");
-            }
-
-            if (name == null)
-            {
-                return contextStack.Peek().Context;
-            }
-
-            foreach (var item in contextStack)
-            {
-                if (item.Context.Name == name)
-                {
-                    return item.Context;
-                }
-            }
-
-            throw new InvalidOperationException(name + " context was not found");
-        }
-
-        private Context GetContext()
-        {
-            return this.GetContext(null);
         }
 
         #endregion
@@ -143,7 +117,7 @@ namespace Effort.DbCommandTreeTransform
             Expression right = this.Visit(expression.Right);
 
             Type resultType = typeConverter.Convert(expression.ResultType).GetElementType();
-            Type rightType = TypeHelper.GetEncapsulatedType(right.Type);
+            Type rightType = TypeHelper.GetElementType(right.Type);
 
 
             ParameterExpression param = Expression.Parameter(rightType);
@@ -177,7 +151,7 @@ namespace Effort.DbCommandTreeTransform
         public override Expression Visit(DbLimitExpression expression)
         {
             Expression source = this.Visit(expression.Argument);
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             return queryMethodExpressionBuilder.Take(source, this.Visit(expression.Limit, typeof(int)));
         }
@@ -186,7 +160,7 @@ namespace Effort.DbCommandTreeTransform
         public override Expression Visit(DbSkipExpression expression)
         {
             Expression source = this.Visit(expression.Input.Expression);
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             //Skip cannot be used without sorting
             Expression result = this.CreateOrder(expression.SortOrder, expression.Input.VariableName, source);
@@ -204,40 +178,41 @@ namespace Effort.DbCommandTreeTransform
 
         private Expression CreateOrder(IList<DbSortClause> sortorder, string sourceVariableName, Expression source)
         {
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             Expression result = source;
-            bool first = true;
-            foreach (DbSortClause sort in sortorder)
+            LambdaExpression selector = null;
+
+            for (int i = 0; i < sortorder.Count; i++)
             {
+                DbSortClause sort = sortorder[i];
+
                 ParameterExpression param = Expression.Parameter(sourceType, sourceVariableName);
-                using (this.CreateContext(param, sourceVariableName))
+                using (this.CreateVariable(param, sourceVariableName))
                 {
-                    LambdaExpression selector = Expression.Lambda(this.Visit(sort.Expression), param);
-                 
-                    if (sort.Ascending)
+                    selector = Expression.Lambda(this.Visit(sort.Expression), param);
+                }
+
+                if (sort.Ascending)
+                {
+                    if (i == 0)
                     {
-                        if( first )
-                        {
-                            result = queryMethodExpressionBuilder.OrderBy( result, selector );
-                            first = false;
-                        }
-                        else
-                        {
-                            result = queryMethodExpressionBuilder.ThenBy( result, selector );
-                        }
+                        result = queryMethodExpressionBuilder.OrderBy(result, selector);
                     }
                     else
                     {
-                        if( first )
-                        {
-                            result = queryMethodExpressionBuilder.OrderByDescending( result, selector );
-                            first = false;
-                        }
-                        else
-                        {
-                            result = queryMethodExpressionBuilder.ThenByDescending( result, selector );
-                        }
+                        result = queryMethodExpressionBuilder.ThenBy(result, selector);
+                    }
+                }
+                else
+                {
+                    if (i == 0)
+                    {
+                        result = queryMethodExpressionBuilder.OrderByDescending(result, selector);
+                    }
+                    else
+                    {
+                        result = queryMethodExpressionBuilder.ThenByDescending(result, selector);
                     }
                 }
             }
@@ -306,28 +281,31 @@ namespace Effort.DbCommandTreeTransform
         {
             Expression source = this.Visit(expression.Input.Expression);
 
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type elementType = TypeHelper.GetElementType(source.Type);
 
-            ParameterExpression param = Expression.Parameter(sourceType, expression.Input.VariableName);
-            using (this.CreateContext(param, expression.Input.VariableName))
+            ParameterExpression param = Expression.Parameter(elementType, expression.Input.VariableName);
+            using (this.CreateVariable(param, expression.Input.VariableName))
             {
-                LambdaExpression projectionExpression = Expression.Lambda(this.Visit(expression.Projection), param);
+                Expression projection = this.Visit(expression.Projection);
+                LambdaExpression projectionLambda = Expression.Lambda(projection, param);
 
-                return queryMethodExpressionBuilder.Select(source, projectionExpression);
+                return queryMethodExpressionBuilder.Select(source, projectionLambda);
             }
         }
 
         public override Expression Visit(DbFilterExpression expression)
         {
             Expression source = this.Visit(expression.Input.Expression);
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type elementType = TypeHelper.GetElementType(source.Type);
 
-            ParameterExpression param = Expression.Parameter(sourceType, expression.Input.VariableName);
-            using (this.CreateContext(param, expression.Input.VariableName))
+            ParameterExpression param = Expression.Parameter(elementType, expression.Input.VariableName);
+
+            using (this.CreateVariable(param, expression.Input.VariableName))
             {
-                LambdaExpression predicate = Expression.Lambda(this.Visit(expression.Predicate), param);
+                Expression predicate = this.Visit(expression.Predicate);
+                LambdaExpression predicateLambda = Expression.Lambda(predicate, param);
 
-                return queryMethodExpressionBuilder.Where(source, predicate);
+                return queryMethodExpressionBuilder.Where(source, predicateLambda);
             }
         }
 
@@ -335,39 +313,43 @@ namespace Effort.DbCommandTreeTransform
         public override Expression Visit(DbGroupByExpression expression)
         {
             Expression source = this.Visit(expression.Input.Expression);
-            Type sourceType = TypeHelper.GetEncapsulatedType(source.Type);
+            Type elementType = TypeHelper.GetElementType(source.Type);
 
-            Type resultType = typeConverter.GetEncapsulatedType(expression.ResultType);
+            Type resultType = typeConverter.GetElementType(expression.ResultType);
             Expression result = source;
 
             if (expression.Keys.Count == 0)
             {
-                //This is a special case
-                //The DbGroupByExpression does not contain any Key element
-                //Its a simple aggregate function
+                // This is a special case
+                // The DbGroupByExpression does not contain any Key element
+                // There is no GroupByClause
 
-                if (expression.Aggregates.Count != 1)
+                List<Expression> constructorArguments = new List<Expression>();
+
+                for (int i = 0; i < expression.Aggregates.Count; i++)
                 {
-                    throw new InvalidOperationException("The DbGroupByExpression does not contain any Key element, but has more than one Aggregate element");
-                }
+                    DbFunctionAggregate aggregation = expression.Aggregates[i] as DbFunctionAggregate;
 
-                if (!(expression.Aggregates[0] is DbFunctionAggregate))
-                {
-                    throw new InvalidOperationException("The DbGroupByExpression does not contain any Key element, but the only Aggregate element is not DbFunctionAggregate");
-                }
+                    if (aggregation == null)
+	                {
+		                throw new InvalidOperationException(expression.Aggregates[i].GetType().ToString() +  "is not supported");
+	                }
 
-                Expression aggregation = this.CreateAggregateFunction(
-                    expression.Aggregates[0] as DbFunctionAggregate,
-                    //Aggregation is executed on the source
-                    expression.Input.GroupVariableName,
-                    sourceType,
-                    source,
-                    resultType.GetProperties()[0].PropertyType);
+                    Expression arg = this.CreateAggregateFunction(
+                        aggregation,
+                        //Aggregation is executed on the source
+                        expression.Input.GroupVariableName,
+                        elementType,
+                        source,
+                        resultType.GetProperties()[0].PropertyType);
+
+                    constructorArguments.Add(arg);
+                }
 
                 Expression singleResult =
                     Expression.New(
                         resultType.GetConstructors().Single(),
-                        new Expression[] { aggregation },
+                        constructorArguments.ToArray(),
                         resultType.GetProperties());
 
                 result =
@@ -378,13 +360,13 @@ namespace Effort.DbCommandTreeTransform
             else
             {
 
-                //The properties of the selector form a subset of the properties of the result type
-                //These properties defined first in the edm type
+                // The properties of the selector form a subset of the properties of the result type
+                // These properties defined first in the edm type
                 PropertyInfo[] props = resultType.GetProperties();
                 Dictionary<string, Type> selectorProperties = new Dictionary<string, Type>();
 
-                //Collect the properties
-                for (int i = 0;i < expression.Keys.Count;i++)
+                // Collect the properties
+                for (int i = 0; i < expression.Keys.Count; i++)
                 {
                     selectorProperties.Add(props[i].Name, props[i].PropertyType);
                 }
@@ -392,8 +374,8 @@ namespace Effort.DbCommandTreeTransform
                 Type selectorType = AnonymousTypeFactory.Create(selectorProperties);
                 LambdaExpression selector = null;
 
-                ParameterExpression groupParam = Expression.Parameter(sourceType, expression.Input.VariableName);
-                using (this.CreateContext(groupParam, expression.Input.VariableName))
+                ParameterExpression groupParam = Expression.Parameter(elementType, expression.Input.VariableName);
+                using (this.CreateVariable(groupParam, expression.Input.VariableName))
                 {
                     selector =
                         Expression.Lambda(
@@ -401,44 +383,42 @@ namespace Effort.DbCommandTreeTransform
                             groupParam);
                 }
 
-                //Build the GroupBy call expression
+                // Build the GroupBy call expression
                 result = queryMethodExpressionBuilder.GroupBy(result, selector);
 
-                //Get IGrouping<> type
-                Type groupingType = TypeHelper.GetEncapsulatedType(result.Type);
-                //Collect argument initiators in an array
+                // Get IGrouping<> type
+                Type groupingType = TypeHelper.GetElementType(result.Type);
+                // Collect argument initiators in an array
                 Expression[] groupInit = new Expression[expression.Keys.Count + expression.Aggregates.Count];
 
                 ParameterExpression selectParam = Expression.Parameter(groupingType, "group");
                 Expression keyParam = Expression.Property(selectParam, "Key");
-                //Collect the Key arguments
+                // Collect the Key arguments
 
-                for (int i = 0;i < expression.Keys.Count;i++)
+                for (int i = 0; i < expression.Keys.Count; i++)
                 {
                     groupInit[i] = Expression.Property(keyParam, props[i].Name);
                 }
 
-
-                //Collect the aggregate arguments
-                for (int i = 0;i < expression.Aggregates.Count;i++)
+                
+                // Collect the aggregate arguments
+                for (int i = 0; i < expression.Aggregates.Count; i++)
                 {
-                    DbAggregate aggregate = expression.Aggregates[i];
+                    DbFunctionAggregate aggregate = expression.Aggregates[i] as DbFunctionAggregate;
 
-                    if (aggregate is DbFunctionAggregate)
+                    if (aggregate == null)
                     {
-                        groupInit[expression.Keys.Count + i] =
-                            this.CreateAggregateFunction(
-                                aggregate as DbFunctionAggregate,
-                            //Aggregation is executed on the group
-                                expression.Input.GroupVariableName,
-                                sourceType,
-                                selectParam,
-                                props[expression.Keys.Count + i].PropertyType);
+                        throw new InvalidOperationException(expression.Aggregates[i].GetType().ToString() + "is not supported");
                     }
-                    else
-                    {
-                        throw new NotSupportedException("Only DbFunctionAggregate is supported");
-                    }
+
+                    groupInit[expression.Keys.Count + i] =
+                        this.CreateAggregateFunction(
+                            aggregate,
+                            // Aggregation is executed on the group
+                            expression.Input.GroupVariableName,
+                            elementType,
+                            selectParam,
+                            props[expression.Keys.Count + i].PropertyType);
                 }
 
                 selector =
@@ -466,12 +446,15 @@ namespace Effort.DbCommandTreeTransform
                 throw new InvalidOperationException("DbFunctionAggreate contains more than one argument");
             }
 
-            //Build the selector of the current aggregate
+            
             LambdaExpression aggregateSelector = null;
+            // Count does not have selector
             if (functionAggregate.Arguments.Count == 1)
             {
+                //Build the selector of the current aggregate
+
                 ParameterExpression aggregateContext = Expression.Parameter(sourceType, sourceVariableName);
-                using (this.CreateContext(aggregateContext, sourceVariableName))
+                using (this.CreateVariable(aggregateContext, sourceVariableName))
                 {
                     aggregateSelector =
                         Expression.Lambda(
@@ -526,7 +509,7 @@ namespace Effort.DbCommandTreeTransform
 
         private Expression CreateSelector(IList<DbExpression> arguments, Type resultType)
         {
-            List<Expression> resultTypeArgumentInitializerExpressions = new List<Expression>();
+            List<Expression> constructorExpressions = new List<Expression>();
             PropertyInfo[] props = resultType.GetProperties();
 
 
@@ -536,13 +519,13 @@ namespace Effort.DbCommandTreeTransform
                 {
                     Expression argumentExpression = this.Visit( arguments[i] );
 
-                    resultTypeArgumentInitializerExpressions.Add( argumentExpression );
+                    constructorExpressions.Add( argumentExpression );
                 }
 
                 Expression array = 
                     Expression.NewArrayInit( 
                         resultType.GetElementType(), 
-                        resultTypeArgumentInitializerExpressions.ToArray() );
+                        constructorExpressions.ToArray() );
 
                 Type listType = typeof(List<>).MakeGenericType( resultType.GetElementType() );
 
@@ -571,12 +554,12 @@ namespace Effort.DbCommandTreeTransform
                 {
                     Expression argumentExpression = this.Visit(arguments[i], props[i].PropertyType);
 
-                    resultTypeArgumentInitializerExpressions.Add(argumentExpression);
+                    constructorExpressions.Add(argumentExpression);
                 }
 
                 return Expression.New(
                     resultType.GetConstructors().Single(),
-                    resultTypeArgumentInitializerExpressions,
+                    constructorExpressions,
                     resultType.GetProperties());
             }
         }
@@ -612,7 +595,10 @@ namespace Effort.DbCommandTreeTransform
 
         public override Expression Visit(DbVariableReferenceExpression expression)
         {
-            return this.GetContext(expression.VariableName).SourceExpression;
+            string name = expression.VariableName;
+            Variable context = this.currentVariables.GetVariable(name);
+
+            return context.Expression;
         }
 
         public override Expression Visit(DbRefExpression expression)
@@ -679,8 +665,8 @@ namespace Effort.DbCommandTreeTransform
             LambdaExpression firstKeySelector;
             LambdaExpression secondKeySelector;
 
-            using (this.CreateContext( leftParam, expression.Left.VariableName))
-            using( this.CreateContext( rightParam, expression.Right.VariableName ) )
+            using (this.CreateVariable( leftParam, expression.Left.VariableName))
+            using( this.CreateVariable( rightParam, expression.Right.VariableName ) )
             {
                 Expression joinCondition = this.Visit( expression.JoinCondition );
 
@@ -743,8 +729,11 @@ namespace Effort.DbCommandTreeTransform
             //}
 
 
-            Expression result = queryMethodExpressionBuilder.Join(left, right, expression.Left.VariableName,
-                            expression.Right.VariableName, firstKeySelector, secondKeySelector, expression.ExpressionKind);
+            Expression result = queryMethodExpressionBuilder.Join(
+                left, right, 
+                expression.Left.VariableName, expression.Right.VariableName, 
+                firstKeySelector, secondKeySelector, 
+                expression.ExpressionKind);
 
             return result;
         }
@@ -987,5 +976,7 @@ namespace Effort.DbCommandTreeTransform
 
 
 
+
+        public LambdaExpression predicateLambda { get; set; }
     }
 }

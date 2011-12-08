@@ -285,6 +285,22 @@ namespace Effort.Test
             Assert.IsTrue(result);
         }
 
+        [TestMethod]
+        public void Having()
+        {
+            bool result = this.runtime.Execute(
+
+                context =>
+                    context.Orders
+
+                    .GroupBy(o => o.CustomerID)
+                    .Where(o => o.Average(x => x.Freight) > 1)
+
+            );
+
+            Assert.IsTrue(result);
+        }
+
 
 
     }

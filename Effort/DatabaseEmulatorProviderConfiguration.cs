@@ -11,13 +11,13 @@ namespace Effort
         public static readonly string ProviderInvariantName = "EffortDatabaseEmulatorProvider";
 
         private static volatile bool registered = false;
-        private static object synch = new object();
+        private static object sync = new object();
 
         public static void RegisterProvider()
         {
             if (!registered)
             {
-                lock (synch)
+                lock (sync)
                 {
                     if (!registered)
                     {

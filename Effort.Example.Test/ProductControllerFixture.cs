@@ -8,31 +8,46 @@ using Microsoft.Practices.Unity;
 using Effort.Example.Services;
 using Effort.Example.Controllers;
 using System.Web.Mvc;
+using Rhino.Mocks;
 
 namespace Effort.Example.Test
 {
     [TestClass]
     public class ProductControllerFixture
     {
-        private IUnityContainer dependencies;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            UnityContainer di = new UnityContainer();
-
-            // Register fake object context
-            di.RegisterType(typeof(NorthwindEntities), TypeStore.EmulatorContext);
-            di.RegisterType(typeof(IProductService), typeof(ProductService));
-
-            this.dependencies = di;
-        }
-
         [TestMethod]
         public void ProductNotFound()
         {
             // Arrange
-            ProductController controller = this.dependencies.Resolve<ProductController>();
+            IProductService productServiceMock = MockRepository.GenerateMock<IProductService>();
+
+            productServiceMock
+                .Expect(x => x.GetProduct(1))
+                .Return(null);
+
+            IUnityContainer di = new UnityContainer()
+                .RegisterInstance(typeof(IProductService), productServiceMock);
+
+            ProductController controller = di.Resolve<ProductController>();
+
+            // Act
+            var result = controller.Details(1) as ViewResult;
+
+            // Assert
+            productServiceMock.VerifyAllExpectations();
+            Assert.IsNotNull(result, "Result is not ViewResult");
+            Assert.AreEqual(result.ViewName, "NotFound", "The view is not 'NotFound'"); 
+        }
+        
+        [TestMethod]
+        public void ProductNotFoundIntegration()
+        {
+            // Arrange
+            IUnityContainer di = new UnityContainer()
+                .RegisterType(typeof(IProductService), typeof(ProductService))
+                .RegisterType(typeof(INorthwindEntities), TypeStore.EmulatorContext);
+                
+            ProductController controller = di.Resolve<ProductController>();
 
             // Act
             var result = controller.Details(78) as ViewResult;

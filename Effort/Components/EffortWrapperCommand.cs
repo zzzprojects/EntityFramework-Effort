@@ -22,8 +22,6 @@ namespace Effort.Components
 {
     public class EffortWrapperCommand : DbCommandWrapper
     {
-        private bool isDbTransactionUsed = false;
-
         public EffortWrapperCommand( DbCommand wrappedCommand, DbCommandDefinitionWrapper commandDefinition )
             : base( wrappedCommand, commandDefinition )
         {
@@ -57,11 +55,6 @@ namespace Effort.Components
 
         public override int ExecuteNonQuery()
         {
-            if( this.DesignMode )
-            {
-                return base.ExecuteNonQuery();
-            }
-
             if( this.Definition.CommandTree is DbUpdateCommandTree )
             {
                 return this.PerformUpdate();
@@ -101,16 +94,11 @@ namespace Effort.Components
         {
             get
             {
-                return base.DbTransaction;
+                return null;
             }
             set
             {
-                // DbTransaction is only used virtually, the transactions are always distributed (db + mmdb),
-                // so handled by an ambient transaction (System.Transactions.Transaction)
-                base.DbTransaction = null;
 
-                // Note, that the virtual DbTransaction is used
-                this.isDbTransactionUsed = value != null;
             }
         }
 
@@ -126,22 +114,26 @@ namespace Effort.Components
 
             Stopwatch stopWatch = Stopwatch.StartNew();
 
+
+            // Find tables
+            TableScanVisitor tableScanVisitor = new TableScanVisitor();
+            tableScanVisitor.Visit(commandTree.Query);
+
+            // CodeFirst-hoz kell
+            if (tableScanVisitor.Tables.Contains("EdmMetadata"))
+            {
+                return new EffortDataReader(new List<object>());
+            }
+
             #region Skip Cache
-
-			TableScanVisitor tableScanVisitor = new TableScanVisitor();
-			tableScanVisitor.Visit(commandTree.Query);
-
-			// CodeFirst-hoz kell
-			if (tableScanVisitor.Tables.Contains("EdmMetadata"))
-				return new EffortDataReader(new List<object>());
 
 			// TODO_ZSOLT: why is this uncommented?
 			//if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
 			//{
 			//    if (this.WrapperConnection.defaultCacheMode == false || this.WrapperConnection.nonCached.Any())
 			//    {
-			////        TableScanVisitor tableScanVisitor = new TableScanVisitor();
-			////        tableScanVisitor.Visit(commandTree.Query);
+                ////    TableScanVisitor tableScanVisitor = new TableScanVisitor();
+                ////    tableScanVisitor.Visit( commandTree.Query );
 
 			//        bool skipCache = false;
 			//        if (this.WrapperConnection.defaultCacheMode && tableScanVisitor.Tables.Any(t => this.WrapperConnection.nonCached.Contains(t)))
@@ -214,7 +206,9 @@ namespace Effort.Components
                 // Place the transformed expression into the cache
                 if( hasParameters )
                 {
-                    this.DatabaseCache.TransformCacheProcedures[this.CommandText] = storedProc = this.CreateStoredProcedure( linqExpression );
+                    storedProc = this.CreateStoredProcedure(linqExpression);
+
+                    this.DatabaseCache.TransformCacheProcedures[this.CommandText] = storedProc;
                 }
                 else
                 {
@@ -231,7 +225,7 @@ namespace Effort.Components
 
             }
 
-
+            // TODO: Logging Port
             Console.WriteLine();
             Console.WriteLine( new ExpressionFormatter().Format( linqExpression, 299 ) );
             Console.WriteLine();
@@ -242,6 +236,8 @@ namespace Effort.Components
                      .Parameters
                      .Cast<DbParameter>()
                      .ToDictionary( p => p.ParameterName, p => p.Value as object );
+
+                IEnumerable result = storedProc(parameters);
 
                 return new EffortDataReader( storedProc( parameters ) );
             }
@@ -262,11 +258,11 @@ namespace Effort.Components
             this.EnsureOpenConnection();
 
             //Execute update on the database
-            int? result = null;
+            int? realDbRowCount = null;
 
             if( this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator )
             {
-                result = base.WrappedCommand.ExecuteNonQuery();
+                realDbRowCount = base.WrappedCommand.ExecuteNonQuery();
             }
 
             DbUpdateCommandTree commandTree = base.Definition.CommandTree as DbUpdateCommandTree;
@@ -274,12 +270,12 @@ namespace Effort.Components
             IReflectionTable table = null;
 
             Expression linqExpression = this.GetEnumeratorExpression( commandTree.Predicate, commandTree, out table );
-            IEnumerable entitiesToUpdate = this.CreateQuery( linqExpression );
+            IQueryable entitiesToUpdate = this.CreateQuery( linqExpression );
 
-            Type type = TypeHelper.GetEncapsulatedType( table.GetType() );
+            Type type = TypeHelper.GetElementType( table.GetType() );
 
             //Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions( commandTree.SetClauses, table );
+            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions( commandTree.SetClauses);
 
             //Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
@@ -288,56 +284,51 @@ namespace Effort.Components
 
             // Setup context for the predicate
             ParameterExpression context = Expression.Parameter( type, "context" );
-            using( transform.CreateContext( context, commandTree.Target.VariableName ) )
+            using( transform.CreateVariable( context, commandTree.Target.VariableName ) )
             {
                 //Initialize member bindings
                 foreach( PropertyInfo property in type.GetProperties() )
                 {
+                    Expression setter = null;
+
                     // Check if member has set clause
                     if( setClauses.ContainsKey( property.Name ) )
                     {
                         // Set the clause
-                        memberBindings.Add(
-                            Expression.Bind(
-                                property,
-                                transform.Visit( setClauses[property.Name] ) ) );
+                        setter = transform.Visit(setClauses[property.Name]);
                     }
                     else
                     {
                         // Copy member
-                        memberBindings.Add(
-                            Expression.Bind(
-                                property,
-                                Expression.Property( context, property ) ) );
+                        setter = Expression.Property( context, property );
+                    }
+
+
+                    // If setter was found, insert it
+                    if (setter != null)
+                    {
+                        // Type correction
+                        setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
+
+                        memberBindings.Add(Expression.Bind(property, setter));
                     }
                 }
             }
 
-            Delegate updater =
+            Expression updater =
                 Expression.Lambda(
                     Expression.MemberInit( Expression.New( type ), memberBindings ),
-                    context )
-                .Compile();
+                    context );
 
+            int rowCount = DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater);
 
-            int counter = 0;
-
-            // Execute update on the table
-            foreach( object entity in entitiesToUpdate )
-            {
-                object updatedEntity = updater.DynamicInvoke( entity );
-
-                table.Update( entity, updatedEntity );
-                counter++;
-            }
-
-            // Compare the result count in accelerator mode 
-            if( result.HasValue && counter != result.Value )
+            // Compare the row count in accelerator mode 
+            if (realDbRowCount.HasValue && rowCount != realDbRowCount.Value)
             {
                 throw new InvalidOperationException();
             }
 
-            return counter;
+            return rowCount;
         }
 
         #endregion
@@ -348,12 +339,12 @@ namespace Effort.Components
         {
             this.EnsureOpenConnection();
 
-            int? result = null;
+            int? realDbRowCount = null;
 
             //Execute delete on the database
             if( this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator )
             {
-                result = base.ExecuteNonQuery();
+                realDbRowCount = base.ExecuteNonQuery();
             }
 
             DbDeleteCommandTree commandTree = base.Definition.CommandTree as DbDeleteCommandTree;
@@ -361,24 +352,17 @@ namespace Effort.Components
             IReflectionTable table = null;
 
             Expression linqExpression = this.GetEnumeratorExpression( commandTree.Predicate, commandTree, out table );
-            IEnumerable entitiesToDelete = this.CreateQuery( linqExpression );
+            IQueryable entitiesToDelete = this.CreateQuery( linqExpression );
 
-            int count = 0;
+            int rowCount = DatabaseReflectionHelper.DeleteEntities(entitiesToDelete);
 
-            //Execute delete on the table
-            foreach (object entity in entitiesToDelete)
-            {
-                table.Delete( entity );
-                count++;
-            }
-
-            // Compare the result count in accelerator mode
-            if( result.HasValue && result.Value != count )
+            // Compare the row count in accelerator mode 
+            if (realDbRowCount.HasValue && rowCount != realDbRowCount.Value)
             {
                 throw new InvalidOperationException();
             }
 
-            return count;
+            return rowCount;
         }
 
         #endregion
@@ -399,7 +383,7 @@ namespace Effort.Components
             IReflectionTable table = this.GetTable( commandTree );
 
             // Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions( commandTree.SetClauses, table );
+            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions(commandTree.SetClauses);
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
@@ -408,22 +392,21 @@ namespace Effort.Components
             // Initialize member bindings
             foreach( PropertyInfo property in table.EntityType.GetProperties() )
             {
+                Expression setter = null;
+
                 //Check if member has set clause
                 if( setClauses.ContainsKey( property.Name ) )
                 {
-					var value = transform.Visit(setClauses[property.Name]);
+                    setter = transform.Visit(setClauses[property.Name]);
+                }
 
-					if (property.PropertyType.IsGenericType == false ||
-					   property.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>))
-					{
-						value = Expression.Convert(value, property.PropertyType);
-					}
+                // If setter was found, insert it
+                if (setter != null)
+                {
+                    // Type correction
+                    setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
 
-                    //Set the clause
-                    memberBindings.Add(
-                        Expression.Bind(
-                            property,
-                            value ) );
+                    memberBindings.Add(Expression.Bind(property, setter));
                 }
             }
 
@@ -483,7 +466,7 @@ namespace Effort.Components
             IReflectionTable table = this.GetTable(commandTree);
 
             // Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions(commandTree.SetClauses, table);
+            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions(commandTree.SetClauses);
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
@@ -492,35 +475,31 @@ namespace Effort.Components
             // Initialize member bindings
             foreach (PropertyInfo property in table.EntityType.GetProperties())
             {
+                Expression setter = null;
+
                 // Check if member has set clause
                 if (setClauses.ContainsKey(property.Name))
                 {
-                    Expression value = transform.Visit(setClauses[property.Name]);
+                    setter = transform.Visit(setClauses[property.Name]);
 
-                    // zsvarnai: Megint nullable gondok vannak es nem lehet updatelni pl boolt
-                    if (property.PropertyType.IsGenericType == false ||
-                        property.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>))
-                    {
-                        value = Expression.Convert(value, property.PropertyType);
-                    }
-
-                    //Set the clause
-                    memberBindings.Add(
-                        Expression.Bind(
-                            property,
-                            value));
                 }
                 else if (returnedValues.ContainsKey(property.Name))
                 {
                     // In accelerator mode, the missing value is filled with the returned value
                     if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
                     {
-                        // Set the clause
-                        memberBindings.Add(
-                            Expression.Bind(
-                                property,
-                                Expression.Constant(returnedValues[property.Name])));
+                        setter = Expression.Constant(returnedValues[property.Name]);
                     }
+                }
+
+
+                // If setter was found, insert it
+                if (setter != null)
+                {
+                    // Type correction
+                    setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
+
+                     memberBindings.Add(Expression.Bind(property, setter));
                 }
             }
 
@@ -558,12 +537,13 @@ namespace Effort.Components
 
         private object CreateAndInsertEntity( IReflectionTable table, IList<MemberBinding> memberBindings )
         {
-            Delegate factory =
+            LambdaExpression expression =
                Expression.Lambda(
                    Expression.MemberInit(
                        Expression.New( table.EntityType ),
-                       memberBindings ) )
-               .Compile();
+                       memberBindings));
+
+            Delegate factory = expression.Compile();
 
             object newEntity = factory.DynamicInvoke();
 
@@ -578,18 +558,17 @@ namespace Effort.Components
 
         private void EnsureOpenConnection()
         {
-            // Open the wrapped connection, if it has not been yet, and the mode is accelerator
+            // In accelerator mode, need to deal with wrapped connection
             if( this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator &&
-                base.WrappedCommand.Connection.State == ConnectionState.Closed )
+                this.WrappedCommand.Connection.State == ConnectionState.Closed)
             {
                 base.WrappedCommand.Connection.Open();
 
                 // Check for an ambient transaction
                 var transaction = System.Transactions.Transaction.Current;
 
-                // If DbTransaction is used, then the wrapped connection is already enlisted
-                // Note: In this case Transaction.Current should be null
-                if( !this.isDbTransactionUsed && transaction != null )
+                // If DbTransaction is used, then the Transaction.Current is null
+                if(transaction != null)
                 {
                     this.WrappedCommand.Connection.EnlistTransaction( transaction );
                 }
@@ -597,10 +576,8 @@ namespace Effort.Components
         }
 
 
-        private IDictionary<string, DbExpression> GetSetClauseExpressions( IList<DbModificationClause> clauses, object table )
+        private IDictionary<string, DbExpression> GetSetClauseExpressions(IList<DbModificationClause> clauses)
         {
-            Type type = TypeHelper.GetEncapsulatedType( table.GetType() );
-
             IDictionary<string, DbExpression> result = new Dictionary<string, DbExpression>();
 
             foreach( DbSetClause setClause in clauses.Cast<DbSetClause>() )
@@ -636,11 +613,11 @@ namespace Effort.Components
             table = source.Value as IReflectionTable;
 
             // Get the the type of the elements of the table
-            Type elementType = TypeHelper.GetEncapsulatedType( source.Type );
+            Type elementType = TypeHelper.GetElementType( source.Type );
 
             // Create context
             ParameterExpression context = Expression.Parameter( elementType, "context" );
-            using( visitor.CreateContext( context, commandTree.Target.VariableName ) )
+            using( visitor.CreateVariable( context, commandTree.Target.VariableName ) )
             {
                 // Create the predicate expression
                 LambdaExpression predicateExpression =
@@ -666,10 +643,7 @@ namespace Effort.Components
 
         private IQueryable CreateQuery( Expression expression )
         {
-            TableQueryProvider<object> provider = new TableQueryProvider<object>( this.DatabaseCache );
-            TableQuery<object> query = new TableQuery<object>( provider, expression );
-
-            return query;
+            return DatabaseReflectionHelper.CreateTableQuery(expression, this.DatabaseCache);
         }
 
         private Func<Dictionary<string, object>, IEnumerable> CreateStoredProcedure( Expression exp )

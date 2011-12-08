@@ -9,10 +9,10 @@ using Effort.Example.Models;
 
 namespace Effort.Example.Controllers
 {
-    public class CategoryController : Controller
-    {
-        [Dependency]
-        public ICategoryService CategoryService { get; set; }
+public class CategoryController : Controller
+{
+    [Dependency]
+    public ICategoryService CategoryService { get; set; }
 
         public ActionResult List()
         {

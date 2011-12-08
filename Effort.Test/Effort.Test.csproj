@@ -124,8 +124,8 @@
     </Compile>
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
-    <Compile Include="InsertFixture.cs" />
     <Compile Include="JoinFixture.cs" />
+    <Compile Include="ManipulationFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicFixture.cs" />
     <Compile Include="TransactionFixture.cs" />
@@ -134,7 +134,8 @@
     <Compile Include="Utils\EqualityComparers.cs" />
     <Compile Include="Utils\EntityComparer.cs" />
     <Compile Include="Utils\IEqualityComparer.cs" />
-    <Compile Include="Utils\NorthwindEntitiesWrapped.cs" />
+    <Compile Include="Utils\NorthwindEntitiesAccelerated.cs" />
+    <Compile Include="Utils\NorthwindEntitiesEmulated.cs" />
     <Compile Include="Utils\NumberComparer.cs" />
     <Compile Include="Utils\BasicComparer.cs" />
     <Compile Include="Utils\QueryTestRuntime.cs" />

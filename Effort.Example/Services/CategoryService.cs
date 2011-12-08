@@ -10,7 +10,7 @@ namespace Effort.Example.Services
     public class CategoryService : ICategoryService
     {
         [Dependency]
-        public NorthwindEntities Context { set; get; }
+        public INorthwindEntities Context { set; get; }
 
         public IList<Category> GetAllCategories()
         {

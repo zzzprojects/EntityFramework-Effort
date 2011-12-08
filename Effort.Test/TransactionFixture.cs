@@ -17,8 +17,7 @@ namespace Effort.Test
         [TestInitialize]
         public void Initialize()
         {
-            ////this.context = new NorthwindEntities("name=NorthwindEntities");
-            this.context = new NorthwindEntitiesWrapped("name=NorthwindEntities");
+            this.context = new NorthwindEntitiesEmulated();
         }
 
         [TestMethod]
@@ -33,15 +32,14 @@ namespace Effort.Test
 
             using (TransactionScope tran = new TransactionScope())
             {
-                context.Customers.AddObject(customer);
-                context.SaveChanges();
+                this.context.Customers.AddObject(customer);
+                this.context.SaveChanges();
 
 
                 bool customerWasAdded = context.Customers.FirstOrDefault(c => c.CustomerID == "CUSTO") != null;
                 Assert.IsTrue(customerWasAdded);
 
-                // Omit to achieve rollback: 
-                ////tran.Complete();
+                // Omit 'tran.Complete()' to achieve rollback 
             }
 
             bool customerWasNotAdded = context.Customers.FirstOrDefault(c => c.CustomerID == "CUSTO") == null;
@@ -52,21 +50,6 @@ namespace Effort.Test
         [TestMethod]
         public void TransactionScopeCommit()
         {
-            // -------------------------------------------------------
-            //                      Cleanup
-            // -------------------------------------------------------
-            
-            Customers delete = context.Customers.SingleOrDefault(c => c.CustomerID == "CUSTO");
-
-            if (delete != null)
-            {
-                context.Customers.DeleteObject(delete);
-                context.SaveChanges();
-            }
-
-            // -------------------------------------------------------
-            //                      Start
-            // -------------------------------------------------------
             Customers customer = new Customers();
 
             customer.CompanyName = "company";
@@ -83,16 +66,6 @@ namespace Effort.Test
             bool customerWasAdded = context.Customers.FirstOrDefault(c => c.CustomerID == "CUSTO") != null;
             
             Assert.IsTrue(customerWasAdded);
-
-            // -------------------------------------------------------
-            //                      Cleanup
-            // -------------------------------------------------------
-            context.Customers.DeleteObject(customer);
-            context.SaveChanges();
-
-            bool customerWasDeleted = context.Customers.FirstOrDefault(c => c.CustomerID == "CUSTO") == null;
-
-            Assert.IsTrue(customerWasDeleted);
             
         }
     }

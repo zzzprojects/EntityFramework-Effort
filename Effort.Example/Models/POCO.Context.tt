@@ -52,7 +52,7 @@ namespace <#=code.EscapeNamespace(namespaceName)#>
     PushIndent(CodeRegion.GetIndent(1));
 }
 #>
-<#=Accessibility.ForType(container)#> partial class <#=code.Escape(container)#> : ObjectContext
+<#=Accessibility.ForType(container)#> class <#=code.Escape(container)#> : ObjectContext, I<#=code.Escape(container)#>
 {
     public const string ConnectionString = "name=<#=container.Name#>";
     public const string ContainerName = "<#=container.Name#>";
@@ -92,7 +92,7 @@ namespace <#=code.EscapeNamespace(namespaceName)#>
         {
 #>
 
-    <#=Accessibility.ForReadOnlyProperty(entitySet)#> ObjectSet<<#=code.Escape(entitySet.ElementType)#>> <#=code.Escape(entitySet)#>
+    <#=Accessibility.ForReadOnlyProperty(entitySet)#> IObjectSet<<#=code.Escape(entitySet.ElementType)#>> <#=code.Escape(entitySet)#>
     {
         get { return <#=code.FieldName(entitySet) #>  ?? (<#=code.FieldName(entitySet)#> = CreateObjectSet<<#=code.Escape(entitySet.ElementType)#>>("<#=entitySet.Name#>")); }
     }
@@ -148,6 +148,29 @@ namespace <#=code.EscapeNamespace(namespaceName)#>
 
 #>
 }
+
+<#=Accessibility.ForType(container)#> partial interface I<#=code.Escape(container)#>
+{
+<#
+    foreach (EntitySet entitySet in container.BaseEntitySets.OfType<EntitySet>())
+    {
+		if (Accessibility.ForReadOnlyProperty(entitySet) == "public")
+		{
+#>
+    IObjectSet<<#=code.Escape(entitySet.ElementType)#>> <#=code.Escape(entitySet)#>
+    {
+        get;
+    }
+<#
+
+		}
+    }
+#>
+
+	void SaveChanges();
+}
+
+
 <#
 if (!String.IsNullOrEmpty(namespaceName))
 {
@@ -175,3 +198,4 @@ private void WriteLazyLoadingEnabled(EntityContainer container)
    }
 }
 #>
+

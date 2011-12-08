@@ -51,7 +51,7 @@ namespace Effort.Components
             }
 
             // Create an MMDB transaction
-            mmdbTransaction = new MMDB.Transaction.Transaction(this.transaction);
+            this.mmdbTransaction = new MMDB.Transaction.Transaction(this.transaction);
 
             // Set as the current transaction
             MMDB.Transaction.TransactionScope.CurrentTransaction = mmdbTransaction;
@@ -83,7 +83,7 @@ namespace Effort.Components
             if (disposing)
             {
                 this.transaction.Dispose();
-                this.mmdbTransaction.Dispose();
+                // this.mmdbTransaction.Dispose();
             }
 
             base.Dispose(disposing);

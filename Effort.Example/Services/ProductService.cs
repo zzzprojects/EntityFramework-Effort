@@ -11,7 +11,7 @@ namespace Effort.Example.Services
     public class ProductService : IProductService
     {
         [Dependency]
-        public NorthwindEntities Context { set; get; }
+        public INorthwindEntities Context { set; get; }
 
         public IList<Product> GetAllProducts()
         {

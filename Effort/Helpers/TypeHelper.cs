@@ -26,7 +26,7 @@ namespace Effort.Helpers
                     t.GetGenericTypeDefinition() == typeof( IEnumerable<> ) );
         }
 
-        public static Type GetEncapsulatedType( Type type )
+        public static Type GetElementType( Type type )
         {
             Type enumerableInterface = GetEnumerableInterfaceTypeDefinition( type );
 

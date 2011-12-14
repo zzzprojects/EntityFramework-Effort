@@ -128,6 +128,7 @@
     <Compile Include="Caching\TableInitialDataStore.cs" />
     <Compile Include="Caching\DbSchemaStore.cs" />
     <Compile Include="Configuration\EffortConfigurationSection.cs" />
+    <Compile Include="Configuration\EffortConfigurator.cs" />
     <Compile Include="DatabaseManagement\DatabaseExtensions.cs" />
     <Compile Include="DatabaseManagement\TableInitialData.cs" />
     <Compile Include="DatabaseManagement\DatabaseSchema.cs" />

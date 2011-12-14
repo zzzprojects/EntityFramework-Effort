@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data.Entity;
 
-namespace Effort.CodeFirst.Test
+namespace Effort.CodeFirstDemo
 {
 	public class NorthwindContext : DbContext
 	{

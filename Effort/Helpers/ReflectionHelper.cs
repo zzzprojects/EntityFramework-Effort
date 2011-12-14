@@ -28,6 +28,11 @@ namespace Effort.Helpers
         {
             MethodCallExpression methodCall = expr.Body as MethodCallExpression;
 
+			if( expr.Body is UnaryExpression )
+			{
+				methodCall = (expr.Body as UnaryExpression).Operand as MethodCallExpression;
+			}
+
             return methodCall.Method;
         }
     }

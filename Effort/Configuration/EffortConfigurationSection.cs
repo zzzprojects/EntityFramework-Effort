@@ -9,78 +9,78 @@ using System.Xml;
 namespace Effort.Configuration
 {
 
-    ////public class EffortConfigurationSection : ConfigurationSection
-    ////{
-    ////    [ConfigurationProperty("defaultCacheMode", DefaultValue = "true", IsRequired = false)]
-    ////    public Boolean DefaultCacheMode
-    ////    {
-    ////        get
-    ////        {
-    ////            return (Boolean)this["defaultCacheMode"];
-    ////        }
-    ////        set
-    ////        {
-    ////            this["defaultCacheMode"] = value;
-    ////        }
-    ////    }
+	public class EffortConfigurationSection : ConfigurationSection
+	{
+		[ConfigurationProperty("defaultCacheMode", DefaultValue = "true", IsRequired = false)]
+		public Boolean DefaultCacheMode
+		{
+			get
+			{
+				return (Boolean)this["defaultCacheMode"];
+			}
+			set
+			{
+				this["defaultCacheMode"] = value;
+			}
+		}
 
-    ////    [ConfigurationProperty("tables")]
-    ////    [ConfigurationCollection(typeof(TableElement))]
-    ////    public TableElementCollection Tables
-    ////    {
-    ////        get
-    ////        {
-    ////            return (TableElementCollection)this["tables"];
-    ////        }
-    ////        set
-    ////        {
-    ////            this["tables"] = value;
-    ////        }
-    ////    }
-    ////}
+		[ConfigurationProperty("tables")]
+		[ConfigurationCollection(typeof(TableElement))]
+		public TableElementCollection Tables
+		{
+			get
+			{
+				return (TableElementCollection)this["tables"];
+			}
+			set
+			{
+				this["tables"] = value;
+			}
+		}
+	}
 
-    ////public class TableElementCollection : ConfigurationElementCollection
-    ////{
-    ////    protected override ConfigurationElement CreateNewElement()
-    ////    {
-    ////        return new TableElement();
-    ////    }
+	public class TableElementCollection : ConfigurationElementCollection
+	{
+		protected override ConfigurationElement CreateNewElement()
+		{
+			return new TableElement();
+		}
 
-    ////    protected override object GetElementKey(ConfigurationElement element)
-    ////    {
-    ////        return ((TableElement)element).Name;
-    ////    }
-    ////}
+		protected override object GetElementKey(ConfigurationElement element)
+		{
+			return ((TableElement)element).Name;
+		}
+	}
 
-    ////public class TableElement : ConfigurationElement
-    ////{
-    ////    [ConfigurationProperty("name", IsRequired = true)]
-    ////    [StringValidator(InvalidCharacters = "~!@#$%^&*()[]{}/;'\"|\\")]
-    ////    public String Name
-    ////    {
-    ////        get
-    ////        {
-    ////            return (String)this["name"];
-    ////        }
-    ////        set
-    ////        {
-    ////            this["name"] = value;
-    ////        }
-    ////    }
+	public class TableElement : ConfigurationElement
+	{
+		[ConfigurationProperty("name", IsRequired = true)]
+		[StringValidator(InvalidCharacters = "~!@#$%^&*()[]{}/;'\"|\\")]
+		public String Name
+		{
+			get
+			{
+				return (String)this["name"];
+			}
+			set
+			{
+				this["name"] = value;
+			}
+		}
 
 
-    ////    [ConfigurationProperty("cached", DefaultValue = "true", IsRequired = true)]
-    ////    public Boolean Cached
-    ////    {
-    ////        get
-    ////        {
-    ////            return (Boolean)this["cached"];
-    ////        }
-    ////        set
-    ////        {
-    ////            this["cached"] = value;
-    ////        }
-    ////    }
-    ////}
+		[ConfigurationProperty("cached", DefaultValue = "true", IsRequired = true)]
+		public Boolean Cached
+		{
+			get
+			{
+				return (Boolean)this["cached"];
+			}
+			set
+			{
+				this["cached"] = value;
+			}
+		}
+	}
 
 }

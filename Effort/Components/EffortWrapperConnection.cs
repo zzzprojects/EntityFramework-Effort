@@ -40,10 +40,10 @@ namespace Effort.Components
 
 		protected string connectionString;
 		protected ProviderModes mode;
-        
-        ////private List<string> nonCached { get; set; }
-        ////private List<string> cached { get; set; }
-        ////private bool defaultCacheMode { get; set; }
+
+		internal List<string> nonCached { get; set; }
+		internal List<string> cached { get; set; }
+		internal bool defaultCacheMode { get; set; }
         
         #endregion
 
@@ -58,21 +58,21 @@ namespace Effort.Components
         {
             this.mode = mode;
 
-            ////var config = System.Configuration.ConfigurationManager.GetSection( "MMDBCacheConfiguration" ) as EffortConfigurationSection;
-            ////if( config != null )
-            ////{
-            ////    var tables = config.Tables.Cast<TableElement>();
-            ////    this.defaultCacheMode = config.DefaultCacheMode;
-                
-            ////    this.nonCached = tables.Where( t => t.Cached == false ).Select( t => t.Name ).ToList();
-            ////    this.cached = tables.Where( t => t.Cached ).Select( t => t.Name ).ToList();
-            ////}
-            ////else
-            ////{
-            ////    this.cached = new List<string>();
-            ////    this.nonCached = new List<string>();
-            ////    this.defaultCacheMode = true;
-            ////}
+			var config = System.Configuration.ConfigurationManager.GetSection("MMDBCacheConfiguration") as EffortConfigurationSection;
+			if (config != null)
+			{
+				var tables = config.Tables.Cast<TableElement>();
+				this.defaultCacheMode = config.DefaultCacheMode;
+
+				this.nonCached = tables.Where(t => t.Cached == false).Select(t => t.Name).ToList();
+				this.cached = tables.Where(t => t.Cached).Select(t => t.Name).ToList();
+			}
+			else
+			{
+				this.cached = new List<string>();
+				this.nonCached = new List<string>();
+				this.defaultCacheMode = true;
+			}
             
         }
 
@@ -474,7 +474,8 @@ namespace Effort.Components
                 TypeBuilder entityTypeBuilder = entityModule.DefineType(entitySet.Name, TypeAttributes.Public);
 
                 List<PropertyInfo> primaryKeyFields = new List<PropertyInfo>();
-                List<PropertyInfo> identityFields = new List<PropertyInfo>();
+				List<PropertyInfo> identityFields = new List<PropertyInfo>();
+				List<PropertyInfo> properties = new List<PropertyInfo>();
 
                 // Add properties as entity fields
                 foreach (EdmProperty field in type.Properties)
@@ -483,6 +484,7 @@ namespace Effort.Components
                     Type fieldClrType = typeConverter.Convert(field.TypeUsage);
                     
                     PropertyInfo prop = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
+					properties.Add(prop);
 
                     // Register primary key field
                     if (type.KeyMembers.Contains(field))
@@ -508,7 +510,8 @@ namespace Effort.Components
                     entityType.Name, 
                     entityType, 
                     primaryKeyFields.ToArray(), 
-                    identityFields.FirstOrDefault());
+                    identityFields.FirstOrDefault(),
+					properties.ToArray());
             }
 
             return schema;
@@ -566,21 +569,36 @@ namespace Effort.Components
             return result;
         }
 
+		internal DatabaseSchema GetDatabaseSchema()
+		{
+			var entityConnectionString = this.FindEntityConnectionString();
+			var metadataFiles = getSchemaKey(entityConnectionString);
+
+			return DbSchemaStore.GetDbSchema(metadataFiles, null);
+		}
+
 		internal virtual MetadataWorkspace getWorkspace( out string[] metadataFiles)
 		{
 			var entityConnectionString = this.FindEntityConnectionString();
 
+			metadataFiles = getSchemaKey(entityConnectionString);
+
+			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+			// Parse metadata
+			return new MetadataWorkspace(metadataFiles, assemblies);
+		}
+
+		private static string[] getSchemaKey(EntityConnectionStringBuilder entityConnectionString)
+		{
+			string[] metadataFiles;
 			// Get metadata paths
 			metadataFiles = entityConnectionString
 				.Metadata
 				.Split('|')
 				.Select(p => p.Trim())
 				.ToArray();
-
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-			// Parse metadata
-			return new MetadataWorkspace(metadataFiles, assemblies);
+			return metadataFiles;
 		}
 
         #endregion

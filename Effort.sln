@@ -17,9 +17,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.CodeFirst", "Effort.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.CodeFirst.Test", "Effort.CodeFirst.Test\Effort.CodeFirst.Test.csproj", "{BB41832B-3E7A-4ADA-9835-1317064ED5E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.ConsoleTest", "Effort.ConsoleTest\Effort.ConsoleTest.csproj", "{154088B1-7CE7-4375-8B05-3E5111B4F25F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Várnai Zsolt Demo", "Várnai Zsolt Demo", "{8C7C7D6C-4342-4DFB-958D-7969D5071CE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.AcceleratorModeDemo", "Effort.AcceleratorModeDemo\Effort.AcceleratorModeDemo.csproj", "{AF0354B1-4F62-4540-8C81-C4896D2F9120}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.CodeFirstDemo", "Effort.CodeFirstDemo\Effort.CodeFirstDemo.csproj", "{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.DemoCore", "Effort.DemoCore\Effort.DemoCore.csproj", "{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 9
+		SccNumberOfProjects = 13
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs25
 		SccLocalPath0 = .
@@ -47,6 +57,21 @@ Global
 		SccProjectUniqueName8 = Effort.CodeFirst.Test\\Effort.CodeFirst.Test.csproj
 		SccProjectName8 = Effort.CodeFirst.Test
 		SccLocalPath8 = Effort.CodeFirst.Test
+		SccProjectUniqueName9 = Effort.ConsoleTest\\Effort.ConsoleTest.csproj
+		SccProjectName9 = Effort.ConsoleTest
+		SccLocalPath9 = Effort.ConsoleTest
+		SccProjectUniqueName10 = Effort.AcceleratorModeDemo\\Effort.AcceleratorModeDemo.csproj
+		SccProjectTopLevelParentUniqueName10 = Effort.sln
+		SccProjectName10 = Effort.AcceleratorModeDemo
+		SccLocalPath10 = Effort.AcceleratorModeDemo
+		SccProjectUniqueName11 = Effort.CodeFirstDemo\\Effort.CodeFirstDemo.csproj
+		SccProjectTopLevelParentUniqueName11 = Effort.sln
+		SccProjectName11 = Effort.CodeFirstDemo
+		SccLocalPath11 = Effort.CodeFirstDemo
+		SccProjectUniqueName12 = Effort.DemoCore\\Effort.DemoCore.csproj
+		SccProjectTopLevelParentUniqueName12 = Effort.sln
+		SccProjectName12 = Effort.DemoCore
+		SccLocalPath12 = Effort.DemoCore
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,8 +171,53 @@ Global
 		{BB41832B-3E7A-4ADA-9835-1317064ED5E0}.Release|Mixed Platforms.Build.0 = Release|x86
 		{BB41832B-3E7A-4ADA-9835-1317064ED5E0}.Release|x86.ActiveCfg = Release|x86
 		{BB41832B-3E7A-4ADA-9835-1317064ED5E0}.Release|x86.Build.0 = Release|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Debug|x86.ActiveCfg = Debug|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Debug|x86.Build.0 = Debug|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Release|Any CPU.ActiveCfg = Release|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Release|x86.ActiveCfg = Release|x86
+		{154088B1-7CE7-4375-8B05-3E5111B4F25F}.Release|x86.Build.0 = Release|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Debug|x86.ActiveCfg = Debug|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Debug|x86.Build.0 = Debug|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Release|Any CPU.ActiveCfg = Release|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Release|Mixed Platforms.Build.0 = Release|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Release|x86.ActiveCfg = Release|x86
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120}.Release|x86.Build.0 = Release|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Debug|x86.ActiveCfg = Debug|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Debug|x86.Build.0 = Debug|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Release|Any CPU.ActiveCfg = Release|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Release|Mixed Platforms.Build.0 = Release|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Release|x86.ActiveCfg = Release|x86
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D}.Release|x86.Build.0 = Release|x86
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AF0354B1-4F62-4540-8C81-C4896D2F9120} = {8C7C7D6C-4342-4DFB-958D-7969D5071CE2}
+		{34009D64-C5DB-4F5A-A1DA-43D49AC00B0D} = {8C7C7D6C-4342-4DFB-958D-7969D5071CE2}
+		{08658F8E-BDA1-46B0-A9B1-D2C8B6532B0D} = {8C7C7D6C-4342-4DFB-958D-7969D5071CE2}
 	EndGlobalSection
 EndGlobal

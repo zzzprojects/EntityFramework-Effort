@@ -2,37 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Collections;
+using Effort.CodeFirst;
+using Effort.Demo;
 
-namespace Effort.CodeFirst.Test
+namespace Effort.CodeFirstDemo
 {
 	class Program
 	{
-		static void test()
-		{
-//            using (var db = new NorthwindContext())
-//            {
-//for (int i = 0; i < 10; i++)
-//{
-//    var query = (from p in db.Products
-//                    where p.CategoryId == i
-//                    select p).ToList();
-
-//    ...
-//}
-//            }
-		}
-		static void test2()
-		{
-			using (var db = new NorthwindContext())
-			{
-				var query = (from p in db.Products
-							 where p.ProductId == 1
-							 select p).ToList();
-			}
-		}
 		static void Main(string[] args)
 		{
+			ConsoleHelper.Init();
+
 			CodeFirstEmulatorProviderConfiguration.RegisterProvider();
 			using (var db = new NorthwindContext())
 			{

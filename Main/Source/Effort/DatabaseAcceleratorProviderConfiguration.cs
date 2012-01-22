@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EFProviderWrapperToolkit;
+using System.Threading;
 
 namespace Effort
 {
@@ -10,7 +11,7 @@ namespace Effort
     {
         public static readonly string ProviderInvariantName = "EffortDatabaseAcceleratorProvider";
 
-        private static volatile bool registered = false;
+        private static bool registered = false;
         private static object sync = new object();
 
         public static void RegisterProvider()
@@ -22,6 +23,8 @@ namespace Effort
                     if (!registered)
                     {
                         DbProviderFactoryBase.RegisterProvider("Effort Database Accelerator Provider", ProviderInvariantName, typeof(DatabaseAcceleratorProviderFactory));
+
+                        Thread.MemoryBarrier();
                         registered = true;
                     }
                 }

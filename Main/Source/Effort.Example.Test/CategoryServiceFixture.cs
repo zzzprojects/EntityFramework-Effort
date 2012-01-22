@@ -17,7 +17,7 @@ namespace Effort.Example.Test
         {
             // Arrange
             IUnityContainer di = new UnityContainer()
-                .RegisterType(typeof(NorthwindEntities), TypeStore.EmulatorContext);
+                .RegisterType(typeof(INorthwindEntities), TypeStore.EmulatorContext);
 
             CategoryService service = di.Resolve<CategoryService>();
 
@@ -38,7 +38,7 @@ namespace Effort.Example.Test
         {
             // Arrange
             IUnityContainer di = new UnityContainer()
-                .RegisterType(typeof(NorthwindEntities), TypeStore.EmulatorContext);
+                .RegisterType(typeof(INorthwindEntities), TypeStore.EmulatorContext);
 
             CategoryService service = di.Resolve<CategoryService>();
 

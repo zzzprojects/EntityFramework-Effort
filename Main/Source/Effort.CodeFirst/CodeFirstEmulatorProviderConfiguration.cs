@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EFProviderWrapperToolkit;
+using System.Threading;
 
 namespace Effort.CodeFirst
 {
@@ -10,7 +11,7 @@ namespace Effort.CodeFirst
 	{
 		public static readonly string ProviderInvariantName = "EffortCodeFirstEmulatorProvider";
 
-		private static volatile bool registered = false;
+		private static bool registered = false;
 		private static object synch = new object();
 
 		public static void RegisterProvider()
@@ -23,6 +24,8 @@ namespace Effort.CodeFirst
 					{
 						DbProviderFactoryBase.RegisterProvider("Effort Code First Emulator Provider", ProviderInvariantName,
 							typeof(CodeFirstEmulatorProviderFactory));
+
+                        Thread.MemoryBarrier();
 						registered = true;
 					}
 				}

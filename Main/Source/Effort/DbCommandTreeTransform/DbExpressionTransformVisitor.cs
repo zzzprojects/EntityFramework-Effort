@@ -973,10 +973,5 @@ namespace Effort.DbCommandTreeTransform
             throw new NotImplementedException();
         }
 
-
-
-
-
-        public LambdaExpression predicateLambda { get; set; }
     }
 }

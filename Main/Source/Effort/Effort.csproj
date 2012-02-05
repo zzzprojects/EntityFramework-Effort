@@ -129,6 +129,16 @@
     <Compile Include="Caching\DbSchemaStore.cs" />
     <Compile Include="Configuration\EffortConfigurationSection.cs" />
     <Compile Include="Configuration\EffortConfigurator.cs" />
+    <Compile Include="Csv\CsvReader.cs" />
+    <Compile Include="Csv\CsvReader.DataReaderValidations.cs" />
+    <Compile Include="Csv\CsvReader.RecordEnumerator.cs" />
+    <Compile Include="Csv\Events\ParseErrorEventArgs.cs" />
+    <Compile Include="Csv\Exceptions\MalformedCsvException.cs" />
+    <Compile Include="Csv\Exceptions\MissingFieldCsvException.cs" />
+    <Compile Include="Csv\MissingFieldAction.cs" />
+    <Compile Include="Csv\ParseErrorAction.cs" />
+    <Compile Include="Csv\Resources\ExceptionMessage.Designer.cs" />
+    <Compile Include="Csv\ValueTrimmingOptions.cs" />
     <Compile Include="DatabaseManagement\DatabaseExtensions.cs" />
     <Compile Include="DatabaseManagement\TableInitialData.cs" />
     <Compile Include="DatabaseManagement\DatabaseSchema.cs" />
@@ -165,16 +175,6 @@
     <Compile Include="DbCommandTreeTransform\SingleResult.cs" />
     <Compile Include="DbCommandTreeTransform\TableScanVisitor.cs" />
     <Compile Include="Caching\ConcurrentCache.cs" />
-    <Compile Include="Csv\CsvReader.cs" />
-    <Compile Include="Csv\CsvReader.DataReaderValidations.cs" />
-    <Compile Include="Csv\CsvReader.RecordEnumerator.cs" />
-    <Compile Include="Csv\Events\ParseErrorEventArgs.cs" />
-    <Compile Include="Csv\Exceptions\MalformedCsvException.cs" />
-    <Compile Include="Csv\Exceptions\MissingFieldCsvException.cs" />
-    <Compile Include="Csv\MissingFieldAction.cs" />
-    <Compile Include="Csv\ParseErrorAction.cs" />
-    <Compile Include="Csv\Resources\ExceptionMessage.Designer.cs" />
-    <Compile Include="Csv\ValueTrimmingOptions.cs" />
     <Compile Include="Helpers\CultureScope.cs" />
     <Compile Include="Helpers\ExpressionHelper.cs" />
     <Compile Include="Helpers\LambdaExpressionHelper.cs" />
@@ -214,9 +214,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Effort.licenseheader">
+      <Link>Effort.licenseheader</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Csv\Resources\ExceptionMessage.resx" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

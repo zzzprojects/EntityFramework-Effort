@@ -27,6 +27,7 @@ using System.Data.Common;
 using Debug = System.Diagnostics.Debug;
 using System.Globalization;
 using System.IO;
+
 using LumenWorks.Framework.IO.Csv.Resources;
 
 namespace LumenWorks.Framework.IO.Csv
@@ -355,13 +356,13 @@ namespace LumenWorks.Framework.IO.Csv
 
 			if (reader is StreamReader)
 			{
-				Stream stream = ((StreamReader)reader).BaseStream;
+				Stream stream = ((StreamReader) reader).BaseStream;
 
 				if (stream.CanSeek)
 				{
 					// Handle bad implementations returning 0 or less
 					if (stream.Length > 0)
-						_bufferSize = (int)Math.Min(bufferSize, stream.Length);
+						_bufferSize = (int) Math.Min(bufferSize, stream.Length);
 				}
 			}
 
@@ -375,6 +376,7 @@ namespace LumenWorks.Framework.IO.Csv
 			_trimmingOptions = trimmingOptions;
 			_supportsMultiline = true;
 			_skipEmptyLines = true;
+			this.DefaultHeaderName = "Column";
 
 			_currentRecordIndex = -1;
 			_defaultParseErrorAction = ParseErrorAction.RaiseEvent;
@@ -553,6 +555,13 @@ namespace LumenWorks.Framework.IO.Csv
 				_skipEmptyLines = value;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the default header name when it is an empty string or only whitespaces.
+		/// The header index will be appended to the specified name.
+		/// </summary>
+		/// <value>The default header name when it is an empty string or only whitespaces.</value>
+		public string DefaultHeaderName { get; set; }
 
 		#endregion
 
@@ -1184,6 +1193,9 @@ namespace LumenWorks.Framework.IO.Csv
 					{
 						value = string.Empty;
 						_fields[field] = value;
+
+						if (field < _fieldCount)
+							_missingFieldFlag = true;
 					}
 					else if (_buffer[_nextFieldStart] != _quote)
 					{
@@ -1542,15 +1554,19 @@ namespace LumenWorks.Framework.IO.Csv
 
 					for (int i = 0; i < _fields.Length; i++)
 					{
-						_fieldHeaders[i] = _fields[i];
-						_fieldHeaderIndexes.Add(_fields[i], i);
+						string headerName = _fields[i];
+						if (string.IsNullOrEmpty(headerName) || headerName.Trim().Length == 0)
+							headerName = this.DefaultHeaderName + i.ToString();
+
+						_fieldHeaders[i] = headerName;
+						_fieldHeaderIndexes.Add(headerName, i);
 					}
 
 					// Proceed to first record
 					if (!onlyReadHeaders)
 					{
 						// Calling again ReadNextRecord() seems to be simpler, 
-						// but in fact would probably cause many subtle bugs because the derived does not expect a recursive behavior
+						// but in fact would probably cause many subtle bugs because a derived class does not expect a recursive behavior
 						// so simply do what is needed here and no more.
 
 						if (!SkipEmptyAndCommentedLines(ref _nextFieldStart))
@@ -1908,11 +1924,12 @@ namespace LumenWorks.Framework.IO.Csv
 			Debug.Assert(destinationArray.GetType() == typeof(char[]) || destinationArray.GetType() == typeof(byte[]));
 
 			if (destinationArray.GetType() == typeof(char[]))
-				Array.Copy(value.ToCharArray((int)fieldOffset, length), 0, destinationArray, destinationOffset, length);
+				Array.Copy(value.ToCharArray((int) fieldOffset, length), 0, destinationArray, destinationOffset, length);
 			else
 			{
-				char[] chars = value.ToCharArray((int)fieldOffset, length);
-				byte[] source = new byte[chars.Length]; ;
+				char[] chars = value.ToCharArray((int) fieldOffset, length);
+				byte[] source = new byte[chars.Length];
+				;
 
 				for (int i = 0; i < chars.Length; i++)
 					source[i] = Convert.ToByte(chars[i]);
@@ -2092,7 +2109,7 @@ namespace LumenWorks.Framework.IO.Csv
 		{
 			ValidateDataReader(DataReaderValidations.IsInitialized | DataReaderValidations.IsNotClosed);
 
-			if (((IDataRecord)this).IsDBNull(i))
+			if (((IDataRecord) this).IsDBNull(i))
 				return DBNull.Value;
 			else
 				return this[i];
@@ -2138,7 +2155,7 @@ namespace LumenWorks.Framework.IO.Csv
 		{
 			ValidateDataReader(DataReaderValidations.IsInitialized | DataReaderValidations.IsNotClosed);
 
-			IDataRecord record = (IDataRecord)this;
+			IDataRecord record = (IDataRecord) this;
 
 			for (int i = 0; i < _fieldCount; i++)
 				values[i] = record.GetValue(i);

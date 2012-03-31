@@ -71,7 +71,7 @@ namespace Effort.DataInitialization
             {
                 if (string.IsNullOrWhiteSpace(val))
                 {
-                    return null;
+                    return base.ConvertValue(null, type);
                 }
                 else
                 {
@@ -79,12 +79,16 @@ namespace Effort.DataInitialization
                 }
             }
 
-            if (type == typeof(byte[]))
+            if (type == typeof(byte[]) || type == typeof(NMemory.Data.Binary))
             {
-                return Convert.FromBase64String(val);
+                value = Convert.FromBase64String(val);
+            }
+            else
+            {
+                value = Convert.ChangeType(value, type);
             }
 
-            return Convert.ChangeType(value, type);
+            return base.ConvertValue(value, type);
         }
     }
 }

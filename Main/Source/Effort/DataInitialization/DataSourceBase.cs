@@ -28,7 +28,6 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Reflection;
-using MMDB.Table;
 using Effort.Helpers;
 
 namespace Effort.DataInitialization
@@ -98,6 +97,11 @@ namespace Effort.DataInitialization
 
         protected virtual object ConvertValue(object value, Type type)
         {
+            if (type == typeof(NMemory.Data.Binary))
+            {
+                return (NMemory.Data.Binary)(byte[])value;
+            }
+
             return value;
         }
 

@@ -46,7 +46,7 @@ namespace Effort.Example.Test
             var result = service.GetProduct(1);
 
             // Assert
-            Assert.AreNotEqual(result, null, "Product does not exist");
+            Assert.IsNotNull(result, "Product does not exist");
         }
 
 

@@ -30,10 +30,11 @@ using System.Data.Common;
 using System.Collections;
 using System.Reflection;
 using Effort.DatabaseManagement;
+using System.Data;
 
 namespace Effort.Components
 {
-	class EffortDataReader : DbDataReader
+	internal class EffortDataReader : DbDataReader
 	{
 		private IEnumerable source;
 		private IEnumerator enumerator;
@@ -187,12 +188,12 @@ namespace Effort.Components
 			throw new NotImplementedException();
 		}
 
-		public override System.Collections.IEnumerator GetEnumerator()
+		public override IEnumerator GetEnumerator()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override System.Data.DataTable GetSchemaTable()
+		public override DataTable GetSchemaTable()
 		{
 			throw new NotImplementedException();
 		}
@@ -210,6 +211,10 @@ namespace Effort.Components
 			{
 				result = DBNull.Value;
 			}
+            else if (result.GetType() == typeof(NMemory.Data.Binary))
+            {
+                result = (byte[])(NMemory.Data.Binary)result;   
+            }
 
 			return result;
 		}

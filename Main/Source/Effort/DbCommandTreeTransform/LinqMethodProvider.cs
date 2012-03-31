@@ -255,7 +255,7 @@ namespace Effort.DbCommandTreeTransform
 
         private MethodInfo CreateLeftOuterJoin()
         {
-            return GetMethod(x => MMDB.Linq.Common.LeftOuterJoin(
+            return GetMethod(x => NMemory.Linq.QueryableEx.LeftOuterJoin(
                 x, 
                 Enumerable.Empty<object>(), 
                 l => new object(), 

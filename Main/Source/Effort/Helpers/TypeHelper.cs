@@ -33,7 +33,6 @@ namespace Effort.Helpers
     {
         public static Type GetEnumerableInterfaceTypeDefinition( Type type )
         {
-            // zsvarnai: ez meg hianyzik
             if (type.IsInterface)
             {
                 if (type.IsGenericType &&

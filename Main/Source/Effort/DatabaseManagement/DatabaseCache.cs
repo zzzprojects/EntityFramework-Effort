@@ -27,22 +27,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Effort.DbCommandTreeTransform;
-using MMDB;
+using NMemory;
+using Effort.Diagnostics;
+using NMemory.Tables;
+using System.Linq.Expressions;
+using System.Collections.Concurrent;
+using System.Collections;
 
 namespace Effort.DatabaseManagement
 {
-    internal class DatabaseWrapper : ITableProvider
+    internal class DatabaseCache : ITableProvider
     {
         private Database database;
+        private ILogger logger;
+        private ConcurrentDictionary<string, Expression> transformCache;
+        private ConcurrentDictionary<string, Func<Dictionary<string, object>, IEnumerable>> procedureTransformCache;
 
-        public DatabaseWrapper(Database database)
+        public DatabaseCache(Database database)
         {
             this.database = database;
+            this.logger = new Logger();
+            this.transformCache = new ConcurrentDictionary<string, Expression>();
+            this.procedureTransformCache = new ConcurrentDictionary<string, Func<Dictionary<string, object>, IEnumerable>>();
         }
 
         public object GetTable(string name)
         {
             return database.GetTable(name);
+        }
+
+        public Database Internal
+        {
+            get { return this.database; }
+        }
+
+        public ILogger Logger
+        {
+            get { return this.logger; }
+        }
+
+        public ConcurrentDictionary<string, Expression> TransformCache
+        {
+            get { return this.transformCache; }
+        }
+
+        public ConcurrentDictionary<string, Func<Dictionary<string, object>, IEnumerable>> ProcedureTransformCache
+        {
+            get { return this.procedureTransformCache; }
         }
     }
 }

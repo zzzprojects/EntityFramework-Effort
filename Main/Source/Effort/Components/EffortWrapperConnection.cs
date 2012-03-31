@@ -35,17 +35,13 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 using Effort.Caching;
-using Effort.Configuration;
 using Effort.DatabaseManagement;
 using Effort.DataInitialization;
 using Effort.DbCommandTreeTransform;
 using Effort.Helpers;
 using EFProviderWrapperToolkit;
-using MMDB;
-using MMDB.Exceptions;
-using MMDB.Locking;
-using MMDB.Logging;
-using MMDB.Table;
+using NMemory.Diagnostics.Messages;
+using NMemory;
 
 
 namespace Effort.Components
@@ -55,19 +51,14 @@ namespace Effort.Components
     /// </summary>
     public class EffortWrapperConnection : DbConnectionWrapper
     {
-
         #region Private members
 
-		protected Database databaseCache;
+		private DatabaseCache databaseCache;
         // Virtual connection state
-		protected ConnectionState connectionState;
+		private ConnectionState connectionState;
 
-		protected string connectionString;
-		protected ProviderModes mode;
-
-		internal List<string> nonCached { get; set; }
-		internal List<string> cached { get; set; }
-		internal bool defaultCacheMode { get; set; }
+        private string connectionString;
+        private ProviderModes mode;
         
         #endregion
 
@@ -81,23 +72,6 @@ namespace Effort.Components
         public EffortWrapperConnection(ProviderModes mode)
         {
             this.mode = mode;
-
-			var config = System.Configuration.ConfigurationManager.GetSection("MMDBCacheConfiguration") as EffortConfigurationSection;
-			if (config != null)
-			{
-				var tables = config.Tables.Cast<TableElement>();
-				this.defaultCacheMode = config.DefaultCacheMode;
-
-				this.nonCached = tables.Where(t => t.Cached == false).Select(t => t.Name).ToList();
-				this.cached = tables.Where(t => t.Cached).Select(t => t.Name).ToList();
-			}
-			else
-			{
-				this.cached = new List<string>();
-				this.nonCached = new List<string>();
-				this.defaultCacheMode = true;
-			}
-            
         }
 
         #endregion
@@ -108,7 +82,7 @@ namespace Effort.Components
         /// <summary>
         /// Gets the reference if the in-memory database that connection object is using.
         /// </summary>
-        internal virtual Database DatabaseCache
+        internal virtual DatabaseCache DatabaseCache
         {
             get
             {
@@ -288,7 +262,7 @@ namespace Effort.Components
 
         #endregion
 
-        #region Overrided virtual methods
+        #region Overriden virtual methods
 
         /// <summary>
         /// Enlists in the specified transaction.
@@ -348,9 +322,9 @@ namespace Effort.Components
 
         #region Database creation
 
-        internal Database CreateDatabaseSandboxed()
+        internal DatabaseCache CreateDatabaseSandboxed()
         {
-            Database database = null;
+            DatabaseCache databaseCache = null;
             Exception exception = null;
 
             // Create a sandbox thread for the initialization
@@ -358,7 +332,7 @@ namespace Effort.Components
                 {
                     try
                     {
-                        database = this.CreateDatabase();
+                        databaseCache = this.CreateDatabase();
                     }
                     catch (Exception ex)
                     {
@@ -375,19 +349,19 @@ namespace Effort.Components
                 throw new DataException("An unhandled exception occured during the database initialization", exception);
             }
 
-            return database;
+            return databaseCache;
         }
 
 
-		internal Database CreateDatabase()
+		internal DatabaseCache CreateDatabase()
         {
             Stopwatch swDatabase = Stopwatch.StartNew();
 
-            Database database = new Database(new ReaderWriterLockSlimFactory(), EnumDeadlockManagement.DeadlockDetection);
-            database.LoggingPort = new Logger();
+            Database database = new Database();
+            DatabaseCache result = new DatabaseCache(database);
 
 			string[] metadataFiles;
-			MetadataWorkspace workspace = this.getWorkspace(out metadataFiles);
+			MetadataWorkspace workspace = this.GetWorkspace(out metadataFiles);
 
 			// Get entity container
 			EntityContainer entityContainer = MetadataWorkspaceHelper.GetEntityContainer(workspace);
@@ -416,12 +390,13 @@ namespace Effort.Components
                         source.GetInitialRecords());
 
                     swTable.Stop();
-                    database.LoggingPort.Send(new StandardMMDBMessage("{1} loaded in {0:0.0} ms", swTable.Elapsed.TotalMilliseconds, tableName));
+
+                    result.Logger.Write("{1} loaded in {0:0.0} ms", swTable.Elapsed.TotalMilliseconds, tableName);
                 }
             }
 
 
-            database.LoggingPort.Send(new StandardMMDBMessage("Setting up assocations..."));
+            result.Logger.Write("Setting up assocations...");
 
             foreach (AssociationSet associationSet in entityContainer.BaseEntitySets.OfType<AssociationSet>())
             {
@@ -438,9 +413,9 @@ namespace Effort.Components
             }
 
             swDatabase.Stop();
-            database.LoggingPort.Send(new StandardMMDBMessage("Database buildup finished in {0:0.0} ms", swDatabase.Elapsed.TotalMilliseconds));
+            result.Logger.Write("Database buildup finished in {0:0.0} ms", swDatabase.Elapsed.TotalMilliseconds);
 
-            return database;
+            return result;
         }
 
 		internal virtual IDataSourceFactory CreateDataSourceFactory(MetadataWorkspace workspace)
@@ -450,7 +425,9 @@ namespace Effort.Components
                 DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
                 builder.ConnectionString = this.ConnectionString;
 
-                bool hasSource = builder.ContainsKey("Data Source") && !string.IsNullOrEmpty(builder["Data Source"] as string);
+                bool hasSource = 
+                    builder.ContainsKey("Data Source") && 
+                    !string.IsNullOrEmpty(builder["Data Source"] as string);
 
                 if (!hasSource)
                 {
@@ -593,19 +570,19 @@ namespace Effort.Components
             return result;
         }
 
-		internal DatabaseSchema GetDatabaseSchema()
+		internal virtual DatabaseSchema GetDatabaseSchema()
 		{
 			var entityConnectionString = this.FindEntityConnectionString();
-			var metadataFiles = getSchemaKey(entityConnectionString);
+			var metadataFiles = GetSchemaKey(entityConnectionString);
 
 			return DbSchemaStore.GetDbSchema(metadataFiles, null);
 		}
 
-		internal virtual MetadataWorkspace getWorkspace( out string[] metadataFiles)
+		protected internal virtual MetadataWorkspace GetWorkspace(out string[] metadataFiles)
 		{
 			var entityConnectionString = this.FindEntityConnectionString();
 
-			metadataFiles = getSchemaKey(entityConnectionString);
+			metadataFiles = GetSchemaKey(entityConnectionString);
 
 			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -613,9 +590,10 @@ namespace Effort.Components
 			return new MetadataWorkspace(metadataFiles, assemblies);
 		}
 
-		private static string[] getSchemaKey(EntityConnectionStringBuilder entityConnectionString)
+		private static string[] GetSchemaKey(EntityConnectionStringBuilder entityConnectionString)
 		{
 			string[] metadataFiles;
+
 			// Get metadata paths
 			metadataFiles = entityConnectionString
 				.Metadata
@@ -626,6 +604,11 @@ namespace Effort.Components
 		}
 
         #endregion
+
+        protected void MarkAsOpen()
+        {
+            this.connectionState = ConnectionState.Open;
+        }
 
     }
 }

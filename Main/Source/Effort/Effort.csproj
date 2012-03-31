@@ -108,8 +108,8 @@
     <CodeAnalysisRuleDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MMDB">
-      <HintPath>..\Imports\MMDB.dll</HintPath>
+    <Reference Include="NMemory">
+      <HintPath>..\Imports\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -131,8 +131,6 @@
     <Compile Include="Caching\TableInitialDataKey.cs" />
     <Compile Include="Caching\TableInitialDataStore.cs" />
     <Compile Include="Caching\DbSchemaStore.cs" />
-    <Compile Include="Configuration\EffortConfigurationSection.cs" />
-    <Compile Include="Configuration\EffortConfigurator.cs" />
     <Compile Include="Csv\CsvReader.cs" />
     <Compile Include="Csv\CsvReader.DataReaderValidations.cs" />
     <Compile Include="Csv\CsvReader.RecordEnumerator.cs" />
@@ -150,7 +148,7 @@
     <Compile Include="DatabaseManagement\DatabaseExtensions.cs" />
     <Compile Include="DatabaseManagement\TableInitialData.cs" />
     <Compile Include="DatabaseManagement\DatabaseSchema.cs" />
-    <Compile Include="DatabaseManagement\DatabaseWrapper.cs" />
+    <Compile Include="DatabaseManagement\DatabaseCache.cs" />
     <Compile Include="DatabaseManagement\DbMethodProvider.cs" />
     <Compile Include="DatabaseManagement\TableInformation.cs" />
     <Compile Include="DataInitialization\CachedCsvDataSource.cs" />
@@ -164,6 +162,7 @@
     <Compile Include="DataInitialization\IDataSource.cs" />
     <Compile Include="DataInitialization\IDataSourceFactory.cs" />
     <Compile Include="DbCommandTreeTransform\CanonicalFunctions.cs" />
+    <Compile Include="DbCommandTreeTransform\Join\ParameterFinderVisitor.cs" />
     <Compile Include="DbCommandTreeTransform\Variables\VariableCollection.cs" />
     <Compile Include="DbCommandTreeTransform\Variables\VariableHandler.cs" />
     <Compile Include="DbCommandTreeTransform\DbExpressionTransformVisitor.cs" />
@@ -183,6 +182,7 @@
     <Compile Include="DbCommandTreeTransform\SingleResult.cs" />
     <Compile Include="DbCommandTreeTransform\TableScanVisitor.cs" />
     <Compile Include="Caching\ConcurrentCache.cs" />
+    <Compile Include="Diagnostics\ILogger.cs" />
     <Compile Include="Helpers\CultureScope.cs" />
     <Compile Include="Helpers\ExpressionHelper.cs" />
     <Compile Include="Helpers\LambdaExpressionHelper.cs" />
@@ -197,7 +197,7 @@
     <Compile Include="Helpers\ConnectionStringHelper.cs" />
     <Compile Include="DatabaseEmulatorProviderConfiguration.cs" />
     <Compile Include="DatabaseEmulatorProviderFactory.cs" />
-    <Compile Include="Components\Logger.cs" />
+    <Compile Include="Diagnostics\Logger.cs" />
     <Compile Include="Components\EffortDataReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DatabaseReflectionHelper.cs" />

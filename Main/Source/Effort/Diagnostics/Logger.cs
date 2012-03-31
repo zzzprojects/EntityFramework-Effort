@@ -26,26 +26,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MMDB.Logging;
 using System.Diagnostics;
 
-namespace Effort.Components
+namespace Effort.Diagnostics
 {
-    internal class Logger : ILoggingPort
+    internal class Logger : ILogger
     {
-        public static bool Enabled { set; get; }
+        private TraceSource source;
 
-        static Logger()
+        public Logger()
         {
-            Logger.Enabled = true;
+            this.source = new TraceSource("Effort.Diagnostics.Tracing");
         }
 
-        public void Send(MMDBMessage msg)
+        public void Write(string message)
         {
-            if (Logger.Enabled)
-            {
-                Console.WriteLine(msg);
-            }
+            this.source.TraceInformation(message);
+        }
+
+        public void Write(string message, params object[] args)
+        {
+            this.source.TraceInformation(message, args);
         }
     }
 }

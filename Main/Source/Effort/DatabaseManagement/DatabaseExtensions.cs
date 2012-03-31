@@ -26,18 +26,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MMDB.Table;
-using MMDB;
+using NMemory;
+using NMemory.Tables;
 
 namespace Effort.DatabaseManagement
 {
     internal static class DatabaseExtensions
     {
-        public static IReflectionTable GetTable(this Database database, string name)
+        public static ITable GetTable(this Database database, string name)
         {
             return database
                 .Tables
-                .Cast<IReflectionTable>()
+                .GetAllTables()
                 .Where(t => t.EntityType.Name.Equals(name))
                 .First();
         }

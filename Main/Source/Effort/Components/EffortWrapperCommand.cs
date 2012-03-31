@@ -37,10 +37,9 @@ using Effort.DbCommandTreeTransform;
 using Effort.DbCommandTreeTransform.PostProcessing;
 using Effort.Helpers;
 using EFProviderWrapperToolkit;
-using MMDB;
-using MMDB.Linq.Visitors;
-using MMDB.Logging;
-using MMDB.Table;
+using NMemory;
+using NMemory.Diagnostics.Messages;
+using NMemory.Tables;
 
 namespace Effort.Components
 {
@@ -52,7 +51,7 @@ namespace Effort.Components
 
 		}
 
-		public Database DatabaseCache
+		internal DatabaseCache DatabaseCache
 		{
 			get
 			{
@@ -79,8 +78,6 @@ namespace Effort.Components
 
 		public override int ExecuteNonQuery()
 		{
-			this.DatabaseCache.LoggingPort.Send(new StandardMMDBMessage(this.CommandText));
-
 			if (this.Definition.CommandTree is DbUpdateCommandTree)
 			{
 				return this.PerformUpdate();
@@ -99,8 +96,6 @@ namespace Effort.Components
 
 		protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
 		{
-			this.DatabaseCache.LoggingPort.Send(new StandardMMDBMessage(this.CommandText));
-
 			if (this.DesignMode)
 			{
 				return base.ExecuteDbDataReader(behavior);
@@ -120,14 +115,8 @@ namespace Effort.Components
 
 		protected override DbTransaction DbTransaction
 		{
-			get
-			{
-				return null;
-			}
-			set
-			{
-
-			}
+			get { return null; }
+			set { }
 		}
 
 
@@ -149,40 +138,13 @@ namespace Effort.Components
 			// CodeFirst-hoz kell
 			if (tableScanVisitor.Tables.Contains("EdmMetadata"))
 			{
-				return new EffortDataReader(new List<object>(), this.getSchema());
+				return new EffortDataReader(new List<object>(), this.GetSchema());
 			}
-
-			#region Skip Cache
-
-			if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
-			{
-				if (this.WrapperConnection.defaultCacheMode == false || this.WrapperConnection.nonCached.Any())
-				{
-					//    TableScanVisitor tableScanVisitor = new TableScanVisitor();
-					//    tableScanVisitor.Visit( commandTree.Query );
-
-					bool skipCache = false;
-					if (this.WrapperConnection.defaultCacheMode && tableScanVisitor.Tables.Any(t => this.WrapperConnection.nonCached.Contains(t)))
-						skipCache = true;
-					if (this.WrapperConnection.defaultCacheMode == false && tableScanVisitor.Tables.Any(t => this.WrapperConnection.cached.Contains(t)) == false)
-						skipCache = true;
-
-					if (skipCache)
-					{
-						// Not using MMDB Cache
-						this.DatabaseCache.LoggingPort.Send(new StandardMMDBMessage("Not using MMDB Cache for the current query."));
-						this.EnsureOpenConnection();
-						return base.WrappedCommand.ExecuteReader(behavior);
-					}
-				}
-			}
-
-			#endregion
 
 			// Setup expression tranformer
 			DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor();
 			visitor.SetParameters(commandTree.Parameters.ToArray());
-			visitor.TableProvider = new DatabaseWrapper(this.DatabaseCache);
+            visitor.TableProvider = this.DatabaseCache;
 
 			Expression linqExpression = null;
 			Func<Dictionary<string, object>, IEnumerable> storedProc = null;
@@ -191,18 +153,21 @@ namespace Effort.Components
 			bool cached = false;
 
 			#region Transform Cache
+
 			if (hasParameters == false &&
 				this.DatabaseCache.TransformCache.TryGetValue(this.CommandText, out linqExpression))
 			{
 				cached = true;
 			}
-			if (hasParameters && this.DatabaseCache.TransformCacheProcedures.TryGetValue(this.CommandText, out storedProc))
+
+			if (hasParameters && this.DatabaseCache.ProcedureTransformCache.TryGetValue(this.CommandText, out storedProc))
 			{
 				cached = true;
 			}
-			if (cached && this.DatabaseCache.LoggingPort != null)
+
+			if (cached)
 			{
-				this.DatabaseCache.LoggingPort.Send(new StandardMMDBMessage("TransformCache used."));
+				this.DatabaseCache.Logger.Write("TransformCache used.");
 			}
 
 			#endregion
@@ -212,11 +177,6 @@ namespace Effort.Components
 			{
 				// Convert DbCommandTree to linq Expression Tree
 				linqExpression = visitor.Visit(commandTree.Query);
-			
-				Console.WriteLine();
-				Console.WriteLine("Original expression tree:");
-				Console.WriteLine(new ExpressionFormatter().Format(linqExpression, 299));
-				Console.WriteLine();
 
 				#region Postprocessing
 
@@ -239,7 +199,7 @@ namespace Effort.Components
 				{
 					storedProc = this.CreateStoredProcedure(linqExpression);
 
-					this.DatabaseCache.TransformCacheProcedures[this.CommandText] = storedProc;
+					this.DatabaseCache.ProcedureTransformCache[this.CommandText] = storedProc;
 				}
 				else
 				{
@@ -247,14 +207,10 @@ namespace Effort.Components
 				}
 			}
 
-			if (this.DatabaseCache.LoggingPort != null)
-			{
-				this.DatabaseCache.LoggingPort.Send(
-					new StandardMMDBMessage(
-						"DbCommandTree converted in {0:0.00} ms",
-						stopWatch.Elapsed.TotalMilliseconds));
 
-			}
+			this.DatabaseCache.Logger.Write(
+                "DbCommandTree converted in {0:0.00} ms",
+				stopWatch.Elapsed.TotalMilliseconds);
 
 			if (hasParameters)
 			{
@@ -265,13 +221,13 @@ namespace Effort.Components
 
 				IEnumerable result = storedProc(parameters);
 
-				return new EffortDataReader(storedProc(parameters), this.getSchema());
+                return new EffortDataReader(result, this.GetSchema());
 			}
 			else
 			{
 				IQueryable result = this.CreateQuery(linqExpression);
 
-				return new EffortDataReader(result, this.getSchema());
+				return new EffortDataReader(result, this.GetSchema());
 			}
 		}
 
@@ -279,7 +235,7 @@ namespace Effort.Components
 
 		#region Update
 
-		private DatabaseSchema getSchema()
+		private DatabaseSchema GetSchema()
 		{
 			return this.WrapperConnection.GetDatabaseSchema();
 		}
@@ -411,7 +367,7 @@ namespace Effort.Components
 
 			DbInsertCommandTree commandTree = base.Definition.CommandTree as DbInsertCommandTree;
 			// Get the source table
-			IReflectionTable table = this.GetTable(commandTree);
+			ITable table = this.GetTable(commandTree);
 
 			// Collect the SetClause DbExpressions into a dictionary
 			IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions(commandTree.SetClauses);
@@ -494,7 +450,7 @@ namespace Effort.Components
 			}
 
 
-			IReflectionTable table = this.GetTable(commandTree);
+			ITable table = this.GetTable(commandTree);
 
 			// Collect the SetClause DbExpressions into a dictionary
 			IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions(commandTree.SetClauses);
@@ -551,10 +507,10 @@ namespace Effort.Components
 				}
 			}
 
-			return new EffortDataReader(new[] { returnedValues }, returnedFields, this.getSchema());
+			return new EffortDataReader(new[] { returnedValues }, returnedFields, this.GetSchema());
 		}
 
-		private IReflectionTable GetTable(DbInsertCommandTree commandTree)
+		private ITable GetTable(DbInsertCommandTree commandTree)
 		{
 			DbScanExpression source = commandTree.Target.Expression as DbScanExpression;
 
@@ -563,10 +519,10 @@ namespace Effort.Components
 				throw new InvalidOperationException("The type of the Target property is not DbScanExpression");
 			}
 
-			return this.DatabaseCache.GetTable(source.Target.Name);
+			return this.DatabaseCache.Internal.GetTable(source.Target.Name);
 		}
 
-		private object CreateAndInsertEntity(IReflectionTable table, IList<MemberBinding> memberBindings)
+		private object CreateAndInsertEntity(ITable table, IList<MemberBinding> memberBindings)
 		{
 			LambdaExpression expression =
 			   Expression.Lambda(
@@ -578,7 +534,7 @@ namespace Effort.Components
 
 			object newEntity = factory.DynamicInvoke();
 
-			table.Insert(newEntity);
+			((IReflectionTable)table).Insert(newEntity);
 
 			return newEntity;
 		}
@@ -630,7 +586,7 @@ namespace Effort.Components
 		{
 			DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor();
 			visitor.SetParameters(commandTree.Parameters.ToArray());
-			visitor.TableProvider = new DatabaseWrapper(this.DatabaseCache);
+			visitor.TableProvider = this.DatabaseCache;
 
 			// Get the source expression
 			ConstantExpression source = visitor.Visit(commandTree.Target.Expression) as ConstantExpression;
@@ -674,12 +630,12 @@ namespace Effort.Components
 
 		private IQueryable CreateQuery(Expression expression)
 		{
-			return DatabaseReflectionHelper.CreateTableQuery(expression, this.DatabaseCache);
+			return DatabaseReflectionHelper.CreateTableQuery(expression, this.DatabaseCache.Internal);
 		}
 
-		private Func<Dictionary<string, object>, IEnumerable> CreateStoredProcedure(Expression exp)
+		private Func<Dictionary<string, object>, IEnumerable> CreateStoredProcedure(Expression expression)
 		{
-			var methodCall = exp as MethodCallExpression;
+			var methodCall = expression as MethodCallExpression;
 
 			if (IsQueryable(methodCall) == false)
 			{
@@ -692,7 +648,8 @@ namespace Effort.Components
 
 				throw new InvalidOperationException();
 			}
-			return this.DatabaseCache.CreateStoredProcedure(exp);
+
+            return DatabaseReflectionHelper.CreateStoredProcedure(expression, this.DatabaseCache.Internal);
 		}
 
 		private static bool IsQueryable(Expression methodCall)

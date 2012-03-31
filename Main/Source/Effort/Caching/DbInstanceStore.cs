@@ -27,24 +27,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using MMDB.Locking;
-using MMDB.Logging;
 using Effort.Helpers;
 using Effort.Caching;
-using MMDB;
+using NMemory;
 
 namespace Effort.DatabaseManagement
 {
     internal class DbInstanceStore
     {
-        private static ConcurrentCache<ConnectionStringKey, Database> store;
+        private static ConcurrentCache<ConnectionStringKey, DatabaseCache> store;
 
         static DbInstanceStore()
         {
-            store = new ConcurrentCache<ConnectionStringKey, Database>();
+            store = new ConcurrentCache<ConnectionStringKey, DatabaseCache>();
         }
 
-        public static Database GetDbInstance(string connectionString, Func<Database> databaseFactoryMethod)
+        public static DatabaseCache GetDbInstance(string connectionString, Func<DatabaseCache> databaseFactoryMethod)
         {
             return store.Get(new ConnectionStringKey(connectionString), databaseFactoryMethod);
         }

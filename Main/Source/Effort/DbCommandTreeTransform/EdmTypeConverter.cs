@@ -87,26 +87,20 @@ namespace Effort.DbCommandTreeTransform
         }
 
 
-
-
-
-        private Type ConvertWithFacets( TypeUsage type, TypeFacets facets )
+        private Type ConvertWithFacets(TypeUsage type, TypeFacets facets)
         {
-
-            if( type.EdmType.BuiltInTypeKind == BuiltInTypeKind.PrimitiveType )
+            if (type.EdmType.BuiltInTypeKind == BuiltInTypeKind.PrimitiveType)
             {
-                return this.CreatePrimitiveType( type.EdmType as PrimitiveType, facets );
-
+                return this.CreatePrimitiveType(type.EdmType as PrimitiveType, facets);
             }
-            else if( type.EdmType.BuiltInTypeKind == BuiltInTypeKind.RowType )
+            else if (type.EdmType.BuiltInTypeKind == BuiltInTypeKind.RowType)
             {
-                return this.CreateRowType( type.EdmType as RowType, facets );
+                return this.CreateRowType(type.EdmType as RowType, facets);
             }
-            else if( type.EdmType.BuiltInTypeKind == BuiltInTypeKind.CollectionType )
+            else if (type.EdmType.BuiltInTypeKind == BuiltInTypeKind.CollectionType)
             {
-                return this.CreateCollectionType( type.EdmType as CollectionType, facets );
+                return this.CreateCollectionType(type.EdmType as CollectionType, facets);
             }
-
 
             throw new NotSupportedException();
         }
@@ -116,6 +110,12 @@ namespace Effort.DbCommandTreeTransform
         private Type CreatePrimitiveType(PrimitiveType primitiveType, TypeFacets facets)
         {
             Type result = primitiveType.ClrEquivalentType;
+
+            // Binary type
+            if (result == typeof(byte[]))
+            {
+                return typeof(NMemory.Data.Binary);
+            }
 
             if (facets.Nullable && result.IsValueType)
             {
@@ -139,9 +139,9 @@ namespace Effort.DbCommandTreeTransform
             return result;
         }
 
-        private Type CreateCollectionType( CollectionType cType, TypeFacets facets )
+        private Type CreateCollectionType(CollectionType cType, TypeFacets facets)
         {
-            Type elementType = this.ConvertWithFacets( cType.TypeUsage, facets );
+            Type elementType = this.ConvertWithFacets(cType.TypeUsage, facets);
 
             return elementType.MakeArrayType();
         }

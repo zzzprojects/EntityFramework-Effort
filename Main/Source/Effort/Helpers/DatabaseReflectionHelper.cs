@@ -29,16 +29,18 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Effort.DatabaseManagement;
-using MMDB;
-using MMDB.Index;
-using MMDB.Table;
 using System.Diagnostics;
+using NMemory;
+using NMemory.Tables;
+using NMemory.Indexes;
+using NMemory.Linq;
+using System.Collections;
 
 namespace Effort.Helpers
 {
     internal static class DatabaseReflectionHelper
     {
-        public static IReflectionTable CreateTable(
+        public static ITable CreateTable(
             Database database, 
             Type entityType, 
             
@@ -73,7 +75,7 @@ namespace Effort.Helpers
                             .MakeGenericMethod(entityType, primaryKeyType)
                             .Invoke(null, new object[] { database, primaryKeyExpression, identity, initialEntities});
 
-            return table as IReflectionTable;
+            return table as ITable;
         }
 
         public static int UpdateEntities(IQueryable source, Expression updater)
@@ -117,8 +119,26 @@ namespace Effort.Helpers
             return tableQuery;
         }
 
+        public static Func<IDictionary<string, object>, IEnumerable> CreateStoredProcedure(Expression query, Database database)
+        {
+            if (query.Type.GetGenericTypeDefinition() != typeof(IQueryable<>))
+            {
+                throw new ArgumentException("not IQueryable<>", "query");
+            }
 
-        private static IReflectionTable GetTable(Database database, RelationshipEndMember rel)
+            Type entityType = TypeHelper.GetElementType(query.Type);
+
+            Func<IDictionary<string, object>, IEnumerable> procedure =
+                typeof(DatabaseReflectionHelper.WrapperMethods)
+                    .GetMethod("CreateStoredProcedure")
+                    .MakeGenericMethod(entityType)
+                    .Invoke(null, new object[] { query, database }) as Func<IDictionary<string, object>, IEnumerable>;
+
+            return procedure;
+        }
+
+
+        private static ITable GetTable(Database database, RelationshipEndMember rel)
         {
             if (rel.TypeUsage.EdmType.BuiltInTypeKind != BuiltInTypeKind.RefType)
             {
@@ -140,8 +160,8 @@ namespace Effort.Helpers
             }
 
             // Get the referenced tables
-            IReflectionTable fromTable = GetTable(database, constraint.FromRole);
-            IReflectionTable toTable = GetTable(database, constraint.ToRole);
+            ITable fromTable = GetTable(database, constraint.FromRole);
+            ITable toTable = GetTable(database, constraint.ToRole);
 
             Type[] toTableGenericsArgs = toTable.GetType().GetGenericArguments();
 
@@ -161,8 +181,8 @@ namespace Effort.Helpers
 
             // Consider if the foreign key is also a primary key
             if (toTablePrimaryIndex != null && 
-                toTablePrimaryIndex.KeyMembers.Length == 1 &&
-                toTablePrimaryIndex.KeyMembers[0].Name == foreignKeyProp.Name)
+                toTablePrimaryIndex.KeyInfo.KeyMembers.Length == 1 &&
+                toTablePrimaryIndex.KeyInfo.KeyMembers[0].Name == foreignKeyProp.Name)
             {
                 foreignKeyIndex = toTablePrimaryIndex;
             }
@@ -186,22 +206,22 @@ namespace Effort.Helpers
             // Register association in the database
 
             // Identical index type
-            if (fromTablePrimaryIndex.KeyType == foreignKeyIndex.KeyType)
+            if (fromTablePrimaryIndex.KeyInfo.KeyType == foreignKeyIndex.KeyInfo.KeyType)
             {
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                     .GetMethod("CreateRelationWithSameKeyType")
-                    .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyType, toTable.EntityType)
+                    .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyInfo.KeyType, toTable.EntityType)
                     .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
 
             }
             // Identical, but foreign key is nullable
             else if (
-                TypeHelper.IsNullable(foreignKeyIndex.KeyType) &&
-                TypeHelper.MakeNotNullable(foreignKeyIndex.KeyType) == fromTablePrimaryIndex.KeyType)
+                TypeHelper.IsNullable(foreignKeyIndex.KeyInfo.KeyType) &&
+                TypeHelper.MakeNotNullable(foreignKeyIndex.KeyInfo.KeyType) == fromTablePrimaryIndex.KeyInfo.KeyType)
             {
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                    .GetMethod("CreateRelationWithSameKeyTypeNullable")
-                   .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyType, toTable.EntityType)
+                   .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyInfo.KeyType, toTable.EntityType)
                    .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
             }
             else
@@ -248,7 +268,7 @@ namespace Effort.Helpers
             public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, Expression<Func<TEntity, TForeignKey>> foreignKey)
                 where TEntity : class
             {
-                var indexFactory = new RedBlackTreeIndexFactory<TEntity, TPrimaryKey, TEntity>();
+                var indexFactory = new RedBlackTreeIndexFactory<TEntity>();
 				////var indexFactory = new DictionaryIndexFactory<TEntity, TPrimaryKey, TEntity>();
 
                 return table.CreateIndex<TForeignKey>(indexFactory, foreignKey);
@@ -256,22 +276,28 @@ namespace Effort.Helpers
 
             public static TableQuery<T> CreateTableQuery<T>(Expression expression, Database database)
             {
-                TableQueryProvider<T> provider = new TableQueryProvider<T>(database);
-                TableQuery<T> query = new TableQuery<T>(provider, expression);
+                TableQuery<T> query = new TableQuery<T>(database, expression);
 
                 return query;
+            }
+
+            public static Func<IDictionary<string, object>, IEnumerable<T>> CreateStoredProcedure<T>(Expression expression, Database database)
+            {
+                TableQuery<T> query = new TableQuery<T>(database, expression);
+
+                return database.StoredProcedures.Create(query);
             }
 
             public static int UpdateEntities<TEntity>(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updater)
                 where TEntity : class
             {
-                return MMDB.Linq.QueryableEx.Update(query, updater);
+                return NMemory.Linq.QueryableEx.Update(query, updater);
             }
 
             public static int DeleteEntities<TEntity>(IQueryable<TEntity> query)
                 where TEntity : class
             {
-                return MMDB.Linq.QueryableEx.Delete(query);
+                return NMemory.Linq.QueryableEx.Delete(query);
             }
 
 

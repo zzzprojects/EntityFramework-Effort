@@ -23,24 +23,18 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EFProviderWrapperToolkit;
-using MMDB;
 using System.Data.Common;
-using Effort.DatabaseManagement;
-using System.Data;
-using Effort.Components;
-using System.Data.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
+using System.Data.Metadata.Edm;
+using Effort.Components;
+using Effort.DatabaseManagement;
 
 namespace Effort.CodeFirst
 {
 	public class EffortCodeFirstConnection : EffortWrapperConnection
 	{
-		public static MetadataWorkspace Workspace { get; set; }
 		private Type contextType;
+        private DatabaseCache databaseCache;
 
 		public EffortCodeFirstConnection()
 			: base(ProviderModes.DatabaseEmulator)
@@ -52,7 +46,7 @@ namespace Effort.CodeFirst
 			get { throw new NotImplementedException(); }
 		}
 
-		internal override Database DatabaseCache
+		internal override DatabaseCache DatabaseCache
 		{
 			get
 			{
@@ -65,13 +59,14 @@ namespace Effort.CodeFirst
 			}
 		}
 
-		public void processConnectionString()
+		private void ProcessConnectionString()
 		{
-			var db = new DbConnectionStringBuilder();
+            DbConnectionStringBuilder db = new DbConnectionStringBuilder();
 			db.ConnectionString = this.ConnectionString;
 
 			this.contextType = Type.GetType(db["context"].ToString());
 		}
+
 		public override void Open()
 		{
 			if (this.DesignMode)
@@ -80,16 +75,30 @@ namespace Effort.CodeFirst
 				return;
 			}
 
-			if (this.connectionString == null)
-			{
-				this.connectionString = this.WrappedConnection.ConnectionString;
-			}
-
-			this.processConnectionString();
+            this.ProcessConnectionString();
 
 			// Virtualize connection state
-			this.connectionState = ConnectionState.Open;
+            this.MarkAsOpen();
 		}
+
+
+        public override string ConnectionString
+        {
+            get
+            {
+                if (base.ConnectionString == null)
+                {
+                    return this.WrappedConnection.ConnectionString;
+                }
+
+                return base.ConnectionString;
+            }
+            set
+            {
+                base.ConnectionString = value;
+            }
+        }
+
 		protected override DbProviderFactory DbProviderFactory
 		{
 			get
@@ -103,9 +112,10 @@ namespace Effort.CodeFirst
 			}
 		}
 
-		internal override MetadataWorkspace getWorkspace(out string[] metadataFiles)
+		protected internal override MetadataWorkspace GetWorkspace(out string[] metadataFiles)
 		{
-			metadataFiles = new[] { this.contextType.FullName };
+			metadataFiles = new string[] { this.contextType.FullName };
+
 			IObjectContextAdapter context =
 				Activator.CreateInstance(this.contextType) as IObjectContextAdapter;
 			
@@ -114,6 +124,7 @@ namespace Effort.CodeFirst
 
 		protected override void Dispose(bool disposing)
 		{
+            
 		}
 	}
 }

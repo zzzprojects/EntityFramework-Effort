@@ -28,8 +28,8 @@ using System.Linq;
 using System.Text;
 using Effort.DbCommandTreeTransform;
 using System.Reflection;
-using MMDB.Linq;
 using Effort.Helpers;
+using NMemory;
 
 namespace Effort.DatabaseManagement
 {
@@ -39,7 +39,7 @@ namespace Effort.DatabaseManagement
         {
             get 
             {
-                return ReflectionHelper.GetMethodInfo(() => Common.Like(string.Empty, string.Empty));
+                return ReflectionHelper.GetMethodInfo(() => Functions.Like(string.Empty, string.Empty));
             }
         }
     }

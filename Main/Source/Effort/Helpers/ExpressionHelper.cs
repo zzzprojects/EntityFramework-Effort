@@ -28,9 +28,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Linq.Expressions;
-using MMDB.Linq.Visitors;
 using Effort.DbCommandTreeTransform;
-using MMDB.Linq;
 
 namespace Effort.Helpers
 {

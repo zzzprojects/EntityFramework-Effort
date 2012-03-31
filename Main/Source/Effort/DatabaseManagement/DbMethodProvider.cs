@@ -22,12 +22,8 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Effort.DbCommandTreeTransform;
 using System.Reflection;
+using Effort.DbCommandTreeTransform;
 using Effort.Helpers;
 using NMemory;
 

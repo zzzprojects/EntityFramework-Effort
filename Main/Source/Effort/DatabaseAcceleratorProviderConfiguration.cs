@@ -22,12 +22,8 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EFProviderWrapperToolkit;
 using System.Threading;
+using EFProviderWrapperToolkit;
 
 namespace Effort
 {

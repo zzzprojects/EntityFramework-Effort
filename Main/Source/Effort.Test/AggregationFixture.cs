@@ -22,13 +22,10 @@
 
 #endregion
 
-using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Effort.Test.Data;
 using Effort.Test.Utils;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Effort.Test
 {

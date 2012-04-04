@@ -116,12 +116,6 @@ namespace Effort.TypeConversion
         {
             Type result = primitiveType.ClrEquivalentType;
 
-            // Binary type
-            if (result == typeof(byte[]))
-            {
-                return typeof(NMemory.Data.Binary);
-            }
-
             if (facets.Nullable && result.IsValueType)
             {
                 result = typeof(Nullable<>).MakeGenericType(result);

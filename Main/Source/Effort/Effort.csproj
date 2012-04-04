@@ -191,6 +191,7 @@
     <Compile Include="Helpers\TypeHelper.cs" />
     <Compile Include="EntityConnectionFactory.cs" />
     <Compile Include="ObjectContextFactory.cs" />
+    <Compile Include="TypeConversion\EdmTypeHelper.cs" />
     <Compile Include="TypeConversion\EmulatorModeTypeConverter.cs" />
     <Compile Include="TypeConversion\ITypeConverter.cs" />
     <Compile Include="TypeConversion\TypeConverterBase.cs" />

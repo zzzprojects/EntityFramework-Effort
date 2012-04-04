@@ -46,15 +46,19 @@ namespace Effort.DbCommandTreeTransform
         private IMethodProvider methodProvider;
 
         private LinqMethodExpressionBuilder queryMethodExpressionBuilder;
-        private EdmTypeConverter typeConverter;
         private CanonicalFunctionMapper functionMapper;
+
+        private ITypeConverter converter;
+        private EdmTypeConverter edmTypeConverter;
 
         private VariableCollection currentVariables;
 
         public DbExpressionTransformVisitor(ITypeConverter converter)
         {
+            this.converter = converter;
+            this.edmTypeConverter = new EdmTypeConverter(converter);
+
             this.queryMethodExpressionBuilder = new LinqMethodExpressionBuilder();
-            this.typeConverter = new EdmTypeConverter(converter);
             this.currentVariables = new VariableCollection();
             this.parameters = new Dictionary<string, Tuple<TypeUsage, int>>();
 
@@ -136,7 +140,7 @@ namespace Effort.DbCommandTreeTransform
             Expression left = this.Visit(expression.Left);
             Expression right = this.Visit(expression.Right);
 
-            Type resultType = typeConverter.Convert(expression.ResultType).GetElementType();
+            Type resultType = edmTypeConverter.Convert(expression.ResultType).GetElementType();
             Type rightType = TypeHelper.GetElementType(right.Type);
 
 
@@ -326,7 +330,7 @@ namespace Effort.DbCommandTreeTransform
             Expression source = this.Visit(expression.Input.Expression);
             Type elementType = TypeHelper.GetElementType(source.Type);
 
-            Type resultType = typeConverter.GetElementType(expression.ResultType);
+            Type resultType = edmTypeConverter.GetElementType(expression.ResultType);
             Expression result = source;
 
             if (expression.Keys.Count == 0)
@@ -513,7 +517,7 @@ namespace Effort.DbCommandTreeTransform
         //tamas
         public override Expression Visit(DbNewInstanceExpression expression)
         {
-            Type resultType = typeConverter.Convert(expression.ResultType);
+            Type resultType = edmTypeConverter.Convert(expression.ResultType);
 
             return this.CreateSelector(expression.Arguments, resultType);
         }
@@ -585,7 +589,7 @@ namespace Effort.DbCommandTreeTransform
 
             //typeConverter.Convert(this.parameters[expression.ParameterName]);
 
-            Type type = typeConverter.Convert(expression.ResultType);
+            Type type = edmTypeConverter.Convert(expression.ResultType);
 
             var parameterPlaceholderConstructor = typeof(NMemory.StoredProcedures.Parameter<>)
                 .MakeGenericType(type)
@@ -620,7 +624,7 @@ namespace Effort.DbCommandTreeTransform
 
         public override Expression Visit(DbNullExpression expression)
         {
-            return Expression.Constant(null, typeConverter.Convert(expression.ResultType));
+            return Expression.Constant(null, edmTypeConverter.Convert(expression.ResultType));
         }
 
         #region Predicate primitives
@@ -853,12 +857,9 @@ namespace Effort.DbCommandTreeTransform
         public override Expression Visit(DbConstantExpression expression)
         {
             object value = expression.Value;
-            Type type = typeConverter.Convert(expression.ResultType);
+            Type type = edmTypeConverter.Convert(expression.ResultType);
 
-            if (type == typeof(NMemory.Data.Binary))
-            {
-                value = (NMemory.Data.Binary)(byte[])value;
-            }
+            value = this.converter.ConvertClrValueToClrValue(value, type);
 
             return Expression.Constant(value, type);
         }
@@ -897,7 +898,7 @@ namespace Effort.DbCommandTreeTransform
         //tamas
         public override Expression Visit(DbCastExpression expression)
         {
-            return Expression.Convert(this.Visit(expression.Argument), typeConverter.Convert(expression.ResultType));
+            return Expression.Convert(this.Visit(expression.Argument), edmTypeConverter.Convert(expression.ResultType));
         }
 
         //zsolt

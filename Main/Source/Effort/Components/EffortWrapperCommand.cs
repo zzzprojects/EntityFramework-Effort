@@ -40,6 +40,7 @@ using EFProviderWrapperToolkit;
 using NMemory;
 using NMemory.Diagnostics.Messages;
 using NMemory.Tables;
+using NMemory.StoredProcedures;
 
 namespace Effort.Components
 {
@@ -51,11 +52,11 @@ namespace Effort.Components
 
 		}
 
-		internal DatabaseCache DatabaseCache
+		internal DatabaseContainer DatabaseContainer
 		{
 			get
 			{
-				return this.WrapperConnection.DatabaseCache;
+				return this.WrapperConnection.DatabaseContainer;
 			}
 		}
 
@@ -142,38 +143,39 @@ namespace Effort.Components
 			}
 
 			// Setup expression tranformer
-			DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor();
+			DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor(this.DatabaseContainer.TypeConverter);
 			visitor.SetParameters(commandTree.Parameters.ToArray());
-            visitor.TableProvider = this.DatabaseCache;
+            visitor.TableProvider = this.DatabaseContainer;
 
 			Expression linqExpression = null;
-			Func<Dictionary<string, object>, IEnumerable> storedProc = null;
+			IStoredProcedure storedProcedure = null;
 
 			bool hasParameters = this.Parameters.Count > 0;
-			bool cached = false;
+			bool retrievedFromCache = false;
 
-			#region Transform Cache
+			#region Retrieve from cache
 
-			if (hasParameters == false &&
-				this.DatabaseCache.TransformCache.TryGetValue(this.CommandText, out linqExpression))
+            // Try to retrieve from the cache
+                
+			if (!hasParameters && this.DatabaseContainer.TransformCache.TryGetValue(this.CommandText, out linqExpression))
 			{
-				cached = true;
+				retrievedFromCache = true;
 			}
 
-			if (hasParameters && this.DatabaseCache.ProcedureTransformCache.TryGetValue(this.CommandText, out storedProc))
+			if (hasParameters && this.DatabaseContainer.ProcedureTransformCache.TryGetValue(this.CommandText, out storedProcedure))
 			{
-				cached = true;
+				retrievedFromCache = true;
 			}
 
-			if (cached)
+			if (retrievedFromCache)
 			{
-				this.DatabaseCache.Logger.Write("TransformCache used.");
+				this.DatabaseContainer.Logger.Write("TransformCache used.");
 			}
 
 			#endregion
 
 			// Check if this expression tree has not been cached yet
-			if (cached == false)
+			if (retrievedFromCache == false)
 			{
 				// Convert DbCommandTree to linq Expression Tree
 				linqExpression = visitor.Visit(commandTree.Query);
@@ -197,29 +199,39 @@ namespace Effort.Components
 				// Place the transformed expression into the cache
 				if (hasParameters)
 				{
-					storedProc = this.CreateStoredProcedure(linqExpression);
+					storedProcedure = this.CreateStoredProcedure(linqExpression);
 
-					this.DatabaseCache.ProcedureTransformCache[this.CommandText] = storedProc;
+					this.DatabaseContainer.ProcedureTransformCache[this.CommandText] = storedProcedure;
 				}
 				else
 				{
-					this.DatabaseCache.TransformCache[this.CommandText] = linqExpression;
+					this.DatabaseContainer.TransformCache[this.CommandText] = linqExpression;
 				}
 			}
 
 
-			this.DatabaseCache.Logger.Write(
+			this.DatabaseContainer.Logger.Write(
                 "DbCommandTree converted in {0:0.00} ms",
 				stopWatch.Elapsed.TotalMilliseconds);
 
 			if (hasParameters)
 			{
-				Dictionary<string, object> parameters = this
-					 .Parameters
-					 .Cast<DbParameter>()
-					 .ToDictionary(p => p.ParameterName, p => p.Value as object);
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-				IEnumerable result = storedProc(parameters);
+                // Bind the parameters
+                foreach (DbParameter dbParam in this.Parameters)
+                {
+                    string name = dbParam.ParameterName;
+                    object value = dbParam.Value;
+
+                    ParameterDescription expectedParam = storedProcedure.Parameters.FirstOrDefault(p => p.Name == dbParam.ParameterName);
+
+                    value = this.DatabaseContainer.TypeConverter.ConvertClrValueToClrValue(value, expectedParam.Type);
+
+                    parameters.Add(name, value);
+                }
+
+                IEnumerable result = storedProcedure.Execute(parameters);
 
                 return new EffortDataReader(result, this.GetSchema());
 			}
@@ -267,7 +279,7 @@ namespace Effort.Components
 			//Collection for collection member bindings
 			IList<MemberBinding> memberBindings = new List<MemberBinding>();
 
-			DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor();
+			DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(this.DatabaseContainer.TypeConverter);
 
 			// Setup context for the predicate
 			ParameterExpression context = Expression.Parameter(type, "context");
@@ -374,7 +386,7 @@ namespace Effort.Components
 
 			// Collection for collection member bindings
 			IList<MemberBinding> memberBindings = new List<MemberBinding>();
-			DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor();
+			DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(this.DatabaseContainer.TypeConverter);
 
 			// Initialize member bindings
 			foreach (PropertyInfo property in table.EntityType.GetProperties())
@@ -457,7 +469,7 @@ namespace Effort.Components
 
 			// Collection for collection member bindings
 			IList<MemberBinding> memberBindings = new List<MemberBinding>();
-			DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor();
+			DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(this.DatabaseContainer.TypeConverter);
 
 			// Initialize member bindings
 			foreach (PropertyInfo property in table.EntityType.GetProperties())
@@ -519,7 +531,7 @@ namespace Effort.Components
 				throw new InvalidOperationException("The type of the Target property is not DbScanExpression");
 			}
 
-			return this.DatabaseCache.Internal.GetTable(source.Target.Name);
+			return this.DatabaseContainer.Internal.GetTable(source.Target.Name);
 		}
 
 		private object CreateAndInsertEntity(ITable table, IList<MemberBinding> memberBindings)
@@ -584,9 +596,9 @@ namespace Effort.Components
 
 		private Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, out IReflectionTable table)
 		{
-			DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor();
+			DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor(this.DatabaseContainer.TypeConverter);
 			visitor.SetParameters(commandTree.Parameters.ToArray());
-			visitor.TableProvider = this.DatabaseCache;
+			visitor.TableProvider = this.DatabaseContainer;
 
 			// Get the source expression
 			ConstantExpression source = visitor.Visit(commandTree.Target.Expression) as ConstantExpression;
@@ -630,16 +642,16 @@ namespace Effort.Components
 
 		private IQueryable CreateQuery(Expression expression)
 		{
-			return DatabaseReflectionHelper.CreateTableQuery(expression, this.DatabaseCache.Internal);
+			return DatabaseReflectionHelper.CreateTableQuery(expression, this.DatabaseContainer.Internal);
 		}
 
-		private Func<Dictionary<string, object>, IEnumerable> CreateStoredProcedure(Expression expression)
+		private IStoredProcedure CreateStoredProcedure(Expression expression)
 		{
-			var methodCall = expression as MethodCallExpression;
+            MethodCallExpression methodCall = expression as MethodCallExpression;
 
 			if (IsQueryable(methodCall) == false)
 			{
-				var baseCall = methodCall.Arguments[0];
+				Expression baseCall = methodCall.Arguments[0];
 
 				if (IsQueryable(baseCall) == false)
 				{
@@ -649,7 +661,7 @@ namespace Effort.Components
 				throw new InvalidOperationException();
 			}
 
-            return DatabaseReflectionHelper.CreateStoredProcedure(expression, this.DatabaseCache.Internal);
+            return DatabaseReflectionHelper.CreateStoredProcedure(expression, this.DatabaseContainer.Internal);
 		}
 
 		private static bool IsQueryable(Expression methodCall)

@@ -35,6 +35,7 @@ using NMemory.Tables;
 using NMemory.Indexes;
 using NMemory.Linq;
 using System.Collections;
+using NMemory.StoredProcedures;
 
 namespace Effort.Helpers
 {
@@ -119,7 +120,7 @@ namespace Effort.Helpers
             return tableQuery;
         }
 
-        public static Func<IDictionary<string, object>, IEnumerable> CreateStoredProcedure(Expression query, Database database)
+        public static IStoredProcedure CreateStoredProcedure(Expression query, Database database)
         {
             if (query.Type.GetGenericTypeDefinition() != typeof(IQueryable<>))
             {
@@ -128,11 +129,11 @@ namespace Effort.Helpers
 
             Type entityType = TypeHelper.GetElementType(query.Type);
 
-            Func<IDictionary<string, object>, IEnumerable> procedure =
+            IStoredProcedure procedure =
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                     .GetMethod("CreateStoredProcedure")
                     .MakeGenericMethod(entityType)
-                    .Invoke(null, new object[] { query, database }) as Func<IDictionary<string, object>, IEnumerable>;
+                    .Invoke(null, new object[] { query, database }) as IStoredProcedure;
 
             return procedure;
         }
@@ -281,7 +282,7 @@ namespace Effort.Helpers
                 return query;
             }
 
-            public static Func<IDictionary<string, object>, IEnumerable<T>> CreateStoredProcedure<T>(Expression expression, Database database)
+            public static IStoredProcedure CreateStoredProcedure<T>(Expression expression, Database database)
             {
                 TableQuery<T> query = new TableQuery<T>(database, expression);
 

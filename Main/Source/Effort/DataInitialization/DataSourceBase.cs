@@ -29,17 +29,24 @@ using System.Text;
 using System.Data;
 using System.Reflection;
 using Effort.Helpers;
+using Effort.TypeConversion;
 
 namespace Effort.DataInitialization
 {
     internal abstract class DataSourceBase : IDataSource
     {
+        private ITypeConverter converter;
+        
         private string[] propertyNames;
         private Type[] propertyTypes;
+        
         private Delegate initializer;
 
-        public DataSourceBase(Type entityType)
+
+        public DataSourceBase(Type entityType, ITypeConverter converter)
         {
+            this.converter = converter;
+
             PropertyInfo[] properties = entityType.GetProperties();
 
             this.propertyNames = properties.Select(p => p.Name).ToArray();
@@ -97,12 +104,7 @@ namespace Effort.DataInitialization
 
         protected virtual object ConvertValue(object value, Type type)
         {
-            if (type == typeof(NMemory.Data.Binary))
-            {
-                return (NMemory.Data.Binary)(byte[])value;
-            }
-
-            return value;
+            return this.converter.ConvertClrValueToClrValue(value, type);
         }
 
     }

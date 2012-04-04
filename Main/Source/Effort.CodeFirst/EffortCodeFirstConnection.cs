@@ -34,7 +34,7 @@ namespace Effort.CodeFirst
 	public class EffortCodeFirstConnection : EffortWrapperConnection
 	{
 		private Type contextType;
-        private DatabaseCache databaseCache;
+        private DatabaseContainer databaseContainer;
 
 		public EffortCodeFirstConnection()
 			: base(ProviderModes.DatabaseEmulator)
@@ -46,16 +46,16 @@ namespace Effort.CodeFirst
 			get { throw new NotImplementedException(); }
 		}
 
-		internal override DatabaseCache DatabaseCache
+		internal override DatabaseContainer DatabaseContainer
 		{
 			get
 			{
-				if (this.databaseCache == null)
+				if (this.databaseContainer == null)
 				{
-					this.databaseCache = this.CreateDatabaseSandboxed();
+					this.databaseContainer = this.CreateDatabaseSandboxed();
 				}
 
-				return this.databaseCache;
+				return this.databaseContainer;
 			}
 		}
 

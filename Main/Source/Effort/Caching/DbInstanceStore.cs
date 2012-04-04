@@ -35,14 +35,14 @@ namespace Effort.DatabaseManagement
 {
     internal class DbInstanceStore
     {
-        private static ConcurrentCache<ConnectionStringKey, DatabaseCache> store;
+        private static ConcurrentCache<ConnectionStringKey, DatabaseContainer> store;
 
         static DbInstanceStore()
         {
-            store = new ConcurrentCache<ConnectionStringKey, DatabaseCache>();
+            store = new ConcurrentCache<ConnectionStringKey, DatabaseContainer>();
         }
 
-        public static DatabaseCache GetDbInstance(string connectionString, Func<DatabaseCache> databaseFactoryMethod)
+        public static DatabaseContainer GetDbInstance(string connectionString, Func<DatabaseContainer> databaseFactoryMethod)
         {
             return store.Get(new ConnectionStringKey(connectionString), databaseFactoryMethod);
         }

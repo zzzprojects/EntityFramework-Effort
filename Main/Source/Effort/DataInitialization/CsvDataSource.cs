@@ -31,6 +31,7 @@ using System.Data;
 using LumenWorks.Framework.IO.Csv;
 using Effort.Helpers;
 using System.Globalization;
+using Effort.TypeConversion;
 
 namespace Effort.DataInitialization
 {
@@ -38,7 +39,7 @@ namespace Effort.DataInitialization
     {
         private FileInfo file;
 
-        public CsvDataSource(string path, Type entityType) : base(entityType)
+        public CsvDataSource(Type entityType, ITypeConverter typeConverter, string path) : base(entityType, typeConverter)
         {
             this.file = new FileInfo(path);
         }

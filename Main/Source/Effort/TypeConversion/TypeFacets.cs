@@ -22,38 +22,14 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Effort.Caching;
-using Effort.DatabaseManagement;
-using Effort.TypeConversion;
-
-namespace Effort.DataInitialization
+namespace Effort.TypeConversion
 {
-    internal class CachedCsvDataSource : CsvDataSource
+    internal struct TypeFacets
     {
-        private string connectionString;
-        private string tableName;
+        public bool Nullable { set; get; }
 
-        public CachedCsvDataSource(Type entityType, ITypeConverter converter, string connectionString, string tableName, string path)
-            : base(entityType, converter, path)
-        {
-            this.connectionString = connectionString;
-            this.tableName = tableName;
-        }
+        public bool Identity { get; set; }
 
-        public override IEnumerable<object> GetInitialRecords()
-        {
-            var cache = TableInitialDataStore.GetDbInitialData(
-                this.connectionString, 
-                this.tableName, 
-                () => new TableInitialData(base.GetInitialRecords()));
-
-            return cache.GetClonedInitialData();
-        }
-
-
+        public bool Computed { get; set; }
     }
 }

@@ -28,6 +28,7 @@ using System.Data.Common;
 using System.Data.EntityClient;
 using System.Data.Metadata.Edm;
 using Effort.Helpers;
+using Effort.TypeConversion;
 
 namespace Effort.DataInitialization
 {
@@ -37,11 +38,10 @@ namespace Effort.DataInitialization
         private MetadataWorkspace workspace;
         private EntitySet entitySet;
 
-        public DbDataSource(Type entityType, EntityConnection connection, string tableName)
-            : base(entityType)
+        public DbDataSource(Type entityType, ITypeConverter converter, EntityConnection connection, string tableName)
+            : base(entityType, converter)
         {
             this.connection = connection;
-
             this.workspace = connection.GetMetadataWorkspace();
             this.entitySet = MetadataWorkspaceHelper.GetEntityContainer(this.workspace).GetEntitySetByName(tableName, true);
         }

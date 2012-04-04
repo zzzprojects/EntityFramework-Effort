@@ -42,7 +42,7 @@ using Effort.Helpers;
 using EFProviderWrapperToolkit;
 using NMemory.Diagnostics.Messages;
 using NMemory;
-
+using Effort.TypeConversion;
 
 namespace Effort.Components
 {
@@ -53,7 +53,7 @@ namespace Effort.Components
     {
         #region Private members
 
-		private DatabaseCache databaseCache;
+		private DatabaseContainer databaseContainer;
         // Virtual connection state
 		private ConnectionState connectionState;
 
@@ -80,22 +80,22 @@ namespace Effort.Components
         #region Properties
 
         /// <summary>
-        /// Gets the reference if the in-memory database that connection object is using.
+        /// Gets the reference of the container of the in-memory database that connection object is using.
         /// </summary>
-        internal virtual DatabaseCache DatabaseCache
+        internal virtual DatabaseContainer DatabaseContainer
         {
             get
             {
-                if (this.databaseCache == null)
+                if (this.databaseContainer == null)
                 {
                     throw new InvalidOperationException("The database cache is not intilialized until the first open.");
                 }
 
-                return this.databaseCache;
+                return this.databaseContainer;
             }
 			set 
             { 
-                this.databaseCache = value; 
+                this.databaseContainer = value; 
             }
         }
 
@@ -215,18 +215,18 @@ namespace Effort.Components
                 this.connectionString = this.WrappedConnection.ConnectionString;
             }
 
-            if (this.databaseCache == null)
+            if (this.databaseContainer == null)
             {
                 if (this.ProviderMode == ProviderModes.DatabaseEmulator &&
                     !ConnectionStringHelper.GetValue<bool>(this.connectionString, "Shared Data"))
                 {
                     // Per connection
-                    this.databaseCache = CreateDatabaseSandboxed();
+                    this.databaseContainer = CreateDatabaseSandboxed();
                 }
                 else
                 {
                     // Get a reference to the the database cache (or create if does not exist)
-                    this.databaseCache = DbInstanceStore.GetDbInstance(this.connectionString, CreateDatabaseSandboxed);
+                    this.databaseContainer = DbInstanceStore.GetDbInstance(this.connectionString, CreateDatabaseSandboxed);
                 }
 
             }
@@ -322,9 +322,9 @@ namespace Effort.Components
 
         #region Database creation
 
-        internal DatabaseCache CreateDatabaseSandboxed()
+        internal DatabaseContainer CreateDatabaseSandboxed()
         {
-            DatabaseCache databaseCache = null;
+            DatabaseContainer databaseContainer = null;
             Exception exception = null;
 
             // Create a sandbox thread for the initialization
@@ -332,7 +332,7 @@ namespace Effort.Components
                 {
                     try
                     {
-                        databaseCache = this.CreateDatabase();
+                        databaseContainer = this.CreateDatabase();
                     }
                     catch (Exception ex)
                     {
@@ -349,16 +349,32 @@ namespace Effort.Components
                 throw new DataException("An unhandled exception occured during the database initialization", exception);
             }
 
-            return databaseCache;
+            return databaseContainer;
         }
 
 
-		internal DatabaseCache CreateDatabase()
+		internal DatabaseContainer CreateDatabase()
         {
             Stopwatch swDatabase = Stopwatch.StartNew();
 
             Database database = new Database();
-            DatabaseCache result = new DatabaseCache(database);
+
+            // Initialize the appropriate type converter
+            ITypeConverter typeConverter = null;
+
+            switch (this.ProviderMode)
+            {
+                case ProviderModes.DatabaseAccelerator:
+                    typeConverter = new AcceleratorModeTypeConverter();
+                    break;
+                case ProviderModes.DatabaseEmulator:
+                    typeConverter = new EmulatorModeTypeConverter();
+                    break;
+                default:
+                    break;
+            }
+
+            DatabaseContainer databaseContainer = new DatabaseContainer(database, typeConverter);
 
 			string[] metadataFiles;
 			MetadataWorkspace workspace = this.GetWorkspace(out metadataFiles);
@@ -367,9 +383,9 @@ namespace Effort.Components
 			EntityContainer entityContainer = MetadataWorkspaceHelper.GetEntityContainer(workspace);
 
             // Get or create the schema
-            DatabaseSchema schema = DbSchemaStore.GetDbSchema(metadataFiles, () => GenerateSchema(entityContainer));
+            DatabaseSchema schema = DbSchemaStore.GetDbSchema(metadataFiles, () => GenerateSchema(entityContainer, databaseContainer.TypeConverter));
 
-            using (IDataSourceFactory sourceFactory = this.CreateDataSourceFactory(workspace))
+            using (IDataSourceFactory sourceFactory = this.CreateDataSourceFactory(workspace, typeConverter))
             {
                 foreach (string tableName in schema.GetTableNames())
                 {
@@ -391,12 +407,12 @@ namespace Effort.Components
 
                     swTable.Stop();
 
-                    result.Logger.Write("{1} loaded in {0:0.0} ms", swTable.Elapsed.TotalMilliseconds, tableName);
+                    databaseContainer.Logger.Write("{1} loaded in {0:0.0} ms", swTable.Elapsed.TotalMilliseconds, tableName);
                 }
             }
 
 
-            result.Logger.Write("Setting up assocations...");
+            databaseContainer.Logger.Write("Setting up assocations...");
 
             foreach (AssociationSet associationSet in entityContainer.BaseEntitySets.OfType<AssociationSet>())
             {
@@ -413,12 +429,12 @@ namespace Effort.Components
             }
 
             swDatabase.Stop();
-            result.Logger.Write("Database buildup finished in {0:0.0} ms", swDatabase.Elapsed.TotalMilliseconds);
+            databaseContainer.Logger.Write("Database buildup finished in {0:0.0} ms", swDatabase.Elapsed.TotalMilliseconds);
 
-            return result;
+            return databaseContainer;
         }
 
-		internal virtual IDataSourceFactory CreateDataSourceFactory(MetadataWorkspace workspace)
+		internal virtual IDataSourceFactory CreateDataSourceFactory(MetadataWorkspace workspace, ITypeConverter converter)
         {
             if (this.ProviderMode == ProviderModes.DatabaseEmulator)
             {
@@ -434,13 +450,12 @@ namespace Effort.Components
                     return new EmptyDataSourceFactory();
                 }
 
-                return new CsvDataSourceFactory(this.ConnectionString);
+                return new CsvDataSourceFactory(converter, this.ConnectionString);
             }
-
             // Build up the wrapped connection in accelerator mode
-            if (this.ProviderMode == ProviderModes.DatabaseAccelerator)
+            else if (this.ProviderMode == ProviderModes.DatabaseAccelerator)
             {
-                return new DbDataSourceFactory(() => new EntityConnection(workspace, this.CreateNewWrappedConnection()));
+                return new DbDataSourceFactory(converter, () => new EntityConnection(workspace, this.CreateNewWrappedConnection()));
             }
 
             throw new NotSupportedException("Current mode is not supported");
@@ -454,7 +469,7 @@ namespace Effort.Components
             return con;
         }
 
-		internal DatabaseSchema GenerateSchema(EntityContainer entityContainer)
+		internal DatabaseSchema GenerateSchema(EntityContainer entityContainer, ITypeConverter converter)
         {
             DatabaseSchema schema = new DatabaseSchema();
 
@@ -467,7 +482,7 @@ namespace Effort.Components
             // Module for the entity types
             ModuleBuilder entityModule = assembly.DefineDynamicModule("Entities");
             // Initialize type converter
-            EdmTypeConverter typeConverter = new EdmTypeConverter();
+            EdmTypeConverter typeConverter = new EdmTypeConverter(converter);
 
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {

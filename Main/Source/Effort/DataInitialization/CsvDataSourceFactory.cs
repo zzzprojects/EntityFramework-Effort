@@ -28,6 +28,7 @@ using System.Linq;
 using System.Text;
 using System.Data.Common;
 using System.IO;
+using Effort.TypeConversion;
 
 namespace Effort.DataInitialization
 {
@@ -35,10 +36,12 @@ namespace Effort.DataInitialization
     {
         private string connectionString;
         private DirectoryInfo source;
+        private ITypeConverter converter;
 
-        public CsvDataSourceFactory(string connectionString)
+        public CsvDataSourceFactory(ITypeConverter converter, string connectionString)
         {
             this.connectionString = connectionString;
+            this.converter = converter;
 
             DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
             builder.ConnectionString = connectionString;
@@ -60,7 +63,7 @@ namespace Effort.DataInitialization
         {
             string csvPath = Path.Combine(source.FullName, string.Format("{0}.csv", tableName));
 
-            return new CachedCsvDataSource(this.connectionString, tableName, csvPath, entityType);
+            return new CachedCsvDataSource(entityType, this.converter, this.connectionString, tableName, csvPath);
         }
 
         public void Dispose()

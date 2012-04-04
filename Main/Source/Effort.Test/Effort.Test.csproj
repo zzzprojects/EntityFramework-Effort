@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AggregationFixture.cs" />
+    <Compile Include="BinaryFixture.cs" />
     <Compile Include="Data\Categories.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>

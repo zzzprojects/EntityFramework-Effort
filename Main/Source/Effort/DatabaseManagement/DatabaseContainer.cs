@@ -30,22 +30,28 @@ using System.Linq.Expressions;
 using Effort.DbCommandTreeTransform;
 using Effort.Diagnostics;
 using NMemory;
+using NMemory.StoredProcedures;
+using Effort.TypeConversion;
 
 namespace Effort.DatabaseManagement
 {
-    internal class DatabaseCache : ITableProvider
+    internal class DatabaseContainer : ITableProvider
     {
         private Database database;
+        private ITypeConverter converter;
+
         private ILogger logger;
         private ConcurrentDictionary<string, Expression> transformCache;
-        private ConcurrentDictionary<string, Func<Dictionary<string, object>, IEnumerable>> procedureTransformCache;
-
-        public DatabaseCache(Database database)
+        private ConcurrentDictionary<string, IStoredProcedure> procedureTransformCache;
+        
+        public DatabaseContainer(Database database, ITypeConverter converter)
         {
             this.database = database;
+            this.converter = converter;
+
             this.logger = new Logger();
             this.transformCache = new ConcurrentDictionary<string, Expression>();
-            this.procedureTransformCache = new ConcurrentDictionary<string, Func<Dictionary<string, object>, IEnumerable>>();
+            this.procedureTransformCache = new ConcurrentDictionary<string, IStoredProcedure>();
         }
 
         public object GetTable(string name)
@@ -68,9 +74,14 @@ namespace Effort.DatabaseManagement
             get { return this.transformCache; }
         }
 
-        public ConcurrentDictionary<string, Func<Dictionary<string, object>, IEnumerable>> ProcedureTransformCache
+        public ConcurrentDictionary<string, IStoredProcedure> ProcedureTransformCache
         {
             get { return this.procedureTransformCache; }
+        }
+
+        public ITypeConverter TypeConverter
+        {
+            get { return this.converter; }
         }
     }
 }

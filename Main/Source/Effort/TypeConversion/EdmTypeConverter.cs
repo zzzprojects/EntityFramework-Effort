@@ -29,11 +29,16 @@ using System.Text;
 using System.Data.Metadata.Edm;
 using Effort.TypeGeneration;
 
-namespace Effort.DbCommandTreeTransform
+namespace Effort.TypeConversion
 {
-
     internal class EdmTypeConverter
     {
+        private ITypeConverter converter;
+
+        public EdmTypeConverter(ITypeConverter converter)
+        {
+            this.converter = converter;
+        }
 
         public Type Convert(TypeUsage type)
         {
@@ -122,6 +127,8 @@ namespace Effort.DbCommandTreeTransform
                 result = typeof(Nullable<>).MakeGenericType(result);
             }
 
+            result = this.converter.ConvertPrimitiveEdmTypeToClrType(result, primitiveType, facets);
+
             return result;
         }
 
@@ -145,15 +152,6 @@ namespace Effort.DbCommandTreeTransform
 
             return elementType.MakeArrayType();
         }
-    }
-
-    internal struct TypeFacets
-    {
-        public bool Nullable { set; get; }
-
-        public bool Identity { get; set; }
-
-        public bool Computed { get; set; }
     }
 }
 

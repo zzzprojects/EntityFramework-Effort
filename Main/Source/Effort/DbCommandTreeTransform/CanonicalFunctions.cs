@@ -30,6 +30,7 @@ using System.Data.Metadata.Edm;
 using System.Reflection;
 using System.Linq.Expressions;
 using Effort.Helpers;
+using Effort.TypeConversion;
 
 namespace Effort.DbCommandTreeTransform
 {
@@ -38,15 +39,15 @@ namespace Effort.DbCommandTreeTransform
 		private Dictionary<string, Func<EdmFunction, Expression[], MethodCallExpression>> mappings;
 		private EdmTypeConverter converter;
 
-		public CanonicalFunctionMapper()
+		public CanonicalFunctionMapper(ITypeConverter converter)
 		{
-			this.converter = new EdmTypeConverter();
+			this.converter = new EdmTypeConverter(converter);
 			this.mappings = new Dictionary<string, Func<EdmFunction, Expression[], MethodCallExpression>>();
 
 			// Mappingek leirasa: http://msdn.microsoft.com/en-us/library/bb738681.aspx
 
 			this.mappings["Edm.Round"] = (f, args) => Expression.Call(null,
-			   FindMethod(typeof(Math), "Round", converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+			   FindMethod(typeof(Math), "Round", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
 			   ExpressionHelper.ConvertToNotNull(args[0]));
 
 			this.mappings["Edm.ToUpper"] = (f, args) => Expression.Call(args[0],

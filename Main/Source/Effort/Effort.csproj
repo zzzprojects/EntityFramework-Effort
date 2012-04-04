@@ -148,7 +148,7 @@
     <Compile Include="DatabaseManagement\DatabaseExtensions.cs" />
     <Compile Include="DatabaseManagement\TableInitialData.cs" />
     <Compile Include="DatabaseManagement\DatabaseSchema.cs" />
-    <Compile Include="DatabaseManagement\DatabaseCache.cs" />
+    <Compile Include="DatabaseManagement\DatabaseContainer.cs" />
     <Compile Include="DatabaseManagement\DbMethodProvider.cs" />
     <Compile Include="DatabaseManagement\TableInformation.cs" />
     <Compile Include="DataInitialization\CachedCsvDataSource.cs" />
@@ -167,11 +167,11 @@
     <Compile Include="DbCommandTreeTransform\Variables\VariableHandler.cs" />
     <Compile Include="DbCommandTreeTransform\DbExpressionTransformVisitor.cs" />
     <Compile Include="DbCommandTreeTransform\Join\DbJoinConditionVisitor.cs" />
-    <Compile Include="DbCommandTreeTransform\EdmTypeConverter.cs" />
+    <Compile Include="TypeConversion\AcceleratorModeTypeConverter.cs" />
+    <Compile Include="TypeConversion\EdmTypeConverter.cs" />
     <Compile Include="DbCommandTreeTransform\Variables\Variable.cs" />
     <Compile Include="DbCommandTreeTransform\IDbMethodProvider.cs" />
     <Compile Include="DbCommandTreeTransform\Join\PropertyList.cs" />
-    <Compile Include="DbCommandTreeTransform\PostProcessing\DummyVisitor.cs" />
     <Compile Include="DbCommandTreeTransform\PostProcessing\EnumerableNullableSum.cs" />
     <Compile Include="DbCommandTreeTransform\PostProcessing\ExcrescentInitializationCleanserVisitor.cs" />
     <Compile Include="DbCommandTreeTransform\PostProcessing\ExcrescentSingleResultCleanserVisitor.cs" />
@@ -191,6 +191,10 @@
     <Compile Include="Helpers\TypeHelper.cs" />
     <Compile Include="EntityConnectionFactory.cs" />
     <Compile Include="ObjectContextFactory.cs" />
+    <Compile Include="TypeConversion\EmulatorModeTypeConverter.cs" />
+    <Compile Include="TypeConversion\ITypeConverter.cs" />
+    <Compile Include="TypeConversion\TypeConverterBase.cs" />
+    <Compile Include="TypeConversion\TypeFacets.cs" />
     <Compile Include="TypeGeneration\AnonymousTypeFactory.cs" />
     <Compile Include="Helpers\EmitHelper.cs" />
     <Compile Include="Helpers\CommandTreeBuilder.cs" />

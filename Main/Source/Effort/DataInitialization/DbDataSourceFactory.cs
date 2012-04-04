@@ -30,17 +30,20 @@ using System.Data.Common;
 using System.Data.Metadata.Edm;
 using Effort.Helpers;
 using System.Data.EntityClient;
+using Effort.TypeConversion;
 
 namespace Effort.DataInitialization
 {
     internal class DbDataSourceFactory : IDataSourceFactory
     {
         private Func<EntityConnection> connectionFactory;
+        private ITypeConverter converter;
 
         private EntityConnection connection;
 
-        public DbDataSourceFactory(Func<EntityConnection> connectionFactory)
+        public DbDataSourceFactory(ITypeConverter converter, Func<EntityConnection> connectionFactory)
         {
+            this.converter = converter;
             this.connectionFactory = connectionFactory;
         }
 
@@ -53,7 +56,8 @@ namespace Effort.DataInitialization
             }
 
             return new DbDataSource(
-                entityType, 
+                entityType,
+                converter,
                 this.connection,
                 tableName);
         }

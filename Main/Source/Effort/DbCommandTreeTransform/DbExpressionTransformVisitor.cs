@@ -33,6 +33,7 @@ using Effort.DbCommandTreeTransform.Join;
 using Effort.Helpers;
 using Effort.TypeGeneration;
 using Effort.DbCommandTreeTransform.Variables;
+using Effort.TypeConversion;
 
 namespace Effort.DbCommandTreeTransform
 {
@@ -44,23 +45,22 @@ namespace Effort.DbCommandTreeTransform
         private ITableProvider tableProvider;
         private IMethodProvider methodProvider;
 
-
         private LinqMethodExpressionBuilder queryMethodExpressionBuilder;
         private EdmTypeConverter typeConverter;
         private CanonicalFunctionMapper functionMapper;
 
         private VariableCollection currentVariables;
 
-        public DbExpressionTransformVisitor()
+        public DbExpressionTransformVisitor(ITypeConverter converter)
         {
             this.queryMethodExpressionBuilder = new LinqMethodExpressionBuilder();
-            this.typeConverter = new EdmTypeConverter();
+            this.typeConverter = new EdmTypeConverter(converter);
             this.currentVariables = new VariableCollection();
             this.parameters = new Dictionary<string, Tuple<TypeUsage, int>>();
 
 
             // TODO: Should set this from outside
-            this.functionMapper = new CanonicalFunctionMapper();
+            this.functionMapper = new CanonicalFunctionMapper(converter);
             this.methodProvider = new Effort.DatabaseManagement.MethodProvider();
         }
 
@@ -131,8 +131,6 @@ namespace Effort.DbCommandTreeTransform
             return result;
         }
 
-
-        //??
         public override Expression Visit(DbUnionAllExpression expression)
         {
             Expression left = this.Visit(expression.Left);
@@ -162,14 +160,11 @@ namespace Effort.DbCommandTreeTransform
             return queryMethodExpressionBuilder.Concat(left, right);
         }
 
-
-        //tamas
         public override Expression Visit(DbTreatExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        //tamas
         public override Expression Visit(DbLimitExpression expression)
         {
             Expression source = this.Visit(expression.Argument);
@@ -178,27 +173,25 @@ namespace Effort.DbCommandTreeTransform
             return queryMethodExpressionBuilder.Take(source, this.Visit(expression.Limit, typeof(int)));
         }
 
-        //tamas
         public override Expression Visit(DbSkipExpression expression)
         {
             Expression source = this.Visit(expression.Input.Expression);
             Type sourceType = TypeHelper.GetElementType(source.Type);
 
-            //Skip cannot be used without sorting
-            Expression result = this.CreateOrder(expression.SortOrder, expression.Input.VariableName, source);
+            // Skip cannot be used without sorting
+            Expression result = this.CreateOrderByExpression(expression.SortOrder, expression.Input.VariableName, source);
 
             return queryMethodExpressionBuilder.Skip(result, this.Visit(expression.Count, typeof(int)));
         }
 
-        //zsolt
         public override Expression Visit(DbSortExpression expression)
         {
             Expression source = this.Visit(expression.Input.Expression);
 
-            return this.CreateOrder(expression.SortOrder, expression.Input.VariableName, source);
+            return this.CreateOrderByExpression(expression.SortOrder, expression.Input.VariableName, source);
         }
 
-        private Expression CreateOrder(IList<DbSortClause> sortorder, string sourceVariableName, Expression source)
+        private Expression CreateOrderByExpression(IList<DbSortClause> sortorder, string sourceVariableName, Expression source)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
 
@@ -242,7 +235,6 @@ namespace Effort.DbCommandTreeTransform
             return result;
         }
 
-        //tamas
         public override Expression Visit(DbScanExpression expression)
         {
             if (tableProvider == null)
@@ -253,14 +245,11 @@ namespace Effort.DbCommandTreeTransform
             return Expression.Constant(tableProvider.GetTable(expression.Target.Name));
         }
 
-
-        //zsolt
         public override Expression Visit(DbRelationshipNavigationExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        //zsolt
         public override Expression Visit(DbQuantifierExpression expression)
         {
             throw new NotImplementedException();
@@ -659,7 +648,6 @@ namespace Effort.DbCommandTreeTransform
 
         #endregion
 
-        //zsolt
         public override Expression Visit(DbLikeExpression expression)
         {
             Expression argumentExpression = this.Visit(expression.Argument);
@@ -668,8 +656,6 @@ namespace Effort.DbCommandTreeTransform
             return Expression.Call(null, this.methodProvider.Like, argumentExpression, patternExpression);
         }
 
-        //zsolt: ez a BMK dolog nekem kell valamire
-        //BMK Join
         public override Expression Visit(DbJoinExpression expression)
         {
             Expression left = this.Visit(expression.Left.Expression);
@@ -708,7 +694,7 @@ namespace Effort.DbCommandTreeTransform
                     }
                     else
                     {
-                        // A join feltetel pont forditott sorrendben van
+                        // THe join condition is reversed
 
                         var swap = leftExpressions;
                         leftExpressions = rightExpressions;
@@ -754,15 +740,11 @@ namespace Effort.DbCommandTreeTransform
             return result;
         }
 
-
-
-        //??
         public override Expression Visit(DbIsOfExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        //tamas
         public override Expression Visit(DbIsNullExpression expression)
         {
             Expression exp = this.Visit(expression.Argument);
@@ -783,7 +765,6 @@ namespace Effort.DbCommandTreeTransform
             }
         }
 
-        //zsolt
         public override Expression Visit(DbIsEmptyExpression expression)
         {
             Expression arg = this.Visit(expression.Argument);
@@ -791,8 +772,6 @@ namespace Effort.DbCommandTreeTransform
             return Expression.Not(queryMethodExpressionBuilder.Any(arg));
         }
 
-
-        //zsolt
         public override Expression Visit(DbIntersectExpression expression)
         {
             Expression left = this.Visit(expression.Left);
@@ -801,21 +780,16 @@ namespace Effort.DbCommandTreeTransform
             return queryMethodExpressionBuilder.Intersect(left, right);
         }
 
-
-
-        //??
         public override Expression Visit(DbRefKeyExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        //??
         public override Expression Visit(DbEntityRefExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        //tamas-zsolt
         public override Expression Visit(DbFunctionExpression expression)
         {
             Expression[] arguments = new Expression[expression.Arguments.Count];
@@ -828,7 +802,6 @@ namespace Effort.DbCommandTreeTransform
             return this.functionMapper.CreateMethodCall(expression.Function, arguments);
         }
 
-        //zsolt
         public override Expression Visit(DbExceptExpression expression)
         {
             Expression left = this.Visit(expression.Left);
@@ -837,7 +810,6 @@ namespace Effort.DbCommandTreeTransform
             return queryMethodExpressionBuilder.Except(left, right);
         }
 
-        //tamas
         public override Expression Visit(DbElementExpression expression)
         {
             Expression source = this.Visit(expression.Argument);
@@ -847,21 +819,16 @@ namespace Effort.DbCommandTreeTransform
             return result;
         }
 
-
-        //tamas
         public override Expression Visit(DbDistinctExpression expression)
         {
             return queryMethodExpressionBuilder.Distinct(this.Visit(expression.Argument));
         }
 
-        //zsolt
         public override Expression Visit(DbDerefExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        //zsolt
-        //BMK CrossJoin
         public override Expression Visit(DbCrossJoinExpression expression)
         {
             List<Expression> inputExpressions = new List<Expression>();
@@ -872,7 +839,8 @@ namespace Effort.DbCommandTreeTransform
             }
 
             Expression last = inputExpressions[0];
-            // Itt mindig 2 volt, lehet nem lesz tobb soha, csak kevesebb
+
+            // Always: at most 2
             for (int i = 1; i < inputExpressions.Count; i++)
             {
                 last = queryMethodExpressionBuilder.SelectMany(last, inputExpressions[i],
@@ -882,13 +850,19 @@ namespace Effort.DbCommandTreeTransform
             return last;
         }
 
-        //tamas
         public override Expression Visit(DbConstantExpression expression)
         {
-            return Expression.Constant(expression.Value, typeConverter.Convert(expression.ResultType));
+            object value = expression.Value;
+            Type type = typeConverter.Convert(expression.ResultType);
+
+            if (type == typeof(NMemory.Data.Binary))
+            {
+                value = (NMemory.Data.Binary)(byte[])value;
+            }
+
+            return Expression.Constant(value, type);
         }
 
-        //tamas
         public override Expression Visit(DbComparisonExpression expression)
         {
             Expression left = this.Visit(expression.Left);

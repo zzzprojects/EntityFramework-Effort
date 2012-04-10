@@ -129,14 +129,11 @@ namespace Effort.Components
 		{
 			DbQueryCommandTree commandTree = base.Definition.CommandTree as DbQueryCommandTree;
 
-			Stopwatch stopWatch = Stopwatch.StartNew();
-
-
 			// Find tables
 			TableScanVisitor tableScanVisitor = new TableScanVisitor();
 			tableScanVisitor.Visit(commandTree.Query);
 
-			// CodeFirst-hoz kell
+			// DbContext queries from EdmMetaData
 			if (tableScanVisitor.Tables.Contains("EdmMetadata"))
 			{
 				return new EffortDataReader(new List<object>(), this.DatabaseContainer);
@@ -148,35 +145,19 @@ namespace Effort.Components
             visitor.TableProvider = this.DatabaseContainer;
 
 			Expression linqExpression = null;
-			IStoredProcedure storedProcedure = null;
+			IStoredProcedure procedure = null;
 
-			bool hasParameters = this.Parameters.Count > 0;
-			bool retrievedFromCache = false;
-
-			#region Retrieve from cache
-
-            // Try to retrieve from the cache
-                
-			if (!hasParameters && this.DatabaseContainer.TransformCache.TryGetValue(this.CommandText, out linqExpression))
-			{
-				retrievedFromCache = true;
-			}
-
-			if (hasParameters && this.DatabaseContainer.ProcedureTransformCache.TryGetValue(this.CommandText, out storedProcedure))
-			{
-				retrievedFromCache = true;
-			}
-
-			if (retrievedFromCache)
+            // Try to retrieve from cache
+			if (this.DatabaseContainer.TransformCache.TryGetValue(this.CommandText, out procedure))
 			{
 				this.DatabaseContainer.Logger.Write("TransformCache used.");
 			}
 
-			#endregion
-
-			// Check if this expression tree has not been cached yet
-			if (retrievedFromCache == false)
+			// This query was not cached yet
+			if (procedure == null)
 			{
+                Stopwatch stopWatch = Stopwatch.StartNew();
+
 				// Convert DbCommandTree to linq Expression Tree
 				linqExpression = visitor.Visit(commandTree.Query);
 
@@ -196,51 +177,36 @@ namespace Effort.Components
 
 				#endregion
 
-				// Place the transformed expression into the cache
-				if (hasParameters)
-				{
-					storedProcedure = this.CreateStoredProcedure(linqExpression);
+                // Create a stored procedure from the expression
+                procedure = DatabaseReflectionHelper.CreateStoredProcedure(linqExpression, this.DatabaseContainer.Internal);
+                // Cache the result
+                this.DatabaseContainer.TransformCache[this.CommandText] = procedure;
 
-					this.DatabaseContainer.ProcedureTransformCache[this.CommandText] = storedProcedure;
-				}
-				else
-				{
-					this.DatabaseContainer.TransformCache[this.CommandText] = linqExpression;
-				}
+                this.DatabaseContainer.Logger.Write(
+                    "DbCommandTree converted in {0:0.00} ms",
+                    stopWatch.Elapsed.TotalMilliseconds);
 			}
 
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-			this.DatabaseContainer.Logger.Write(
-                "DbCommandTree converted in {0:0.00} ms",
-				stopWatch.Elapsed.TotalMilliseconds);
+            // Create a dictionary of parameters
+            foreach (DbParameter dbParam in this.Parameters)
+            {
+                string name = dbParam.ParameterName;
+                object value = dbParam.Value;
 
-			if (hasParameters)
-			{
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                // Find the description of the parameter
+                ParameterDescription expectedParam = procedure.Parameters.FirstOrDefault(p => p.Name == dbParam.ParameterName);
 
-                // Bind the parameters
-                foreach (DbParameter dbParam in this.Parameters)
-                {
-                    string name = dbParam.ParameterName;
-                    object value = dbParam.Value;
+                // Custom conversion
+                value = this.DatabaseContainer.TypeConverter.ConvertClrValueToClrValue(value, expectedParam.Type);
 
-                    ParameterDescription expectedParam = storedProcedure.Parameters.FirstOrDefault(p => p.Name == dbParam.ParameterName);
+                parameters.Add(name, value);
+            }
 
-                    value = this.DatabaseContainer.TypeConverter.ConvertClrValueToClrValue(value, expectedParam.Type);
+            IEnumerable result = procedure.Execute(parameters);
 
-                    parameters.Add(name, value);
-                }
-
-                IEnumerable result = storedProcedure.Execute(parameters);
-
-                return new EffortDataReader(result, this.DatabaseContainer);
-			}
-			else
-			{
-				IQueryable result = this.CreateQuery(linqExpression);
-
-				return new EffortDataReader(result, this.DatabaseContainer);
-			}
+            return new EffortDataReader(result, this.DatabaseContainer);
 		}
 
 		#endregion
@@ -638,25 +604,6 @@ namespace Effort.Components
 		private IQueryable CreateQuery(Expression expression)
 		{
 			return DatabaseReflectionHelper.CreateTableQuery(expression, this.DatabaseContainer.Internal);
-		}
-
-		private IStoredProcedure CreateStoredProcedure(Expression expression)
-		{
-            MethodCallExpression methodCall = expression as MethodCallExpression;
-
-			if (IsQueryable(methodCall) == false)
-			{
-				Expression baseCall = methodCall.Arguments[0];
-
-				if (IsQueryable(baseCall) == false)
-				{
-					throw new InvalidOperationException("Aggregation has to be called on a collection.");
-				}
-
-				throw new InvalidOperationException();
-			}
-
-            return DatabaseReflectionHelper.CreateStoredProcedure(expression, this.DatabaseContainer.Internal);
 		}
 
 		private static bool IsQueryable(Expression methodCall)

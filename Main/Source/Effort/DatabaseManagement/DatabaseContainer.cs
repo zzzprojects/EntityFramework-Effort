@@ -42,8 +42,7 @@ namespace Effort.DatabaseManagement
         private ITypeConverter converter;
 
         private ILogger logger;
-        private ConcurrentDictionary<string, Expression> transformCache;
-        private ConcurrentDictionary<string, IStoredProcedure> procedureTransformCache;
+        private ConcurrentDictionary<string, IStoredProcedure> transformCache;
 
         public DatabaseContainer(Database database, DatabaseSchema schema, ITypeConverter converter)
         {
@@ -52,8 +51,7 @@ namespace Effort.DatabaseManagement
             this.converter = converter;
 
             this.logger = new Logger();
-            this.transformCache = new ConcurrentDictionary<string, Expression>();
-            this.procedureTransformCache = new ConcurrentDictionary<string, IStoredProcedure>();
+            this.transformCache = new ConcurrentDictionary<string, IStoredProcedure>();
         }
 
         public object GetTable(string name)
@@ -71,14 +69,9 @@ namespace Effort.DatabaseManagement
             get { return this.logger; }
         }
 
-        public ConcurrentDictionary<string, Expression> TransformCache
+        public ConcurrentDictionary<string, IStoredProcedure> TransformCache
         {
             get { return this.transformCache; }
-        }
-
-        public ConcurrentDictionary<string, IStoredProcedure> ProcedureTransformCache
-        {
-            get { return this.procedureTransformCache; }
         }
 
         public ITypeConverter TypeConverter

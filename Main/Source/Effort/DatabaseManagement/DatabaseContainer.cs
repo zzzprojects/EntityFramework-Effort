@@ -38,15 +38,17 @@ namespace Effort.DatabaseManagement
     internal class DatabaseContainer : ITableProvider
     {
         private Database database;
+        private DatabaseSchema schema;
         private ITypeConverter converter;
 
         private ILogger logger;
         private ConcurrentDictionary<string, Expression> transformCache;
         private ConcurrentDictionary<string, IStoredProcedure> procedureTransformCache;
-        
-        public DatabaseContainer(Database database, ITypeConverter converter)
+
+        public DatabaseContainer(Database database, DatabaseSchema schema, ITypeConverter converter)
         {
             this.database = database;
+            this.schema = schema;
             this.converter = converter;
 
             this.logger = new Logger();
@@ -82,6 +84,11 @@ namespace Effort.DatabaseManagement
         public ITypeConverter TypeConverter
         {
             get { return this.converter; }
+        }
+
+        public DatabaseSchema Schema
+        {
+            get { return this.schema; }
         }
     }
 }

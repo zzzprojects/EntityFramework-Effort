@@ -57,10 +57,14 @@ namespace Effort.DatabaseManagement
 		{
 			TableInformation info;
 
-			if (this.schemaDetailsByTypeName.TryGetValue(entityType, out info))
-				return info;
-			else
-				return null;
+            if (this.schemaDetailsByTypeName.TryGetValue(entityType, out info))
+            {
+                return info;
+            }
+            else
+            {
+                return null;
+            }
 		}
 
 		public string[] GetTableNames()

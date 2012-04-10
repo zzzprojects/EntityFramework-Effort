@@ -260,7 +260,7 @@ namespace Effort.Helpers
 
                 where TEntity : class
             {
-                return database.CreateTable<TEntity, TPrimaryKey>(
+                return database.Tables.Create<TEntity, TPrimaryKey>(
                     primaryKey,
                     identity != null ? new IdentitySpecification<TEntity>(identity) : null,
                     initialEntities.Cast<TEntity>());
@@ -313,7 +313,7 @@ namespace Effort.Helpers
                 where TPrimary : class
                 where TForeign : class
             {
-                database.CreateRelation(primaryIndex, foreignIndex, x => x, x => x);
+                database.Tables.CreateRelation(primaryIndex, foreignIndex, x => x, x => x);
             }
 
             public static void CreateRelationWithSameKeyTypeNullable<TPrimary, TPrimaryKey, TForeign>(Database database, UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, IIndex<TForeign, Nullable<TPrimaryKey>> foreignIndex)
@@ -321,7 +321,7 @@ namespace Effort.Helpers
                 where TForeign : class
                 where TPrimaryKey : struct
             {
-                database.CreateRelation(primaryIndex, foreignIndex, x => x.Value, x => x);
+                database.Tables.CreateRelation(primaryIndex, foreignIndex, x => x.Value, x => x);
             }
         }
 

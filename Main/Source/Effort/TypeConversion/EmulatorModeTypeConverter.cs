@@ -40,6 +40,16 @@ namespace Effort.TypeConversion
             return base.ConvertClrValueToClrValue(value, expectedType);
         }
 
+        public override object ConvertClrValueFromClrValue(object value)
+        {
+            if (value != null && value.GetType() == typeof(NMemory.Data.Binary))
+            {
+                return (byte[])(NMemory.Data.Binary)value;
+            }
+
+            return base.ConvertClrValueFromClrValue(value);
+        }
+
         public override Type ConvertPrimitiveEdmTypeToClrType(Type currentType, PrimitiveType edmType, TypeFacets facets)
         {
             if (EdmTypeHelper.IsBinary(edmType))

@@ -31,6 +31,8 @@ namespace Effort.TypeConversion
     {
         object ConvertClrValueToClrValue(object value, Type expectedType);
 
+        object ConvertClrValueFromClrValue(object value);
+
         Type ConvertPrimitiveEdmTypeToClrType(Type currentType, PrimitiveType edmType, TypeFacets facets);
     }
 }

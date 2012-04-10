@@ -139,7 +139,7 @@ namespace Effort.Components
 			// CodeFirst-hoz kell
 			if (tableScanVisitor.Tables.Contains("EdmMetadata"))
 			{
-				return new EffortDataReader(new List<object>(), this.GetSchema());
+				return new EffortDataReader(new List<object>(), this.DatabaseContainer);
 			}
 
 			// Setup expression tranformer
@@ -182,15 +182,15 @@ namespace Effort.Components
 
 				#region Postprocessing
 
-				//Convert ' Nullable<?> Enumerable.Sum ' to ' Nullable<?> EnumerableNullSum.Sum '
+				// Convert ' Nullable<?> Enumerable.Sum ' to ' Nullable<?> EnumerableNullSum.Sum '
 				SumTransformerVisitor sumTransformer = new SumTransformerVisitor();
 				linqExpression = sumTransformer.Visit(linqExpression);
 
-				//Clean ' new SingleResult<>(x).FirstOrDefault() '
+				// Clean ' new SingleResult<>(x).FirstOrDefault() '
 				ExcrescentSingleResultCleanserVisitor cleanser1 = new ExcrescentSingleResultCleanserVisitor();
 				linqExpression = cleanser1.Visit(linqExpression);
 
-				//Clean ' new AT(x).YProp '    (x is the init value of YProp)
+				// Clean ' new AT(x).YProp '    (x is the init value of YProp)
 				ExcrescentInitializationCleanserVisitor cleanser2 = new ExcrescentInitializationCleanserVisitor();
 				linqExpression = cleanser2.Visit(linqExpression);
 
@@ -233,24 +233,19 @@ namespace Effort.Components
 
                 IEnumerable result = storedProcedure.Execute(parameters);
 
-                return new EffortDataReader(result, this.GetSchema());
+                return new EffortDataReader(result, this.DatabaseContainer);
 			}
 			else
 			{
 				IQueryable result = this.CreateQuery(linqExpression);
 
-				return new EffortDataReader(result, this.GetSchema());
+				return new EffortDataReader(result, this.DatabaseContainer);
 			}
 		}
 
 		#endregion
 
 		#region Update
-
-		private DatabaseSchema GetSchema()
-		{
-			return this.WrapperConnection.GetDatabaseSchema();
-		}
 
 		private int PerformUpdate()
 		{
@@ -296,11 +291,11 @@ namespace Effort.Components
 						// Set the clause
 						setter = transform.Visit(setClauses[property.Name]);
 					}
-					else
-					{
-						// Copy member
-						setter = Expression.Property(context, property);
-					}
+                    ////else // This should not need
+                    ////{
+                    ////    // Copy member
+                    ////    setter = Expression.Property(context, property);
+                    ////}
 
 
 					// If setter was found, insert it
@@ -393,7 +388,7 @@ namespace Effort.Components
 			{
 				Expression setter = null;
 
-				//Check if member has set clause
+				// Check if member has set clause
 				if (setClauses.ContainsKey(property.Name))
 				{
 					setter = transform.Visit(setClauses[property.Name]);
@@ -519,7 +514,7 @@ namespace Effort.Components
 				}
 			}
 
-			return new EffortDataReader(new[] { returnedValues }, returnedFields, this.GetSchema());
+			return new EffortDataReader(new[] { returnedValues }, returnedFields, this.DatabaseContainer);
 		}
 
 		private ITable GetTable(DbInsertCommandTree commandTree)

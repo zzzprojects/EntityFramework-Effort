@@ -40,21 +40,21 @@ namespace Effort.Components
 		private IEnumerator enumerator;
 
 		private bool closed = true;
-		private DatabaseSchema schema;
+		private DatabaseContainer databaseContainer;
 
 		private object[] currentValues;
 		private string[] fieldNames;
 
-		public EffortDataReader(IEnumerable source, DatabaseSchema schema)
+		public EffortDataReader(IEnumerable source, DatabaseContainer databaseContainer)
 		{
 			this.source = source;
 			this.enumerator = this.source.GetEnumerator();
 			this.closed = false;
-			this.schema = schema;
+			this.databaseContainer = databaseContainer;
 		}
 
-		public EffortDataReader(IEnumerable source, string[] fieldNames, DatabaseSchema schema)
-			: this(source, schema)
+        public EffortDataReader(IEnumerable source, string[] fieldNames, DatabaseContainer databaseContainer)
+            : this(source, databaseContainer)
 		{
 			this.fieldNames = fieldNames;
 		}
@@ -207,14 +207,12 @@ namespace Effort.Components
 		{
 			object result = this.currentValues[ordinal];
 
+            result = this.databaseContainer.TypeConverter.ConvertClrValueFromClrValue(result);
+
 			if (result == null)
 			{
 				result = DBNull.Value;
 			}
-            else if (result.GetType() == typeof(NMemory.Data.Binary))
-            {
-                result = (byte[])(NMemory.Data.Binary)result;   
-            }
 
 			return result;
 		}
@@ -298,12 +296,16 @@ namespace Effort.Components
 				var currentType = current.GetType();
 				PropertyInfo[] props;
 
-				var info = schema.GetInformationByTypeName(currentType);
+				var info = databaseContainer.Schema.GetInformationByTypeName(currentType);
 
-				if (info != null)
-					props = info.Properties;
-				else
-					props = currentType.GetProperties();
+                if (info != null)
+                {
+                    props = info.Properties;
+                }
+                else
+                {
+                    props = currentType.GetProperties();
+                }
 
 				this.currentValues = new object[props.Length];
 

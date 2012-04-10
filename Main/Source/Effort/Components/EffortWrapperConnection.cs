@@ -374,8 +374,7 @@ namespace Effort.Components
                     break;
             }
 
-            DatabaseContainer databaseContainer = new DatabaseContainer(database, typeConverter);
-
+           
 			string[] metadataFiles;
 			MetadataWorkspace workspace = this.GetWorkspace(out metadataFiles);
 
@@ -383,7 +382,9 @@ namespace Effort.Components
 			EntityContainer entityContainer = MetadataWorkspaceHelper.GetEntityContainer(workspace);
 
             // Get or create the schema
-            DatabaseSchema schema = DbSchemaStore.GetDbSchema(metadataFiles, () => GenerateSchema(entityContainer, databaseContainer.TypeConverter));
+            DatabaseSchema schema = DbSchemaStore.GetDbSchema(metadataFiles, () => GenerateSchema(entityContainer, typeConverter));
+
+            DatabaseContainer databaseContainer = new DatabaseContainer(database, schema, typeConverter);
 
             using (IDataSourceFactory sourceFactory = this.CreateDataSourceFactory(workspace, typeConverter))
             {
@@ -584,14 +585,6 @@ namespace Effort.Components
 
             return result;
         }
-
-		internal virtual DatabaseSchema GetDatabaseSchema()
-		{
-			var entityConnectionString = this.FindEntityConnectionString();
-			var metadataFiles = GetSchemaKey(entityConnectionString);
-
-			return DbSchemaStore.GetDbSchema(metadataFiles, null);
-		}
 
 		protected internal virtual MetadataWorkspace GetWorkspace(out string[] metadataFiles)
 		{

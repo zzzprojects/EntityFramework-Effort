@@ -34,6 +34,11 @@ namespace Effort.TypeConversion
             return value;
         }
 
+        public virtual object ConvertClrValueFromClrValue(object value)
+        {
+            return value;
+        }
+
         public virtual Type ConvertPrimitiveEdmTypeToClrType(Type currentType, PrimitiveType edmType, TypeFacets facets)
         {
             return currentType;

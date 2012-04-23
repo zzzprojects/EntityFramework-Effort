@@ -31,8 +31,13 @@ namespace Effort.TypeConversion
     {
         public override object ConvertClrValueToClrValue(object value, Type expectedType)
         {
+            if (value != null && expectedType == typeof(NMemory.Data.Timestamp))
+            {
+                return NMemory.Data.Timestamp.FromBytes((byte[])value);
+            }
+
             // Implicit conversion does not work without explicit types
-            if (expectedType == typeof(NMemory.Data.Binary) && value != null)
+            if (value != null && expectedType == typeof(NMemory.Data.Binary))
             {
                 return (NMemory.Data.Binary)(byte[])value;
             }
@@ -42,6 +47,11 @@ namespace Effort.TypeConversion
 
         public override object ConvertClrValueFromClrValue(object value)
         {
+            if (value != null && value.GetType() == typeof(NMemory.Data.Timestamp))
+            {
+                return NMemory.Data.Timestamp.GetBytes((NMemory.Data.Timestamp)value);
+            }
+
             if (value != null && value.GetType() == typeof(NMemory.Data.Binary))
             {
                 return (byte[])(NMemory.Data.Binary)value;
@@ -52,6 +62,11 @@ namespace Effort.TypeConversion
 
         public override Type ConvertPrimitiveEdmTypeToClrType(Type currentType, PrimitiveType edmType, TypeFacets facets)
         {
+            if (EdmTypeHelper.IsTimestamp(edmType))
+            {
+                return typeof(NMemory.Data.Timestamp);
+            }
+
             if (EdmTypeHelper.IsBinary(edmType))
             {
                 return typeof(NMemory.Data.Binary);

@@ -36,6 +36,17 @@ namespace Effort.Helpers
     {
         public static void TryUnifyValueTypes(ref Expression left, ref Expression right)
         {
+            if (TypeHelper.IsCastableTo(left.Type, right.Type))
+            {
+                ConvertExpression(ref right, ref left);
+                return;
+            }
+            else if (TypeHelper.IsCastableTo(right.Type, left.Type))
+            {
+                ConvertExpression(ref left, ref right);
+                return;
+            }
+
             if (!left.Type.IsValueType || !right.Type.IsValueType)
             {
                 return;
@@ -46,35 +57,37 @@ namespace Effort.Helpers
 
             if (leftNullable || rightNullable)
             {
-                if (!rightNullable && Nullable.GetUnderlyingType(left.Type) == right.Type)
+                if (leftNullable && Nullable.GetUnderlyingType(left.Type) == right.Type)
                 {
                     ConvertExpression(ref left, ref right);
                 }
 
-                if (!leftNullable && Nullable.GetUnderlyingType(right.Type) == left.Type)
+                if (rightNullable && Nullable.GetUnderlyingType(right.Type) == left.Type)
                 {
                     ConvertExpression(ref right, ref left);
                 }
             }
+
+
         }
 
-        private static void ConvertExpression(ref Expression nullableExpression, ref Expression otherExpression)
+        private static void ConvertExpression(ref Expression to, ref Expression expr)
         {
-            //Check if the nullable expression is constant
-            if (nullableExpression.NodeType == ExpressionType.Constant)
-            {
-                ConstantExpression constant = nullableExpression as ConstantExpression;
+            //// Check if the nullable expression is constant
+            //if (to.NodeType == ExpressionType.Constant)
+            //{
+            //    ConstantExpression constant = to as ConstantExpression;
 
-                //Change the type of the constant
-                nullableExpression = Expression.Constant(constant.Value, otherExpression.Type);
-                return;
-            }
+            //    // Change the type of the constant
+            //    to = Expression.Constant(constant.Value, expr.Type);
+            //    return;
+            //}
 
-            //Last chance
-            otherExpression = Expression.Convert(otherExpression, nullableExpression.Type);
+            // Last chance
+            expr = Expression.Convert(expr, to.Type);
         }
 
-        public static Expression ConvertToNotNull( Expression exp )
+        public static Expression ConvertToNotNull(Expression exp)
         {
             if (TypeHelper.IsNullable(exp.Type))
             {

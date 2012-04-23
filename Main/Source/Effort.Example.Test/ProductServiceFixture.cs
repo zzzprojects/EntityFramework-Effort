@@ -32,7 +32,6 @@ namespace Effort.Example.Test
     [TestClass]
     public class ProductServiceFixture
     {
-
         [TestMethod]
         public void ProductExist()
         {
@@ -48,7 +47,6 @@ namespace Effort.Example.Test
             // Assert
             Assert.IsNotNull(result, "Product does not exist");
         }
-
 
         [TestMethod]
         public void AllProduct()
@@ -103,8 +101,5 @@ namespace Effort.Example.Test
             // Assert
             Assert.AreEqual(product.ProductName, "Chai", "Name of the product");
         }
-
-
-
     }
 }

@@ -71,23 +71,22 @@ namespace Effort.Helpers
                     p);
             }
 
-            object table = typeof(DatabaseReflectionHelper.WrapperMethods)
-                            .GetMethod("CreateTable")
-                            .MakeGenericMethod(entityType, primaryKeyType)
-                            .Invoke(null, new object[] { database, primaryKeyExpression, identity, initialEntities});
+            object table = 
+                typeof(DatabaseReflectionHelper.WrapperMethods)
+                .GetMethod("CreateTable")
+                .MakeGenericMethod(entityType, primaryKeyType)
+                .Invoke(null, new object[] { database, primaryKeyExpression, identity, initialEntities});
 
             return table as ITable;
         }
 
-        public static int UpdateEntities(IQueryable source, Expression updater)
+        public static IEnumerable<object> UpdateEntities(IQueryable source, Expression updater)
         {
-            int count = (int)
+            return
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("UpdateEntities")
                 .MakeGenericMethod(source.ElementType)
-                .Invoke(null, new object[] { source, updater });
-
-            return count;
+                .Invoke(null, new object[] { source, updater }) as IEnumerable<object>;
         }
 
         public static int DeleteEntities(IQueryable source)
@@ -289,7 +288,7 @@ namespace Effort.Helpers
                 return database.StoredProcedures.Create(query);
             }
 
-            public static int UpdateEntities<TEntity>(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updater)
+            public static IEnumerable<TEntity> UpdateEntities<TEntity>(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updater)
                 where TEntity : class
             {
                 return NMemory.Linq.QueryableEx.Update(query, updater);

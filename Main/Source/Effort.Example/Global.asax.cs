@@ -51,7 +51,7 @@ namespace Effort.Example
             else
             {
                 // Path of the CSV files
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\Effort.Example.Test\\Data");
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\Effort.Test\\Data\\Initial\\Northwind");
                 // Define emulator object context type
                 Type emulator = ObjectContextFactory.CreateEmulator<NorthwindEntities>(path, true);
 

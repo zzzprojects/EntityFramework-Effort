@@ -95,7 +95,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Category.cs">
-      <DependentUpon>POCO.tt</DependentUpon>
+      <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CategoryListModel.cs" />
     <Compile Include="Models\Northwind.Designer.cs">
@@ -103,18 +103,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Northwind.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\POCO.Context.cs">
+    <Compile Include="Models\Northwind.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>POCO.Context.tt</DependentUpon>
+      <DependentUpon>Northwind.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\POCO.cs">
+    <Compile Include="Models\Northwind.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>POCO.tt</DependentUpon>
+      <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Product.cs">
-      <DependentUpon>POCO.tt</DependentUpon>
+      <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -154,13 +154,13 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Models\POCO.Context.tt">
+    <None Include="Models\Northwind.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>POCO.Context.cs</LastGenOutput>
+      <LastGenOutput>Northwind.Context.cs</LastGenOutput>
     </None>
-    <None Include="Models\POCO.tt">
+    <None Include="Models\Northwind.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>POCO.cs</LastGenOutput>
+      <LastGenOutput>Northwind.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

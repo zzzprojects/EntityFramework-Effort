@@ -22,21 +22,22 @@
 
 #endregion
 
+using System;
 using System.Data.EntityClient;
-using Effort.Test.Data;
-using EFProviderWrapperToolkit;
+using System.IO;
 
-namespace Effort.Test.Utils
+namespace Effort.Test.Data
 {
-    public class NorthwindEntitiesAccelerated : NorthwindEntities
+    public class NorthwindEntitiesEmulated : NorthwindEntities
     {
-        public NorthwindEntitiesAccelerated()
+
+        public NorthwindEntitiesEmulated()
             : this("name=NorthwindEntities")
         {
  
         }
 
-        public NorthwindEntitiesAccelerated(string connectionString)
+        public NorthwindEntitiesEmulated(string connectionString)
             : base(CreateEntityConnection(connectionString))
         {
 
@@ -44,7 +45,9 @@ namespace Effort.Test.Utils
 
         private static EntityConnection CreateEntityConnection(string connectionString)
         {
-            return EntityConnectionFactory.CreateAccelerator(connectionString); 
+            string csv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Northwind");
+
+            return EntityConnectionFactory.CreateEmulator(connectionString, csv, false);
         }
 
     }

@@ -277,7 +277,7 @@ namespace Effort.CsvTool.ViewModels
                         // Command is finished
                     }
 
-                    this.worker.ReportProgress((int)((double)j * 100.0 / tables.Count));
+                    this.worker.ReportProgress((int)((double)(j + 1) * 100.0 / tables.Count));
 
                     // Table is finished
                 }

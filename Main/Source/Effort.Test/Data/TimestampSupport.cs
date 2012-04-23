@@ -8,13 +8,13 @@ using System.Collections.Specialized;
 namespace Effort.Test.Data
 {
     
-    public class Region
+    public class TimestampSupport
     {
-        public virtual int RegionID { get; set; }
+        public virtual int Id { get; set; }
     
-        public virtual string RegionDescription { get; set; }
+        public virtual string Description { get; set; }
     
-        public virtual ICollection<Territories> Territories { get; set; }
+        public virtual byte[] Timestamp { get; set; }
     
     
     }

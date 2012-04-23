@@ -22,43 +22,28 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Metadata.Edm;
+using System.Data.EntityClient;
 
-namespace Effort.TypeConversion
+namespace Effort.Test.Data
 {
-    internal static class EdmTypeHelper
+    public class NorthwindEntitiesAccelerated : NorthwindEntities
     {
-        private static readonly string[] timestampTypes = { "sqlserver.timestamp" };
-
-        private static readonly string[] binaryTypes = { "edm.binary" };
-
-        public static bool IsBinary(EdmType edmType)
+        public NorthwindEntitiesAccelerated()
+            : this("name=NorthwindEntities")
         {
-            return IsType(edmType, binaryTypes);
+ 
         }
 
-        internal static bool IsTimestamp(EdmType edmType)
+        public NorthwindEntitiesAccelerated(string connectionString)
+            : base(CreateEntityConnection(connectionString))
         {
-            return IsType(edmType, timestampTypes);
+
         }
 
-        private static bool IsType(EdmType edmType, params string[] types)
+        private static EntityConnection CreateEntityConnection(string connectionString)
         {
-            while (edmType != null)
-            {
-                if (types.Any(type => edmType.FullName.Equals(type, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    return true;
-                }
-
-                edmType = edmType.BaseType;
-            }
-
-            return false;
+            return EntityConnectionFactory.CreateAccelerator(connectionString); 
         }
+
     }
 }

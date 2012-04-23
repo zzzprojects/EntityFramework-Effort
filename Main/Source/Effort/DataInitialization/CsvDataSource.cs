@@ -80,7 +80,8 @@ namespace Effort.DataInitialization
                 }
             }
 
-            if (type == typeof(byte[]) || type == typeof(NMemory.Data.Binary))
+
+            if (type == typeof(byte[]) || type == typeof(NMemory.Data.Binary) || type == typeof(NMemory.Data.Timestamp))
             {
                 value = Convert.FromBase64String(val);
             }

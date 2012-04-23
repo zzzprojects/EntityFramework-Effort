@@ -37,7 +37,7 @@ namespace Effort.Example.Test
         {
             get
             {
-                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Example.Test\\Data");
+                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Northwind");
 
                 return ObjectContextFactory.CreateEmulator<NorthwindEntities>(baseDir, false);
             }

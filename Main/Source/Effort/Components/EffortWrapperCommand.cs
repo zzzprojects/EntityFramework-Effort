@@ -110,6 +110,10 @@ namespace Effort.Components
 			{
 				return PerformQuery(behavior);
 			}
+            else if (base.Definition.CommandTree is DbUpdateCommandTree)
+            {
+                return PerformUpdate(behavior);
+            }
 
 			throw new NotSupportedException();
 		}
@@ -179,6 +183,7 @@ namespace Effort.Components
 
                 // Create a stored procedure from the expression
                 procedure = DatabaseReflectionHelper.CreateStoredProcedure(linqExpression, this.DatabaseContainer.Internal);
+
                 // Cache the result
                 this.DatabaseContainer.TransformCache[this.CommandText] = procedure;
 
@@ -227,7 +232,7 @@ namespace Effort.Components
 
 			DbUpdateCommandTree commandTree = base.Definition.CommandTree as DbUpdateCommandTree;
 
-			IReflectionTable table = null;
+			ITable table = null;
 
 			Expression linqExpression = this.GetEnumeratorExpression(commandTree.Predicate, commandTree, out table);
 			IQueryable entitiesToUpdate = this.CreateQuery(linqExpression);
@@ -254,15 +259,8 @@ namespace Effort.Components
 					// Check if member has set clause
 					if (setClauses.ContainsKey(property.Name))
 					{
-						// Set the clause
 						setter = transform.Visit(setClauses[property.Name]);
 					}
-                    ////else // This should not need
-                    ////{
-                    ////    // Copy member
-                    ////    setter = Expression.Property(context, property);
-                    ////}
-
 
 					// If setter was found, insert it
 					if (setter != null)
@@ -280,7 +278,7 @@ namespace Effort.Components
 					Expression.MemberInit(Expression.New(type), memberBindings),
 					context);
 
-			int rowCount = DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater);
+			int rowCount = DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater).Count();
 
 			// Compare the row count in accelerator mode 
 			if (realDbRowCount.HasValue && rowCount != realDbRowCount.Value)
@@ -290,6 +288,71 @@ namespace Effort.Components
 
 			return rowCount;
 		}
+
+        private DbDataReader PerformUpdate(CommandBehavior behavior)
+        {
+            this.EnsureOpenConnection();
+
+            DbUpdateCommandTree commandTree = base.Definition.CommandTree as DbUpdateCommandTree;
+
+            string[] returningFields = this.GetReturningFields(commandTree.Returning);
+            IList<IDictionary<string, object>> returningEntities = this.ExecuteWrappedModulationCommand(behavior, returningFields);
+
+            ITable table = null;
+
+            Expression linqExpression = this.GetEnumeratorExpression(commandTree.Predicate, commandTree, out table);
+            IQueryable entitiesToUpdate = this.CreateQuery(linqExpression);
+
+            Type type = TypeHelper.GetElementType(table.GetType());
+
+            //Collect the SetClause DbExpressions into a dictionary
+            IDictionary<string, DbExpression> setClauses = this.GetSetClauseExpressions(commandTree.SetClauses);
+
+            //Collection for collection member bindings
+            IList<MemberBinding> memberBindings = new List<MemberBinding>();
+
+            DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(this.DatabaseContainer.TypeConverter);
+
+            // Setup context for the predicate
+            ParameterExpression context = Expression.Parameter(type, "context");
+            using (transform.CreateVariable(context, commandTree.Target.VariableName))
+            {
+                //Initialize member bindings
+                foreach (PropertyInfo property in type.GetProperties())
+                {
+                    Expression setter = null;
+
+                    // Check if member has set clause
+                    if (setClauses.ContainsKey(property.Name))
+                    {
+                        setter = transform.Visit(setClauses[property.Name]);
+                    }
+
+                    // If setter was found, insert it
+                    if (setter != null)
+                    {
+                        // Type correction
+                        setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
+
+                        memberBindings.Add(Expression.Bind(property, setter));
+                    }
+                }
+            }
+
+            Expression updater =
+                Expression.Lambda(
+                    Expression.MemberInit(Expression.New(type), memberBindings),
+                    context);
+            
+            IEnumerable<object> updatedEntities = DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater);
+
+            foreach (object entity in updatedEntities)
+            {
+                this.SetReturnedValues(returningEntities, returningFields, entity);
+            }
+
+            return new EffortDataReader(returningEntities.ToArray(), returningFields, this.DatabaseContainer);
+        }
 
 		#endregion
 
@@ -309,7 +372,7 @@ namespace Effort.Components
 
 			DbDeleteCommandTree commandTree = base.Definition.CommandTree as DbDeleteCommandTree;
 
-			IReflectionTable table = null;
+			ITable table = null;
 
 			Expression linqExpression = this.GetEnumeratorExpression(commandTree.Predicate, commandTree, out table);
 			IQueryable entitiesToDelete = this.CreateQuery(linqExpression);
@@ -365,7 +428,7 @@ namespace Effort.Components
 				{
 					// Type correction
 					setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
-
+                    // Register binding
 					memberBindings.Add(Expression.Bind(property, setter));
 				}
 			}
@@ -379,50 +442,20 @@ namespace Effort.Components
 		{
 			this.EnsureOpenConnection();
 
-			DbInsertCommandTree commandTree = base.Definition.CommandTree as DbInsertCommandTree;
-			Dictionary<string, object> returnedValues = new Dictionary<string, object>();
+            DbInsertCommandTree commandTree = base.Definition.CommandTree as DbInsertCommandTree;
 
-			// Find the returning properties
-			DbNewInstanceExpression returnExpression = commandTree.Returning as DbNewInstanceExpression;
+            // Find returning fields
+            string[] returningFields = this.GetReturningFields(commandTree.Returning);
+            // Execute wrapped command
+            IList<IDictionary<string, object>> returningValues = this.ExecuteWrappedModulationCommand(behavior, returningFields);
 
-			if (returnExpression == null)
-			{
-				throw new NotSupportedException("The type of the Returning properties is not DbNewInstanceExpression");
-			}
+            // Check if any record was returned
+            if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator && returningFields.Length < 1)
+            {
+                throw new InvalidOperationException("No record was inserted");
+            }
 
-			// Add the returning property names
-			foreach (DbPropertyExpression propertyExpression in returnExpression.Arguments)
-			{
-				returnedValues.Add(propertyExpression.Property.Name, null);
-			}
-
-			// In accelerator mode, execute the wrapped command, and marshal the returned values
-			if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
-			{
-				DbDataReader reader = base.WrappedCommand.ExecuteReader(behavior);
-
-				returnedValues = new Dictionary<string, object>();
-
-				using (reader)
-				{
-					if (!reader.Read())
-					{
-						throw new InvalidOperationException();
-					}
-
-					for (int i = 0; i < reader.FieldCount; i++)
-					{
-						object value = reader.GetValue(i);
-
-						if (!(value is DBNull))
-						{
-							returnedValues[reader.GetName(i)] = value;
-						}
-					}
-				}
-			}
-
-
+            // Find NMemory table
 			ITable table = this.GetTable(commandTree);
 
 			// Collect the SetClause DbExpressions into a dictionary
@@ -443,47 +476,106 @@ namespace Effort.Components
 					setter = transform.Visit(setClauses[property.Name]);
 
 				}
-				else if (returnedValues.ContainsKey(property.Name))
+				else if (returningFields.Contains(property.Name))
 				{
 					// In accelerator mode, the missing value is filled with the returned value
 					if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
 					{
-						setter = Expression.Constant(returnedValues[property.Name]);
+						setter = Expression.Constant(returningValues[0][property.Name]);
 					}
 				}
-
 
 				// If setter was found, insert it
 				if (setter != null)
 				{
 					// Type correction
 					setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
-
+                    // Register binding
 					memberBindings.Add(Expression.Bind(property, setter));
 				}
 			}
 
 			object entity = CreateAndInsertEntity(table, memberBindings);
 
-			string[] returnedFields = returnedValues.Keys.ToArray();
+            this.SetReturnedValues(returningValues, returningFields, entity);
 
-			// In emulator mode, the generated values are gathered from the MMDB
-			if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseEmulator)
-			{
-				for (int i = 0; i < returnedFields.Length; i++)
-				{
-					string property = returnedFields[i];
-
-					object value = entity.GetType().GetProperty(property).GetValue(entity, null);
-
-					returnedValues[property] = value;
-				}
-			}
-
-			return new EffortDataReader(new[] { returnedValues }, returnedFields, this.DatabaseContainer);
+			return new EffortDataReader(returningValues.ToArray(), returningFields, this.DatabaseContainer);
 		}
 
-		private ITable GetTable(DbInsertCommandTree commandTree)
+        private void SetReturnedValues(IList<IDictionary<string, object>> returningValues, string[] returningFields, object entity)
+        {
+            // In emulator mode, the generated values are gathered from the MMDB
+            if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseEmulator)
+            {
+                Dictionary<string, object> newValue = new Dictionary<string, object>();
+
+                for (int i = 0; i < returningFields.Length; i++)
+                {
+                    string property = returningFields[i];
+
+                    object value = entity.GetType().GetProperty(property).GetValue(entity, null);
+
+                    newValue[property] = this.DatabaseContainer.TypeConverter.ConvertClrValueFromClrValue(value);
+                }
+
+                returningValues.Add(newValue);
+            }
+        }
+
+        private string[] GetReturningFields(DbExpression returning)
+        {
+            // Find the returning properties
+            DbNewInstanceExpression returnExpression = returning as DbNewInstanceExpression;
+
+            if (returnExpression == null)
+            {
+                throw new NotSupportedException("The type of the Returning properties is not DbNewInstanceExpression");
+            }
+
+            List<string> result = new List<string>();
+
+            // Add the returning property names
+            foreach (DbPropertyExpression propertyExpression in returnExpression.Arguments)
+            {
+                result.Add(propertyExpression.Property.Name);
+            }
+
+            return result.ToArray();
+        }
+
+        private IList<IDictionary<string, object>> ExecuteWrappedModulationCommand(CommandBehavior behavior, string[] returningFields)
+        {
+            List<IDictionary<string, object>> result = new List<IDictionary<string, object>>();
+
+            // In accelerator mode, execute the wrapped command, and marshal the returned values
+            if (this.WrapperConnection.ProviderMode == ProviderModes.DatabaseAccelerator)
+            {
+                using (DbDataReader reader = base.WrappedCommand.ExecuteReader(behavior))
+                {
+                    while(reader.Read())
+                    {
+                        Dictionary<string, object> value = new Dictionary<string, object>();
+
+                        for (int i = 0; i < returningFields.Length; i++)
+                        {
+                            string fieldName = returningFields[i];
+                            object fieldValue = reader.GetValue(reader.GetOrdinal(fieldName));
+
+                            if (!(fieldValue is DBNull))
+                            {
+                                fieldValue = null;
+                            }
+
+                            value[fieldName] = value;
+                        }
+                    }
+                }   
+            }
+
+            return result;
+        }
+
+		private ITable GetTable(DbModificationCommandTree commandTree)
 		{
 			DbScanExpression source = commandTree.Target.Expression as DbScanExpression;
 
@@ -555,7 +647,7 @@ namespace Effort.Components
 			return result;
 		}
 
-		private Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, out IReflectionTable table)
+		private Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, out ITable table)
 		{
 			DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor(this.DatabaseContainer.TypeConverter);
 			visitor.SetParameters(commandTree.Parameters.ToArray());
@@ -570,7 +662,7 @@ namespace Effort.Components
 				throw new InvalidOperationException();
 			}
 
-			table = source.Value as IReflectionTable;
+			table = source.Value as ITable;
 
 			// Get the the type of the elements of the table
 			Type elementType = TypeHelper.GetElementType(source.Type);

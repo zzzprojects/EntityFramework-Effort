@@ -23,25 +23,21 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Effort.Test.Data;
 using System.Data.EntityClient;
 using System.IO;
 
-namespace Effort.Test.Utils
+namespace Effort.Test.Data
 {
-    public class NorthwindEntitiesEmulated : NorthwindEntities
+    public class FeatureEntitiesEmulated : FeatureEntities
     {
 
-        public NorthwindEntitiesEmulated()
-            : this("name=NorthwindEntities")
+        public FeatureEntitiesEmulated()
+            : this("name=FeatureEntities")
         {
  
         }
 
-        public NorthwindEntitiesEmulated(string connectionString)
+        public FeatureEntitiesEmulated(string connectionString)
             : base(CreateEntityConnection(connectionString))
         {
 
@@ -49,7 +45,7 @@ namespace Effort.Test.Utils
 
         private static EntityConnection CreateEntityConnection(string connectionString)
         {
-            string csv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Example.Test\\Data");
+            string csv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Feature");
 
             return EntityConnectionFactory.CreateEmulator(connectionString, csv, false);
         }

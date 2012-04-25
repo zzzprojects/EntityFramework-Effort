@@ -36,6 +36,11 @@ namespace Effort.Helpers
     {
         public static void TryUnifyValueTypes(ref Expression left, ref Expression right)
         {
+            if (left.Type == right.Type)
+            {
+                return;
+            }
+
             if (TypeHelper.IsCastableTo(left.Type, right.Type))
             {
                 ConvertExpression(ref right, ref left);

@@ -139,11 +139,6 @@ namespace <#=code.EscapeNamespace(namespaceName)#>
 
 #>
 
-	public void Dispose()
-	{
-		base.Dispose(true);
-	}
-
 }
 <#
 if (!String.IsNullOrEmpty(namespaceName))

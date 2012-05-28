@@ -27,7 +27,6 @@ using System.Collections.Generic;
 using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Linq;
-using EFProviderWrapperToolkit;
 
 namespace Effort.Test.Utils
 {
@@ -37,7 +36,7 @@ namespace Effort.Test.Utils
 
         static QueryTestRuntime()
         {
-            DatabaseAcceleratorProviderConfiguration.RegisterProvider();
+            //DatabaseAcceleratorProviderConfiguration.RegisterProvider();
         }
 
         private string connectionString;
@@ -52,7 +51,7 @@ namespace Effort.Test.Utils
             EntityConnection databaseEntityConnection = new EntityConnection(this.connectionString);
 
             TResult databaseResult = this.ExecuteSingleResultQuery(queryFactory, databaseEntityConnection);
-            TResult mmdbResult = this.ExecuteSingleResultQuery(queryFactory, this.CreateWrappedConnection());
+            TResult mmdbResult = this.ExecuteSingleResultQuery(queryFactory, this.CreateEmulatorConnection());
 
             var comparer = EqualityComparers.Create(typeof(TResult));
 
@@ -74,7 +73,7 @@ namespace Effort.Test.Utils
             EntityConnection databaseEntityConnection = new EntityConnection(this.connectionString);
 
             List<TResult> databaseResult = this.ExecuteQuery(queryFactory, databaseEntityConnection);
-            List<TResult> mmdbResult = this.ExecuteQuery(queryFactory, this.CreateWrappedConnection());
+            List<TResult> mmdbResult = this.ExecuteQuery(queryFactory, this.CreateEmulatorConnection());
 
             if (databaseResult.Count != mmdbResult.Count)
             {
@@ -86,10 +85,11 @@ namespace Effort.Test.Utils
             return comparer.Equals(databaseResult, mmdbResult);
         }
 
-        private EntityConnection CreateWrappedConnection()
+        private EntityConnection CreateEmulatorConnection()
         {
-            return EntityConnectionWrapperUtils
-                .CreateEntityConnectionWithWrappers(this.connectionString, DatabaseAcceleratorProviderConfiguration.ProviderInvariantName);
+            return null;
+            //return EntityConnectionWrapperUtils
+            //    .CreateEntityConnectionWithWrappers(this.connectionString, "");//DatabaseAcceleratorProviderConfiguration.ProviderInvariantName);
         }
 
         private List<TResult> ExecuteQuery<TResult>(Func<TObjectContext, IQueryable<TResult>> queryFactory, EntityConnection connection)

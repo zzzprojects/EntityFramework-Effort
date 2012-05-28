@@ -25,6 +25,7 @@
 using System;
 using System.Data.EntityClient;
 using System.IO;
+using Effort.DataProviders;
 
 namespace Effort.Test.Data
 {
@@ -47,7 +48,7 @@ namespace Effort.Test.Data
         {
             string csv = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Northwind");
 
-            return EntityConnectionFactory.CreateEmulator(connectionString, csv, false);
+            return EntityConnectionFactory.CreateTransient(connectionString, new CsvDataProvider(csv));
         }
 
     }

@@ -57,6 +57,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\Imports\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -146,12 +149,16 @@
     <Compile Include="Data\TimestampSupport.cs">
       <DependentUpon>Feature.tt</DependentUpon>
     </Compile>
+    <Compile Include="DbConnectionFactoryFixture.cs" />
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
     <Compile Include="JoinFixture.cs" />
     <Compile Include="ManipulationFixture.cs" />
+    <Compile Include="MetadataWorkspaceRewriteFixture.cs" />
+    <Compile Include="ObjectContextFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicFixture.cs" />
+    <Compile Include="TestInitialization.cs" />
     <Compile Include="TimestampFixture.cs" />
     <Compile Include="TransactionFixture.cs" />
     <Compile Include="Utils\CollectionComparer.cs" />
@@ -159,7 +166,6 @@
     <Compile Include="Utils\EqualityComparers.cs" />
     <Compile Include="Utils\EntityComparer.cs" />
     <Compile Include="Utils\IEqualityComparer.cs" />
-    <Compile Include="Data\NorthwindEntitiesAccelerated.cs" />
     <Compile Include="Data\NorthwindEntitiesEmulated.cs" />
     <Compile Include="Utils\NumberComparer.cs" />
     <Compile Include="Utils\BasicComparer.cs" />
@@ -246,10 +252,6 @@
     <ProjectReference Include="..\Effort\Effort.csproj">
       <Project>{E612D252-9081-4995-B717-5DBEF8240FB6}</Project>
       <Name>Effort</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EFProviderWrapperToolkit\EFProviderWrapperToolkit.csproj">
-      <Project>{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}</Project>
-      <Name>EFProviderWrapperToolkit</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

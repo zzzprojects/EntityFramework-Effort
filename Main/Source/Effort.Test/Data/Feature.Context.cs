@@ -43,10 +43,5 @@ namespace Effort.Test.Data
 
         #endregion
     
-    	public void Dispose()
-    	{
-    		base.Dispose(true);
-    	}
-    
     }
 }

@@ -29,8 +29,10 @@ using System.Data.Objects;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using Effort.Caching;
-using Effort.Helpers;
+using Effort.Internal.Caching;
+using Effort.Internal.Common;
+using Effort.Provider;
+using Effort.DataProviders;
 
 namespace Effort
 {
@@ -41,10 +43,7 @@ namespace Effort
 
         static ObjectContextFactory()
         {
-            DatabaseEmulatorProviderConfiguration.RegisterProvider();
-            DatabaseAcceleratorProviderConfiguration.RegisterProvider();
-
-            // Dynamic Library for MMDB
+            // Dynamic Library for Effort
             AssemblyBuilder assembly =
                 Thread.GetDomain().DefineDynamicAssembly(
                     new AssemblyName(string.Format("DynamicObjectContextLib")),
@@ -55,125 +54,95 @@ namespace Effort
             objectContextCounter = 0;
         }
 
-        #region Type factory methods
+        #region Persistent
 
-        public static Type CreateEmulator<T>(string source, bool shared) where T : ObjectContext
+        public static Type CreatePersistentType<T>(string entityConnectionString, IDataProvider dataProvider) 
+            where T : ObjectContext
         {
-            return CreateEmulator<T>(null, source, shared);
+            return CreateType<T>(entityConnectionString, true, dataProvider);
         }
 
-        public static Type CreateEmulator<T>(string connectionString, string source, bool shared) where T : ObjectContext
+        public static Type CreatePersistentType<T>(string entityConnectionString) where T : ObjectContext
         {
-            return ObjectContextTypeStore.GetEmulator(connectionString, typeof(T), source, shared, () =>
-                {
-                    if (connectionString == null)
-                    {
-                        connectionString = GetDefaultConnectionString<T>();
-                    }
-
-                    // Get method info
-                    MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a =>
-
-                        EntityConnectionFactory.CreateEmulator(string.Empty, string.Empty, false));
-
-                    Action<ILGenerator> factoryArguments = gen =>
-                        {
-                            gen.Emit(OpCodes.Ldstr, connectionString);
-                            gen.Emit(OpCodes.Ldstr, source);
-                            gen.Emit(shared ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
-                        };
-
-                    return CreateType<T>(entityConnectionFactory, factoryArguments);
-                });
+            return CreateType<T>(entityConnectionString, true, null);
         }
 
-
-        public static Type CreateAccelerator<T>() where T : ObjectContext
+        public static Type CreatePersistentType<T>() where T : ObjectContext
         {
-            return CreateAccelerator<T>(null);
+            return CreateType<T>(null, true, null);
         }
 
-        public static Type CreateAccelerator<T>(string connectionString) where T : ObjectContext
+        public static Type CreatePersistentType<T>(IDataProvider dataProvider)
+            where T : ObjectContext
         {
-            return ObjectContextTypeStore.GetAccelerator(connectionString, typeof(T), () =>
-                {
-                    if (connectionString == null)
-                    {
-                        connectionString = GetDefaultConnectionString<T>();
-                    }
-
-                    // Get method info
-                    MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a =>
-
-                        EntityConnectionFactory.CreateAccelerator(string.Empty));
-
-                    Action<ILGenerator> factoryArguments = gen =>
-                    {
-                        gen.Emit(OpCodes.Ldstr, connectionString);
-                    };
-
-                    return CreateType<T>(entityConnectionFactory, factoryArguments);
-
-                });
+            return CreateType<T>(null, true, dataProvider);
         }
 
         #endregion
 
-        #region Instance factory methods
 
-        public static T CreateAcceleratorInstance<T>() where T : ObjectContext
+
+        #region Transient
+
+        public static Type CreateTransientType<T>(string entityConnectionString, IDataProvider dataProvider)
+            where T : ObjectContext
         {
-            string connectionString = GetDefaultConnectionString<T>();
-
-            return CreateAcceleratorInstance<T>(connectionString);
+            return CreateType<T>(entityConnectionString, false, dataProvider);
         }
 
-        public static T CreateAcceleratorInstance<T>(string connectionString) where T : ObjectContext
+        public static Type CreateTransientType<T>(string entityConnectionString) where T : ObjectContext
         {
-            Type type = CreateAccelerator<T>(connectionString);
-
-            return Activator.CreateInstance(type) as T;
+            return CreateType<T>(entityConnectionString, false, null);
         }
 
-
-
-        public static T CreateEmulatorInstance<T>() where T : ObjectContext
+        public static Type CreateTransientType<T>() where T : ObjectContext
         {
-            return CreateEmulatorInstance<T>(string.Empty, true);
+            return CreateType<T>(null, false, null);
         }
 
-        public static T CreateEmulatorInstance<T>(bool shared) where T : ObjectContext
+        public static Type CreateTransientType<T>(IDataProvider dataProvider)
+            where T : ObjectContext
         {
-            return CreateEmulatorInstance<T>(string.Empty, shared);
-        }
-
-        public static T CreateEmulatorInstance<T>(string source) where T : ObjectContext
-        {
-            return CreateEmulatorInstance<T>(source, true);
-        }
-
-        public static T CreateEmulatorInstance<T>(string source, bool shared) where T : ObjectContext
-        {
-            string connectionString = GetDefaultConnectionString<T>();
-
-            return CreateEmulatorInstance<T>(connectionString, source, shared);
-        }
-
-        public static T CreateEmulatorInstance<T>(string connectionString, string source, bool shared) where T : ObjectContext
-        {
-            Type type = CreateEmulator<T>(connectionString, source, shared);
-
-            return Activator.CreateInstance(type) as T;
+            return CreateType<T>(null, false, dataProvider);
         }
 
         #endregion
+
+
+
+
+        private static Type CreateType<T>(string entityConnectionString, bool persistent, IDataProvider dataProvider) where T : ObjectContext
+        {
+            EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder();
+
+            if (dataProvider != null)
+            {
+                ecsb.DataProviderType = dataProvider.GetType();
+                ecsb.DataProviderArg = dataProvider.Argument;
+            }
+
+            string effortConnectionString = ecsb.ConnectionString;
+
+            return ObjectContextTypeStore.GetObjectContextType(entityConnectionString, effortConnectionString, typeof(T), () =>
+                {
+                    if (string.IsNullOrEmpty(entityConnectionString))
+                    {
+                        entityConnectionString = GetDefaultConnectionString<T>();
+                    }
+
+                    return CreateType<T>(entityConnectionString, effortConnectionString, persistent);
+                });
+        }
+
 
         private static string GetDefaultConnectionString<T>() where T : ObjectContext
         {
             return Activator.CreateInstance<T>().Connection.ConnectionString;
+
+            // TODO: Search for default connection string
         }
 
-        private static Type CreateType<T>(MethodInfo entityConnectionFactoryMethod, Action<ILGenerator> methodArgs)
+        private static Type CreateType<T>(string entityConnectionString, string effortConnectionString, bool persistent)
         {
             TypeBuilder builder = null;
 
@@ -200,9 +169,14 @@ namespace Effort
             // Writing body
             gen.Emit(OpCodes.Ldarg_0);
 
-            methodArgs.Invoke(gen);
+            gen.Emit(OpCodes.Ldstr, entityConnectionString);
+            gen.Emit(OpCodes.Ldstr, effortConnectionString);
+            gen.Emit(persistent ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
 
-            gen.Emit(OpCodes.Call, entityConnectionFactoryMethod);
+            MethodInfo entityConnectionFactory = ReflectionHelper.GetMethodInfo<object>(a =>
+                       EntityConnectionFactory.Create(string.Empty, string.Empty, false));
+
+            gen.Emit(OpCodes.Call, entityConnectionFactory);
             gen.Emit(OpCodes.Call, baseCtor);
             gen.Emit(OpCodes.Nop);
             gen.Emit(OpCodes.Nop);

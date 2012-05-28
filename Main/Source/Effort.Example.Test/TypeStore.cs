@@ -28,6 +28,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Effort.Example.Models;
+using Effort.DataProviders;
 
 namespace Effort.Example.Test
 {
@@ -39,7 +40,7 @@ namespace Effort.Example.Test
             {
                 string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Northwind");
 
-                return ObjectContextFactory.CreateEmulator<NorthwindEntities>(baseDir, false);
+                return ObjectContextFactory.CreateTransientType<NorthwindEntities>(new CsvDataProvider(baseDir));
             }
         }
     }

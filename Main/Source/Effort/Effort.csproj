@@ -123,108 +123,117 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Caching\ObjectContextTypeKey.cs" />
-    <Compile Include="Caching\ObjectContextTypeStore.cs" />
-    <Compile Include="Caching\ConnectionStringKey.cs" />
-    <Compile Include="Caching\ConnectionStringStore.cs" />
-    <Compile Include="Caching\DbSchemaKey.cs" />
-    <Compile Include="Caching\TableInitialDataKey.cs" />
-    <Compile Include="Caching\TableInitialDataStore.cs" />
-    <Compile Include="Caching\DbSchemaStore.cs" />
-    <Compile Include="Csv\CsvReader.cs" />
-    <Compile Include="Csv\CsvReader.DataReaderValidations.cs" />
-    <Compile Include="Csv\CsvReader.RecordEnumerator.cs" />
-    <Compile Include="Csv\Events\ParseErrorEventArgs.cs" />
-    <Compile Include="Csv\Exceptions\MalformedCsvException.cs" />
-    <Compile Include="Csv\Exceptions\MissingFieldCsvException.cs" />
-    <Compile Include="Csv\MissingFieldAction.cs" />
-    <Compile Include="Csv\ParseErrorAction.cs" />
-    <Compile Include="Csv\Resources\ExceptionMessage.Designer.cs">
+    <Compile Include="DataProviders\CsvDataProvider.cs" />
+    <Compile Include="DataProviders\IDataProvider.cs" />
+    <Compile Include="DbConnectionFactory.cs" />
+    <Compile Include="Internal\Caching\ObjectContextTypeKey.cs" />
+    <Compile Include="Internal\Caching\ObjectContextTypeStore.cs" />
+    <Compile Include="Internal\Caching\DbSchemaKey.cs" />
+    <Compile Include="Internal\Caching\TableInitialDataKey.cs" />
+    <Compile Include="Internal\Caching\TableInitialDataStore.cs" />
+    <Compile Include="Internal\Caching\DbSchemaStore.cs" />
+    <Compile Include="Internal\Csv\CsvReader.cs" />
+    <Compile Include="Internal\Csv\CsvReader.DataReaderValidations.cs" />
+    <Compile Include="Internal\Csv\CsvReader.RecordEnumerator.cs" />
+    <Compile Include="Internal\Csv\Events\ParseErrorEventArgs.cs" />
+    <Compile Include="Internal\Csv\Exceptions\MalformedCsvException.cs" />
+    <Compile Include="Internal\Csv\Exceptions\MissingFieldCsvException.cs" />
+    <Compile Include="Internal\Csv\MissingFieldAction.cs" />
+    <Compile Include="Internal\Csv\ParseErrorAction.cs" />
+    <Compile Include="Internal\Csv\Resources\ExceptionMessage.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessage.resx</DependentUpon>
     </Compile>
-    <Compile Include="Csv\ValueTrimmingOptions.cs" />
-    <Compile Include="DatabaseManagement\DatabaseExtensions.cs" />
-    <Compile Include="DatabaseManagement\TableInitialData.cs" />
-    <Compile Include="DatabaseManagement\DatabaseSchema.cs" />
-    <Compile Include="DatabaseManagement\DatabaseContainer.cs" />
-    <Compile Include="DatabaseManagement\DbMethodProvider.cs" />
-    <Compile Include="DatabaseManagement\TableInformation.cs" />
-    <Compile Include="DataInitialization\CachedCsvDataSource.cs" />
-    <Compile Include="DataInitialization\CsvDataSource.cs" />
-    <Compile Include="DataInitialization\CsvDataSourceFactory.cs" />
-    <Compile Include="DataInitialization\DataSourceBase.cs" />
-    <Compile Include="DataInitialization\DbDataSource.cs" />
-    <Compile Include="DataInitialization\DbDataSourceFactory.cs" />
-    <Compile Include="DataInitialization\EmptyDataSource.cs" />
-    <Compile Include="DataInitialization\EmptyDataSourceFactory.cs" />
-    <Compile Include="DataInitialization\IDataSource.cs" />
-    <Compile Include="DataInitialization\IDataSourceFactory.cs" />
-    <Compile Include="DbCommandTreeTransform\CanonicalFunctions.cs" />
-    <Compile Include="DbCommandTreeTransform\Join\ParameterFinderVisitor.cs" />
-    <Compile Include="DbCommandTreeTransform\Variables\VariableCollection.cs" />
-    <Compile Include="DbCommandTreeTransform\Variables\VariableHandler.cs" />
-    <Compile Include="DbCommandTreeTransform\DbExpressionTransformVisitor.cs" />
-    <Compile Include="DbCommandTreeTransform\Join\DbJoinConditionVisitor.cs" />
-    <Compile Include="TypeConversion\AcceleratorModeTypeConverter.cs" />
-    <Compile Include="TypeConversion\EdmTypeConverter.cs" />
-    <Compile Include="DbCommandTreeTransform\Variables\Variable.cs" />
-    <Compile Include="DbCommandTreeTransform\IDbMethodProvider.cs" />
-    <Compile Include="DbCommandTreeTransform\Join\PropertyList.cs" />
-    <Compile Include="DbCommandTreeTransform\PostProcessing\EnumerableNullableSum.cs" />
-    <Compile Include="DbCommandTreeTransform\PostProcessing\ExcrescentInitializationCleanserVisitor.cs" />
-    <Compile Include="DbCommandTreeTransform\PostProcessing\ExcrescentSingleResultCleanserVisitor.cs" />
-    <Compile Include="DbCommandTreeTransform\PostProcessing\SumTransformerVisitor.cs" />
-    <Compile Include="DbCommandTreeTransform\LinqMethodExpressionBuilder.cs" />
-    <Compile Include="DbCommandTreeTransform\ITableProvider.cs" />
-    <Compile Include="DbCommandTreeTransform\LinqMethodProvider.cs" />
-    <Compile Include="DbCommandTreeTransform\SingleResult.cs" />
-    <Compile Include="DbCommandTreeTransform\TableScanVisitor.cs" />
-    <Compile Include="Caching\ConcurrentCache.cs" />
-    <Compile Include="Diagnostics\ILogger.cs" />
-    <Compile Include="Helpers\CultureScope.cs" />
-    <Compile Include="Helpers\ExpressionHelper.cs" />
-    <Compile Include="Helpers\LambdaExpressionHelper.cs" />
-    <Compile Include="Helpers\MetadataWorkspaceHelper.cs" />
-    <Compile Include="Helpers\ReflectionHelper.cs" />
-    <Compile Include="Helpers\TypeHelper.cs" />
+    <Compile Include="Internal\Csv\ValueTrimmingOptions.cs" />
+    <Compile Include="Internal\CommandActions\DeleteCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\InsertCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\UpdateCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\CommandActionBase.cs" />
+    <Compile Include="Internal\CommandActions\QueryCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\DbCommandActionHelper.cs" />
+    <Compile Include="Internal\CommandActions\ICommandAction.cs" />
+    <Compile Include="Internal\CommandActions\ActionContext.cs" />
+    <Compile Include="Internal\CommandActions\Parameter.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\EntitySetSearchVisitor.cs" />
+    <Compile Include="Internal\DbManagement\DbExtensions.cs" />
+    <Compile Include="Internal\DbManagement\DbRelationInformation.cs" />
+    <Compile Include="Internal\DbManagement\DbTableInitialData.cs" />
+    <Compile Include="Internal\DbManagement\DbSchema.cs" />
+    <Compile Include="Internal\DbManagement\DbContainer.cs" />
+    <Compile Include="Internal\DbManagement\DbMethodProvider.cs" />
+    <Compile Include="Internal\DbManagement\DbTableInformation.cs" />
+    <Compile Include="DataProviders\CachedCsvDataSource.cs" />
+    <Compile Include="DataProviders\CsvDataSource.cs" />
+    <Compile Include="DataProviders\CsvDataSourceFactory.cs" />
+    <Compile Include="DataProviders\DataSourceBase.cs" />
+    <Compile Include="DataProviders\DbDataSource.cs" />
+    <Compile Include="DataProviders\DbDataSourceFactory.cs" />
+    <Compile Include="DataProviders\EmptyDataSource.cs" />
+    <Compile Include="DataProviders\EmptyDataSourceFactory.cs" />
+    <Compile Include="DataProviders\IDataSource.cs" />
+    <Compile Include="DataProviders\IDataSourceFactory.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\CanonicalFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Join\ParameterFinderVisitor.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Variables\VariableCollection.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Variables\VariableHandler.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\DbExpressionTransformVisitor.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Join\DbJoinConditionVisitor.cs" />
+    <Compile Include="Internal\TypeConversion\AcceleratorModeTypeConverter.cs" />
+    <Compile Include="Internal\TypeConversion\EdmTypeConverter.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Variables\Variable.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\IDbMethodProvider.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Join\PropertyList.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\EnumerableNullableSum.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\ExcrescentInitializationCleanserVisitor.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\ExcrescentSingleResultCleanserVisitor.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\SumTransformerVisitor.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\LinqMethodExpressionBuilder.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\ITableProvider.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\LinqMethodProvider.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\SingleResult.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\DbExpressionTraversalVisitor.cs" />
+    <Compile Include="Internal\Caching\ConcurrentCache.cs" />
+    <Compile Include="Internal\Diagnostics\ILogger.cs" />
+    <Compile Include="Internal\Common\CultureScope.cs" />
+    <Compile Include="Internal\Common\ExpressionHelper.cs" />
+    <Compile Include="Internal\Common\LambdaExpressionHelper.cs" />
+    <Compile Include="Internal\Common\MetadataWorkspaceHelper.cs" />
+    <Compile Include="Internal\Common\ReflectionHelper.cs" />
+    <Compile Include="Internal\Common\TypeHelper.cs" />
     <Compile Include="EntityConnectionFactory.cs" />
     <Compile Include="ObjectContextFactory.cs" />
-    <Compile Include="TypeConversion\EdmTypeHelper.cs" />
-    <Compile Include="TypeConversion\EmulatorModeTypeConverter.cs" />
-    <Compile Include="TypeConversion\ITypeConverter.cs" />
-    <Compile Include="TypeConversion\TypeConverterBase.cs" />
-    <Compile Include="TypeConversion\TypeFacets.cs" />
-    <Compile Include="TypeGeneration\AnonymousTypeFactory.cs" />
-    <Compile Include="Helpers\EmitHelper.cs" />
-    <Compile Include="Helpers\CommandTreeBuilder.cs" />
-    <Compile Include="Helpers\ConnectionStringHelper.cs" />
-    <Compile Include="DatabaseEmulatorProviderConfiguration.cs" />
-    <Compile Include="DatabaseEmulatorProviderFactory.cs" />
-    <Compile Include="Diagnostics\Logger.cs" />
-    <Compile Include="Components\EffortDataReader.cs" />
+    <Compile Include="Internal\TypeConversion\EdmTypeHelper.cs" />
+    <Compile Include="Internal\TypeConversion\EmulatorModeTypeConverter.cs" />
+    <Compile Include="Internal\TypeConversion\ITypeConverter.cs" />
+    <Compile Include="Internal\TypeConversion\TypeConverterBase.cs" />
+    <Compile Include="Internal\TypeConversion\TypeFacets.cs" />
+    <Compile Include="Internal\TypeGeneration\AnonymousTypeFactory.cs" />
+    <Compile Include="Internal\Common\EmitHelper.cs" />
+    <Compile Include="Internal\Common\CommandTreeBuilder.cs" />
+    <Compile Include="Internal\Diagnostics\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\DatabaseReflectionHelper.cs" />
-    <Compile Include="Caching\DbInstanceStore.cs" />
-    <Compile Include="TypeGeneration\TupleTypeFactory.cs" />
-    <Compile Include="DatabaseAcceleratorProviderConfiguration.cs" />
-    <Compile Include="DatabaseAcceleratorProviderFactory.cs" />
-    <Compile Include="Components\EffortWrapperProviderServices.cs" />
-    <Compile Include="Components\EffortWrapperTransaction.cs" />
-    <Compile Include="Components\ProviderModes.cs" />
-    <Compile Include="Components\EffortWrapperCommand.cs">
+    <Compile Include="Internal\Common\DatabaseReflectionHelper.cs" />
+    <Compile Include="Internal\Caching\DbContainerStore.cs" />
+    <Compile Include="Internal\TypeGeneration\TupleTypeFactory.cs" />
+    <Compile Include="Provider\EffortCommandDefinition.cs" />
+    <Compile Include="Provider\EffortConnection.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\EffortWrapperConnection.cs">
+    <Compile Include="Provider\EffortCommand.cs">
       <SubType>Component</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EFProviderWrapperToolkit\EFProviderWrapperToolkit.csproj">
-      <Project>{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}</Project>
-      <Name>EFProviderWrapperToolkit</Name>
-    </ProjectReference>
+    <Compile Include="Provider\EffortConnectionStringBuilder.cs" />
+    <Compile Include="Provider\EffortDataReader.cs" />
+    <Compile Include="Provider\EffortParameter.cs" />
+    <Compile Include="Provider\EffortParameterCollection.cs" />
+    <Compile Include="Provider\EffortProviderConfiguration.cs" />
+    <Compile Include="Provider\EffortProviderFactory.cs" />
+    <Compile Include="Provider\EffortProviderManifest.cs" />
+    <Compile Include="Provider\EffortProviderServices.cs" />
+    <Compile Include="Provider\EffortTransaction.cs" />
+    <Compile Include="Provider\EffortVersion.cs" />
+    <Compile Include="Provider\EffortProviderManifestTokens.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Effort.licenseheader">
@@ -232,11 +241,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Csv\Resources\ExceptionMessage.resx">
+    <EmbeddedResource Include="Internal\Csv\Resources\ExceptionMessage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessage.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Provider\EffortProviderManifest.xml" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

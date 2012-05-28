@@ -34,12 +34,6 @@ namespace Effort.Test
     {
         private NorthwindEntities context;
 
-        [AssemblyInitialize]
-        public static void RegisterProviders(TestContext context)
-        {
-            DatabaseEmulatorProviderConfiguration.RegisterProvider();
-        }
-
         [TestInitialize]
         public void Initialize()
         {

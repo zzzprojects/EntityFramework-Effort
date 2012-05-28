@@ -26,56 +26,79 @@ using System;
 using System.Configuration;
 using System.Data.Common;
 using System.Data.EntityClient;
-using Effort.Caching;
-using EFProviderWrapperToolkit;
+using Effort.Internal.Caching;
+using Effort.Internal.Common;
+using Effort.Provider;
+using System.Data.Metadata.Edm;
+using System.Reflection;
+using Effort.DataProviders;
 
 namespace Effort
 {
     public static class EntityConnectionFactory
     {
-        static EntityConnectionFactory()
+
+        #region Persistent
+
+        public static EntityConnection CreatePersistent(string entityConnectionString, IDataProvider dataProvider)
         {
-            DatabaseEmulatorProviderConfiguration.RegisterProvider();
-            DatabaseAcceleratorProviderConfiguration.RegisterProvider();
+            MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
+
+            DbConnection connection = DbConnectionFactory.CreatePersistent(entityConnectionString);
+
+            return CreateEntityConnection(metadata, connection);
         }
 
-        public static EntityConnection CreateEmulator(string entityConnectionString, string source, bool shared)
+        public static EntityConnection CreatePersistent(string entityConnectionString)
         {
-            entityConnectionString = GetFullEntityConnectionString(entityConnectionString);
-
-            EntityConnectionStringBuilder ecsb = new EntityConnectionStringBuilder(entityConnectionString);
-
-            // Change the provider connection string
-            DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
-
-            builder["Data Source"] = source;
-            builder["Shared Data"] = shared;
-
-            ecsb.ProviderConnectionString = builder.ConnectionString;
-
-            return Create(DatabaseEmulatorProviderConfiguration.ProviderInvariantName, ecsb.ConnectionString);
+            return CreatePersistent(entityConnectionString);
         }
 
-        ////public static EntityConnection CreateEmulator(string entityConnectionString)
-        ////{
-        ////    return Create(DatabaseEmulatorProviderConfiguration.ProviderInvariantName, entityConnectionString);
-        ////}
+        #endregion
 
-        public static EntityConnection CreateAccelerator(string entityConnectionString)
+        #region Transient
+
+        public static EntityConnection CreateTransient(string entityConnectionString, IDataProvider dataProvider)
         {
-            return Create(DatabaseAcceleratorProviderConfiguration.ProviderInvariantName, entityConnectionString);
+            MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
+
+            DbConnection connection = DbConnectionFactory.CreateTransient(dataProvider);
+
+            return CreateEntityConnection(metadata, connection);
         }
 
-        private static EntityConnection Create(string providerInvariantName, string entityConnectionString)
+        public static EntityConnection CreateTransient(string entityConnectionString)
         {
-            entityConnectionString = GetFullEntityConnectionString(entityConnectionString);
-
-            ConnectionStringStore.TryAdd(entityConnectionString);
-
-            EntityConnection connection = EntityConnectionWrapperUtils.CreateEntityConnectionWithWrappers(entityConnectionString, providerInvariantName);
-
-            return connection;
+            return CreateTransient(entityConnectionString, null);
         }
+
+        #endregion
+
+        public static EntityConnection Create(string entityConnectionString, string effortConnectionString, bool persistent)
+        {
+            MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
+
+            EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder(effortConnectionString);
+            
+            if (persistent)
+            {
+                ecsb.InstanceId = entityConnectionString;
+            }
+            else
+            {
+                ecsb.InstanceId = Guid.NewGuid().ToString();
+            }
+
+            EffortConnection connection = new EffortConnection() { ConnectionString = ecsb.ConnectionString };
+
+            if (!persistent)
+            {
+                connection.MarkAsTransient();
+            }
+
+            return CreateEntityConnection(metadata, connection);
+        }
+
 
         private static string GetFullEntityConnectionString(string entityConnectionString)
         {
@@ -96,6 +119,23 @@ namespace Effort
             }
 
             return entityConnectionString;
+        }
+
+        private static EntityConnection CreateEntityConnection(MetadataWorkspace metadata, DbConnection connection)
+        {
+            EntityConnection entityConnection = new EntityConnection(metadata, connection);
+
+            FieldInfo owned = typeof(EntityConnection).GetField("_userOwnsStoreConnection", BindingFlags.Instance | BindingFlags.NonPublic);
+            owned.SetValue(entityConnection, false);
+            return entityConnection;
+        }
+
+        private static MetadataWorkspace GetMetadataWorkspace(ref string entityConnectionString)
+        {
+            entityConnectionString = GetFullEntityConnectionString(entityConnectionString);
+            EntityConnectionStringBuilder ecsb = new EntityConnectionStringBuilder(entityConnectionString);
+
+            return MetadataWorkspaceHelper.Rewrite(ecsb.Metadata, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
         }
     }
 }

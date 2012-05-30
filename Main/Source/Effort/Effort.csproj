@@ -123,8 +123,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataProviders\CsvDataProvider.cs" />
-    <Compile Include="DataProviders\IDataProvider.cs" />
+    <Compile Include="DataSources\CsvDataProvider.cs" />
+    <Compile Include="DataSources\EntityDataProvider.cs" />
+    <Compile Include="DataSources\IDataProvider.cs" />
     <Compile Include="DbConnectionFactory.cs" />
     <Compile Include="Internal\Caching\ObjectContextTypeKey.cs" />
     <Compile Include="Internal\Caching\ObjectContextTypeStore.cs" />
@@ -156,6 +157,8 @@
     <Compile Include="Internal\CommandActions\ActionContext.cs" />
     <Compile Include="Internal\CommandActions\Parameter.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\EntitySetSearchVisitor.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\IExpressionModifier.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\Modifiers.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
     <Compile Include="Internal\DbManagement\DbRelationInformation.cs" />
     <Compile Include="Internal\DbManagement\DbTableInitialData.cs" />
@@ -163,16 +166,16 @@
     <Compile Include="Internal\DbManagement\DbContainer.cs" />
     <Compile Include="Internal\DbManagement\DbMethodProvider.cs" />
     <Compile Include="Internal\DbManagement\DbTableInformation.cs" />
-    <Compile Include="DataProviders\CachedCsvDataSource.cs" />
-    <Compile Include="DataProviders\CsvDataSource.cs" />
-    <Compile Include="DataProviders\CsvDataSourceFactory.cs" />
-    <Compile Include="DataProviders\DataSourceBase.cs" />
-    <Compile Include="DataProviders\DbDataSource.cs" />
-    <Compile Include="DataProviders\DbDataSourceFactory.cs" />
-    <Compile Include="DataProviders\EmptyDataSource.cs" />
-    <Compile Include="DataProviders\EmptyDataSourceFactory.cs" />
-    <Compile Include="DataProviders\IDataSource.cs" />
-    <Compile Include="DataProviders\IDataSourceFactory.cs" />
+    <Compile Include="DataSources\CachedCsvDataSource.cs" />
+    <Compile Include="DataSources\CsvDataSource.cs" />
+    <Compile Include="DataSources\CsvDataSourceFactory.cs" />
+    <Compile Include="DataSources\DataSourceBase.cs" />
+    <Compile Include="DataSources\EntityDataSource.cs" />
+    <Compile Include="DataSources\EntityDataSourceFactory.cs" />
+    <Compile Include="DataSources\EmptyDataSource.cs" />
+    <Compile Include="DataSources\EmptyDataSourceFactory.cs" />
+    <Compile Include="DataSources\IDataSource.cs" />
+    <Compile Include="DataSources\IDataSourceFactory.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\CanonicalFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Join\ParameterFinderVisitor.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Variables\VariableCollection.cs" />

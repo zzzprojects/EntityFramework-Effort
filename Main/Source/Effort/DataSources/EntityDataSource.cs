@@ -29,16 +29,17 @@ using System.Data.EntityClient;
 using System.Data.Metadata.Edm;
 using Effort.Internal.Common;
 using Effort.Internal.TypeConversion;
+using System.Data.Common.CommandTrees;
 
 namespace Effort.DataProviders
 {
-    internal class DbDataSource : DataSourceBase
+    internal class EntityDataSource : DataSourceBase
     {
         private EntityConnection connection;
         private MetadataWorkspace workspace;
         private EntitySet entitySet;
 
-        public DbDataSource(Type entityType, ITypeConverter converter, EntityConnection connection, string tableName)
+        public EntityDataSource(Type entityType, ITypeConverter converter, EntityConnection connection, string tableName)
             : base(entityType, converter)
         {
             this.connection = connection;
@@ -49,20 +50,22 @@ namespace Effort.DataProviders
         protected override IDataReader CreateDataReader()
         {
             // Build a command tree, which queries all records
-            var commandTree = CommandTreeBuilder.CreateSelectAll(this.workspace, this.entitySet);
+            DbCommandTree commandTree = CommandTreeBuilder.CreateSelectAll(this.workspace, this.entitySet);
             // Get the provider services of the wrapped connection
-            var providerServices = DbProviderServices.GetProviderServices(connection.StoreConnection);
+            DbProviderServices providerServices = DbProviderServices.GetProviderServices(connection.StoreConnection);
+            // Get current manifest token
+            string manifestToken = providerServices.GetProviderManifestToken(connection.StoreConnection);
+            // Get provider manifest
+            DbProviderManifest providerManifest = providerServices.GetProviderManifest(manifestToken);
 
             // Create a command definition from the command tree
-            var commandDefinition = providerServices.CreateCommandDefinition(
-                providerServices.GetProviderManifest(providerServices.GetProviderManifestToken(connection.StoreConnection)),
-                commandTree);
-
-
-            // Compile command and execute
+            DbCommandDefinition commandDefinition = providerServices.CreateCommandDefinition(providerManifest, commandTree);
+            // Compile command 
             DbCommand command = commandDefinition.CreateCommand();
-            command.Connection = connection.StoreConnection;
 
+            // Setup command 
+            command.Connection = connection.StoreConnection;
+            // Execute
             DbDataReader reader = command.ExecuteReader();
 
             return reader;

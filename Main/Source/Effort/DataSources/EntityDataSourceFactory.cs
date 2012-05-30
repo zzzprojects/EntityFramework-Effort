@@ -23,35 +23,45 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using Effort.Internal.Caching;
-using Effort.Internal.DbManagement;
+using System.Data.EntityClient;
 using Effort.Internal.TypeConversion;
 
 namespace Effort.DataProviders
 {
-    internal class CachedCsvDataSource : CsvDataSource
+    internal class EntityDataSourceFactory : IDataSourceFactory
     {
-        private string connectionString;
-        private string tableName;
+        private Func<EntityConnection> connectionFactory;
+        private ITypeConverter converter;
 
-        public CachedCsvDataSource(Type entityType, ITypeConverter converter, string connectionString, string tableName, string path)
-            : base(entityType, converter, path)
+        private EntityConnection connection;
+
+        public EntityDataSourceFactory(ITypeConverter converter, Func<EntityConnection> connectionFactory)
         {
-            this.connectionString = connectionString;
-            this.tableName = tableName;
+            this.converter = converter;
+            this.connectionFactory = connectionFactory;
         }
 
-        public override IEnumerable<object> GetInitialRecords()
+        public IDataSource Create(string tableName, Type entityType)
         {
-            var cache = TableInitialDataStore.GetDbInitialData(
-                this.connectionString, 
-                this.tableName, 
-                () => new DbTableInitialData(base.GetInitialRecords()));
+            if (connection == null)
+            {
+                this.connection = this.connectionFactory.Invoke();
+                this.connection.Open();
+            }
 
-            return cache.GetClonedInitialData();
+            return new EntityDataSource(
+                entityType,
+                converter,
+                this.connection,
+                tableName);
         }
 
-
+        public void Dispose()
+        {
+            if (connection != null)
+            {
+                this.connection.Dispose();
+            }
+        }
     }
 }

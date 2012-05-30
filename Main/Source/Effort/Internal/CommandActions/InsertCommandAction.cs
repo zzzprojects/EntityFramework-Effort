@@ -58,7 +58,7 @@ namespace Effort.Internal.DbCommandActions
             Dictionary<string, object> entityReturningValues = DbCommandActionHelper.CreateReturningEntity(context, returningFields, entity);
             returningValues.Add(entityReturningValues);
 
-            return new EffortDataReader(returningValues.ToArray(), returningFields);
+            return new EffortDataReader(returningValues.ToArray(), returningFields, context.DbContainer);
         }
 
         

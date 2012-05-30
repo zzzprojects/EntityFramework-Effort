@@ -30,6 +30,8 @@ using System.Data.Common.CommandTrees;
 using Effort.Internal.DbCommandTreeTransformation;
 using System.Linq.Expressions;
 using Effort.Internal.DbCommandActions;
+using System.Data.Metadata.Edm;
+using System.Collections.Generic;
 
 namespace Effort.Provider
 {
@@ -45,6 +47,12 @@ namespace Effort.Provider
         {
             this.parameters = new EffortParameterCollection();
             this.commandTree = commandtree;
+
+            foreach (KeyValuePair<string, TypeUsage> param in commandtree.Parameters)
+            {
+                this.Parameters.Insert(0, new EffortParameter() { ParameterName = param.Key });
+            }
+
         }
 
         public override string CommandText
@@ -72,7 +80,7 @@ namespace Effort.Provider
 
         protected override DbParameterCollection DbParameterCollection
         {
-            get
+            get 
             {
                 return this.parameters;
             }
@@ -139,14 +147,8 @@ namespace Effort.Provider
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            ActionContext context = new ActionContext(this.connection.DbContainer);
+            ActionContext context = this.CreateActionContext();
             context.CommandBehavior = behavior;
-
-            // Store parameters in the context
-            foreach (DbParameter parameter in this.Parameters)
-            {
-                context.Parameters.Add(new Parameter(parameter.ParameterName, parameter.Value));
-            }
 
             ICommandAction action = CreateCommandAction();
 
@@ -155,13 +157,7 @@ namespace Effort.Provider
 
         public override int ExecuteNonQuery()
         {
-            ActionContext context = new ActionContext(this.connection.DbContainer);
-
-            // Store parameters in the context
-            foreach (DbParameter parameter in this.Parameters)
-            {
-                context.Parameters.Add(new Parameter(parameter.ParameterName, parameter.Value));
-            }
+            ActionContext context = this.CreateActionContext();
 
             ICommandAction action = this.CreateCommandAction();
 
@@ -170,13 +166,7 @@ namespace Effort.Provider
 
         public override object ExecuteScalar()
         {
-            ActionContext context = new ActionContext(this.connection.DbContainer);
-
-            // Store parameters in the context
-            foreach (DbParameter parameter in this.Parameters)
-            {
-                context.Parameters.Add(new Parameter(parameter.ParameterName, parameter.Value));
-            }
+            ActionContext context = this.CreateActionContext();
 
             ICommandAction action = this.CreateCommandAction();
 
@@ -202,6 +192,19 @@ namespace Effort.Provider
         public object Clone()
         {
             return new EffortCommand(this.commandTree);
+        }
+
+        private ActionContext CreateActionContext()
+        {
+            ActionContext context = new ActionContext(this.connection.DbContainer);
+
+            // Store parameters in the context
+            foreach (DbParameter parameter in this.Parameters)
+            {
+                context.Parameters.Add(new Parameter(parameter.ParameterName, parameter.Value));
+            }
+
+            return context;
         }
 
         private ICommandAction CreateCommandAction()

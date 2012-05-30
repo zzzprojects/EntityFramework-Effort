@@ -36,9 +36,9 @@ namespace Effort.Internal.Caching
             store = new ConcurrentCache<TableInitialDataKey, DbTableInitialData>();
         }
 
-        public static DbTableInitialData GetDbInitialData(string connectionString, string tableName, Func<DbTableInitialData> tableInitialDataFactoryMethod)
+        public static DbTableInitialData GetDbInitialData(string connectionString, Type entityType, Func<DbTableInitialData> tableInitialDataFactoryMethod)
         {
-            return store.Get(new TableInitialDataKey(connectionString, tableName), tableInitialDataFactoryMethod);
+            return store.Get(new TableInitialDataKey(connectionString, entityType), tableInitialDataFactoryMethod);
         }
     }
 }

@@ -153,7 +153,7 @@ namespace Effort.Internal.DbManagement
             {
                 return new EmptyDataSourceFactory();
             }
-
+            this.dataProvider.TypeConverter = this.TypeConverter;
             return this.dataProvider.CreateDataSourceFactory();
         }
 

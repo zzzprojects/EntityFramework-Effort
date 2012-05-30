@@ -32,11 +32,16 @@ using Effort.Provider;
 using System.Data.Metadata.Edm;
 using System.Reflection;
 using Effort.DataProviders;
+using System.Data.Objects;
 
 namespace Effort
 {
     public static class EntityConnectionFactory
     {
+        static EntityConnectionFactory()
+        {
+            EffortProviderConfiguration.RegisterProvider();
+        }
 
         #region Persistent
 
@@ -44,7 +49,7 @@ namespace Effort
         {
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
-            DbConnection connection = DbConnectionFactory.CreatePersistent(entityConnectionString);
+            DbConnection connection = DbConnectionFactory.CreatePersistent(entityConnectionString, dataProvider);
 
             return CreateEntityConnection(metadata, connection);
         }
@@ -127,6 +132,15 @@ namespace Effort
 
             FieldInfo owned = typeof(EntityConnection).GetField("_userOwnsStoreConnection", BindingFlags.Instance | BindingFlags.NonPublic);
             owned.SetValue(entityConnection, false);
+
+            using (ObjectContext objectContext = new ObjectContext(entityConnection))
+            {
+                if (!objectContext.DatabaseExists())
+                {
+                    objectContext.CreateDatabase();
+                }
+            }
+
             return entityConnection;
         }
 

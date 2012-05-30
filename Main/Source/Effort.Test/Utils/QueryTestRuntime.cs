@@ -27,17 +27,13 @@ using System.Collections.Generic;
 using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Linq;
+using Effort.DataProviders;
 
 namespace Effort.Test.Utils
 {
     internal class QueryTestRuntime<TObjectContext> where TObjectContext : ObjectContext
     {
         private static object lockObject = new object();
-
-        static QueryTestRuntime()
-        {
-            //DatabaseAcceleratorProviderConfiguration.RegisterProvider();
-        }
 
         private string connectionString;
 
@@ -73,23 +69,21 @@ namespace Effort.Test.Utils
             EntityConnection databaseEntityConnection = new EntityConnection(this.connectionString);
 
             List<TResult> databaseResult = this.ExecuteQuery(queryFactory, databaseEntityConnection);
-            List<TResult> mmdbResult = this.ExecuteQuery(queryFactory, this.CreateEmulatorConnection());
+            List<TResult> nmemoryResult = this.ExecuteQuery(queryFactory, this.CreateEmulatorConnection());
 
-            if (databaseResult.Count != mmdbResult.Count)
+            if (databaseResult.Count != nmemoryResult.Count)
             {
                 return false;
             }
 
             CollectionComparer<TResult> comparer = new CollectionComparer<TResult>(strictOrder);
 
-            return comparer.Equals(databaseResult, mmdbResult);
+            return comparer.Equals(databaseResult, nmemoryResult);
         }
 
         private EntityConnection CreateEmulatorConnection()
         {
-            return null;
-            //return EntityConnectionWrapperUtils
-            //    .CreateEntityConnectionWithWrappers(this.connectionString, "");//DatabaseAcceleratorProviderConfiguration.ProviderInvariantName);
+            return Effort.EntityConnectionFactory.CreatePersistent(this.connectionString, new EntityDataProvider(this.connectionString));
         }
 
         private List<TResult> ExecuteQuery<TResult>(Func<TObjectContext, IQueryable<TResult>> queryFactory, EntityConnection connection)

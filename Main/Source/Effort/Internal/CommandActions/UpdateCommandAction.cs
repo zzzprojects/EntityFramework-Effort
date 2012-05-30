@@ -28,10 +28,10 @@ namespace Effort.Internal.DbCommandActions
 
             Type type = TypeHelper.GetElementType(table.GetType());
 
-            //Collect the SetClause DbExpressions into a dictionary
+            // Collect the SetClause DbExpressions into a dictionary
             IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(commandTree.SetClauses);
 
-            //Collection for collection member bindings
+            // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
 
             DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(context.DbContainer.TypeConverter);
@@ -76,7 +76,7 @@ namespace Effort.Internal.DbCommandActions
                 returningEntities.Add(returningEntity);
             }
 
-            return new EffortDataReader(returningEntities, returningFields);
+            return new EffortDataReader(returningEntities, returningFields, context.DbContainer);
         }
 
         protected override int ExecuteNonQueryAction(DbUpdateCommandTree commandTree, ActionContext context)

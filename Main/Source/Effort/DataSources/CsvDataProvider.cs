@@ -38,11 +38,6 @@ namespace Effort.DataProviders
                 return new EmptyDataSourceFactory();
             }
 
-            if (Directory.Exists(this.Argument))
-	        {
-                return new EmptyDataSourceFactory();
-	        }
-
             return new CsvDataSourceFactory(this.TypeConverter, this.Argument);
         }
     }

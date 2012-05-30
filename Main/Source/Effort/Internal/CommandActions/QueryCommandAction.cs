@@ -10,6 +10,7 @@ using Effort.Provider;
 using Effort.Internal.Common;
 using System.Collections.Generic;
 using NMemory.StoredProcedures;
+using Effort.Internal.DbCommandTreeTransformation.PostProcessing;
 
 namespace Effort.Internal.DbCommandActions
 {
@@ -23,6 +24,12 @@ namespace Effort.Internal.DbCommandActions
 
             // Transform command tree
             Expression expr = visitor.Visit(commandTree.Query);
+
+            // Execute expression post processing
+            foreach (IExpressionModifier modifier in DbCommandTreeTransformation.PostProcessing.Modifiers.GetModifiers())
+            {
+                expr = modifier.ModifyExpression(expr);
+            }
 
             // Create a stored procedure from the expression
             IStoredProcedure procedure = DatabaseReflectionHelper.CreateStoredProcedure(expr, context.DbContainer.Internal);
@@ -47,7 +54,7 @@ namespace Effort.Internal.DbCommandActions
             IEnumerable result = procedure.Execute(parameters);
 
             string[] fieldNames = TypeHelper.GetElementType(result.GetType()).GetProperties().Select(p => p.Name).ToArray();
-            return new EffortDataReader(result, fieldNames);
+            return new EffortDataReader(result, fieldNames, context.DbContainer);
         }
 
         protected override object ExecuteScalarAction(DbQueryCommandTree commandTree, ActionContext context)

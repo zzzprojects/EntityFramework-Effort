@@ -26,10 +26,8 @@ using System.Linq.Expressions;
 
 namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
 {
-    internal class ExcrescentInitializationCleanserVisitor : ExpressionVisitor
+    internal class ExcrescentInitializationCleanserVisitor : ExpressionVisitor, IExpressionModifier
     {
-        
-
         protected override Expression VisitMember(MemberExpression node)
         {
             string value = "";
@@ -48,6 +46,11 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
             }
             
             return base.VisitMember(node);
+        }
+
+        public Expression ModifyExpression(Expression expression)
+        {
+            return this.Visit(expression);
         }
     }
 }

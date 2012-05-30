@@ -29,7 +29,7 @@ using Effort.Internal.Common;
 
 namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
 {
-    internal class SumTransformerVisitor : ExpressionVisitor
+    internal class SumTransformerVisitor : ExpressionVisitor, IExpressionModifier
     {
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
@@ -58,6 +58,9 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
             return base.VisitMethodCall(node);
         }
 
-
+        public Expression ModifyExpression(Expression expression)
+        {
+            return this.Visit(expression);
+        }
     }
 }

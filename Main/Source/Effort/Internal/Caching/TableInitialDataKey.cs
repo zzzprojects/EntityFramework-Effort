@@ -29,18 +29,18 @@ namespace Effort.Internal.Caching
     internal class TableInitialDataKey : IEquatable<TableInitialDataKey>
     {
         private string path;
-        private string tableName;
+        private Type entityType;
 
-        public TableInitialDataKey(string path, string tableName)
+        public TableInitialDataKey(string path, Type entityType)
         {
             this.path = path ?? string.Empty;
-            this.tableName = tableName ?? string.Empty;
+            this.entityType = entityType;
         }
 
         public bool Equals(TableInitialDataKey other)
         {
             return
-                string.Equals(this.tableName, other.tableName, StringComparison.InvariantCulture) &&
+                this.entityType.Equals(other.entityType) &&
                 string.Equals(this.path, other.path, StringComparison.InvariantCultureIgnoreCase);
                 
         }
@@ -59,7 +59,7 @@ namespace Effort.Internal.Caching
 
         public override int GetHashCode()
         {
-            return this.tableName.GetHashCode() | this.path.GetHashCode();
+            return this.entityType.GetHashCode() | this.path.GetHashCode();
         }
     }
 }

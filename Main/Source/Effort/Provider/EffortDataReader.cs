@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Collections;
 using System.Reflection;
 using System.Data;
+using Effort.Internal.DbManagement;
 
 namespace Effort.Provider
 {
@@ -16,10 +17,14 @@ namespace Effort.Provider
         private string[] fieldNames;
         private object[] currentValues;
 
-        internal EffortDataReader(IEnumerable result, string[] fieldNames)
+        private DbContainer dbContainer;
+
+        internal EffortDataReader(IEnumerable result, string[] fieldNames, DbContainer dbContainer)
         {
             this.fieldNames = fieldNames;
             this.enumerator = result.GetEnumerator();
+
+            this.dbContainer = dbContainer;
         }
 
         public override void Close()
@@ -167,7 +172,7 @@ namespace Effort.Provider
             object result = this.currentValues[ordinal];
 
             // TODO: project
-            //result = this.databaseContainer.TypeConverter.ConvertClrValueFromClrValue(result);
+            result = this.dbContainer.TypeConverter.ConvertClrValueFromClrValue(result);
 
             if (result == null)
             {

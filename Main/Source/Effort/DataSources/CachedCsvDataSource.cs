@@ -23,45 +23,37 @@
 #endregion
 
 using System;
-using System.Data.EntityClient;
+using System.Collections.Generic;
+using Effort.Internal.Caching;
+using Effort.Internal.DbManagement;
 using Effort.Internal.TypeConversion;
 
 namespace Effort.DataProviders
 {
-    internal class DbDataSourceFactory : IDataSourceFactory
+    internal class CachedCsvDataSource : CsvDataSource
     {
-        private Func<EntityConnection> connectionFactory;
-        private ITypeConverter converter;
+        private string connectionString;
+        private string tableName;
+        private Type entityType;
 
-        private EntityConnection connection;
-
-        public DbDataSourceFactory(ITypeConverter converter, Func<EntityConnection> connectionFactory)
+        public CachedCsvDataSource(Type entityType, ITypeConverter converter, string connectionString, string tableName, string path)
+            : base(entityType, converter, path)
         {
-            this.converter = converter;
-            this.connectionFactory = connectionFactory;
+            this.connectionString = connectionString;
+            this.tableName = tableName;
+            this.entityType = entityType;
         }
 
-        public IDataSource Create(string tableName, Type entityType)
+        public override IEnumerable<object> GetInitialRecords()
         {
-            if (connection == null)
-            {
-                this.connection = this.connectionFactory.Invoke();
-                this.connection.Open();
-            }
+            var cache = TableInitialDataStore.GetDbInitialData(
+                this.connectionString,
+                this.entityType, 
+                () => new DbTableInitialData(base.GetInitialRecords()));
 
-            return new DbDataSource(
-                entityType,
-                converter,
-                this.connection,
-                tableName);
+            return cache.GetClonedInitialData();
         }
 
-        public void Dispose()
-        {
-            if (connection != null)
-            {
-                this.connection.Dispose();
-            }
-        }
+
     }
 }

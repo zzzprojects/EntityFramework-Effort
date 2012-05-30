@@ -22,38 +22,103 @@
 
 #endregion
 
-using System.Data;
 using System.Data.Common;
+using System.Transactions;
+using System;
 
 namespace Effort.Provider
 {
     public class EffortTransaction : DbTransaction
     {
         private EffortConnection connection;
+        private System.Data.IsolationLevel isolationLevel;
 
-        internal EffortTransaction(EffortConnection connection)
+        private System.Transactions.CommittableTransaction transaction;
+
+        public EffortTransaction(EffortConnection connection, System.Data.IsolationLevel isolationLevel) 
         {
+            if (System.Transactions.Transaction.Current != null)
+            {
+                throw new InvalidOperationException("Ambient transaction is already set");
+            }
+
             this.connection = connection;
-        }
+            this.isolationLevel = isolationLevel;
 
-        protected override DbConnection DbConnection
-        {
-            get { return this.connection; }
-        }
+            // Initialize new ambient transaction
+            System.Transactions.TransactionOptions options = new System.Transactions.TransactionOptions();
+            options.IsolationLevel = TranslateIsolationLevel(isolationLevel);
+            options.Timeout = new TimeSpan(0, 0, connection.ConnectionTimeout);
 
-        public override IsolationLevel IsolationLevel
-        {
-            get { return IsolationLevel.Unspecified; }
+            this.transaction = new System.Transactions.CommittableTransaction(options);
+
+            if (NMemory.Transactions.Transaction.Current != null)
+            {
+                throw new InvalidOperationException("NMemory transaction is already set");
+            }
+
+            // Create an NMemory transaction
+            NMemory.Transactions.Transaction.EnlistOnExternal(this.transaction);
         }
 
         public override void Commit()
         {
+            transaction.Commit();
+        }
 
+        protected override DbConnection DbConnection
+        {
+            get 
+            { 
+                return this.connection; 
+            }
+        }
+
+        public override System.Data.IsolationLevel IsolationLevel
+        {
+            get 
+            { 
+                return this.isolationLevel; 
+            }
         }
 
         public override void Rollback()
         {
-            
+            transaction.Rollback();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.transaction.Dispose();
+                // this.mmdbTransaction.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private System.Transactions.IsolationLevel TranslateIsolationLevel(System.Data.IsolationLevel isolationLevel)
+        {
+            switch (isolationLevel)
+            {
+                case System.Data.IsolationLevel.Chaos:
+                    return System.Transactions.IsolationLevel.Chaos;
+                case System.Data.IsolationLevel.ReadCommitted:
+                    return System.Transactions.IsolationLevel.ReadCommitted;
+                case System.Data.IsolationLevel.ReadUncommitted:
+                    return System.Transactions.IsolationLevel.ReadUncommitted;
+                case System.Data.IsolationLevel.RepeatableRead:
+                    return System.Transactions.IsolationLevel.RepeatableRead;
+                case System.Data.IsolationLevel.Serializable:
+                    return System.Transactions.IsolationLevel.Serializable;
+                case System.Data.IsolationLevel.Snapshot:
+                    return System.Transactions.IsolationLevel.Snapshot;
+                case System.Data.IsolationLevel.Unspecified:
+                    return System.Transactions.IsolationLevel.Unspecified;
+                default:
+                    throw new ArgumentException("Unknown isolation level.", "isolationLevel");
+            }
         }
     }
 }

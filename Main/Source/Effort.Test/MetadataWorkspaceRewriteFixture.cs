@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Effort.Internal.Common;
 using Effort.Provider;
+using System.Data.Metadata.Edm;
 
 namespace Effort.Test
 {
@@ -12,9 +13,9 @@ namespace Effort.Test
     public class MetadataWorkspaceRewriteFixture
     {
         [TestMethod]
-        public void Rewrite()
+        public void RewriteMetadataWorkspace()
         {
-            MetadataWorkspaceHelper.Rewrite("res://*/Data.Northwind.csdl|res://*/Data.Northwind.ssdl|res://*/Data.Northwind.msl", EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
+            MetadataWorkspace workspace = MetadataWorkspaceHelper.Rewrite("res://*/Data.Northwind.csdl|res://*/Data.Northwind.ssdl|res://*/Data.Northwind.msl", EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
         }
     }
 }

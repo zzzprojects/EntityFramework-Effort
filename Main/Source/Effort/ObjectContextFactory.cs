@@ -43,6 +43,8 @@ namespace Effort
 
         static ObjectContextFactory()
         {
+            EffortProviderConfiguration.RegisterProvider();
+
             // Dynamic Library for Effort
             AssemblyBuilder assembly =
                 Thread.GetDomain().DefineDynamicAssembly(

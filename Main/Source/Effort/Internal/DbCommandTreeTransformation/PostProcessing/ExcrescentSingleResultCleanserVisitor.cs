@@ -31,7 +31,7 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
     /// <summary>
     /// Transforms SingleResult<>(x).FirstOrDefault() to x
     /// </summary>
-    internal class ExcrescentSingleResultCleanserVisitor : ExpressionVisitor
+    internal class ExcrescentSingleResultCleanserVisitor : ExpressionVisitor, IExpressionModifier
     {
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
@@ -57,6 +57,11 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
             }
 
             return base.VisitMethodCall(node);
+        }
+
+        public Expression ModifyExpression(Expression expression)
+        {
+            return this.Visit(expression);
         }
     }
 }

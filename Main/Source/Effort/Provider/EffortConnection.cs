@@ -82,17 +82,25 @@ namespace Effort.Provider
         {
             EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
 
+            this.dbContainer = DbContainerStore.GetDbContainer(connectionString.InstanceId, CreateDbContainer);
+            
+            this.state = ConnectionState.Open;
+        }
+
+        private DbContainer CreateDbContainer()
+        {
+            EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
             IDataProvider dataProvider = null;
 
             if (connectionString.DataProviderType != null)
             {
+                // TODO: check parameterless constructor
+
                 dataProvider = Activator.CreateInstance(connectionString.DataProviderType) as IDataProvider;
                 dataProvider.Argument = connectionString.DataProviderArg;
             }
 
-            this.dbContainer = DbContainerStore.GetDbContainer(connectionString.InstanceId, () => new DbContainer(dataProvider));
-            
-            this.state = ConnectionState.Open;
+            return new DbContainer(dataProvider);
         }
 
         public override void Close()
@@ -123,7 +131,7 @@ namespace Effort.Provider
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
-            return new EffortTransaction(this);
+            return new EffortTransaction(this, isolationLevel);
         }
 
         protected override DbProviderFactory DbProviderFactory
@@ -132,6 +140,11 @@ namespace Effort.Provider
             { 
                 return EffortProviderFactory.Instance; 
             }
+        }
+
+        public override void EnlistTransaction(System.Transactions.Transaction transaction)
+        {
+            
         }
 
         protected override void Dispose(bool disposing)

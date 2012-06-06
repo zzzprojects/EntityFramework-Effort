@@ -64,12 +64,14 @@ namespace Effort
             return CreateType<T>(entityConnectionString, true, dataLoader);
         }
 
-        public static Type CreatePersistentType<T>(string entityConnectionString) where T : ObjectContext
+        public static Type CreatePersistentType<T>(string entityConnectionString) 
+            where T : ObjectContext
         {
             return CreateType<T>(entityConnectionString, true, null);
         }
 
-        public static Type CreatePersistentType<T>() where T : ObjectContext
+        public static Type CreatePersistentType<T>() 
+            where T : ObjectContext
         {
             return CreateType<T>(null, true, null);
         }
@@ -80,9 +82,31 @@ namespace Effort
             return CreateType<T>(null, true, dataLoader);
         }
 
+        public static T CreatePersistent<T>(string entityConnectionString) 
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreatePersistentType<T>(entityConnectionString)) as T;
+        }
+
+        public static T CreatePersistent<T>(string entityConnectionString, IDataLoader dataLoader) 
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreatePersistentType<T>(entityConnectionString, dataLoader)) as T;
+        }
+
+        public static T CreatePersistent<T>() 
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreatePersistentType<T>()) as T;
+        }
+
+        public static T CreatePersistent<T>(IDataLoader dataLoader) 
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreatePersistentType<T>(dataLoader)) as T;
+        }
+
         #endregion
-
-
 
         #region Transient
 
@@ -108,9 +132,31 @@ namespace Effort
             return CreateType<T>(null, false, dataLoader);
         }
 
+        public static T CreateTransient<T>(string entityConnectionString, IDataLoader dataLoader)
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreateTransientType<T>(entityConnectionString, dataLoader)) as T;
+        }
+
+        public static T CreateTransient<T>(string entityConnectionString)
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreateTransientType<T>(entityConnectionString)) as T;
+        }
+
+        public static T CreateTransient<T>(IDataLoader dataLoader)
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreateTransientType<T>(dataLoader)) as T;
+        }
+
+        public static T CreateTransient<T>()
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreateTransientType<T>()) as T;
+        }
+
         #endregion
-
-
 
 
         private static Type CreateType<T>(string entityConnectionString, bool persistent, IDataLoader dataLoader) where T : ObjectContext

@@ -22,23 +22,23 @@
 
 #endregion
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Metadata.Edm;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Threading;
+using Effort.DataLoaders;
+using Effort.Internal.Caching;
+using Effort.Internal.Common;
 using Effort.Internal.DbCommandTreeTransformation;
 using Effort.Internal.Diagnostics;
 using Effort.Internal.TypeConversion;
 using NMemory;
 using NMemory.StoredProcedures;
-using System.Data.Metadata.Edm;
-using Effort.Internal.Caching;
-using System.Reflection.Emit;
-using System;
-using System.Threading;
-using System.Reflection;
-using System.Linq;
-using Effort.Internal.Common;
-using Effort.DataProviders;
-using System.Diagnostics;
 
 namespace Effort.Internal.DbManagement
 {
@@ -47,18 +47,18 @@ namespace Effort.Internal.DbManagement
         private Database database;
         private DbSchema schema;
         private ITypeConverter converter;
-        private IDataProvider dataProvider;
+        private IDataLoader dataLoader;
 
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;
 
-        public DbContainer(IDataProvider dataProvider)
+        public DbContainer(IDataLoader dataLoader)
         {
-            this.dataProvider = dataProvider;
+            this.dataLoader = dataLoader;
 
             this.logger = new Logger();
             this.transformCache = new ConcurrentDictionary<string, IStoredProcedure>();
-            this.converter = new TypeConversion.EmulatorModeTypeConverter();
+            this.converter = new DefaultTypeConverter();
         }
 
         public object GetTable(string name)
@@ -110,14 +110,13 @@ namespace Effort.Internal.DbManagement
             Stopwatch swDatabase = Stopwatch.StartNew();
             Database database = new Database();
 
-            using (IDataSourceFactory sourceFactory = this.CreateDataSourceFactory())
+            using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())
             {
                 foreach (DbTableInformation tableInfo in this.schema.Tables)
                 {
                     Stopwatch swTable = Stopwatch.StartNew();
 
-                    // Initialize the source of the records of the table 
-                    IDataSource source = sourceFactory.Create(tableInfo.TableName, tableInfo.EntityType);
+                    IEnumerable<object> initialData = this.GetInitialData(loaderFactory, tableInfo);
 
                     // Initialize the table
                     DatabaseReflectionHelper.CreateTable(
@@ -125,7 +124,7 @@ namespace Effort.Internal.DbManagement
                         tableInfo.EntityType,
                         tableInfo.PrimaryKeyFields,
                         tableInfo.IdentityField,
-                        source.GetInitialRecords());
+                        initialData);
 
                     swTable.Stop();
 
@@ -147,14 +146,35 @@ namespace Effort.Internal.DbManagement
             this.database = database;
         }
 
-        private IDataSourceFactory CreateDataSourceFactory()
+        private IEnumerable<object> GetInitialData(ITableDataLoaderFactory loaderFactory, DbTableInformation tableInfo)
         {
-            if (this.dataProvider == null)
+            if (this.dataLoader != null && this.dataLoader.Cached)
             {
-                return new EmptyDataSourceFactory();
+                DbTableInitialData initialData =  
+                    TableInitialDataStore.GetDbInitialData(this.dataLoader, tableInfo.EntityType, 
+                        () => new DbTableInitialData(CreateInitialData(loaderFactory, tableInfo)));
+
+                return initialData.GetClonedInitialData();
             }
-            this.dataProvider.TypeConverter = this.TypeConverter;
-            return this.dataProvider.CreateDataSourceFactory();
+            else
+            {
+                return CreateInitialData(loaderFactory, tableInfo);
+            }
+        }
+
+        private IEnumerable<object> CreateInitialData(ITableDataLoaderFactory loaderFactory, DbTableInformation tableInfo)
+        {
+            return ObjectLoader.Load(loaderFactory, tableInfo.TableName, tableInfo.EntityType); ;
+        }
+
+        private ITableDataLoaderFactory CreateDataLoaderFactory()
+        {
+            if (this.dataLoader == null)
+            {
+                return new EmptyTableDataLoaderFactory();
+            }
+
+            return this.dataLoader.CreateTableDataLoaderFactory();
         }
 
         private DbSchema CreateDbSchema(StoreItemCollection edmStoreSchema)

@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Common.CommandTrees;
-using NMemory.Tables;
-using Effort.Internal.DbManagement;
-using Effort.Internal.DbCommandTreeTransformation;
+using System.Data.Metadata.Edm;
+using System.Linq;
 using System.Linq.Expressions;
 using Effort.Internal.Common;
+using Effort.Internal.DbCommandTreeTransformation;
+using Effort.Internal.DbManagement;
+using NMemory.Tables;
 
-namespace Effort.Internal.DbCommandActions
+namespace Effort.Internal.CommandActions
 {
     internal static class DbCommandActionHelper
     {
-        public static string[] GetReturningFields(DbExpression returning)
+        public static FieldDescription[] GetReturningFields(DbExpression returning)
         {
             // Find the returning properties
             DbNewInstanceExpression returnExpression = returning as DbNewInstanceExpression;
@@ -23,12 +23,14 @@ namespace Effort.Internal.DbCommandActions
                 throw new NotSupportedException("The type of the Returning properties is not DbNewInstanceExpression");
             }
 
-            List<string> result = new List<string>();
+            List<FieldDescription> result = new List<FieldDescription>();
 
             // Add the returning property names
             foreach (DbPropertyExpression propertyExpression in returnExpression.Arguments)
             {
-                result.Add(propertyExpression.Property.Name);
+                PrimitiveType propertyType = propertyExpression.ResultType.EdmType as PrimitiveType;
+
+                result.Add(new FieldDescription(propertyExpression.Property.Name, propertyType.ClrEquivalentType));
             }
 
             return result.ToArray();
@@ -112,21 +114,24 @@ namespace Effort.Internal.DbCommandActions
             }
         }
 
-        public static Dictionary<string, object> CreateReturningEntity(ActionContext context, string[] returningFields, object entity)
+        public static Dictionary<string, object> CreateReturningEntity(ActionContext context, FieldDescription[] returningFields, object entity)
         {
             Dictionary<string, object> entityReturningValues = new Dictionary<string, object>();
 
             for (int i = 0; i < returningFields.Length; i++)
             {
-                string property = returningFields[i];
+                string property = returningFields[i].Name;
 
                 object value = entity.GetType().GetProperty(property).GetValue(entity, null);
 
-                entityReturningValues[property] = context.DbContainer.TypeConverter.ConvertClrValueFromClrValue(value);
+                entityReturningValues[property] = context.DbContainer.TypeConverter.ConvertClrObject(value, returningFields[i].Type);
             }
+
             return entityReturningValues;
         }
 
         
     }
+
+
 }

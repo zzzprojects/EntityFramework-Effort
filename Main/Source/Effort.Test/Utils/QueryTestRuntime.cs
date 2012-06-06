@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Linq;
-using Effort.DataProviders;
+using Effort.DataLoaders;
 
 namespace Effort.Test.Utils
 {
@@ -83,7 +83,7 @@ namespace Effort.Test.Utils
 
         private EntityConnection CreateEmulatorConnection()
         {
-            return Effort.EntityConnectionFactory.CreatePersistent(this.connectionString, new EntityDataProvider(this.connectionString));
+            return Effort.EntityConnectionFactory.CreatePersistent(this.connectionString, new EntityDataLoader(this.connectionString));
         }
 
         private List<TResult> ExecuteQuery<TResult>(Func<TObjectContext, IQueryable<TResult>> queryFactory, EntityConnection connection)

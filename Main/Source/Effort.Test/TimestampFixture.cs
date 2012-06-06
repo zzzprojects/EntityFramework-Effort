@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Effort.Test.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data.Objects;
 
 namespace Effort.Test
 {

@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Common;
 using System.Collections;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Reflection;
+using Effort.Internal.Common;
 using Effort.Internal.DbManagement;
 
 namespace Effort.Provider
@@ -14,14 +14,14 @@ namespace Effort.Provider
     {
         private IEnumerator enumerator;
 
-        private string[] fieldNames;
+        private FieldDescription[] fields;
         private object[] currentValues;
 
         private DbContainer dbContainer;
 
-        internal EffortDataReader(IEnumerable result, string[] fieldNames, DbContainer dbContainer)
+        internal EffortDataReader(IEnumerable result, FieldDescription[] fields, DbContainer dbContainer)
         {
-            this.fieldNames = fieldNames;
+            this.fields = fields;
             this.enumerator = result.GetEnumerator();
 
             this.dbContainer = dbContainer;
@@ -51,13 +51,13 @@ namespace Effort.Provider
         {
             get
             {
-                if (fieldNames == null)
+                if (fields == null)
                 {
-                    throw new NotImplementedException();
+                    throw new InvalidOperationException();
                 }
                 else
                 {
-                    return fieldNames.Length;
+                    return fields.Length;
                 }
             }
         }
@@ -139,12 +139,12 @@ namespace Effort.Provider
 
         public override string GetName(int ordinal)
         {
-            if (fieldNames == null)
+            if (this.fields == null)
             {
-                throw new NotSupportedException();
+                throw new InvalidOperationException();
             }
 
-            return fieldNames[ordinal];
+            return this.fields[ordinal].Name;
         }
 
         public override int GetOrdinal(string name)
@@ -172,7 +172,7 @@ namespace Effort.Provider
             object result = this.currentValues[ordinal];
 
             // TODO: project
-            result = this.dbContainer.TypeConverter.ConvertClrValueFromClrValue(result);
+            result = this.dbContainer.TypeConverter.ConvertClrObject(result, this.fields[ordinal].Type);
 
             if (result == null)
             {
@@ -248,7 +248,7 @@ namespace Effort.Provider
         private void EnsureValues()
         {
             object current = this.enumerator.Current;
-            List<string> names = this.fieldNames.ToList();
+            List<string> names = this.fields.Select(f => f.Name).ToList();
 
             if (current is Dictionary<string, object>)
             {

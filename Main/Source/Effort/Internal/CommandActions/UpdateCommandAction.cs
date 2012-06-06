@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Common.CommandTrees;
 using System.Data.Common;
-using System.Data;
-using Effort.Internal.Common;
+using System.Data.Common.CommandTrees;
+using System.Linq;
 using System.Linq.Expressions;
-using NMemory.Tables;
-using Effort.Internal.DbCommandTreeTransformation;
 using System.Reflection;
+using Effort.Internal.Common;
+using Effort.Internal.DbCommandTreeTransformation;
 using Effort.Provider;
+using NMemory.Tables;
 
-namespace Effort.Internal.DbCommandActions
+namespace Effort.Internal.CommandActions
 {
     internal class UpdateCommandAction : CommandActionBase<DbUpdateCommandTree>
     {
         protected override DbDataReader ExecuteDataReaderAction(DbUpdateCommandTree commandTree, ActionContext context)
         {
-            string[] returningFields = DbCommandActionHelper.GetReturningFields(commandTree.Returning);
+            FieldDescription[] returningFields = DbCommandActionHelper.GetReturningFields(commandTree.Returning);
             IList<IDictionary<string, object>> returningEntities = new List<IDictionary<string, object>>();
 
             ITable table = null;

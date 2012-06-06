@@ -24,7 +24,7 @@
 
 namespace Effort.Internal.TypeConversion
 {
-    public struct TypeFacets
+    internal struct TypeFacets
     {
         public bool Nullable { set; get; }
 

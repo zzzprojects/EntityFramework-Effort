@@ -6,7 +6,7 @@ using Effort.Example.Services;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Web.UnityExtensions.Mvc;
 using System.IO;
-using Effort.DataProviders;
+using Effort.DataLoaders;
 
 namespace Effort.Example
 {
@@ -54,7 +54,7 @@ namespace Effort.Example
                 // Path of the CSV files
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\Effort.Test\\Data\\Initial\\Northwind");
                 // Define emulator object context type
-                Type emulator = ObjectContextFactory.CreatePersistentType<NorthwindEntities>(new CsvDataProvider(path));
+                Type emulator = ObjectContextFactory.CreatePersistentType<NorthwindEntities>(new CsvDataLoader(path));
 
                 // Register emulator object context type
                 di.RegisterType(typeof(INorthwindEntities), emulator);

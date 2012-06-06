@@ -1,11 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Data.Metadata.Edm;
 using Effort.Internal.Common;
 using Effort.Provider;
-using System.Data.Metadata.Edm;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Effort.Test
 {

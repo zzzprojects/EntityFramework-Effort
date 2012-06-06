@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Common.CommandTrees;
 using System.Data.Common;
+using System.Data.Common.CommandTrees;
+using System.Linq;
 using System.Linq.Expressions;
-using NMemory.Tables;
 using Effort.Internal.Common;
+using NMemory.Tables;
 
-namespace Effort.Internal.DbCommandActions
+namespace Effort.Internal.CommandActions
 {
     internal class DeleteCommandAction : CommandActionBase<DbDeleteCommandTree>
     {

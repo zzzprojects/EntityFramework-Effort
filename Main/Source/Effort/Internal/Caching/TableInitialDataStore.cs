@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using Effort.DataLoaders;
 using Effort.Internal.DbManagement;
 
 namespace Effort.Internal.Caching
@@ -36,9 +37,9 @@ namespace Effort.Internal.Caching
             store = new ConcurrentCache<TableInitialDataKey, DbTableInitialData>();
         }
 
-        public static DbTableInitialData GetDbInitialData(string connectionString, Type entityType, Func<DbTableInitialData> tableInitialDataFactoryMethod)
+        public static DbTableInitialData GetDbInitialData(IDataLoader loader, Type entityType, Func<DbTableInitialData> tableInitialDataFactoryMethod)
         {
-            return store.Get(new TableInitialDataKey(connectionString, entityType), tableInitialDataFactoryMethod);
+            return store.Get(new TableInitialDataKey(loader.GetType(), loader.Argument, entityType), tableInitialDataFactoryMethod);
         }
     }
 }

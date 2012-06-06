@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Common;
+using Effort.DataLoaders;
 using Effort.Provider;
-using Effort.DataProviders;
 
 namespace Effort
 {
@@ -17,9 +14,9 @@ namespace Effort
 
         #region Persistent
 
-        public static DbConnection CreatePersistent(string instanceId, IDataProvider dataProvider)
+        public static DbConnection CreatePersistent(string instanceId, IDataLoader dataLoader)
         {
-            EffortConnection connection = Create(instanceId, dataProvider);
+            EffortConnection connection = Create(instanceId, dataLoader);
 
             return connection;
         }
@@ -33,11 +30,11 @@ namespace Effort
 
         #region Transient
 
-        public static DbConnection CreateTransient(IDataProvider dataProvider)
+        public static DbConnection CreateTransient(IDataLoader dataLoader)
         {
             string instanceId = Guid.NewGuid().ToString();
 
-            EffortConnection connection = Create(instanceId, dataProvider);
+            EffortConnection connection = Create(instanceId, dataLoader);
             connection.MarkAsTransient();
 
             return connection;
@@ -50,16 +47,16 @@ namespace Effort
 
         #endregion
 
-        private static EffortConnection Create(string instanceId, IDataProvider dataProvider)
+        private static EffortConnection Create(string instanceId, IDataLoader dataLoader)
         {
             EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder();
 
             connectionString.InstanceId = instanceId;
 
-            if (dataProvider != null)
+            if (dataLoader != null)
             {
-                connectionString.DataProviderType = dataProvider.GetType();
-                connectionString.DataProviderArg = dataProvider.Argument;
+                connectionString.DataProviderType = dataLoader.GetType();
+                connectionString.DataProviderArg = dataLoader.Argument;
             }
 
             EffortConnection connection = new EffortConnection();

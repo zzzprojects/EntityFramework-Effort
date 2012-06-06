@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.Common.CommandTrees;
 using System.Data.Metadata.Edm;
 using System.Linq;
 using System.Linq.Expressions;
-using Effort.Internal.DbCommandTreeTransformation;
-using Effort.Provider;
 using Effort.Internal.Common;
-using System.Collections.Generic;
-using NMemory.StoredProcedures;
+using Effort.Internal.DbCommandTreeTransformation;
 using Effort.Internal.DbCommandTreeTransformation.PostProcessing;
+using Effort.Provider;
+using NMemory.StoredProcedures;
 
-namespace Effort.Internal.DbCommandActions
+namespace Effort.Internal.CommandActions
 {
     internal class QueryCommandAction : CommandActionBase<DbQueryCommandTree>
     {
@@ -46,15 +46,15 @@ namespace Effort.Internal.DbCommandActions
                 ParameterDescription expectedParam = procedure.Parameters.FirstOrDefault(p => p.Name == param.Name);
 
                 // Custom conversion
-                value = context.DbContainer.TypeConverter.ConvertClrValueToClrValue(value, expectedParam.Type);
+                value = context.DbContainer.TypeConverter.ConvertClrObject(value, expectedParam.Type);
 
                 parameters.Add(name, value);
             }
 
             IEnumerable result = procedure.Execute(parameters);
+            List<FieldDescription> fields = GetReturningFields(commandTree);
 
-            string[] fieldNames = TypeHelper.GetElementType(result.GetType()).GetProperties().Select(p => p.Name).ToArray();
-            return new EffortDataReader(result, fieldNames, context.DbContainer);
+            return new EffortDataReader(result, fields.ToArray(), context.DbContainer);
         }
 
         protected override object ExecuteScalarAction(DbQueryCommandTree commandTree, ActionContext context)
@@ -66,5 +66,21 @@ namespace Effort.Internal.DbCommandActions
         {
             throw new NotSupportedException();
         }
+
+        private static List<FieldDescription> GetReturningFields(DbQueryCommandTree commandTree)
+        {
+            List<FieldDescription> fields = new List<FieldDescription>();
+
+            CollectionType collectionType = commandTree.Query.ResultType.EdmType as CollectionType;
+            RowType rowType = collectionType.TypeUsage.EdmType as RowType;
+
+            foreach (EdmMember member in rowType.Members)
+            {
+                PrimitiveType memberType = member.TypeUsage.EdmType as PrimitiveType;
+                fields.Add(new FieldDescription(member.Name, memberType.ClrEquivalentType));
+            }
+            return fields;
+        }
+
     }
 }

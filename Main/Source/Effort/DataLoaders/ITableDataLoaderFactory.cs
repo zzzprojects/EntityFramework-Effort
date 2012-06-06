@@ -22,46 +22,13 @@
 
 #endregion
 
+
 using System;
-using System.Data.EntityClient;
-using Effort.Internal.TypeConversion;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    internal class EntityDataSourceFactory : IDataSourceFactory
+    public interface ITableDataLoaderFactory : IDisposable
     {
-        private Func<EntityConnection> connectionFactory;
-        private ITypeConverter converter;
-
-        private EntityConnection connection;
-
-        public EntityDataSourceFactory(ITypeConverter converter, Func<EntityConnection> connectionFactory)
-        {
-            this.converter = converter;
-            this.connectionFactory = connectionFactory;
-        }
-
-        public IDataSource Create(string tableName, Type entityType)
-        {
-            if (connection == null)
-            {
-                this.connection = this.connectionFactory.Invoke();
-                this.connection.Open();
-            }
-
-            return new EntityDataSource(
-                entityType,
-                converter,
-                this.connection,
-                tableName);
-        }
-
-        public void Dispose()
-        {
-            if (connection != null)
-            {
-                this.connection.Dispose();
-            }
-        }
+        ITableDataLoader CreateTableDataSource(TableDescription table);
     }
 }

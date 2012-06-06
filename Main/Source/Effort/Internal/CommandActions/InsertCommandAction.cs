@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Common.CommandTrees;
 using System.Data.Common;
-using System.Data;
-using NMemory.Tables;
-using System.Reflection;
+using System.Data.Common.CommandTrees;
 using System.Linq.Expressions;
+using System.Reflection;
 using Effort.Internal.Common;
-using Effort.Provider;
 using Effort.Internal.DbCommandTreeTransformation;
+using Effort.Provider;
+using NMemory.Tables;
 
-namespace Effort.Internal.DbCommandActions
+namespace Effort.Internal.CommandActions
 {
     internal class InsertCommandAction : CommandActionBase<DbInsertCommandTree>
     {
         protected override DbDataReader ExecuteDataReaderAction(DbInsertCommandTree commandTree, ActionContext context)
         {
             // Find returning fields
-            string[] returningFields = DbCommandActionHelper.GetReturningFields(commandTree.Returning);
+            FieldDescription[] returningFields = DbCommandActionHelper.GetReturningFields(commandTree.Returning);
             List<IDictionary<string, object>> returningValues = new List<IDictionary<string, object>>();
 
             // Find NMemory table

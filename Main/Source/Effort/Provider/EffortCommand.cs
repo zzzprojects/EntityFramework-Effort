@@ -23,15 +23,12 @@
 #endregion
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Common.CommandTrees;
-using Effort.Internal.DbCommandTreeTransformation;
-using System.Linq.Expressions;
-using Effort.Internal.DbCommandActions;
 using System.Data.Metadata.Edm;
-using System.Collections.Generic;
+using Effort.Internal.CommandActions;
 
 namespace Effort.Provider
 {

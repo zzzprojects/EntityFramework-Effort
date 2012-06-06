@@ -22,9 +22,8 @@
 
 #endregion
 
-using System.Data.Common;
-using System.Transactions;
 using System;
+using System.Data.Common;
 
 namespace Effort.Provider
 {

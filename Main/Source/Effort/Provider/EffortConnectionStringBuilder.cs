@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Common;
-using System.Reflection;
 
 namespace Effort.Provider
 {
     public class EffortConnectionStringBuilder : DbConnectionStringBuilder
     {
         private static readonly string Key_InstanceName = "InstanceId";
-        private static readonly string Key_DataProviderType = "DataSourceType";
-        private static readonly string Key_DataProviderArg = "DataSourceArg";
+        private static readonly string Key_DataLoaderType = "DataLoaderType";
+        private static readonly string Key_DataLoaderArg = "DataLoaderArg";
+        private static readonly string Key_DataLoaderCached = "DataLoaderCached";
 
         public EffortConnectionStringBuilder()
         {
@@ -28,7 +25,7 @@ namespace Effort.Provider
         {
             get
             {
-                if (!base.ContainsKey(Key_DataProviderType))
+                if (!base.ContainsKey(Key_DataLoaderType))
                 {
                     return string.Empty;
                 }
@@ -45,22 +42,22 @@ namespace Effort.Provider
         {
             get
             {
-                if (!base.ContainsKey(Key_DataProviderType))
+                if (!base.ContainsKey(Key_DataLoaderType))
                 {
                     return null;
                 }
 
-                return Type.GetType(base[Key_DataProviderType] as string);
+                return Type.GetType(base[Key_DataLoaderType] as string);
             }
             set
             {
                 if (value == null)
                 {
-                    base[Key_DataProviderType] = null;
+                    base[Key_DataLoaderType] = null;
                     return;
                 }
 
-                base[Key_DataProviderType] = value.FullName;
+                base[Key_DataLoaderType] = value.FullName;
             }
         }
 
@@ -68,16 +65,33 @@ namespace Effort.Provider
         {
             get
             {
-                if (!base.ContainsKey(Key_DataProviderType))
+                if (!base.ContainsKey(Key_DataLoaderType))
                 {
                     return string.Empty;
                 }
 
-                return base[Key_DataProviderArg] as string;
+                return base[Key_DataLoaderArg] as string;
             }
             set
             {
-                base[Key_DataProviderArg] = value;
+                base[Key_DataLoaderArg] = value;
+            }
+        }
+
+        public bool DataProviderCached
+        {
+            get
+            {
+                if (!base.ContainsKey(Key_DataLoaderCached))
+                {
+                    return false;
+                }
+
+                return bool.Parse(base[Key_DataLoaderCached] as string);
+            }
+            set
+            {
+                base[Key_DataLoaderArg] = value.ToString();
             }
         }
     }

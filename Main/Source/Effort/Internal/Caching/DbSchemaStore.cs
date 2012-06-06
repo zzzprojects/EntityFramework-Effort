@@ -23,8 +23,8 @@
 #endregion
 
 using System;
-using Effort.Internal.DbManagement;
 using System.Data.Metadata.Edm;
+using Effort.Internal.DbManagement;
 
 namespace Effort.Internal.Caching
 {

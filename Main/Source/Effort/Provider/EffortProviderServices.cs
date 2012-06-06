@@ -23,12 +23,10 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Data.Common;
 using System.Data.Common.CommandTrees;
 using System.Data.Metadata.Edm;
 using Effort.Internal.DbManagement;
-using Effort.Internal.Caching;
 
 namespace Effort.Provider
 {

@@ -22,40 +22,15 @@
 
 #endregion
 
-using System;
-using System.Data.Common;
-using System.IO;
-using Effort.Internal.TypeConversion;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    internal class CsvDataSourceFactory : IDataSourceFactory
+    public interface IDataLoader
     {
-        private DirectoryInfo source;
-        private ITypeConverter converter;
+        string Argument { get; set; }
 
-        public CsvDataSourceFactory(ITypeConverter converter, string path)
-        {
-            this.converter = converter;
+        bool Cached { get; set; }
 
-            this.source = new DirectoryInfo(path);
-
-            if (!this.source.Exists)
-            {
-                throw new ArgumentException("", "path");
-            }
-        }
-
-        public IDataSource Create(string tableName, Type entityType)
-        {
-            string csvPath = Path.Combine(source.FullName, string.Format("{0}.csv", tableName));
-
-            return new CachedCsvDataSource(entityType, this.converter, this.source.FullName, tableName, csvPath);
-        }
-
-        public void Dispose()
-        {
-            
-        }
+        ITableDataLoaderFactory CreateTableDataLoaderFactory();
     }
 }

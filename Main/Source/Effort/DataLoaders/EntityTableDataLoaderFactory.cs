@@ -23,24 +23,37 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using Effort.Example.Models;
-using Effort.DataLoaders;
+using System.Data.EntityClient;
 
-namespace Effort.Example.Test
+namespace Effort.DataLoaders
 {
-    public static class TypeStore
+    public class EntityDataLoaderFactory : ITableDataLoaderFactory
     {
-        public static Type EmulatorContext
-        {
-            get
-            {
-                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Northwind");
+        private Func<EntityConnection> connectionFactory;
+        private EntityConnection connection;
 
-                return ObjectContextFactory.CreateTransientType<NorthwindEntities>(new CsvDataLoader(baseDir));
+        public EntityDataLoaderFactory(Func<EntityConnection> connectionFactory)
+        {
+            this.connectionFactory = connectionFactory;
+        }
+
+        public ITableDataLoader CreateTableDataSource(TableDescription table)
+        {
+            if (this.connection == null)
+            {
+                this.connection = this.connectionFactory.Invoke();
+                this.connection.Open();
+            }
+
+            return new EntityTableDataLoader(this.connection, table);
+        }
+
+        public void Dispose()
+        {
+            if (connection != null)
+            {
+                this.connection.Close();
+                this.connection.Dispose();
             }
         }
     }

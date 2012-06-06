@@ -25,9 +25,9 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using Effort.Internal.DbManagement;
-using Effort.DataProviders;
+using Effort.DataLoaders;
 using Effort.Internal.Caching;
+using Effort.Internal.DbManagement;
 
 namespace Effort.Provider
 {
@@ -90,17 +90,18 @@ namespace Effort.Provider
         private DbContainer CreateDbContainer()
         {
             EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
-            IDataProvider dataProvider = null;
+            IDataLoader dataLoader = null;
 
             if (connectionString.DataProviderType != null)
             {
                 // TODO: check parameterless constructor
 
-                dataProvider = Activator.CreateInstance(connectionString.DataProviderType) as IDataProvider;
-                dataProvider.Argument = connectionString.DataProviderArg;
+                dataLoader = Activator.CreateInstance(connectionString.DataProviderType) as IDataLoader;
+                dataLoader.Argument = connectionString.DataProviderArg;
+                dataLoader.Cached = connectionString.DataProviderCached;
             }
 
-            return new DbContainer(dataProvider);
+            return new DbContainer(dataLoader);
         }
 
         public override void Close()

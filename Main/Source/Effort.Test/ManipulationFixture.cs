@@ -24,7 +24,6 @@
 
 using System.Linq;
 using Effort.Test.Data;
-using Effort.Test.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Effort.Test

@@ -23,41 +23,36 @@
 #endregion
 
 using System;
-using System.Data.Metadata.Edm;
+using System.IO;
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.DataLoaders
 {
-    internal class AcceleratorModeTypeConverter : TypeConverterBase
+    internal class CsvTableDataLoaderFactory : ITableDataLoaderFactory
     {
-        public override object ConvertClrValueToClrValue(object value, Type expectedType)
-        {
-            // Implicit conversion does not work without explicit types
-            if (expectedType == typeof(NMemory.Data.Binary) && value != null)
-            {
-                return (NMemory.Data.Binary)(byte[])value;
-            }
+        private DirectoryInfo source;
 
-            return base.ConvertClrValueToClrValue(value, expectedType);
+        public CsvTableDataLoaderFactory( string path)
+        {
+            this.source = new DirectoryInfo(path);
+
+            if (!this.source.Exists)
+            {
+                throw new ArgumentException("", "path");
+            }
         }
 
-        public override object ConvertClrValueFromClrValue(object value)
+        public ITableDataLoader CreateTableDataSource(TableDescription table)
         {
-            if (value != null && value.GetType() == typeof(NMemory.Data.Binary))
-            {
-                return (byte[])(NMemory.Data.Binary)value;
-            }
+            string csvPath = Path.Combine(source.FullName, string.Format("{0}.csv", table.Name));
 
-            return base.ConvertClrValueFromClrValue(value);
+            return new CsvTableDataLoader(csvPath, table);
         }
 
-        public override Type ConvertPrimitiveEdmTypeToClrType(Type currentType, PrimitiveType edmType, TypeFacets facets)
+        public void Dispose()
         {
-            if (EdmTypeHelper.IsBinary(edmType))
-            {
-                return typeof(NMemory.Data.Binary);
-            }
-
-            return base.ConvertPrimitiveEdmTypeToClrType(currentType, edmType, facets);
+            
         }
+
+
     }
 }

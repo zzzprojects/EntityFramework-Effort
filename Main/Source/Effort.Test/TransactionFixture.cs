@@ -25,7 +25,6 @@
 using System.Linq;
 using System.Transactions;
 using Effort.Test.Data;
-using Effort.Test.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Effort.Test

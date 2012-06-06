@@ -29,10 +29,10 @@ using System.Data.Objects;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
+using Effort.DataLoaders;
 using Effort.Internal.Caching;
 using Effort.Internal.Common;
 using Effort.Provider;
-using Effort.DataProviders;
 
 namespace Effort
 {
@@ -58,10 +58,10 @@ namespace Effort
 
         #region Persistent
 
-        public static Type CreatePersistentType<T>(string entityConnectionString, IDataProvider dataProvider) 
+        public static Type CreatePersistentType<T>(string entityConnectionString, IDataLoader dataLoader) 
             where T : ObjectContext
         {
-            return CreateType<T>(entityConnectionString, true, dataProvider);
+            return CreateType<T>(entityConnectionString, true, dataLoader);
         }
 
         public static Type CreatePersistentType<T>(string entityConnectionString) where T : ObjectContext
@@ -74,10 +74,10 @@ namespace Effort
             return CreateType<T>(null, true, null);
         }
 
-        public static Type CreatePersistentType<T>(IDataProvider dataProvider)
+        public static Type CreatePersistentType<T>(IDataLoader dataLoader)
             where T : ObjectContext
         {
-            return CreateType<T>(null, true, dataProvider);
+            return CreateType<T>(null, true, dataLoader);
         }
 
         #endregion
@@ -86,10 +86,10 @@ namespace Effort
 
         #region Transient
 
-        public static Type CreateTransientType<T>(string entityConnectionString, IDataProvider dataProvider)
+        public static Type CreateTransientType<T>(string entityConnectionString, IDataLoader dataLoader)
             where T : ObjectContext
         {
-            return CreateType<T>(entityConnectionString, false, dataProvider);
+            return CreateType<T>(entityConnectionString, false, dataLoader);
         }
 
         public static Type CreateTransientType<T>(string entityConnectionString) where T : ObjectContext
@@ -102,10 +102,10 @@ namespace Effort
             return CreateType<T>(null, false, null);
         }
 
-        public static Type CreateTransientType<T>(IDataProvider dataProvider)
+        public static Type CreateTransientType<T>(IDataLoader dataLoader)
             where T : ObjectContext
         {
-            return CreateType<T>(null, false, dataProvider);
+            return CreateType<T>(null, false, dataLoader);
         }
 
         #endregion
@@ -113,14 +113,14 @@ namespace Effort
 
 
 
-        private static Type CreateType<T>(string entityConnectionString, bool persistent, IDataProvider dataProvider) where T : ObjectContext
+        private static Type CreateType<T>(string entityConnectionString, bool persistent, IDataLoader dataLoader) where T : ObjectContext
         {
             EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder();
 
-            if (dataProvider != null)
+            if (dataLoader != null)
             {
-                ecsb.DataProviderType = dataProvider.GetType();
-                ecsb.DataProviderArg = dataProvider.Argument;
+                ecsb.DataProviderType = dataLoader.GetType();
+                ecsb.DataProviderArg = dataLoader.Argument;
             }
 
             string effortConnectionString = ecsb.ConnectionString;

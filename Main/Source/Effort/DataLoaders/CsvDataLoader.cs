@@ -22,26 +22,35 @@
 
 #endregion
 
-using System;
-using System.Data.Metadata.Edm;
-
-namespace Effort.Internal.TypeConversion
+namespace Effort.DataLoaders
 {
-    internal class TypeConverterBase : ITypeConverter
+    public class CsvDataLoader : IDataLoader
     {
-        public virtual object ConvertClrValueToClrValue(object value, Type expectedType)
+        public CsvDataLoader()
         {
-            return value;
+
         }
 
-        public virtual object ConvertClrValueFromClrValue(object value)
+        public CsvDataLoader(string path)
         {
-            return value;
+            this.Argument = path;
         }
 
-        public virtual Type ConvertPrimitiveEdmTypeToClrType(Type currentType, PrimitiveType edmType, TypeFacets facets)
+        public string Argument
         {
-            return currentType;
+            get;
+            set;
+        }
+
+        public bool Cached
+        {
+            get;
+            set;
+        }
+
+        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+        {
+            return new CsvTableDataLoaderFactory(this.Argument);
         }
     }
 }

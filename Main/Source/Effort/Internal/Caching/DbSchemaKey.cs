@@ -23,7 +23,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Data.Metadata.Edm;
 
 namespace Effort.Internal.Caching

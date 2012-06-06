@@ -24,14 +24,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
-using System.Diagnostics;
-using System.Data.Metadata.Edm;
-using System.Collections;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 
 namespace Effort.Test.Utils
 {

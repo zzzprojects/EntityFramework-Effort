@@ -26,13 +26,12 @@ using System;
 using System.Configuration;
 using System.Data.Common;
 using System.Data.EntityClient;
-using Effort.Internal.Caching;
+using System.Data.Metadata.Edm;
+using System.Data.Objects;
+using System.Reflection;
+using Effort.DataLoaders;
 using Effort.Internal.Common;
 using Effort.Provider;
-using System.Data.Metadata.Edm;
-using System.Reflection;
-using Effort.DataProviders;
-using System.Data.Objects;
 
 namespace Effort
 {
@@ -45,11 +44,11 @@ namespace Effort
 
         #region Persistent
 
-        public static EntityConnection CreatePersistent(string entityConnectionString, IDataProvider dataProvider)
+        public static EntityConnection CreatePersistent(string entityConnectionString, IDataLoader dataLoader)
         {
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
-            DbConnection connection = DbConnectionFactory.CreatePersistent(entityConnectionString, dataProvider);
+            DbConnection connection = DbConnectionFactory.CreatePersistent(entityConnectionString, dataLoader);
 
             return CreateEntityConnection(metadata, connection);
         }
@@ -63,11 +62,11 @@ namespace Effort
 
         #region Transient
 
-        public static EntityConnection CreateTransient(string entityConnectionString, IDataProvider dataProvider)
+        public static EntityConnection CreateTransient(string entityConnectionString, IDataLoader dataLoader)
         {
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
-            DbConnection connection = DbConnectionFactory.CreateTransient(dataProvider);
+            DbConnection connection = DbConnectionFactory.CreateTransient(dataLoader);
 
             return CreateEntityConnection(metadata, connection);
         }

@@ -857,7 +857,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             object value = expression.Value;
             Type type = edmTypeConverter.Convert(expression.ResultType);
 
-            value = this.converter.ConvertClrValueToClrValue(value, type);
+            value = this.converter.ConvertClrObject(value, type);
 
             return Expression.Constant(value, type);
         }

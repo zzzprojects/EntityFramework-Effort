@@ -22,17 +22,12 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Common;
-using System.Xml;
 using System.Data;
+using System.Data.Common;
 using System.Data.Metadata.Edm;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using System.Xml;
 
 namespace Effort.Provider
 {

@@ -23,7 +23,6 @@
 #endregion
 
 using System;
-using Effort.Internal.Caching;
 
 namespace Effort.Internal.Caching
 {

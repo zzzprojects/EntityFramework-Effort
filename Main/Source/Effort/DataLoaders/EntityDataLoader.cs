@@ -22,12 +22,37 @@
 
 #endregion
 
-using System.Collections.Generic;
+using System.Data.EntityClient;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    public interface IDataSource
+    public class EntityDataLoader : IDataLoader
     {
-        IEnumerable<object> GetInitialRecords();
+        public EntityDataLoader()
+        {
+
+        }
+
+        public EntityDataLoader(string entityConnectionString)
+        {
+            this.Argument = entityConnectionString;
+        }
+
+        public string Argument
+        {
+            get;
+            set;
+        }
+
+        public bool Cached
+        {
+            get;
+            set;
+        }
+
+        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+        {
+            return new EntityDataLoaderFactory(() => new EntityConnection(this.Argument));
+        }
     }
 }

@@ -22,20 +22,26 @@
 
 #endregion
 
-using System;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    internal class EmptyDataSourceFactory : IDataSourceFactory
+    public class EmptyDataLoader : IDataLoader
     {
-        public IDataSource Create(string tableName, Type entityType)
+        public string Argument
         {
-            return new EmptyDataSource();
+            get;
+            set;
         }
 
-        public void Dispose()
+        public bool Cached
         {
-            
+            get;
+            set;
+        }
+
+        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+        {
+            return new EmptyTableDataLoaderFactory();
         }
     }
 }

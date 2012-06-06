@@ -24,10 +24,18 @@
 
 using System;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    public interface IDataSourceFactory : IDisposable
+    public sealed class ColumnDescription
     {
-        IDataSource Create(string tableName, Type entityType);
+        internal ColumnDescription(string name, Type type)
+        {
+            this.Name = name;
+            this.Type = type;
+        }
+
+        public string Name { get; private set; }
+
+        public Type Type { get; private set; }
     }
 }

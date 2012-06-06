@@ -25,26 +25,25 @@
 using System;
 using System.Data;
 using System.Data.Common;
+using System.Data.Common.CommandTrees;
 using System.Data.EntityClient;
 using System.Data.Metadata.Edm;
 using Effort.Internal.Common;
-using Effort.Internal.TypeConversion;
-using System.Data.Common.CommandTrees;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    internal class EntityDataSource : DataSourceBase
+    public class EntityTableDataLoader : TableDataLoaderBase
     {
         private EntityConnection connection;
         private MetadataWorkspace workspace;
         private EntitySet entitySet;
 
-        public EntityDataSource(Type entityType, ITypeConverter converter, EntityConnection connection, string tableName)
-            : base(entityType, converter)
+        public EntityTableDataLoader(EntityConnection connection, TableDescription table)
+            : base(table)
         {
             this.connection = connection;
             this.workspace = connection.GetMetadataWorkspace();
-            this.entitySet = MetadataWorkspaceHelper.GetEntityContainer(this.workspace).GetEntitySetByName(tableName, true);
+            this.entitySet = MetadataWorkspaceHelper.GetEntityContainer(this.workspace).GetEntitySetByName(table.Name, true);
         }
 
         protected override IDataReader CreateDataReader()

@@ -22,9 +22,7 @@
 
 #endregion
 
-using System.Collections.Generic;
 using System.Data.Common.CommandTrees;
-using System.Linq.Expressions;
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {

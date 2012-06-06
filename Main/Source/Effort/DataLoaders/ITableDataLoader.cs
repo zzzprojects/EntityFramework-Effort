@@ -22,26 +22,13 @@
 
 #endregion
 
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using Effort.Example.Models;
-using Effort.DataLoaders;
 
-namespace Effort.Example.Test
+namespace Effort.DataLoaders
 {
-    public static class TypeStore
+    public interface ITableDataLoader
     {
-        public static Type EmulatorContext
-        {
-            get
-            {
-                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Northwind");
-
-                return ObjectContextFactory.CreateTransientType<NorthwindEntities>(new CsvDataLoader(baseDir));
-            }
-        }
+        IEnumerable<object[]> GetData();
     }
 }

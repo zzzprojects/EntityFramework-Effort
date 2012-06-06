@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Effort.Internal.DbManagement;
+﻿using System.Collections.Generic;
 using System.Data;
+using Effort.Internal.DbManagement;
 
-namespace Effort.Internal.DbCommandActions
+namespace Effort.Internal.CommandActions
 {
     internal sealed class ActionContext
     {

@@ -24,11 +24,11 @@
 
 using System.Collections.Generic;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    internal class EmptyDataSource : IDataSource
+    public class EmptyTableDataLoader : ITableDataLoader
     {
-        public IEnumerable<object> GetInitialRecords()
+        public IEnumerable<object[]> GetData()
         {
             yield break;
         }

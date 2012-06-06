@@ -112,14 +112,18 @@ namespace Effort.Internal.TypeConversion
 
         private Type CreatePrimitiveType(PrimitiveType primitiveType, TypeFacets facets)
         {
-            Type result = primitiveType.ClrEquivalentType;
+            Type result = null;
+            if (this.converter.TryConvertEdmType(primitiveType, facets, out result))
+            {
+                return result;
+            }
+            
+            result = primitiveType.ClrEquivalentType;
 
             if (facets.Nullable && result.IsValueType)
             {
                 result = typeof(Nullable<>).MakeGenericType(result);
             }
-
-            result = this.converter.ConvertPrimitiveEdmTypeToClrType(result, primitiveType, facets);
 
             return result;
         }

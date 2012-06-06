@@ -22,38 +22,19 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using Effort.Internal.Caching;
-using Effort.Internal.DbManagement;
-using Effort.Internal.TypeConversion;
 
-namespace Effort.DataProviders
+namespace Effort.DataLoaders
 {
-    internal class CachedCsvDataSource : CsvDataSource
+    public class EmptyTableDataLoaderFactory : ITableDataLoaderFactory
     {
-        private string connectionString;
-        private string tableName;
-        private Type entityType;
-
-        public CachedCsvDataSource(Type entityType, ITypeConverter converter, string connectionString, string tableName, string path)
-            : base(entityType, converter, path)
+        public ITableDataLoader CreateTableDataSource(TableDescription table)
         {
-            this.connectionString = connectionString;
-            this.tableName = tableName;
-            this.entityType = entityType;
+            return new EmptyTableDataLoader();
         }
 
-        public override IEnumerable<object> GetInitialRecords()
+        public void Dispose()
         {
-            var cache = TableInitialDataStore.GetDbInitialData(
-                this.connectionString,
-                this.entityType, 
-                () => new DbTableInitialData(base.GetInitialRecords()));
-
-            return cache.GetClonedInitialData();
+            
         }
-
-
     }
 }

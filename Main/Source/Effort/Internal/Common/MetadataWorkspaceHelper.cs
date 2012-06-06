@@ -23,20 +23,17 @@
 #endregion
 
 using System;
-using System.Data.Metadata.Edm;
-using System.Data;
-using System.Linq;
-using System.Data.Common;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Xml;
+using System.Data;
+using System.Data.Common;
 using System.Data.Mapping;
-using System.Data.EntityClient;
-using System.Threading;
-using System.Reflection.Emit;
+using System.Data.Metadata.Edm;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Effort.Internal.Common
 {
@@ -119,6 +116,14 @@ namespace Effort.Internal.Common
                     {
                         string oldStorageTypeName = typeContainer.Value;
                         PrimitiveType oldStorageType = oldStoreTypes.FirstOrDefault(t => t.Name == oldStorageTypeName);
+
+                        // TODO: extension point
+                        if (oldStorageType.NamespaceName == "SqlServer" && 
+                            (oldStorageType.Name == "timestamp" || oldStorageType.Name == "rowversion"))
+                        {
+                            typeContainer.Value = "rowversion";
+                            continue;
+                        }
 
                         TypeUsage edmType = oldProviderManifest.GetEdmType(TypeUsage.CreateDefaultTypeUsage(oldStorageType));
                         TypeUsage newStorageType = providerManifest.GetStoreType(edmType);

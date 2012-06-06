@@ -33,6 +33,7 @@ using Effort.DataLoaders;
 using Effort.Internal.Caching;
 using Effort.Internal.Common;
 using Effort.Provider;
+using System.Configuration;
 
 namespace Effort
 {
@@ -185,9 +186,27 @@ namespace Effort
 
         private static string GetDefaultConnectionString<T>() where T : ObjectContext
         {
-            return Activator.CreateInstance<T>().Connection.ConnectionString;
+            bool hasDefaultCtor = typeof(T).GetConstructor(new Type[] { }) != null;
 
-            // TODO: Search for default connection string
+            if (hasDefaultCtor)
+            {
+                return Activator.CreateInstance<T>().Connection.ConnectionString;
+            }
+            else
+            {
+                string requestedName = typeof(T).Name;
+
+                foreach (ConnectionStringSettings connectionString in ConfigurationManager.ConnectionStrings)
+                {
+                    if (string.Equals(connectionString.ProviderName, "System.Data.EntityClient", StringComparison.InvariantCulture) &&
+                        string.Equals(connectionString.Name, requestedName, StringComparison.InvariantCulture))
+                    {
+                        return connectionString.ConnectionString;
+                    }
+                }
+
+                throw new InvalidOperationException("DbContext does not have a default connection string");
+            }
         }
 
         private static Type CreateType<T>(string entityConnectionString, string effortConnectionString, bool persistent)

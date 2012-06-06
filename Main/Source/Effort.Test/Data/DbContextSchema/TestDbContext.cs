@@ -5,7 +5,7 @@ namespace Effort.Test.Data.DbContextSchema
 {
     public class TestDbContext : DbContext
     {
-        public TestDbContext(DbConnection connection) : base(connection, false)
+        public TestDbContext(DbConnection connection) : base(connection, true)
         {
 
         }

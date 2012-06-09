@@ -92,13 +92,13 @@ namespace Effort.Provider
             EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
             IDataLoader dataLoader = null;
 
-            if (connectionString.DataProviderType != null)
+            if (connectionString.DataLoaderType != null)
             {
                 // TODO: check parameterless constructor
 
-                dataLoader = Activator.CreateInstance(connectionString.DataProviderType) as IDataLoader;
-                dataLoader.Argument = connectionString.DataProviderArg;
-                dataLoader.Cached = connectionString.DataProviderCached;
+                dataLoader = Activator.CreateInstance(connectionString.DataLoaderType) as IDataLoader;
+                dataLoader.Argument = connectionString.DataLoaderArgument;
+                dataLoader.Cached = connectionString.DataLoaderCached;
             }
 
             return new DbContainer(dataLoader);

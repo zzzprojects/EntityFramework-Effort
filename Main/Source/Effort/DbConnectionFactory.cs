@@ -55,8 +55,8 @@ namespace Effort
 
             if (dataLoader != null)
             {
-                connectionString.DataProviderType = dataLoader.GetType();
-                connectionString.DataProviderArg = dataLoader.Argument;
+                connectionString.DataLoaderType = dataLoader.GetType();
+                connectionString.DataLoaderArgument = dataLoader.Argument;
             }
 
             EffortConnection connection = new EffortConnection();

@@ -16,8 +16,8 @@ namespace Effort.Test
 
             EffortConnectionStringBuilder csb = new EffortConnectionStringBuilder(connection.ConnectionString);
 
-            Assert.AreEqual(csb.DataProviderType, typeof(CsvDataLoader));
-            Assert.AreEqual(csb.DataProviderArg, path);
+            Assert.AreEqual(csb.DataLoaderType, typeof(CsvDataLoader));
+            Assert.AreEqual(csb.DataLoaderArgument, path);
 
         }
     }

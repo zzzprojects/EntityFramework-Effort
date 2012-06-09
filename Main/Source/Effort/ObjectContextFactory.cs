@@ -166,8 +166,8 @@ namespace Effort
 
             if (dataLoader != null)
             {
-                ecsb.DataProviderType = dataLoader.GetType();
-                ecsb.DataProviderArg = dataLoader.Argument;
+                ecsb.DataLoaderType = dataLoader.GetType();
+                ecsb.DataLoaderArgument = dataLoader.Argument;
             }
 
             string effortConnectionString = ecsb.ConnectionString;

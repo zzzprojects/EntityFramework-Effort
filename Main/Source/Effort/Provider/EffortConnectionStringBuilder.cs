@@ -5,7 +5,7 @@ namespace Effort.Provider
 {
     public class EffortConnectionStringBuilder : DbConnectionStringBuilder
     {
-        private static readonly string Key_InstanceName = "InstanceId";
+        private static readonly string Key_InstanceId = "InstanceId";
         private static readonly string Key_DataLoaderType = "DataLoaderType";
         private static readonly string Key_DataLoaderArg = "DataLoaderArg";
         private static readonly string Key_DataLoaderCached = "DataLoaderCached";
@@ -25,20 +25,20 @@ namespace Effort.Provider
         {
             get
             {
-                if (!base.ContainsKey(Key_DataLoaderType))
+                if (!base.ContainsKey(Key_InstanceId))
                 {
                     return string.Empty;
                 }
 
-                return base[Key_InstanceName] as string;
+                return base[Key_InstanceId] as string;
             }
             set
             {
-                base[Key_InstanceName] = value;
+                base[Key_InstanceId] = value;
             }
         }
 
-        public Type DataProviderType
+        public Type DataLoaderType
         {
             get
             {
@@ -61,7 +61,7 @@ namespace Effort.Provider
             }
         }
 
-        public string DataProviderArg
+        public string DataLoaderArgument
         {
             get
             {
@@ -78,7 +78,7 @@ namespace Effort.Provider
             }
         }
 
-        public bool DataProviderCached
+        public bool DataLoaderCached
         {
             get
             {
@@ -91,7 +91,7 @@ namespace Effort.Provider
             }
             set
             {
-                base[Key_DataLoaderArg] = value.ToString();
+                base[Key_DataLoaderCached] = value.ToString();
             }
         }
     }

@@ -165,6 +165,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\EntitySetSearchVisitor.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\IExpressionModifier.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\Modifiers.cs" />
+    <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
     <Compile Include="Internal\DbManagement\DbRelationInformation.cs" />
     <Compile Include="Internal\DbManagement\DbTableInitialData.cs" />

@@ -65,7 +65,7 @@ namespace Effort.Provider
         {
             get
             {
-                if (!base.ContainsKey(Key_DataLoaderType))
+                if (!base.ContainsKey(Key_DataLoaderArg))
                 {
                     return string.Empty;
                 }

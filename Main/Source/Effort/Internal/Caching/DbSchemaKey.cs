@@ -23,18 +23,54 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Data.Metadata.Edm;
+using System.Text;
+using System.Collections.Generic;
+
 
 namespace Effort.Internal.Caching
 {
     internal class DbSchemaKey : IEquatable<DbSchemaKey>
     {
-        private Guid guid;
+        private string description;
 
         public DbSchemaKey(StoreItemCollection storeItemCollection)
         {
-            // TODO: Implement proper key object
-            this.guid = Guid.NewGuid();
+            // Find container
+            EntityContainer entityContainer = storeItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append(entityContainer.Name);
+            builder.Append("(");
+
+            // Find entity sets
+            IEnumerable<EntitySet> sets = entityContainer.BaseEntitySets.OfType<EntitySet>().OrderBy(s => s.Name);
+
+            foreach (EntitySet set in sets)
+            {
+                builder.Append(set.Name);
+                builder.Append("(");
+
+                IEnumerable<EdmProperty> properties = set.ElementType.Properties.OrderBy(p => p.Name);
+
+                foreach (EdmProperty property in properties)
+                {
+                    builder.Append(property.Name);
+                    builder.Append("(");
+
+                    builder.Append(property.TypeUsage.EdmType.FullName);
+
+                    builder.Append(")");
+                }
+
+                builder.Append(")");
+            }
+
+            builder.Append(")");
+
+            this.description = builder.ToString();
         }
 
         public bool Equals(DbSchemaKey other)
@@ -44,7 +80,7 @@ namespace Effort.Internal.Caching
                 return false;
             }
 
-            return other.guid == this.guid;
+            return other.description == this.description;
         }
 
         public override bool Equals(object obj)
@@ -54,7 +90,7 @@ namespace Effort.Internal.Caching
 
         public override int GetHashCode()
         {
-            return this.guid.GetHashCode();
+            return this.description.GetHashCode();
         }
     }
 }

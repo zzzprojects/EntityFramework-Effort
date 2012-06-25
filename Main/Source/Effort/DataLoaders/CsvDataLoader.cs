@@ -42,12 +42,6 @@ namespace Effort.DataLoaders
             set;
         }
 
-        public bool Cached
-        {
-            get;
-            set;
-        }
-
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
             return new CsvTableDataLoaderFactory(this.Argument);

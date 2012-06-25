@@ -29,8 +29,6 @@ namespace Effort.DataLoaders
     {
         string Argument { get; set; }
 
-        bool Cached { get; set; }
-
         ITableDataLoaderFactory CreateTableDataLoaderFactory();
     }
 }

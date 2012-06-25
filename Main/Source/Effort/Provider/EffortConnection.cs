@@ -70,12 +70,20 @@ namespace Effort.Provider
 
         public override string DataSource
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return "in-process"; 
+            }
         }
 
         public override string Database
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
+
+                return connectionString.InstanceId;
+            }
         }
 
         public override void Open()
@@ -91,6 +99,7 @@ namespace Effort.Provider
         {
             EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
             IDataLoader dataLoader = null;
+            DbContainerParameters parameters = new DbContainerParameters();
 
             if (connectionString.DataLoaderType != null)
             {
@@ -98,10 +107,13 @@ namespace Effort.Provider
 
                 dataLoader = Activator.CreateInstance(connectionString.DataLoaderType) as IDataLoader;
                 dataLoader.Argument = connectionString.DataLoaderArgument;
-                dataLoader.Cached = connectionString.DataLoaderCached;
+
+                parameters.DataLoader = dataLoader;
             }
 
-            return new DbContainer(dataLoader);
+            parameters.IsDataLoaderCached = connectionString.DataLoaderCached;
+
+            return new DbContainer(parameters);
         }
 
         public override void Close()

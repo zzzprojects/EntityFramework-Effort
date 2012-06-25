@@ -27,11 +27,17 @@ using System.Data.Common;
 using System.Data.Common.CommandTrees;
 using System.Data.Metadata.Edm;
 using Effort.Internal.DbManagement;
+using System.Data;
 
 namespace Effort.Provider
 {
     public class EffortProviderServices : DbProviderServices
     {
+        public override DbCommandDefinition CreateCommandDefinition(DbCommand prototype)
+        {
+            return base.CreateCommandDefinition(prototype);
+        }
+
         protected override DbCommandDefinition CreateDbCommandDefinition(DbProviderManifest providerManifest, DbCommandTree commandTree)
         {
             EffortCommand command = new EffortCommand(commandTree);
@@ -51,6 +57,18 @@ namespace Effort.Provider
             return EffortProviderManifestTokens.Version1;
         }
 
+        protected override bool DbDatabaseExists(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
+        {
+            DbContainer container = GetDbContainer(connection);
+
+            return container.IsInitialized;
+        }
+
+        protected override string DbCreateDatabaseScript(string providerManifestToken, StoreItemCollection storeItemCollection)
+        {
+            throw new ProviderIncompatibleException();
+        }
+
         protected override void DbCreateDatabase(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
         {
             DbContainer container = GetDbContainer(connection);
@@ -61,12 +79,16 @@ namespace Effort.Provider
             }
         }
 
-        protected override bool DbDatabaseExists(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
+        protected override void DbDeleteDatabase(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
         {
             DbContainer container = GetDbContainer(connection);
 
-            return container.IsInitialized;
+            // TODO: Delete database
+
+            base.DbDeleteDatabase(connection, commandTimeout, storeItemCollection);
         }
+
+
 
         private static DbContainer GetDbContainer(DbConnection connection)
         {

@@ -47,14 +47,14 @@ namespace Effort.Internal.DbManagement
         private Database database;
         private DbSchema schema;
         private ITypeConverter converter;
-        private IDataLoader dataLoader;
+        private DbContainerParameters parameters;
 
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;
 
-        public DbContainer(IDataLoader dataLoader)
+        public DbContainer(DbContainerParameters parameters)
         {
-            this.dataLoader = dataLoader;
+            this.parameters = parameters;
 
             this.logger = new Logger();
             this.transformCache = new ConcurrentDictionary<string, IStoredProcedure>();
@@ -148,10 +148,10 @@ namespace Effort.Internal.DbManagement
 
         private IEnumerable<object> GetInitialData(ITableDataLoaderFactory loaderFactory, DbTableInformation tableInfo)
         {
-            if (this.dataLoader != null && this.dataLoader.Cached)
+            if (this.parameters.DataLoader != null && !this.parameters.IsDataLoaderCached)
             {
                 DbTableInitialData initialData =  
-                    TableInitialDataStore.GetDbInitialData(this.dataLoader, tableInfo.EntityType, 
+                    TableInitialDataStore.GetDbInitialData(this.parameters.DataLoader, tableInfo.EntityType, 
                         () => new DbTableInitialData(CreateInitialData(loaderFactory, tableInfo)));
 
                 return initialData.GetClonedInitialData();
@@ -169,12 +169,12 @@ namespace Effort.Internal.DbManagement
 
         private ITableDataLoaderFactory CreateDataLoaderFactory()
         {
-            if (this.dataLoader == null)
+            if (this.parameters.DataLoader == null)
             {
                 return new EmptyTableDataLoaderFactory();
             }
 
-            return this.dataLoader.CreateTableDataLoaderFactory();
+            return this.parameters.DataLoader.CreateTableDataLoaderFactory();
         }
 
         private DbSchema CreateDbSchema(StoreItemCollection edmStoreSchema)

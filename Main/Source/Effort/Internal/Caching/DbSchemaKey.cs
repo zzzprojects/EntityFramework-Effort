@@ -35,6 +35,11 @@ namespace Effort.Internal.Caching
     {
         private string description;
 
+        private DbSchemaKey()
+	    {
+
+	    }
+
         public DbSchemaKey(StoreItemCollection storeItemCollection)
         {
             // Find container
@@ -91,6 +96,19 @@ namespace Effort.Internal.Caching
         public override int GetHashCode()
         {
             return this.description.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return description;
+        }
+
+        public static DbSchemaKey FromString(string key)
+        {
+            DbSchemaKey result = new DbSchemaKey();
+            result.description = key;
+
+            return result;
         }
     }
 }

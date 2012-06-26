@@ -28,6 +28,7 @@ using System.Data.Common.CommandTrees;
 using System.Data.Metadata.Edm;
 using Effort.Internal.DbManagement;
 using System.Data;
+using Effort.Internal.Caching;
 
 namespace Effort.Provider
 {
@@ -40,7 +41,7 @@ namespace Effort.Provider
 
         protected override DbCommandDefinition CreateDbCommandDefinition(DbProviderManifest providerManifest, DbCommandTree commandTree)
         {
-            EffortCommand command = new EffortCommand(commandTree);
+            EffortEntityCommand command = new EffortEntityCommand(commandTree);
 
             return new EffortCommandDefinition(command);
         }
@@ -61,22 +62,18 @@ namespace Effort.Provider
         {
             DbContainer container = GetDbContainer(connection);
 
-            return container.IsInitialized;
-        }
-
-        protected override string DbCreateDatabaseScript(string providerManifestToken, StoreItemCollection storeItemCollection)
-        {
-            throw new ProviderIncompatibleException();
+            return container.IsInitialized(storeItemCollection);
         }
 
         protected override void DbCreateDatabase(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
         {
             DbContainer container = GetDbContainer(connection);
 
-            if (!container.IsInitialized)
+            if (!container.IsInitialized(storeItemCollection))
             {
                 container.Initialize(storeItemCollection);
             }
+         
         }
 
         protected override void DbDeleteDatabase(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
@@ -88,7 +85,15 @@ namespace Effort.Provider
             base.DbDeleteDatabase(connection, commandTimeout, storeItemCollection);
         }
 
+        protected override string DbCreateDatabaseScript(string providerManifestToken, StoreItemCollection storeItemCollection)
+        {
+            DbSchemaKey key = new DbSchemaKey(storeItemCollection);
 
+            // Initialize schema
+            DbSchemaStore.GetDbSchema(storeItemCollection, DbContainer.CreateDbSchema);
+
+            return string.Format("CREATE SCHEMA ({0})", key);
+        }
 
         private static DbContainer GetDbContainer(DbConnection connection)
         {

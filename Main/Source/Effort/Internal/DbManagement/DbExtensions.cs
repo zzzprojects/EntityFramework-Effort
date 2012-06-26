@@ -38,5 +38,13 @@ namespace Effort.Internal.DbManagement
                 .Where(t => t.EntityType.Name.Equals(name))
                 .First();
         }
+
+        public static bool ContainsTable(this Database database, string name)
+        {
+            return database
+                .Tables
+                .GetAllTables()
+                .Any(t => t.EntityType.Name.Equals(name));
+        }
     }
 }

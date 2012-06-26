@@ -22,7 +22,6 @@
 
 #endregion
 
-
 namespace Effort.Provider
 {
     public enum EffortVersion

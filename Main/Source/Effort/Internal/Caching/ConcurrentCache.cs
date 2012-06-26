@@ -47,12 +47,7 @@ namespace Effort.Internal.Caching
 
         public TElement Get(TKey key)
         {
-            if (defaultFactory == null)
-            {
-                throw new InvalidOperationException("Default factory is not set during the initialization");
-            }
-
-            return this.Get(key, () => defaultFactory(key));
+            return this.Get(key, () => { throw new InvalidOperationException(); });
         }
         
         public TElement Get(TKey key, Func<TElement> factory)

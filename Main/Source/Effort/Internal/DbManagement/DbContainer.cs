@@ -45,7 +45,6 @@ namespace Effort.Internal.DbManagement
     internal class DbContainer : ITableProvider
     {
         private Database database;
-        private DbSchema schema;
         private ITypeConverter converter;
         private DbContainerParameters parameters;
 
@@ -86,33 +85,55 @@ namespace Effort.Internal.DbManagement
             get { return this.converter; }
         }
 
-        public DbSchema Schema
+        public bool IsInitialized(StoreItemCollection edmStoreSchema)
         {
-            get { return this.schema; }
+            if (this.database == null)
+            {
+                return false;
+            }
+
+            // Find container
+            EntityContainer entityContainer = edmStoreSchema.GetItems<EntityContainer>().FirstOrDefault();
+
+            foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
+            {
+                // TODO: Verify fields
+                if (!this.database.ContainsTable(entitySet.Name))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
-        public bool IsInitialized
-        {
-            get { return this.database != null; }
-        }
 
         public void Initialize(StoreItemCollection edmStoreSchema)
         {
-            if (this.IsInitialized)
+            if (this.IsInitialized(edmStoreSchema))
             {
                 return;
             }
 
             // TODO: locking
 
-            this.schema = DbSchemaStore.GetDbSchema(edmStoreSchema, this.CreateDbSchema);
+            DbSchema schema = DbSchemaStore.GetDbSchema(edmStoreSchema, CreateDbSchema);
+            this.Initialize(schema);
+        }
 
+        public void Initialize(DbSchema schema)
+        {
             Stopwatch swDatabase = Stopwatch.StartNew();
-            Database database = new Database();
+
+            // Database initialization (put it in the constructor?)
+            if (this.database == null)
+            {
+                this.database = new Database();
+            }
 
             using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())
             {
-                foreach (DbTableInformation tableInfo in this.schema.Tables)
+                foreach (DbTableInformation tableInfo in schema.Tables)
                 {
                     Stopwatch swTable = Stopwatch.StartNew();
 
@@ -120,7 +141,7 @@ namespace Effort.Internal.DbManagement
 
                     // Initialize the table
                     DatabaseReflectionHelper.CreateTable(
-                        database,
+                        this.database,
                         tableInfo.EntityType,
                         tableInfo.PrimaryKeyFields,
                         tableInfo.IdentityField,
@@ -134,7 +155,7 @@ namespace Effort.Internal.DbManagement
 
             this.Logger.Write("Setting up assocations...");
 
-            foreach (DbRelationInformation relation in this.schema.Relations)
+            foreach (DbRelationInformation relation in schema.Relations)
             {
                 // TODO: add relation
                 // DatabaseReflectionHelper.CreateAssociation(database, constraint);
@@ -142,8 +163,6 @@ namespace Effort.Internal.DbManagement
 
             swDatabase.Stop();
             this.Logger.Write("Database buildup finished in {0:0.0} ms", swDatabase.Elapsed.TotalMilliseconds);
-
-            this.database = database;
         }
 
         private IEnumerable<object> GetInitialData(ITableDataLoaderFactory loaderFactory, DbTableInformation tableInfo)
@@ -177,7 +196,7 @@ namespace Effort.Internal.DbManagement
             return this.parameters.DataLoader.CreateTableDataLoaderFactory();
         }
 
-        private DbSchema CreateDbSchema(StoreItemCollection edmStoreSchema)
+        public static DbSchema CreateDbSchema(StoreItemCollection edmStoreSchema)
         {
             EntityContainer entityContainer = edmStoreSchema.GetItems<EntityContainer>().FirstOrDefault();
             DbSchema schema = new DbSchema();
@@ -191,7 +210,7 @@ namespace Effort.Internal.DbManagement
             // Module for the entity types
             ModuleBuilder entityModule = assembly.DefineDynamicModule("Entities");
             // Initialize type converter
-            EdmTypeConverter typeConverter = new EdmTypeConverter(converter);
+            EdmTypeConverter typeConverter = new EdmTypeConverter(new DefaultTypeConverter());
 
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
@@ -265,13 +284,13 @@ namespace Effort.Internal.DbManagement
             return schema;
         }
 
-        private string GetTableName(RelationshipEndMember relationEndpoint)
+        private static string GetTableName(RelationshipEndMember relationEndpoint)
         {
             RefType refType = relationEndpoint.TypeUsage.EdmType as RefType;
             return refType.ElementType.Name;
         }
 
-        private PropertyInfo[] GetRelationProperties(ReadOnlyMetadataCollection<EdmProperty> properties, DbTableInformation table)
+        private static PropertyInfo[] GetRelationProperties(ReadOnlyMetadataCollection<EdmProperty> properties, DbTableInformation table)
         {
             return properties.Select(edmp => table.Properties.Single(clrp => clrp.Name == edmp.Name)).ToArray();
         }

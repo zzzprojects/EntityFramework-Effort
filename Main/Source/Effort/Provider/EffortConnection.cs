@@ -65,7 +65,7 @@ namespace Effort.Provider
 
         protected override DbCommand CreateDbCommand()
         {
-            throw new NotImplementedException();
+            return new EffortCommand() { Connection = this };
         }
 
         public override string DataSource

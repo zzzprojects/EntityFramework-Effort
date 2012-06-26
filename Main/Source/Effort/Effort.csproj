@@ -220,11 +220,17 @@
     <Compile Include="Internal\Common\DatabaseReflectionHelper.cs" />
     <Compile Include="Internal\Caching\DbContainerStore.cs" />
     <Compile Include="Internal\TypeGeneration\TupleTypeFactory.cs" />
+    <Compile Include="Provider\EffortCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Provider\EffortCommandBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Provider\EffortCommandDefinition.cs" />
     <Compile Include="Provider\EffortConnection.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Provider\EffortCommand.cs">
+    <Compile Include="Provider\EffortEntityCommand.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Provider\EffortConnectionStringBuilder.cs" />

@@ -24,212 +24,50 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
+using System.Text;
 using System.Data.Common;
-using System.Data.Common.CommandTrees;
-using System.Data.Metadata.Edm;
-using Effort.Internal.CommandActions;
+using System.Data;
+using System.Text.RegularExpressions;
+using Effort.Internal.Caching;
+using Effort.Internal.DbManagement;
 
 namespace Effort.Provider
 {
-    public class EffortCommand : DbCommand, ICloneable
+    public class EffortCommand : EffortCommandBase
     {
-        private DbCommandTree commandTree;
-
-        private EffortConnection connection;
-        private EffortTransaction transaction;
-        private EffortParameterCollection parameters;
-
-        public EffortCommand(DbCommandTree commandtree)
-        {
-            this.parameters = new EffortParameterCollection();
-            this.commandTree = commandtree;
-
-            foreach (KeyValuePair<string, TypeUsage> param in commandtree.Parameters)
-            {
-                this.Parameters.Insert(0, new EffortParameter() { ParameterName = param.Key });
-            }
-
-        }
-
-        public override string CommandText
-        {
-            get;
-            set;
-        }
-
-        public override int CommandTimeout
-        {
-            get;
-            set;
-        }
-
-        public override CommandType CommandType
-        {
-            get;
-            set;
-        }
-
-        protected override DbParameter CreateDbParameter()
-        {
-            return new EffortParameter();
-        }
-
-        protected override DbParameterCollection DbParameterCollection
-        {
-            get 
-            {
-                return this.parameters;
-            }
-        }
-
-        protected override DbConnection DbConnection
-        {
-            get
-            {
-                return this.connection;
-            }
-            set
-            {
-                // Clear connection
-                if (value == null)
-                {
-                    this.connection = null;
-                    return;
-                }
-
-                EffortConnection newConnection = value as EffortConnection;
-
-                if (newConnection == null)
-                {
-                    throw new ArgumentException("Provided connection object is incompatible");
-                }
-
-                this.connection = newConnection;
-            }
-        }
-
-        protected override DbTransaction DbTransaction
-        {
-            get
-            {
-                return this.transaction;
-            }
-            set
-            {
-                // Clear transaction
-                if (value == null)
-                {
-                    this.transaction = null;
-                    return;
-                }
-
-                EffortTransaction newTransaction = value as EffortTransaction;
-
-                if (newTransaction == null)
-                {
-                    throw new ArgumentException("Provided transaction object is incompatible");
-                }
-
-                this.transaction = newTransaction;
-                this.connection = newTransaction.Connection as EffortConnection;
-            }
-        }
-
-        public override bool DesignTimeVisible
-        {
-            get;
-            set;
-        }
-
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            ActionContext context = this.CreateActionContext();
-            context.CommandBehavior = behavior;
-
-            ICommandAction action = CreateCommandAction();
-
-            return action.ExecuteDataReader(this.commandTree, context);
+            throw new NotImplementedException();
         }
 
         public override int ExecuteNonQuery()
         {
-            ActionContext context = this.CreateActionContext();
+            // http://regexadvice.com/forums/thread/55175.aspx
+            Regex regex = new Regex(@"CREATE *SCHEMA *\((.*)\)");
 
-            ICommandAction action = this.CreateCommandAction();
+            var matches = regex.Matches(this.CommandText.Trim());
 
-            return action.ExecuteNonQuery(this.commandTree, context);
+            if (matches.Count != 1)
+            {
+                throw new NotSupportedException();
+            }
+
+            string keyString = matches[0].Groups[1].Value;
+
+            DbSchemaKey key = DbSchemaKey.FromString(keyString);
+            DbSchema schema = DbSchemaStore.GetDbSchema(key);
+
+            DbContainer container = this.EffortConnection.DbContainer;
+
+            container.Initialize(schema);
+
+            return 0;
         }
 
         public override object ExecuteScalar()
         {
-            ActionContext context = this.CreateActionContext();
-
-            ICommandAction action = this.CreateCommandAction();
-
-            return action.ExecuteScalar(this.commandTree, context);
-        }
-
-        public override void Prepare()
-        {
-            
-        }
-
-        public override UpdateRowSource UpdatedRowSource
-        {
-            get;
-            set;
-        }
-
-        public override void Cancel()
-        {
-
-        }
-
-        public object Clone()
-        {
-            return new EffortCommand(this.commandTree);
-        }
-
-        private ActionContext CreateActionContext()
-        {
-            ActionContext context = new ActionContext(this.connection.DbContainer);
-
-            // Store parameters in the context
-            foreach (DbParameter parameter in this.Parameters)
-            {
-                context.Parameters.Add(new Parameter(parameter.ParameterName, parameter.Value));
-            }
-
-            return context;
-        }
-
-        private ICommandAction CreateCommandAction()
-        {
-            ICommandAction action = null;
-
-            if (this.commandTree is DbQueryCommandTree)
-            {
-                action = new QueryCommandAction();
-            }
-            else if (this.commandTree is DbInsertCommandTree)
-            {
-                action = new InsertCommandAction();
-            }
-            else if (this.commandTree is DbUpdateCommandTree)
-            {
-                action = new UpdateCommandAction();
-            }
-            else if (this.commandTree is DbDeleteCommandTree)
-            {
-                action = new DeleteCommandAction();
-            }
-
-            if (action == null)
-            {
-                throw new NotSupportedException("Not supported DbCommandTree type");
-            }
-            return action;
+            throw new NotImplementedException();
         }
     }
 }

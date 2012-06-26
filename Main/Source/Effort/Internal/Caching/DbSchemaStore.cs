@@ -41,5 +41,10 @@ namespace Effort.Internal.Caching
         {
             return store.Get(new DbSchemaKey(metadata), () => schemaFactoryMethod(metadata));
         }
+
+        public static DbSchema GetDbSchema(DbSchemaKey schemaKey)
+        {
+            return store.Get(schemaKey);
+        }
     }
 }

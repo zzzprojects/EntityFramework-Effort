@@ -149,86 +149,111 @@ namespace Effort.Internal.Common
             return database.GetTable(refType.ElementType.Name);
         }
 
-        public static void CreateAssociation(Database database, ReferentialConstraint constraint)
+        public static void CreateAssociation(Database database, DbRelationInformation relation)
         {
-            if (1 < constraint.FromProperties.Count || 1 < constraint.ToProperties.Count)
+            // Get the referenced tables
+            ITable primaryTable = database.GetTable(relation.PrimaryTable);
+            ITable foreignTable = database.GetTable(relation.ForeignTable);
+
+            Type[] toTableGenericsArgs = foreignTable.GetType().GetGenericArguments();
+
+            if (relation.PrimaryProperties.Length == 1 && relation.ForeignProperties.Length == 1)
+            {
+                // Simple association
+
+                // Get the properties of the foreign key
+                PropertyInfo foreignKeyProp = relation.ForeignProperties[0];
+                PropertyInfo primaryKeyProp = relation.PrimaryProperties[0];
+
+                IIndex uniqueKeyIndex = null;
+
+                // Check for existing indexes on the foreign table
+                foreach (IIndex existingPrimaryTableIndex in primaryTable.Indexes)
+                {
+                    // TODO: NMemory API?
+                    // Check if not unique index
+                    if (!existingPrimaryTableIndex.GetType().GetInterfaces().Any(i =>
+                        i.Name == "IUniqueIndex`2"))
+                    {
+                        continue;
+                    }
+
+                    MemberInfo[] indexMembers = existingPrimaryTableIndex.KeyInfo.KeyMembers;
+
+                    if (indexMembers.Length == 1 && indexMembers[0].Name == primaryKeyProp.Name)
+                    {
+                        uniqueKeyIndex = existingPrimaryTableIndex;
+                    }
+                }
+
+                if (uniqueKeyIndex == null)
+                {
+                    // TODO: Create unique index
+                    Debug.Print("Unique key index is not defined");
+                    return;
+                }
+
+                IIndex foreignKeyIndex = null;
+
+                // Check for existing indexes on the foreign table
+                foreach (IIndex existingForeignTableIndex in foreignTable.Indexes)
+                {
+                    MemberInfo[] indexMembers = existingForeignTableIndex.KeyInfo.KeyMembers;
+
+                    if (indexMembers.Length == 1 && indexMembers[0].Name == foreignKeyProp.Name)
+                    {
+                        foreignKeyIndex = existingForeignTableIndex;
+                    }
+                }
+
+                // If the approriate index does not exist, it has to be created
+                if (foreignKeyIndex == null)
+                {
+                    // Create foreign key selector expression
+                    LambdaExpression toExpression =
+                        LambdaExpressionHelper.CreateSelectorExpression(
+                            foreignTable.EntityType,
+                            relation.ForeignProperties);
+
+                    // Build foreign key index
+                    foreignKeyIndex = typeof(DatabaseReflectionHelper.WrapperMethods)
+                        .GetMethod("CreateForeignKeyIndex")
+                        .MakeGenericMethod(toTableGenericsArgs[0], toTableGenericsArgs[1], toExpression.Body.Type)
+                        .Invoke(null, new object[] { foreignTable, toExpression }) as IIndex;
+                }
+
+                // Register association in the database
+
+                // Identical index type
+                if (uniqueKeyIndex.KeyInfo.KeyType == foreignKeyIndex.KeyInfo.KeyType)
+                {
+                    typeof(DatabaseReflectionHelper.WrapperMethods)
+                        .GetMethod("CreateRelationWithSameKeyType")
+                        .MakeGenericMethod(primaryTable.EntityType, uniqueKeyIndex.KeyInfo.KeyType, foreignTable.EntityType)
+                        .Invoke(null, new object[] { database, uniqueKeyIndex, foreignKeyIndex });
+
+                }
+                // Identical, but foreign key is nullable
+                else if (
+                    TypeHelper.IsNullable(foreignKeyIndex.KeyInfo.KeyType) &&
+                    TypeHelper.MakeNotNullable(foreignKeyIndex.KeyInfo.KeyType) == uniqueKeyIndex.KeyInfo.KeyType)
+                {
+                    typeof(DatabaseReflectionHelper.WrapperMethods)
+                       .GetMethod("CreateRelationWithSameKeyTypeNullable")
+                       .MakeGenericMethod(primaryTable.EntityType, uniqueKeyIndex.KeyInfo.KeyType, foreignTable.EntityType)
+                       .Invoke(null, new object[] { database, uniqueKeyIndex, foreignKeyIndex });
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+            else
             {
                 // Complex association is not supported
                 Debug.Print("Complex association is not supported");
                 return;
             }
-
-            // Get the referenced tables
-            ITable fromTable = GetTable(database, constraint.FromRole);
-            ITable toTable = GetTable(database, constraint.ToRole);
-
-            Type[] toTableGenericsArgs = toTable.GetType().GetGenericArguments();
-
-            IIndex toTablePrimaryIndex = toTable.PrimaryKeyIndex;
-            IIndex fromTablePrimaryIndex = fromTable.PrimaryKeyIndex;
-
-            // Check if the primary index exist
-            if (fromTablePrimaryIndex == null)
-            {
-                return;
-            }
-
-            // Get the properties of the foreign key
-            PropertyInfo foreignKeyProp = toTable.EntityType.GetProperty(constraint.ToProperties[0].Name);
-
-            IIndex foreignKeyIndex = null;
-
-            // Consider if the foreign key is also a primary key
-            if (toTablePrimaryIndex != null && 
-                toTablePrimaryIndex.KeyInfo.KeyMembers.Length == 1 &&
-                toTablePrimaryIndex.KeyInfo.KeyMembers[0].Name == foreignKeyProp.Name)
-            {
-                foreignKeyIndex = toTablePrimaryIndex;
-            }
-            else
-            {
-                // Create foreign key expression
-                LambdaExpression toExpression =
-                    LambdaExpressionHelper.CreateSelectorExpression(
-                        toTable.EntityType,
-                        new PropertyInfo[] { foreignKeyProp });
-
-
-                // Build foreign key index
-                foreignKeyIndex = typeof(DatabaseReflectionHelper.WrapperMethods)
-                    .GetMethod("CreateForeignKeyIndex")
-                    .MakeGenericMethod(toTableGenericsArgs[0], toTableGenericsArgs[1], toExpression.Body.Type)
-                    .Invoke(null, new object[] { toTable, toExpression }) as IIndex;
-            }
-
-
-            // Register association in the database
-
-            // Identical index type
-            if (fromTablePrimaryIndex.KeyInfo.KeyType == foreignKeyIndex.KeyInfo.KeyType)
-            {
-                typeof(DatabaseReflectionHelper.WrapperMethods)
-                    .GetMethod("CreateRelationWithSameKeyType")
-                    .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyInfo.KeyType, toTable.EntityType)
-                    .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
-
-            }
-            // Identical, but foreign key is nullable
-            else if (
-                TypeHelper.IsNullable(foreignKeyIndex.KeyInfo.KeyType) &&
-                TypeHelper.MakeNotNullable(foreignKeyIndex.KeyInfo.KeyType) == fromTablePrimaryIndex.KeyInfo.KeyType)
-            {
-                typeof(DatabaseReflectionHelper.WrapperMethods)
-                   .GetMethod("CreateRelationWithSameKeyTypeNullable")
-                   .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyInfo.KeyType, toTable.EntityType)
-                   .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-
-
 
             ////// Not identical => probably multifield index
             ////else
@@ -300,21 +325,35 @@ namespace Effort.Internal.Common
             }
 
 
-            public static void CreateRelation<TPrimary, TPrimaryKey, TForeign, TForeignKey>(Database database, UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, IIndex<TForeign, TForeignKey> foreignIndex)
+            public static void CreateRelationWithComplexTypes<TPrimary, TPrimaryKey, TForeign, TForeignKey>(
+                Database database, 
+                UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, 
+                IIndex<TForeign, TForeignKey> foreignIndex,
+                Expression<Func<TForeignKey, TPrimaryKey>> foreignToPrimary,
+                Expression<Func<TPrimaryKey, TForeignKey>> primaryToForeign)
+
                 where TPrimary : class
                 where TForeign : class
             {
-                throw new NotImplementedException();
+                database.Tables.CreateRelation(primaryIndex, foreignIndex, foreignToPrimary.Compile(), primaryToForeign.Compile());
             }
 
-            public static void CreateRelationWithSameKeyType<TPrimary, TPrimaryKey, TForeign>(Database database, UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, IIndex<TForeign, TPrimaryKey> foreignIndex)
+            public static void CreateRelationWithSameKeyType<TPrimary, TPrimaryKey, TForeign>(
+                Database database, 
+                UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, 
+                IIndex<TForeign, TPrimaryKey> foreignIndex)
+
                 where TPrimary : class
                 where TForeign : class
             {
                 database.Tables.CreateRelation(primaryIndex, foreignIndex, x => x, x => x);
             }
 
-            public static void CreateRelationWithSameKeyTypeNullable<TPrimary, TPrimaryKey, TForeign>(Database database, UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, IIndex<TForeign, Nullable<TPrimaryKey>> foreignIndex)
+            public static void CreateRelationWithSameKeyTypeNullable<TPrimary, TPrimaryKey, TForeign>(
+                Database database, 
+                UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, 
+                IIndex<TForeign, Nullable<TPrimaryKey>> foreignIndex)
+
                 where TPrimary : class
                 where TForeign : class
                 where TPrimaryKey : struct

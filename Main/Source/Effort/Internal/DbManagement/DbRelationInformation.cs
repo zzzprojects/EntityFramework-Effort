@@ -6,18 +6,18 @@ namespace Effort.Internal.DbManagement
     {
         public DbRelationInformation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties)
         {
-            this.FromTable = fromTable;
-            this.ToTable = toTable;
-            this.FromProperties = fromProperties;
-            this.ToProperties = toProperties;
+            this.PrimaryTable = fromTable;
+            this.ForeignTable = toTable;
+            this.PrimaryProperties = fromProperties;
+            this.ForeignProperties = toProperties;
         }
 
-        public string FromTable { get; private set; }
+        public string PrimaryTable { get; private set; }
 
-        public string ToTable { get; private set; }
+        public string ForeignTable { get; private set; }
 
-        public PropertyInfo[] FromProperties { get; private set; }
+        public PropertyInfo[] PrimaryProperties { get; private set; }
 
-        public PropertyInfo[] ToProperties { get; private set; }
+        public PropertyInfo[] ForeignProperties { get; private set; }
     }
 }

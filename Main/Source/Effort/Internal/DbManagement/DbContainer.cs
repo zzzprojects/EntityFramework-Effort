@@ -157,8 +157,7 @@ namespace Effort.Internal.DbManagement
 
             foreach (DbRelationInformation relation in schema.Relations)
             {
-                // TODO: add relation
-                // DatabaseReflectionHelper.CreateAssociation(database, constraint);
+                DatabaseReflectionHelper.CreateAssociation(database, relation);
             }
 
             swDatabase.Stop();
@@ -221,25 +220,27 @@ namespace Effort.Internal.DbManagement
                 List<PropertyInfo> identityFields = new List<PropertyInfo>();
                 List<PropertyInfo> properties = new List<PropertyInfo>();
 
+                List<string> primaryKeyFieldNames = new List<string>();
+                List<string> identityFieldNames = new List<string>();
+
                 // Add properties as entity fields
                 foreach (EdmProperty field in type.Properties)
                 {
                     TypeFacets facets = typeConverter.GetTypeFacets(field.TypeUsage);
                     Type fieldClrType = typeConverter.Convert(field.TypeUsage);
 
-                    PropertyInfo prop = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
-                    properties.Add(prop);
+                    PropertyBuilder propBuilder = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
 
                     // Register primary key field
                     if (type.KeyMembers.Contains(field))
                     {
-                        primaryKeyFields.Add(prop);
+                        primaryKeyFieldNames.Add(propBuilder.Name);
                     }
 
                     // Register identity field
                     if (facets.Identity)
                     {
-                        identityFields.Add(prop);
+                        identityFieldNames.Add(propBuilder.Name);
                     }
                 }
 
@@ -250,11 +251,26 @@ namespace Effort.Internal.DbManagement
 
                 Type entityType = entityTypeBuilder.CreateType();
 
+                foreach (PropertyInfo prop in entityType.GetProperties())
+                {
+                    properties.Add(prop);
+
+                    if (primaryKeyFieldNames.Contains(prop.Name))
+                    {
+                        primaryKeyFields.Add(prop);
+                    }
+
+                    if (identityFieldNames.Contains(prop.Name))
+                    {
+                        identityFields.Add(prop);
+                    }
+                }
+
                 schema.RegisterTable(
                     entityType.Name,
                     entityType,
                     primaryKeyFields.ToArray(),
-                    identityFields.FirstOrDefault(),
+                    identityFields.SingleOrDefault(),
                     properties.ToArray());
             }
 

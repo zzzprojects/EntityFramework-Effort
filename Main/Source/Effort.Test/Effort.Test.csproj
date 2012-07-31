@@ -155,6 +155,7 @@
     <Compile Include="DbConnectionFactoryFixture.cs" />
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
+    <Compile Include="EntityConnectionFactoryFixture.cs" />
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
     <Compile Include="JoinFixture.cs" />

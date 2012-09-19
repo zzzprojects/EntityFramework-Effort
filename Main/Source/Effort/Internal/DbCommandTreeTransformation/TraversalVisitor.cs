@@ -26,7 +26,7 @@ using System.Data.Common.CommandTrees;
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
-    internal class DbExpressionTraversalVisitor : DbExpressionVisitor<object>
+    internal class TraversalVisitor : DbExpressionVisitor<object>
     {
         public override object Visit(DbVariableReferenceExpression expression)
         {

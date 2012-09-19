@@ -27,7 +27,7 @@ namespace Effort.Internal.CommandActions
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
-            DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(context.DbContainer.TypeConverter);
+            TransformVisitor transform = new TransformVisitor(context.DbContainer.TypeConverter);
 
             // Initialize member bindings
             foreach (PropertyInfo property in table.EntityType.GetProperties())
@@ -70,7 +70,7 @@ namespace Effort.Internal.CommandActions
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
-            DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(context.DbContainer.TypeConverter);
+            TransformVisitor transform = new TransformVisitor(context.DbContainer.TypeConverter);
 
             // Initialize member bindings
             foreach (PropertyInfo property in table.EntityType.GetProperties())

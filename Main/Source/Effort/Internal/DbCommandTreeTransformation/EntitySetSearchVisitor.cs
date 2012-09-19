@@ -4,7 +4,7 @@ using System.Data.Metadata.Edm;
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
-    internal class EntitySetSearchVisitor : DbExpressionTraversalVisitor
+    internal class EntitySetSearchVisitor : TraversalVisitor
     {
         private List<EntitySetBase> tables;
 

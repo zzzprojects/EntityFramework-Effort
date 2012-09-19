@@ -32,7 +32,7 @@ namespace Effort.Internal.CommandActions
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
 
-            DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(context.DbContainer.TypeConverter);
+            TransformVisitor transform = new TransformVisitor(context.DbContainer.TypeConverter);
 
             // Setup context for the predicate
             ParameterExpression param = Expression.Parameter(type, "context");
@@ -92,7 +92,7 @@ namespace Effort.Internal.CommandActions
             //Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
 
-            DbExpressionTransformVisitor transform = new DbExpressionTransformVisitor(context.DbContainer.TypeConverter);
+            TransformVisitor transform = new TransformVisitor(context.DbContainer.TypeConverter);
 
             // Setup context for the predicate
             ParameterExpression param = Expression.Parameter(type, "context");

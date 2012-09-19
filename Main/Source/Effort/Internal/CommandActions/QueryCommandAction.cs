@@ -18,7 +18,7 @@ namespace Effort.Internal.CommandActions
     {
         protected override DbDataReader ExecuteDataReaderAction(DbQueryCommandTree commandTree, ActionContext context)
         {
-            DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor(context.DbContainer.TypeConverter);
+            TransformVisitor visitor = new TransformVisitor(context.DbContainer.TypeConverter);
             visitor.SetParameters(commandTree.Parameters.ToArray());
             visitor.TableProvider = context.DbContainer;
 

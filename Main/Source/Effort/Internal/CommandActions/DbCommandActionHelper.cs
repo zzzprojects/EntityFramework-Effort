@@ -70,7 +70,7 @@ namespace Effort.Internal.CommandActions
 
         public static Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, DbContainer dbContainer, out ITable table)
         {
-            DbExpressionTransformVisitor visitor = new DbExpressionTransformVisitor(dbContainer.TypeConverter);
+            TransformVisitor visitor = new TransformVisitor(dbContainer.TypeConverter);
             visitor.SetParameters(commandTree.Parameters.ToArray());
             visitor.TableProvider = dbContainer;
 

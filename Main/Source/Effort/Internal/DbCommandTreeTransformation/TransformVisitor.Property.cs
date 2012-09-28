@@ -44,27 +44,15 @@ namespace Effort.Internal.DbCommandTreeTransformation
             string propertyName = expression.Property.Name;
 
             Expression sourceExpression = this.Visit(expression.Instance);
-            Expression propertyExpression = Expression.Property(sourceExpression, propertyName);
+            Expression result = Expression.Property(sourceExpression, propertyName);
 
-            //return propertyExpression;
-
-            Type nullablePropertyType = TypeHelper.MakeNullable(propertyExpression.Type);
-            if (nullablePropertyType != propertyExpression.Type)
+            // Every property access result is nullable in SQL
+            // Check if the propery type is not nullable
+            if (result.Type.IsValueType && !TypeHelper.IsNullable(result.Type))
             {
-                propertyExpression = Expression.Convert(propertyExpression, nullablePropertyType);
+                // Make it nullable
+                result = Expression.Convert(result, TypeHelper.MakeNullable(result.Type));
             }
-
-            Expression condition =
-                Expression.MakeBinary(
-                    ExpressionType.NotEqual,
-                    sourceExpression,
-                    Expression.Constant(null));
-
-            Expression result =
-                Expression.Condition(
-                    condition,
-                    propertyExpression,
-                    Expression.Constant(null, propertyExpression.Type));
 
             return result;
         }

@@ -41,7 +41,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
     {
         public override Expression Visit(DbIsNullExpression expression)
         {
-            Expression exp = this.Visit(expression.Argument);
+            Expression source = this.Visit(expression.Argument);
 
             // zsvarnai:
             // mivel nalunk az ideiglenes sorok nem mind nullable tipusuak, ezert elofordulhat olyan, 
@@ -49,13 +49,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
             // Ez ilyenkor nem hasonlitja, hanem hamissal ter vissza
             // Azt azert majd le kell tesztelni, hogy logikailag jo nem okozunk-e ezzel gondot
 
-            if (exp.Type.IsValueType && !TypeHelper.IsNullable(exp.Type))
+            // tamasflamich:
+            // okoztunk :(
+
+            if (source.Type.IsValueType && !TypeHelper.IsNullable(source.Type))
             {
                 return Expression.Constant(false);
             }
             else
             {
-                return Expression.Equal(exp, Expression.Constant(null));
+                return Expression.Equal(source, Expression.Constant(null));
             }
         }
     }

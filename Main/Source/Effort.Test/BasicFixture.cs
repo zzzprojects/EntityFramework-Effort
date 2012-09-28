@@ -40,7 +40,23 @@ namespace Effort.Test
             this.runtime = new QueryTestRuntime<NorthwindEntities>("name=NorthwindEntities");
         
         }
-        
+
+        [TestMethod]
+        public void CheckDataMatch()
+        {
+            Assert.IsTrue(this.runtime.Execute(c => c.Categories.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.CustomerDemographics.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Customers.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Employees.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Order_Details.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Orders.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Products.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Region.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Shippers.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Suppliers.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Territories.AsQueryable()));
+        }
+
 
         [TestMethod]
         public void FullTableScan()

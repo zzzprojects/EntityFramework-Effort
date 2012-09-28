@@ -170,15 +170,13 @@ namespace Effort.Internal.Common
                 // Check for existing indexes on the foreign table
                 foreach (IIndex existingPrimaryTableIndex in primaryTable.Indexes)
                 {
-                    // TODO: NMemory API?
                     // Check if not unique index
-                    if (!existingPrimaryTableIndex.GetType().GetInterfaces().Any(i =>
-                        i.Name == "IUniqueIndex`2"))
+                    if (!(existingPrimaryTableIndex is IUniqueIndex))
                     {
                         continue;
                     }
 
-                    MemberInfo[] indexMembers = existingPrimaryTableIndex.KeyInfo.KeyMembers;
+                    MemberInfo[] indexMembers = existingPrimaryTableIndex.KeyInfo.EntityKeyMembers;
 
                     if (indexMembers.Length == 1 && indexMembers[0].Name == primaryKeyProp.Name)
                     {
@@ -198,7 +196,7 @@ namespace Effort.Internal.Common
                 // Check for existing indexes on the foreign table
                 foreach (IIndex existingForeignTableIndex in foreignTable.Indexes)
                 {
-                    MemberInfo[] indexMembers = existingForeignTableIndex.KeyInfo.KeyMembers;
+                    MemberInfo[] indexMembers = existingForeignTableIndex.KeyInfo.EntityKeyMembers;
 
                     if (indexMembers.Length == 1 && indexMembers[0].Name == foreignKeyProp.Name)
                     {
@@ -283,16 +281,19 @@ namespace Effort.Internal.Common
 
                 where TEntity : class
             {
-                return database.Tables.Create<TEntity, TPrimaryKey>(
+                Table<TEntity, TPrimaryKey> table = database.Tables.Create<TEntity, TPrimaryKey>(
                     primaryKey,
-                    identity != null ? new IdentitySpecification<TEntity>(identity) : null,
-                    initialEntities.Cast<TEntity>());
+                    identity != null ? new IdentitySpecification<TEntity>(identity) : null);
+
+                ((IInitializableTable<TEntity>)table).Initialize(initialEntities.Cast<TEntity>());
+
+                return table;
             }
 
             public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, Expression<Func<TEntity, TForeignKey>> foreignKey)
                 where TEntity : class
             {
-                var indexFactory = new RedBlackTreeIndexFactory<TEntity>();
+                var indexFactory = new RedBlackTreeIndexFactory();
 				////var indexFactory = new DictionaryIndexFactory<TEntity, TPrimaryKey, TEntity>();
 
                 return table.CreateIndex<TForeignKey>(indexFactory, foreignKey);

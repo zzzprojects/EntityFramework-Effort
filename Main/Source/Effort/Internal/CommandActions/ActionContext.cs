@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using Effort.Internal.DbManagement;
+using NMemory.Transactions;
 
 namespace Effort.Internal.CommandActions
 {
@@ -23,5 +24,6 @@ namespace Effort.Internal.CommandActions
 
         public IList<Parameter> Parameters { get; private set; }
 
+        public Transaction Transaction { get; set; }
     }
 }

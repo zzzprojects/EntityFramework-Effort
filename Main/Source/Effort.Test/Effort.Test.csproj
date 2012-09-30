@@ -57,6 +57,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EFProviderWrapperToolkit">
+      <HintPath>..\Imports\EFProviderWrapperToolkit.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\Imports\EntityFramework.dll</HintPath>
     </Reference>
@@ -74,6 +77,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
@@ -83,79 +87,12 @@
   <ItemGroup>
     <Compile Include="AggregationFixture.cs" />
     <Compile Include="BinaryFixture.cs" />
-    <Compile Include="Data\Categories.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\DbContextSchema\Person.cs" />
-    <Compile Include="Data\DbContextSchema\TestDbContext.cs" />
-    <Compile Include="Data\FeatureEntitiesEmulated.cs" />
-    <Compile Include="Data\CustomerDemographics.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Customers.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Employees.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Feature.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Feature.Context.cs">
-      <DependentUpon>Feature.Context.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Data\Feature.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Feature.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Northwind.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Northwind.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Northwind.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Northwind.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Northwind.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Orders.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Order_Details.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Products.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Region.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Shippers.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Suppliers.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Territories.cs">
-      <DependentUpon>Northwind.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data\TimestampSupport.cs">
-      <DependentUpon>Feature.tt</DependentUpon>
-    </Compile>
+    <Compile Include="DataReaderInspectorFixture.cs" />
     <Compile Include="DbConnectionFactoryFixture.cs" />
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Environment\Fakes\ResultSetComposerMock.cs" />
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
     <Compile Include="JoinFixture.cs" />
@@ -166,13 +103,25 @@
     <Compile Include="BasicFixture.cs" />
     <Compile Include="TestInitialization.cs" />
     <Compile Include="TimestampFixture.cs" />
+    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorDataReader.cs" />
+    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorProviderConfiguration.cs" />
+    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorProviderFactory.cs" />
+    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorProviderServices.cs" />
+    <Compile Include="Tools\EntityConnectionHelper.cs" />
+    <Compile Include="Tools\IResultSet.cs" />
+    <Compile Include="Tools\IResultSetComposer.cs" />
     <Compile Include="TransactionFixture.cs" />
     <Compile Include="Utils\CollectionComparer.cs" />
     <Compile Include="Utils\EntityEqualityCollection.cs" />
     <Compile Include="Utils\EqualityComparers.cs" />
     <Compile Include="Utils\EntityComparer.cs" />
     <Compile Include="Utils\IEqualityComparer.cs" />
-    <Compile Include="Data\NorthwindEntitiesEmulated.cs" />
     <Compile Include="Utils\NumberComparer.cs" />
     <Compile Include="Utils\BasicComparer.cs" />
     <Compile Include="Utils\QueryTestRuntime.cs" />
@@ -190,79 +139,18 @@
     <None Include="App.Config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <EntityDeploy Include="Data\Northwind.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Northwind.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <EntityDeploy Include="Data\Feature.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Feature.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Data\Feature.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Feature.cs</LastGenOutput>
-    </None>
-    <None Include="Data\Feature.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Feature.Context.cs</LastGenOutput>
-    </None>
-    <None Include="Data\Initial\Northwind\Categories.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\CustomerCustomerDemo.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\CustomerDemographics.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Customers.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Employees.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\EmployeeTerritories.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Order Details.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Orders.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Products.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Region.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Shippers.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Suppliers.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Initial\Northwind\Territories.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Northwind.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Northwind.Context.cs</LastGenOutput>
-    </None>
-    <None Include="Data\Northwind.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Northwind.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Effort.Test.Data\Effort.Test.Data.csproj">
+      <Project>{0FC240A8-7D16-4F3F-BB4E-73DB0E398928}</Project>
+      <Name>Effort.Test.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Effort\Effort.csproj">
       <Project>{E612D252-9081-4995-B717-5DBEF8240FB6}</Project>
       <Name>Effort</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Initial\Feature\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -26,18 +26,20 @@ using System.Linq;
 using Effort.Test.Data;
 using Effort.Test.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Northwind;
+using System.Data.Entity;
 
 namespace Effort.Test
 {
     [TestClass]
     public class IncludeFixture
     {
-        private QueryTestRuntime<NorthwindEntities> runtime;
+        private QueryTestRuntime<NorthwindObjectContext> runtime;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.runtime = new QueryTestRuntime<NorthwindEntities>("name=NorthwindEntities");
+            this.runtime = new QueryTestRuntime<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
         }
 
         [TestMethod]
@@ -47,7 +49,7 @@ namespace Effort.Test
 
                 context => (
                     from ord in context.Orders
-                        .Include("Customers")
+                        .Include(o => o.Customer)
                     select ord
                     ).Take(5) // perf
 
@@ -63,9 +65,9 @@ namespace Effort.Test
 
                 context =>(
                     from ord in context.Orders
-                        .Include("Customers")
-                        .Include("Employees")
-                        .Include("Shippers")
+                        .Include(o => o.Customer)
+                        .Include(o => o.Employee)
+                        .Include(o => o.Shipper)
                     select ord
                     ).Take(5) //perf
 
@@ -80,7 +82,8 @@ namespace Effort.Test
             bool result = this.runtime.Execute(
 
                 context =>(
-                    from ord in context.Customers.Include("Orders")
+                    from ord in context.Customers
+                        .Include(o => o.Orders)
                     select ord
                     )
                     .Take(5) //perf
@@ -97,7 +100,7 @@ namespace Effort.Test
 
                 context => (
                     from emp in context.Employees
-                        .Include("Territories")
+                        .Include(e => e.Territories)
                     select emp
                     ).Take(5) //perf
 
@@ -112,9 +115,9 @@ namespace Effort.Test
             bool result = this.runtime.Execute(
 
                 context => (
-                    from ord in context.Customers
-                        .Include("CustomerDemographics")
-                    select ord
+                    from cus in context.Customers
+                        .Include(c => c.CustomerDemographics)
+                    select cus
                     ).Take(5) //perf
 
             );
@@ -124,14 +127,13 @@ namespace Effort.Test
 
 
         [TestMethod]
-        public void CascadedOneInclude()
+        public void CascadedOneToOneInclude()
         {
             bool result = this.runtime.Execute(
 
                 context => (
-                    from ord in context.Order_Details
-                        .Include("Orders")
-                        .Include("Orders.Customers")
+                    from ord in context.OrderDetails
+                        .Include(o => o.Order.Customer)
                     select ord
                     ).Take(5) // perf
 
@@ -141,14 +143,14 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void CascadedOneToOneInclude()
+        public void MixedCascadedOneToOneInclude()
         {
             bool result = this.runtime.Execute(
 
                 context => (
-                    from ord in context.Order_Details
-                        .Include("Orders")
-                        .Include("Orders.Customers")
+                    from ord in context.OrderDetails
+                        .Include(o => o.Order)
+                        .Include(o => o.Order.Customer)
                     select ord
                     ).Take(5) // perf
 
@@ -164,8 +166,7 @@ namespace Effort.Test
 
                 context => (
                     from cus in context.Customers
-                        .Include("Orders")
-                        .Include("Orders.Order_Details")
+                        .Include(c => c.Orders.Select(o => o.OrderDetails))
                     select cus
                     ).Take(5) // perf
 
@@ -182,8 +183,8 @@ namespace Effort.Test
 
                 context => (
                     from cus in context.Customers
-                        .Include("Orders")
-                        .Include("CustomerDemographics")
+                        .Include(c => c.Orders)
+                        .Include(c => c.CustomerDemographics)
                     select cus
                     ).Take(5) //perf
             );

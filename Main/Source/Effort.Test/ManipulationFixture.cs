@@ -23,7 +23,7 @@
 #endregion
 
 using System.Linq;
-using Effort.Test.Data;
+using Effort.Test.Data.Northwind;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Effort.Test
@@ -31,12 +31,12 @@ namespace Effort.Test
     [TestClass]
     public class ManipulationFixture
     {
-        private NorthwindEntities context;
+        private NorthwindObjectContext context;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.context = new NorthwindEntitiesEmulated();
+            this.context = new LocalNorthwindObjectContext();
         }
 
         [TestMethod]
@@ -50,10 +50,10 @@ namespace Effort.Test
         public void InsertWithIdentity()
         {
 
-            Categories cat1 = new Categories();
+            Category cat1 = new Category();
             cat1.CategoryName = "Category 1";
 
-            Categories cat2 = new Categories();
+            Category cat2 = new Category();
             cat2.CategoryName = "Category 2";
 
             this.context.Categories.AddObject(cat1);
@@ -64,7 +64,7 @@ namespace Effort.Test
 
             Assert.AreEqual(cat1.CategoryID + 1, cat2.CategoryID);
 
-            Categories cat1b = this.context.Categories.Single(c => c.CategoryID == cat1.CategoryID);
+            Category cat1b = this.context.Categories.Single(c => c.CategoryID == cat1.CategoryID);
 
             Assert.AreEqual(cat1.CategoryName, cat1b.CategoryName);
         }
@@ -74,7 +74,7 @@ namespace Effort.Test
         {
             var q = this.context.Products.Where(p => p.ProductID == 1);
 
-            Products product = q.FirstOrDefault();
+            Product product = q.FirstOrDefault();
 
             string oldName = product.ProductName;
             string newName = "New name";
@@ -89,11 +89,11 @@ namespace Effort.Test
         [TestMethod]
         public void Delete()
         {
-            var q = this.context.Order_Details.Where(p => p.OrderID == 10248 && p.ProductID == 11);
+            var q = this.context.OrderDetails.Where(p => p.OrderID == 10248 && p.ProductID == 11);
 
-            Order_Details detail = q.FirstOrDefault();
+            OrderDetail detail = q.FirstOrDefault();
 
-            this.context.Order_Details.DeleteObject(detail);
+            this.context.OrderDetails.DeleteObject(detail);
             this.context.SaveChanges();
 
             Assert.AreEqual(q.FirstOrDefault(), null);

@@ -72,7 +72,9 @@ namespace Effort.Provider
                     return null;
                 }
 
-                return Type.GetType(base[Key_DataLoaderType] as string);
+                string assemblyQualifiedName = base[Key_DataLoaderType] as string;
+
+                return Type.GetType(assemblyQualifiedName);
             }
             set
             {
@@ -82,7 +84,12 @@ namespace Effort.Provider
                     return;
                 }
 
-                base[Key_DataLoaderType] = value.FullName;
+                base[Key_DataLoaderType] = value.AssemblyQualifiedName;
+
+                if (this.DataLoaderType != value)
+                {
+                    throw new InvalidOperationException("Cannot set dataloader");
+                }
             }
         }
 

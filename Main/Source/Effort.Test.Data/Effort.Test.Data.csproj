@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0FC240A8-7D16-4F3F-BB4E-73DB0E398928}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Effort.Test.Data</RootNamespace>
+    <AssemblyName>Effort.Test.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\Imports\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Northwind\Category.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\Employee.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\Product.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\Supplier.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Staff\Person.cs" />
+    <Compile Include="Staff\StaffDbContext.cs" />
+    <Compile Include="Feature\Feature.Context.cs">
+      <DependentUpon>Feature.Context.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Feature\Feature.cs">
+      <DependentUpon>Feature.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Feature\Feature.Designer.cs">
+      <DependentUpon>Feature.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Feature\LocalFeatureObjectContext.cs" />
+    <Compile Include="Feature\LocalFeatureDataLoader.cs" />
+    <Compile Include="Feature\TimestampSupport.cs">
+      <DependentUpon>Feature.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\Customer.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\CustomerDemography.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\LocalNorthwindObjectContext.cs" />
+    <Compile Include="Northwind\Northwind.Context.cs">
+      <DependentUpon>Northwind.Context.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Northwind\Northwind.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Northwind\Northwind.Designer.cs">
+      <DependentUpon>Northwind.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Northwind\LocalNorthwindDataLoader.cs" />
+    <Compile Include="Northwind\Order.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\OrderDetail.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\Region.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\Shipper.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Northwind\Territory.cs">
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="Feature\Content\TimestampSupport.csv" />
+    <None Include="Feature\Feature.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Feature.Context.cs</LastGenOutput>
+    </None>
+    <EntityDeploy Include="Feature\Feature.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Feature.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Feature\Feature.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Feature.cs</LastGenOutput>
+    </None>
+    <None Include="Northwind\Content\Categories.csv" />
+    <None Include="Northwind\Content\CustomerCustomerDemo.csv" />
+    <None Include="Northwind\Content\CustomerDemographics.csv" />
+    <None Include="Northwind\Content\Customers.csv" />
+    <None Include="Northwind\Content\Employees.csv" />
+    <None Include="Northwind\Content\EmployeeTerritories.csv" />
+    <None Include="Northwind\Content\Order Details.csv" />
+    <None Include="Northwind\Content\Orders.csv" />
+    <None Include="Northwind\Content\Products.csv" />
+    <None Include="Northwind\Content\Region.csv" />
+    <None Include="Northwind\Content\Shippers.csv" />
+    <None Include="Northwind\Content\Suppliers.csv" />
+    <None Include="Northwind\Content\Territories.csv" />
+    <None Include="Northwind\Northwind.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Northwind.Context.cs</LastGenOutput>
+    </None>
+    <EntityDeploy Include="Northwind\Northwind.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Northwind.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Northwind\Northwind.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Northwind.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Effort\Effort.csproj">
+      <Project>{E612D252-9081-4995-B717-5DBEF8240FB6}</Project>
+      <Name>Effort</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

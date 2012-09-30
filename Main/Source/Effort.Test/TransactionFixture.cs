@@ -26,24 +26,25 @@ using System.Linq;
 using System.Transactions;
 using Effort.Test.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Northwind;
 
 namespace Effort.Test
 {
     [TestClass]
     public class TransactionFixture
     {
-        private NorthwindEntities context;
+        private NorthwindObjectContext context;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.context = new NorthwindEntitiesEmulated();
+            this.context = new LocalNorthwindObjectContext();
         }
 
         [TestMethod]
         public void TransactionScopeRollback()
         {
-            Customers customer = new Customers();
+            Customer customer = new Customer();
 
             customer.CompanyName = "company";
             customer.CustomerID = "CUSTO";
@@ -70,7 +71,7 @@ namespace Effort.Test
         [TestMethod]
         public void TransactionScopeCommit()
         {
-            Customers customer = new Customers();
+            Customer customer = new Customer();
 
             customer.CompanyName = "company";
             customer.CustomerID = "CUSTO";

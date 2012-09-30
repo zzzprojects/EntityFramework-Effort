@@ -26,18 +26,19 @@ using System.Linq;
 using Effort.Test.Data;
 using Effort.Test.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Northwind;
 
 namespace Effort.Test
 {
     [TestClass]
     public class ComplexQueryFixture
     {
-        private QueryTestRuntime<NorthwindEntities> runtime;
+        private QueryTestRuntime<NorthwindObjectContext> runtime;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.runtime = new QueryTestRuntime<NorthwindEntities>("name=NorthwindEntities");
+            this.runtime = new QueryTestRuntime<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
 
         }
 
@@ -74,7 +75,7 @@ namespace Effort.Test
                      from cus in context.Customers
                      orderby cus
                          .Orders
-                         .SelectMany(o => o.Order_Details)
+                         .SelectMany(o => o.OrderDetails)
                          .Sum(od => od.UnitPrice * od.Quantity)
                          descending
                      select
@@ -102,7 +103,7 @@ namespace Effort.Test
                      from cus in context.Customers
                      orderby cus
                          .Orders
-                         .SelectMany(o => o.Order_Details)
+                         .SelectMany(o => o.OrderDetails)
                          .Sum(od => od.UnitPrice * od.Quantity)
                          descending
                      select

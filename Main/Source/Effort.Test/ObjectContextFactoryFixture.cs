@@ -1,6 +1,7 @@
 ﻿using System;
 using Effort.Test.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Northwind;
 
 namespace Effort.Test
 {
@@ -10,50 +11,50 @@ namespace Effort.Test
         [TestMethod]
         public void ObjectContextFactory_CreatePersistentType()
         {
-            ObjectContextFactory.CreatePersistentType<NorthwindEntities>("name=NorthwindEntities");
+            ObjectContextFactory.CreatePersistentType<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
         }
 
         [TestMethod]
         public void ObjectContextFactory_CreateTransientType()
         {
-            ObjectContextFactory.CreateTransientType<NorthwindEntities>("name=NorthwindEntities");
+            ObjectContextFactory.CreateTransientType<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
         }
 
         [TestMethod]
         public void ObjectContextFactory_CreatePersistent()
         {
-            ObjectContextFactory.CreatePersistent<NorthwindEntities>("name=NorthwindEntities");
+            ObjectContextFactory.CreatePersistent<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
         }
 
         [TestMethod]
         public void ObjectContextFactory_CreateTransient()
         {
-            ObjectContextFactory.CreateTransient<NorthwindEntities>("name=NorthwindEntities");
+            ObjectContextFactory.CreateTransient<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
         }
 
 
         [TestMethod]
         public void ObjectContextFactory_CreatePersistentType_Default()
         {
-            ObjectContextFactory.CreatePersistentType<NorthwindEntities>();
+            ObjectContextFactory.CreatePersistentType<NorthwindObjectContext>();
         }
 
         [TestMethod]
         public void ObjectContextFactory_CreateTransientType_Default()
         {
-            ObjectContextFactory.CreateTransientType<NorthwindEntities>();
+            ObjectContextFactory.CreateTransientType<NorthwindObjectContext>();
         }
 
         [TestMethod]
         public void ObjectContextFactory_CreatePersistent_Default()
         {
-            ObjectContextFactory.CreatePersistent<NorthwindEntities>();
+            ObjectContextFactory.CreatePersistent<NorthwindObjectContext>();
         }
 
         [TestMethod]
         public void ObjectContextFactory_CreateTransient_Default()
         {
-            ObjectContextFactory.CreateTransient<NorthwindEntities>();
+            ObjectContextFactory.CreateTransient<NorthwindObjectContext>();
         }
 
     }

@@ -66,7 +66,7 @@ namespace Effort.Internal.Common
 
         public static MetadataWorkspace Rewrite(string metadata, string providerInvariantName, string providerManifestToken)
         {
-            DbProviderManifest providerManifest = GetProviderManifest(providerInvariantName, providerManifestToken);
+            DbProviderManifest providerManifest = ProviderHelper.GetProviderManifest(providerInvariantName, providerManifestToken);
             
             var csdl = new List<XElement>();
             var ssdl = new List<XElement>();
@@ -76,15 +76,22 @@ namespace Effort.Internal.Common
 
             foreach (var ssdlFile in ssdl)
             {
-                DbProviderManifest oldProviderManifest = 
-                    GetProviderManifest(ssdlFile.Attribute("Provider").Value, ssdlFile.Attribute("ProviderManifestToken").Value);
+                DbProviderManifest oldProviderManifest =
+                    ProviderHelper.GetProviderManifest(ssdlFile.Attribute("Provider").Value, ssdlFile.Attribute("ProviderManifestToken").Value);
 
                 ssdlFile.Attribute("Provider").Value = providerInvariantName;
                 ssdlFile.Attribute("ProviderManifestToken").Value = providerManifestToken;
 
-                RewriteProperties(ssdlFile, providerManifest, oldProviderManifest);
+                RewriteTypeAttributeValues(ssdlFile, providerManifest, oldProviderManifest);
             }
 
+            MetadataWorkspace workspace = CreateMetadataWorkspace(csdl, ssdl, msl);
+
+            return workspace;
+        }
+
+        public static MetadataWorkspace CreateMetadataWorkspace(List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)
+        {
             EdmItemCollection eic = new EdmItemCollection(csdl.Select(c => c.CreateReader()));
             StoreItemCollection sic = new StoreItemCollection(ssdl.Select(c => c.CreateReader()));
             StorageMappingItemCollection smic = new StorageMappingItemCollection(eic, sic, msl.Select(c => c.CreateReader()));
@@ -94,11 +101,10 @@ namespace Effort.Internal.Common
             workspace.RegisterItemCollection(eic);
             workspace.RegisterItemCollection(sic);
             workspace.RegisterItemCollection(smic);
-
             return workspace;
         }
 
-        private static void RewriteProperties(XElement ssdlFile, DbProviderManifest providerManifest, DbProviderManifest oldProviderManifest)
+        public static void RewriteTypeAttributeValues(XElement ssdlFile, DbProviderManifest providerManifest, DbProviderManifest oldProviderManifest)
         {
             var oldStoreTypes = oldProviderManifest.GetStoreTypes();
 
@@ -135,21 +141,7 @@ namespace Effort.Internal.Common
             }
         }
 
-        private static DbProviderManifest GetProviderManifest(string providerInvariantName, string providerManifestToken)
-        {
-            IServiceProvider serviceProvider = DbProviderFactories.GetFactory(providerInvariantName) as IServiceProvider;
-
-            if (serviceProvider == null)
-            {
-                throw new ProviderIncompatibleException();
-            }
-
-            DbProviderServices providerServices = serviceProvider.GetService(typeof(DbProviderServices)) as DbProviderServices;
-            return providerServices.GetProviderManifest(providerManifestToken);
-        }
-
-
-        private static void ParseMetadata(string metadata, List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)
+        public static void ParseMetadata(string metadata, List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)
         {
             foreach (string component in metadata.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim()))
             {

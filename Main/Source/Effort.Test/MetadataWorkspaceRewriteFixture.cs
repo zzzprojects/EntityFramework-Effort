@@ -2,6 +2,9 @@
 using Effort.Internal.Common;
 using Effort.Provider;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Configuration;
+using Effort.Test.Data.Northwind;
+using System.Data.EntityClient;
 
 namespace Effort.Test
 {
@@ -11,7 +14,11 @@ namespace Effort.Test
         [TestMethod]
         public void RewriteMetadataWorkspace()
         {
-            MetadataWorkspace workspace = MetadataWorkspaceHelper.Rewrite("res://*/Data.Northwind.csdl|res://*/Data.Northwind.ssdl|res://*/Data.Northwind.msl", EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
+            EntityConnectionStringBuilder nameResolver = new EntityConnectionStringBuilder(NorthwindObjectContext.DefaultConnectionString);
+            string resolvedConnectionString = ConfigurationManager.ConnectionStrings[nameResolver.Name].ConnectionString;
+            EntityConnectionStringBuilder connectionString = new EntityConnectionStringBuilder(resolvedConnectionString);
+
+            MetadataWorkspace workspace = MetadataWorkspaceHelper.Rewrite(connectionString.Metadata, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
         }
     }
 }

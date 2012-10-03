@@ -32,7 +32,8 @@ namespace Effort.Provider
         private EffortConnection connection;
         private System.Data.IsolationLevel isolationLevel;
 
-        private System.Transactions.CommittableTransaction transaction;
+        private System.Transactions.CommittableTransaction systemTransaction;
+        private NMemory.Transactions.Transaction transaction;
 
         public EffortTransaction(EffortConnection connection, System.Data.IsolationLevel isolationLevel) 
         {
@@ -49,20 +50,14 @@ namespace Effort.Provider
             options.IsolationLevel = TranslateIsolationLevel(isolationLevel);
             options.Timeout = new TimeSpan(0, 0, connection.ConnectionTimeout);
 
-            this.transaction = new System.Transactions.CommittableTransaction(options);
+            this.systemTransaction = new System.Transactions.CommittableTransaction(options);
 
-            if (NMemory.Transactions.Transaction.Current != null)
-            {
-                throw new InvalidOperationException("NMemory transaction is already set");
-            }
-
-            // Create an NMemory transaction
-            NMemory.Transactions.Transaction.EnlistOnExternal(this.transaction);
+            this.transaction = NMemory.Transactions.Transaction.Create(systemTransaction);
         }
 
         public override void Commit()
         {
-            transaction.Commit();
+            systemTransaction.Commit();
         }
 
         protected override DbConnection DbConnection
@@ -81,17 +76,24 @@ namespace Effort.Provider
             }
         }
 
+        public NMemory.Transactions.Transaction InternalTransaction
+        {
+            get
+            {
+                return this.transaction;
+            }
+        }
+
         public override void Rollback()
         {
-            transaction.Rollback();
+            systemTransaction.Rollback();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this.transaction.Dispose();
-                // this.mmdbTransaction.Dispose();
+                this.systemTransaction.Dispose();
             }
 
             base.Dispose(disposing);

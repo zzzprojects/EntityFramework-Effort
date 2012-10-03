@@ -1,24 +1,25 @@
 ﻿using System.Linq;
 using Effort.Test.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Feature;
 
 namespace Effort.Test
 {
     [TestClass]
     public class TimestampFixture
     {
-        private FeatureEntities emulatedContext;
+        private FeatureObjectContext context;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.emulatedContext = new FeatureEntitiesEmulated();
+            this.context = new LocalFeatureObjectContext();
         }
 
         [TestMethod]
         public void Feature_TimestampQueryEmulated()
         {
-            TimestampSupport timestamp = emulatedContext.TimestampSupports.FirstOrDefault();
+            TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
 
             Assert.IsNotNull(timestamp);
             Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
@@ -30,8 +31,8 @@ namespace Effort.Test
             TimestampSupport timestamp = new TimestampSupport();
             timestamp.Description = "New record";
 
-            emulatedContext.TimestampSupports.AddObject(timestamp);
-            emulatedContext.SaveChanges();
+            context.TimestampSupports.AddObject(timestamp);
+            context.SaveChanges();
 
             Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
         }
@@ -39,12 +40,12 @@ namespace Effort.Test
         [TestMethod]
         public void Feature_TimestampUpdateEmulated()
         {
-            TimestampSupport timestamp = emulatedContext.TimestampSupports.FirstOrDefault();
+            TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
             byte[] currentValue = timestamp.Timestamp;
 
             timestamp.Description += "(updated)";
             
-            emulatedContext.SaveChanges();
+            context.SaveChanges();
 
             Assert.IsTrue(timestamp.Timestamp.Select((v, i) => v != currentValue[i]).Any(x => x));
             //Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));

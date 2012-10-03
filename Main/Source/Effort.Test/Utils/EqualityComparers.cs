@@ -77,6 +77,7 @@ namespace Effort.Test.Utils
             return type
                 .GetInterfaces()
                 .Where(i =>
+                    i.IsGenericType &&
                     i.GetGenericTypeDefinition() ==
                     typeof(IEnumerable<>))
                 .Any();
@@ -96,6 +97,7 @@ namespace Effort.Test.Utils
                     type
                     .GetInterfaces()
                     .Where(i => 
+                        i.IsGenericType &&
                         i.GetGenericTypeDefinition() ==
                         typeof(IEnumerable<>))
                     .FirstOrDefault()

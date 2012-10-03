@@ -59,7 +59,7 @@ namespace Effort.Test.Utils
 
             using (EntityReferenceCollection refCol = new EntityReferenceCollection())
             {
-                // The comparsion already has began, so skip
+                // If the comparsion been already has done, we should skip skip
                 if (refCol.Has(x, y))
                 {
                     return true;

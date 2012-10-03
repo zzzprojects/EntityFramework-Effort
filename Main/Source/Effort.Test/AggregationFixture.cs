@@ -26,18 +26,19 @@ using System.Linq;
 using Effort.Test.Data;
 using Effort.Test.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Northwind;
 
 namespace Effort.Test
 {
     [TestClass]
     public class AggregationFixture
     {
-        private QueryTestRuntime<NorthwindEntities> runtime;
+        private QueryTestRuntime<NorthwindObjectContext> runtime;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.runtime = new QueryTestRuntime<NorthwindEntities>("name=NorthwindEntities");
+            this.runtime = new QueryTestRuntime<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
 
         }
 

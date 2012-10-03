@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using System.Linq;
-using Effort.Test.Data.DbContextSchema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Staff;
 
 namespace Effort.Test
 {
@@ -12,7 +12,7 @@ namespace Effort.Test
         public void DbContext_Create()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            TestDbContext context = new TestDbContext(connection);
+            StaffDbContext context = new StaffDbContext(connection);
 
             bool created1 = context.Database.CreateIfNotExists();
             bool created2 = context.Database.CreateIfNotExists();
@@ -26,7 +26,7 @@ namespace Effort.Test
         public void DbContext_Insert()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            TestDbContext context = new TestDbContext(connection);
+            StaffDbContext context = new StaffDbContext(connection);
 
             context.People.Add(new Person { FirstName = "John", LastName = "Doe" });
             int count = context.SaveChanges();
@@ -38,7 +38,7 @@ namespace Effort.Test
         public void DbContext_Query()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            TestDbContext context = new TestDbContext(connection);
+            StaffDbContext context = new StaffDbContext(connection);
 
             context.People.Add(new Person { FirstName = "John", LastName = "Doe" });
             context.SaveChanges();
@@ -53,7 +53,7 @@ namespace Effort.Test
         public void DbContext_Delete()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            TestDbContext context = new TestDbContext(connection);
+            StaffDbContext context = new StaffDbContext(connection);
 
             context.People.Add(new Person { FirstName = "John", LastName = "Doe" });
             context.SaveChanges();

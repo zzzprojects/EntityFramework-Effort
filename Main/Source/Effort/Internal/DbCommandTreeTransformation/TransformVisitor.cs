@@ -151,7 +151,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             // Count does not have selector
             if (functionAggregate.Arguments.Count == 1)
             {
-                //Build the selector of the current aggregate
+                // Build the selector of the current aggregate
 
                 ParameterExpression aggregateContext = Expression.Parameter(sourceType, sourceVariableName);
                 using (this.CreateVariable(aggregateContext, sourceVariableName))

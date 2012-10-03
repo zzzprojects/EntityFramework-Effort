@@ -35,6 +35,8 @@ using NMemory.Indexes;
 using NMemory.Linq;
 using NMemory.StoredProcedures;
 using NMemory.Tables;
+using NMemory.Transactions;
+using NMemory.Modularity;
 
 namespace Effort.Internal.Common
 {
@@ -79,22 +81,30 @@ namespace Effort.Internal.Common
             return table as ITable;
         }
 
-        public static IEnumerable<object> UpdateEntities(IQueryable source, Expression updater)
+        public static void InsertEntity(ITable table, object entity, Transaction transaction)
+        {
+            typeof(DatabaseReflectionHelper.WrapperMethods)
+                .GetMethod("InsertEntity")
+                .MakeGenericMethod(table.ElementType)
+                .Invoke(null, new object[] { table, entity, transaction });
+        }
+
+        public static IEnumerable<object> UpdateEntities(IQueryable source, Expression updater, Transaction transaction)
         {
             return
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("UpdateEntities")
                 .MakeGenericMethod(source.ElementType)
-                .Invoke(null, new object[] { source, updater }) as IEnumerable<object>;
+                .Invoke(null, new object[] { source, updater, transaction }) as IEnumerable<object>;
         }
 
-        public static int DeleteEntities(IQueryable source)
+        public static int DeleteEntities(IQueryable source, Transaction transaction)
         {
             int count = (int)
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("DeleteEntities")
                 .MakeGenericMethod(source.ElementType)
-                .Invoke(null, new object[] { source });
+                .Invoke(null, new object[] { source, transaction });
 
             return count;
         }
@@ -118,20 +128,34 @@ namespace Effort.Internal.Common
             return tableQuery;
         }
 
-        public static IStoredProcedure CreateStoredProcedure(Expression query, Database database)
+        public static ISharedStoredProcedure CreateSharedStoredProcedure(LambdaExpression query)
         {
-            if (query.Type.GetGenericTypeDefinition() != typeof(IQueryable<>))
+            if (!query.Type.IsGenericType || query.Type.GetGenericTypeDefinition() != typeof(Func<,>))
             {
-                throw new ArgumentException("not IQueryable<>", "query");
+                throw new ArgumentException("Invalid query", "query");
             }
 
-            Type entityType = TypeHelper.GetElementType(query.Type);
+            Type[] queryArgs = query.Type.GetGenericArguments();
 
-            IStoredProcedure procedure =
+            if (queryArgs[0] != typeof(IDatabase))
+	        {
+		        throw new ArgumentException("Invalid query", "query");
+	        }
+
+            Type queryType = queryArgs[1];
+
+            if (!queryType.IsGenericType || queryType.GetGenericTypeDefinition() != typeof(IQueryable<>))
+            {
+                throw new ArgumentException("Not IQueryable<>", "query");
+            }
+
+            Type entityType = TypeHelper.GetElementType(queryType);
+
+            ISharedStoredProcedure procedure =
                 typeof(DatabaseReflectionHelper.WrapperMethods)
-                    .GetMethod("CreateStoredProcedure")
+                    .GetMethod("CreateSharedStoredProcedure")
                     .MakeGenericMethod(entityType)
-                    .Invoke(null, new object[] { query, database }) as IStoredProcedure;
+                    .Invoke(null, new object[] { query }) as ISharedStoredProcedure;
 
             return procedure;
         }
@@ -170,15 +194,13 @@ namespace Effort.Internal.Common
                 // Check for existing indexes on the foreign table
                 foreach (IIndex existingPrimaryTableIndex in primaryTable.Indexes)
                 {
-                    // TODO: NMemory API?
                     // Check if not unique index
-                    if (!existingPrimaryTableIndex.GetType().GetInterfaces().Any(i =>
-                        i.Name == "IUniqueIndex`2"))
+                    if (!(existingPrimaryTableIndex is IUniqueIndex))
                     {
                         continue;
                     }
 
-                    MemberInfo[] indexMembers = existingPrimaryTableIndex.KeyInfo.KeyMembers;
+                    MemberInfo[] indexMembers = existingPrimaryTableIndex.KeyInfo.EntityKeyMembers;
 
                     if (indexMembers.Length == 1 && indexMembers[0].Name == primaryKeyProp.Name)
                     {
@@ -198,7 +220,7 @@ namespace Effort.Internal.Common
                 // Check for existing indexes on the foreign table
                 foreach (IIndex existingForeignTableIndex in foreignTable.Indexes)
                 {
-                    MemberInfo[] indexMembers = existingForeignTableIndex.KeyInfo.KeyMembers;
+                    MemberInfo[] indexMembers = existingForeignTableIndex.KeyInfo.EntityKeyMembers;
 
                     if (indexMembers.Length == 1 && indexMembers[0].Name == foreignKeyProp.Name)
                     {
@@ -269,11 +291,18 @@ namespace Effort.Internal.Common
 
         private static class WrapperMethods
         {
-            ////public static void AddEntity<TEntity, TPrimaryKey>(Table<TEntity, TPrimaryKey> table, TEntity entity)
-            ////    where TEntity : class
-            ////{
-            ////    table.Insert(entity);
-            ////}
+            public static void InsertEntity<TEntity>(ITable<TEntity> table, TEntity entity, Transaction transaction)
+                where TEntity : class
+            {
+                if (transaction != null)
+                {
+                    table.Insert(entity, transaction);
+                }
+                else
+                {
+                    table.Insert(entity);
+                }
+            }
 
             public static Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
                 Database database, 
@@ -283,16 +312,19 @@ namespace Effort.Internal.Common
 
                 where TEntity : class
             {
-                return database.Tables.Create<TEntity, TPrimaryKey>(
+                Table<TEntity, TPrimaryKey> table = database.Tables.Create<TEntity, TPrimaryKey>(
                     primaryKey,
-                    identity != null ? new IdentitySpecification<TEntity>(identity) : null,
-                    initialEntities.Cast<TEntity>());
+                    identity != null ? new IdentitySpecification<TEntity>(identity) : null);
+
+                ((IInitializableTable<TEntity>)table).Initialize(initialEntities.Cast<TEntity>());
+
+                return table;
             }
 
             public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, Expression<Func<TEntity, TForeignKey>> foreignKey)
                 where TEntity : class
             {
-                var indexFactory = new RedBlackTreeIndexFactory<TEntity>();
+                var indexFactory = new RedBlackTreeIndexFactory();
 				////var indexFactory = new DictionaryIndexFactory<TEntity, TPrimaryKey, TEntity>();
 
                 return table.CreateIndex<TForeignKey>(indexFactory, foreignKey);
@@ -305,23 +337,36 @@ namespace Effort.Internal.Common
                 return query;
             }
 
-            public static IStoredProcedure CreateStoredProcedure<T>(Expression expression, Database database)
+            public static ISharedStoredProcedure<T> CreateSharedStoredProcedure<T>(Expression<Func<IDatabase, IQueryable<T>>> expression)
             {
-                TableQuery<T> query = new TableQuery<T>(database, expression);
-
-                return database.StoredProcedures.Create(query);
+                return new SharedStoredProcedure<IDatabase, T>(expression);
             }
 
-            public static IEnumerable<TEntity> UpdateEntities<TEntity>(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updater)
+            public static IEnumerable<TEntity> UpdateEntities<TEntity>(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updater, Transaction transaction)
                 where TEntity : class
             {
-                return NMemory.Linq.QueryableEx.Update(query, updater);
+                if (transaction != null)
+                {
+                    return NMemory.Linq.QueryableEx.Update(query, updater, transaction);
+                }
+                else
+                {
+                    return NMemory.Linq.QueryableEx.Update(query, updater);
+                }
+                
             }
 
-            public static int DeleteEntities<TEntity>(IQueryable<TEntity> query)
+            public static int DeleteEntities<TEntity>(IQueryable<TEntity> query, Transaction transaction)
                 where TEntity : class
             {
-                return NMemory.Linq.QueryableEx.Delete(query);
+                if (transaction != null)
+                {
+                    return NMemory.Linq.QueryableEx.Delete(query, transaction);
+                }
+                else
+                {
+                    return NMemory.Linq.QueryableEx.Delete(query);
+                }
             }
 
 

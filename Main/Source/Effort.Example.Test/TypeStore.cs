@@ -38,7 +38,7 @@ namespace Effort.Example.Test
         {
             get
             {
-                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test\\Data\\Initial\\Northwind");
+                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\..\\..\\..\\Effort.Test.Data\\Northwind\\Content");
 
                 return ObjectContextFactory.CreateTransientType<NorthwindEntities>(new CsvDataLoader(baseDir));
             }

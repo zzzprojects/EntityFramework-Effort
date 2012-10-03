@@ -26,21 +26,38 @@ using System.Linq;
 using Effort.Test.Data;
 using Effort.Test.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Northwind;
 
 namespace Effort.Test
 {
     [TestClass]
     public class BasicFixture
     {
-        private QueryTestRuntime<NorthwindEntities> runtime;
+        private QueryTestRuntime<NorthwindObjectContext> runtime;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.runtime = new QueryTestRuntime<NorthwindEntities>("name=NorthwindEntities");
+            this.runtime = new QueryTestRuntime<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
         
         }
-        
+
+        [TestMethod]
+        public void CheckDataMatch()
+        {
+            Assert.IsTrue(this.runtime.Execute(c => c.Categories.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.CustomerDemographics.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Customers.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Employees.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.OrderDetails.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Orders.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Products.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Regions.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Shippers.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Suppliers.AsQueryable()));
+            Assert.IsTrue(this.runtime.Execute(c => c.Territories.AsQueryable()));
+        }
+
 
         [TestMethod]
         public void FullTableScan()

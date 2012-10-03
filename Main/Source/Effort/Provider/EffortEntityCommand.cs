@@ -91,6 +91,11 @@ namespace Effort.Provider
                 context.Parameters.Add(new Parameter(parameter.ParameterName, parameter.Value));
             }
 
+            if (this.EffortTransaction != null)
+            {
+                context.Transaction = this.EffortTransaction.InternalTransaction;
+            }
+
             return context;
         }
 

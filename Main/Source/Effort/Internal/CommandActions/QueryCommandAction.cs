@@ -11,6 +11,8 @@ using Effort.Internal.DbCommandTreeTransformation;
 using Effort.Internal.DbCommandTreeTransformation.PostProcessing;
 using Effort.Provider;
 using NMemory.StoredProcedures;
+using NMemory;
+using NMemory.Modularity;
 
 namespace Effort.Internal.CommandActions
 {
@@ -31,8 +33,10 @@ namespace Effort.Internal.CommandActions
                 expr = modifier.ModifyExpression(expr);
             }
 
+            LambdaExpression query = Expression.Lambda(expr, Expression.Parameter(typeof(IDatabase)));
+
             // Create a stored procedure from the expression
-            IStoredProcedure procedure = DatabaseReflectionHelper.CreateStoredProcedure(expr, context.DbContainer.Internal);
+            ISharedStoredProcedure procedure = DatabaseReflectionHelper.CreateSharedStoredProcedure(query);
 
             // Determine parameter values
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -51,7 +55,17 @@ namespace Effort.Internal.CommandActions
                 parameters.Add(name, value);
             }
 
-            IEnumerable result = procedure.Execute(parameters);
+            IEnumerable result = null;
+
+            if (context.Transaction != null)
+            {
+                result = procedure.Execute(context.DbContainer.Internal, parameters, context.Transaction);
+            }
+            else
+            {
+                result = procedure.Execute(context.DbContainer.Internal, parameters);
+            }
+
             List<FieldDescription> fields = GetReturningFields(commandTree);
 
             return new EffortDataReader(result, fields.ToArray(), context.DbContainer);

@@ -9,6 +9,7 @@ namespace Effort.Test
         public static void Initialize(TestContext context)
         {
             Effort.Provider.EffortProviderConfiguration.RegisterProvider();
+            Effort.Test.Tools.DataReaderInspector.DataReaderInspectorProviderConfiguration.RegisterProvider();
         }
     }
 }

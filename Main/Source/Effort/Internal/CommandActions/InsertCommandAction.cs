@@ -8,6 +8,7 @@ using Effort.Internal.Common;
 using Effort.Internal.DbCommandTreeTransformation;
 using Effort.Provider;
 using NMemory.Tables;
+using NMemory.Transactions;
 
 namespace Effort.Internal.CommandActions
 {
@@ -50,7 +51,7 @@ namespace Effort.Internal.CommandActions
                 }
             }
 
-            object entity = CreateAndInsertEntity(table, memberBindings);
+            object entity = CreateAndInsertEntity(table, memberBindings, context.Transaction);
 
             Dictionary<string, object> entityReturningValues = DbCommandActionHelper.CreateReturningEntity(context, returningFields, entity);
             returningValues.Add(entityReturningValues);
@@ -93,7 +94,7 @@ namespace Effort.Internal.CommandActions
                 }
             }
 
-            CreateAndInsertEntity(table, memberBindings);
+            CreateAndInsertEntity(table, memberBindings, context.Transaction);
 
             return 1;
         }
@@ -103,7 +104,7 @@ namespace Effort.Internal.CommandActions
             throw new NotSupportedException();
         }
 
-        private static object CreateAndInsertEntity(ITable table, IList<MemberBinding> memberBindings)
+        private static object CreateAndInsertEntity(ITable table, IList<MemberBinding> memberBindings, Transaction transaction)
         {
             LambdaExpression expression =
                Expression.Lambda(
@@ -115,7 +116,7 @@ namespace Effort.Internal.CommandActions
 
             object newEntity = factory.DynamicInvoke();
 
-            ((IReflectionTable)table).Insert(newEntity);
+            DatabaseReflectionHelper.InsertEntity(table, newEntity, transaction);
 
             return newEntity;
         }

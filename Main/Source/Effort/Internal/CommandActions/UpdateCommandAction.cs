@@ -65,7 +65,7 @@ namespace Effort.Internal.CommandActions
                     Expression.MemberInit(Expression.New(type), memberBindings),
                     param);
 
-            IEnumerable<object> updatedEntities = DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater);
+            IEnumerable<object> updatedEntities = DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater, context.Transaction);
 
             foreach (object entity in updatedEntities)
             {
@@ -125,7 +125,7 @@ namespace Effort.Internal.CommandActions
                     Expression.MemberInit(Expression.New(type), memberBindings),
                     param);
 
-            return DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater).Count();
+            return DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater, context.Transaction).Count();
         }
 
         protected override object ExecuteScalarAction(DbUpdateCommandTree commandTree, ActionContext context)

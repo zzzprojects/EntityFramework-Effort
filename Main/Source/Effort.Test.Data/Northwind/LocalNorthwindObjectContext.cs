@@ -26,7 +26,6 @@ using System;
 using System.Data.EntityClient;
 using System.IO;
 using Effort.DataLoaders;
-using Effort.Test.Data.Initial;
 using Effort.Test.Data.Northwind;
 
 namespace Effort.Test.Data.Northwind

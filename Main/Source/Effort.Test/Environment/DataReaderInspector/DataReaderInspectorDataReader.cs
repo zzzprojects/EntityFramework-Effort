@@ -1,21 +1,24 @@
-﻿namespace Effort.Test.Tools.DataReaderInspector
+﻿namespace Effort.Test.Environment.DataReaderInspector
 {
     using System;
     using System.Collections;
     using System.Data;
     using System.Data.Common;
+    using Effort.Test.Environment.ResultSets;
 
     internal class DataReaderInspectorDataReader : DbDataReader
     {
         private DbDataReader wrappedDataReader;
         private IResultSetComposer composer;
         private bool commitNext;
+        private bool needCommit;
 
         public DataReaderInspectorDataReader(DbDataReader wrappedDataReader, IResultSetComposer composer)
         {
             this.wrappedDataReader = wrappedDataReader;
             this.composer = composer;
             this.commitNext = false;
+            this.needCommit = false;
         }
 
         public override int Depth
@@ -60,6 +63,7 @@
 
         public override void Close()
         {
+            this.CommitComposer();
             this.wrappedDataReader.Close();
         }
 
@@ -149,7 +153,7 @@
 
             if (result)
             {
-                this.composer.SetValue<object>(GetName(ordinal), DBNull.Value);
+                this.WriteResultSetComposer(ordinal, null);
             }
 
             return result;
@@ -158,8 +162,7 @@
         public override object GetValue(int ordinal)
         {
             object result = this.wrappedDataReader.GetValue(ordinal);
-
-            this.composer.SetValue<object>(GetName(ordinal), result);
+            this.WriteResultSetComposer(ordinal, result);
 
             return result;
         }
@@ -201,7 +204,7 @@
 
             if (this.commitNext)
             {
-                this.composer.Commit();
+                CommitComposer();
             }
 
             if (result)
@@ -226,6 +229,25 @@
             {
                 return this.wrappedDataReader[ordinal];
             }
+        }
+
+        private void WriteResultSetComposer(int ordinal, object value)
+        {
+            string name = this.GetName(ordinal);
+            this.composer.SetValue<object>(name, value);
+
+            this.needCommit = true;
+        }
+
+        private void CommitComposer()
+        {
+            if (!this.needCommit)
+            {
+                return;
+            }
+
+            this.composer.Commit();
+            this.needCommit = false;
         }
     }
 }

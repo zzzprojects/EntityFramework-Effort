@@ -1,4 +1,4 @@
-﻿namespace Effort.Test.Tools.DataReaderInspector
+﻿namespace Effort.Test.Environment.DataReaderInspector
 {
     using System;
     using System.Collections.Generic;

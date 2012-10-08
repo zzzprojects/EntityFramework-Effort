@@ -90,19 +90,26 @@ namespace Effort.DataLoaders
         {
             string val = value as string;
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (string.IsNullOrEmpty(val))
             {
-                if (string.IsNullOrWhiteSpace(val))
-                {
-                    return base.ConvertValue(null, type);
-                }
-                else
-                {
-                    type = type.GetGenericArguments()[0];
-                }
+                return null;
             }
 
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                type = type.GetGenericArguments()[0];
+            }
 
+            if (type == typeof(string))
+            {
+                if (!val.StartsWith("'", StringComparison.InvariantCulture))
+                {
+                    throw new FormatException(string.Format("\"{0}\" is an invalid string, strings fields must start with \"'\"", val));
+                }
+
+                value = ResolveEscapeCharacters(val.Substring(1));
+
+            }
             if (type == typeof(byte[]) || type == typeof(NMemory.Data.Binary) || type == typeof(NMemory.Data.Timestamp))
             {
                 value = Convert.FromBase64String(val);
@@ -113,6 +120,54 @@ namespace Effort.DataLoaders
             }
 
             return base.ConvertValue(value, type);
+        }
+
+        private static string ResolveEscapeCharacters(string value)
+        {
+            char[] chars = value.ToCharArray();
+
+            StringWriter writer = new StringWriter();
+
+            bool escaped = false;
+
+            for (int i = 0; i < chars.Length; i++)
+            {
+                char c = chars[i];
+
+                if (escaped)
+                {
+                    escaped = false;
+                    switch (c)
+                    {
+                        case '\\':
+                            writer.Write('\\');
+                            break;
+                        case 'n':
+                            writer.Write('\n');
+                            break;
+                        case 'r':
+                            writer.Write('\r');
+                            break;
+                        default:
+                            throw new FormatException(string.Format("\"{0}\" is an invalid string, it contains an invalid escaped character", value));
+                    }
+                }
+                else if (c == '\\')
+                {
+                    escaped = true;
+                }
+                else
+                {
+                    writer.Write(c);
+                }
+            }
+
+            if (escaped)
+            {
+                throw new FormatException(string.Format("\"{0}\" is an invalid string, it contains an invalid escaped character", value));
+            }
+
+            return writer.ToString();
         }
     }
 }

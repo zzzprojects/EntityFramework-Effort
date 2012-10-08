@@ -21,7 +21,6 @@ namespace Effort.Test
             Assert.IsFalse(created2);
         }
 
-
         [TestMethod]
         public void DbContext_Insert()
         {

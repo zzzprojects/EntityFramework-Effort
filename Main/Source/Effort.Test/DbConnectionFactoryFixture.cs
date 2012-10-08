@@ -18,7 +18,6 @@ namespace Effort.Test
 
             Assert.AreEqual(csb.DataLoaderType, typeof(CsvDataLoader));
             Assert.AreEqual(csb.DataLoaderArgument, path);
-
         }
     }
 }

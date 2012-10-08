@@ -1,5 +1,5 @@
 ﻿
-namespace Effort.Test.Tools
+namespace Effort.Test.Environment
 {
     using System.Collections.Generic;
     using System.Configuration;
@@ -11,8 +11,9 @@ namespace Effort.Test.Tools
     using Effort.DataLoaders;
     using Effort.Internal.Common;
     using Effort.Provider;
-    using Effort.Test.Tools.DataReaderInspector;
     using EFProviderWrapperToolkit;
+    using Effort.Test.Environment.ResultSets;
+    using Effort.Test.Environment.DataReaderInspector;
 
     internal static class EntityConnectionHelper
     {
@@ -78,11 +79,12 @@ namespace Effort.Test.Tools
 
             if (createFake)
             {
-                storeConnection = Effort.DbConnectionFactory.CreatePersistent(connectionString.ConnectionString, dataLoader);
+                storeConnection = Effort.DbConnectionFactory.CreateTransient(dataLoader);
             }
             else
             {
                 storeConnection = ProviderHelper.CreateConnection(connectionString.Provider);
+                storeConnection.ConnectionString = connectionString.ProviderConnectionString;
             }
             
             DbConnectionWrapper inspectorConnection = new DataReaderInspectorConnection(resultSetComposer);

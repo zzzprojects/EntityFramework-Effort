@@ -65,6 +65,9 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Imports\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -93,6 +96,11 @@
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="EntityConnectionFactoryFixture.cs" />
     <Compile Include="Environment\Fakes\ResultSetComposerMock.cs" />
+    <Compile Include="Environment\Queries\Correctness.cs" />
+    <Compile Include="Environment\Queries\ICorrectness.cs" />
+    <Compile Include="Environment\Queries\IQueryTester.cs" />
+    <Compile Include="Environment\Queries\NorthwindQueryTester.cs" />
+    <Compile Include="Environment\Queries\ResultSetExtensions.cs" />
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
     <Compile Include="JoinFixture.cs" />
@@ -101,33 +109,33 @@
     <Compile Include="ObjectContextFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicFixture.cs" />
+    <Compile Include="ResultSetFixture.cs" />
     <Compile Include="TestInitialization.cs" />
     <Compile Include="TimestampFixture.cs" />
-    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorCommand.cs">
+    <Compile Include="Environment\ResultSets\OrderedResultSetComparer.cs" />
+    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorCommand.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorConnection.cs">
+    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorConnection.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorDataReader.cs" />
-    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorProviderConfiguration.cs" />
-    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorProviderFactory.cs" />
-    <Compile Include="Tools\DataReaderInspector\DataReaderInspectorProviderServices.cs" />
-    <Compile Include="Tools\EntityConnectionHelper.cs" />
-    <Compile Include="Tools\IResultSet.cs" />
-    <Compile Include="Tools\IResultSetComposer.cs" />
+    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorDataReader.cs" />
+    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorProviderConfiguration.cs" />
+    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorProviderFactory.cs" />
+    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorProviderServices.cs" />
+    <Compile Include="Environment\EntityConnectionHelper.cs" />
+    <Compile Include="Environment\ResultSets\DictionaryResultSet.cs" />
+    <Compile Include="Environment\ResultSets\DictionaryResultSetComposer.cs" />
+    <Compile Include="Environment\ResultSets\DictionaryResultSetElement.cs" />
+    <Compile Include="Environment\ResultSets\IResultSet.cs" />
+    <Compile Include="Environment\ResultSets\IResultSetComposer.cs" />
+    <Compile Include="Environment\ResultSets\IResultSetElement.cs" />
+    <Compile Include="Environment\ResultSets\JsonResultSet.cs" />
+    <Compile Include="Environment\Queries\QueryTester.cs" />
+    <Compile Include="Environment\ResultSets\ResultSetComparer.cs" />
+    <Compile Include="Environment\ResultSets\ResultSetJsonSerializer.cs" />
     <Compile Include="TransactionFixture.cs" />
-    <Compile Include="Utils\CollectionComparer.cs" />
-    <Compile Include="Utils\EntityEqualityCollection.cs" />
-    <Compile Include="Utils\EqualityComparers.cs" />
-    <Compile Include="Utils\EntityComparer.cs" />
-    <Compile Include="Utils\IEqualityComparer.cs" />
-    <Compile Include="Utils\NumberComparer.cs" />
-    <Compile Include="Utils\BasicComparer.cs" />
-    <Compile Include="Utils\QueryTestRuntime.cs" />
     <Compile Include="ExpressionFixture.cs" />
-    <Compile Include="Utils\TypeHelper.cs" />
-    <Compile Include="Utils\TypeSafeEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -138,6 +146,7 @@
     </None>
     <None Include="App.Config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

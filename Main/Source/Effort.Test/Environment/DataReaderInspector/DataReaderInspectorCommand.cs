@@ -1,4 +1,4 @@
-﻿namespace Effort.Test.Tools.DataReaderInspector
+﻿namespace Effort.Test.Environment.DataReaderInspector
 {
     using System;
     using System.Collections.Generic;
@@ -7,6 +7,7 @@
     using EFProviderWrapperToolkit;
     using System.Data.Common;
     using System.Data;
+    using Effort.Test.Environment.ResultSets;
 
     internal class DataReaderInspectorCommand : DbCommandWrapper
     {

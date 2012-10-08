@@ -3,10 +3,9 @@ using System.Linq;
 using Effort.DataLoaders;
 using Effort.Test.Data;
 using Effort.Test.Environment.Fakes;
-using Effort.Test.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Effort.Test.Data.Initial;
 using Effort.Test.Data.Northwind;
+using Effort.Test.Environment;
 
 namespace Effort.Test
 {

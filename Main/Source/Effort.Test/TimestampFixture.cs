@@ -17,7 +17,7 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void Feature_TimestampQueryEmulated()
+        public void TimestampQuery()
         {
             TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
 
@@ -26,7 +26,7 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void Feature_TimestampInsertEmulated()
+        public void TimestampInsert()
         {
             TimestampSupport timestamp = new TimestampSupport();
             timestamp.Description = "New record";
@@ -38,7 +38,7 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void Feature_TimestampUpdateEmulated()
+        public void TimestampUpdate()
         {
             TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
             byte[] currentValue = timestamp.Timestamp;

@@ -239,6 +239,10 @@ namespace Effort.CsvTool.ViewModels
                                 {
                                     serializers[i] = BinarySerializer;
                                 }
+                                else if (fieldType == typeof(string))
+                                {
+                                    serializers[i] = StringSerializer;
+                                }
                                 else
                                 {
                                     // Default serializer
@@ -258,22 +262,30 @@ namespace Effort.CsvTool.ViewModels
 
                                 for (int i = 0; i < fieldCount; i++)
                                 {
-                                    serializedValues[i] = serializers[i](values[i]);
+                                    object value = values[i];
+
+                                    // Check if null
+                                    if (value == null || value is DBNull)
+                                    {
+                                        serializedValues[i] = "";
+                                    }
+                                    else
+                                    {
+                                        serializedValues[i] = serializers[i](value);
+                                    }
                                 }
 
                                 for (int i = 0; i < fieldCount - 1; i++)
                                 {
-                                    sw.Write("\"{0}\"", serializedValues[i].Replace("\"", "\"\""));
+                                    sw.Write("\"{0}\"", ConvertToCsv(serializedValues[i]));
                                     sw.Write(',');
                                 }
 
-                                sw.WriteLine("\"{0}\"", serializedValues[fieldCount - 1].Replace("\"", "\"\""));
+                                sw.WriteLine("\"{0}\"", ConvertToCsv(serializedValues[fieldCount - 1]));
 
                             }
-
                             // DataReader is finished
                         }
-                        
                         // Command is finished
                     }
 
@@ -281,16 +293,28 @@ namespace Effort.CsvTool.ViewModels
 
                     // Table is finished
                 }
-
                 // All table finished
             }
-
             // Connection is closed
+        }
+
+        private static string ConvertToCsv(string input)
+        {
+            return input
+                .Replace("\"", "\"\"")
+                .Replace("\\", "\\\\")
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r");
         }
 
         private static string DefaultSerializer(object input)
         {
             return input.ToString();
+        }
+
+        private static string StringSerializer(object input)
+        {
+            return "'" + input.ToString();
         }
 
         private static string BinarySerializer(object input)

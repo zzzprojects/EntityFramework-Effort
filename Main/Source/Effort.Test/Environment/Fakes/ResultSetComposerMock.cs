@@ -1,8 +1,8 @@
 ﻿
 namespace Effort.Test.Environment.Fakes
 {
-    using Effort.Test.Tools;
     using System.Collections.Generic;
+    using Effort.Test.Environment.ResultSets;
 
     internal class ResultSetComposerMock : IResultSetComposer
     {

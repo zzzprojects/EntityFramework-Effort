@@ -24,107 +24,120 @@
 
 using System.Linq;
 using Effort.Test.Data;
-using Effort.Test.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Effort.Test.Data.Northwind;
+using Effort.Test.Environment.Queries;
 
 namespace Effort.Test
 {
     [TestClass]
     public class JoinFixture
     {
-        private QueryTestRuntime<NorthwindObjectContext> runtime;
+        private IQueryTester<NorthwindObjectContext> tester;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.runtime = new QueryTestRuntime<NorthwindObjectContext>(NorthwindObjectContext.DefaultConnectionString);
-
+            this.tester = new NorthwindQueryTester();
         }
 
         [TestMethod]
         public void CrossJoin()
         {
-            bool result = this.runtime.Execute(
+            string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Callahan\"},{\"LastName\":\"King\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"King\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Davolio\",\"LastName1\":\"King\"},{\"LastName\":\"Fuller\",\"LastName1\":\"King\"},{\"LastName\":\"Leverling\",\"LastName1\":\"King\"},{\"LastName\":\"Peacock\",\"LastName1\":\"King\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"King\"},{\"LastName\":\"Suyama\",\"LastName1\":\"King\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Peacock\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Peacock\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Peacock\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Suyama\"}]";
 
-              context =>
-                  from emp1 in context.Employees
+            ICorrectness result = this.tester.TestQuery(
+                context =>
+                    from employee1 in context.Employees
 
-                  from emp2 in context.Employees
+                    from employee2 in context.Employees
 
-                  where 
-                    emp1.EmployeeID < emp2.EmployeeID 
+                    where
+                      employee1.EmployeeID < employee2.EmployeeID
 
-                  select new
-                  {
-                      emp1 = emp1,
-                      emp2 = emp2
-                  }
-          );
+                    select new
+                    {
+                        E1 = employee1.LastName,
+                        E2 = employee2.LastName
+                    }
 
-            Assert.IsTrue(result);
+                    , expected
+                );
+
+            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
+            result.Assert();
         }
 
 
         [TestMethod]
         public void OuterJoin()
         {
-            bool result = this.runtime.Execute(
+            string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
 
-              context =>
-                  from emp in context.Employees
-                  
-                  join rep_ in context.Employees
-                  on emp.ReportsTo equals rep_.EmployeeID into rep__
-                  from rep in rep__
+            ICorrectness result = this.tester.TestQuery(
+                context =>
+                    from employee in context.Employees
 
-                  select new 
-                  {
-                      name = emp.LastName,
-                      reportsTo = rep.LastName
-                  }
-          );
+                    join _principal in context.Employees
+                    on employee.ReportsTo equals _principal.EmployeeID into __principal
+                    from principal in __principal
 
-            Assert.IsTrue(result);
+                    select new
+                    {
+                        Name = employee.LastName,
+                        PrincipalName = principal.LastName
+                    }
+
+                    , expected
+                );
+
+            result.Assert();
         }
 
         [TestMethod]
         public void OuterJoin2()
         {
-            bool result = this.runtime.Execute(
+            string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Fuller\",\"LastName1\":null},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
 
-              context =>
-                  from emp in context.Employees
-                  select new
-                  {
-                      name = emp.LastName,
-                      reportsTo = emp.Principal.LastName
-                  }
-          );
+            ICorrectness result = this.tester.TestQuery(
+                context =>
+                    from emp in context.Employees
+                    select new
+                    {
+                        Name = emp.LastName,
+                        PrincipalName = emp.Principal.LastName
+                    }
 
-            Assert.IsTrue(result);
+                    , expected
+                );
+
+            result.Assert();
         }
 
 
         [TestMethod]
         public void InnerJoin()
         {
-            bool result = this.runtime.Execute(
+            string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
 
-              context =>
-                  from emp in context.Employees
-                  join rep in context.Employees
+            ICorrectness result = this.tester.TestQuery(
+                context =>
+                    from employee in context.Employees
+                    join principal in context.Employees
 
-                  on emp.ReportsTo equals rep.EmployeeID
+                    on employee.ReportsTo equals principal.EmployeeID
 
-                  select new
-                  {
-                      name = emp.LastName,
-                      reportsTo = emp.LastName
-                  }
-          );
+                    select new
+                    {
+                        Name = employee.LastName,
+                        PrincipalName = principal.LastName
+                    }
 
-            Assert.IsTrue(result);
+                    , expected
+                );
+
+            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
+            result.Assert();
         }
     }
 }

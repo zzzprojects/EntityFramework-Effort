@@ -5,8 +5,9 @@ using System.Text;
 using EFProviderWrapperToolkit;
 using Effort.Provider;
 using System.Data.Common;
+using Effort.Test.Environment.ResultSets;
 
-namespace Effort.Test.Tools.DataReaderInspector
+namespace Effort.Test.Environment.DataReaderInspector
 {
     internal class DataReaderInspectorConnection : DbConnectionWrapper
     {

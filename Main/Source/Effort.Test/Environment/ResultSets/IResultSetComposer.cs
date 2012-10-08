@@ -1,4 +1,4 @@
-﻿namespace Effort.Test.Tools
+﻿namespace Effort.Test.Environment.ResultSets
 {
     using System;
     using System.Collections.Generic;

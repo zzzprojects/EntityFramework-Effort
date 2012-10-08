@@ -54,7 +54,7 @@ using System.Data;
 
 namespace Effort.DataLoaders
 {
-    public abstract class TableDataLoaderBase : ITableDataLoader
+    public abstract class   TableDataLoaderBase : ITableDataLoader
     {
         private TableDescription table;
        

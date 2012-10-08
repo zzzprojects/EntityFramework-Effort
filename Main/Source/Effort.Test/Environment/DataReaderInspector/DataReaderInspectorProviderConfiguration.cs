@@ -5,7 +5,7 @@ using System.Data;
 using System.Threading;
 using EFProviderWrapperToolkit;
 
-namespace Effort.Test.Tools.DataReaderInspector
+namespace Effort.Test.Environment.DataReaderInspector
 {
     internal static class DataReaderInspectorProviderConfiguration
     {

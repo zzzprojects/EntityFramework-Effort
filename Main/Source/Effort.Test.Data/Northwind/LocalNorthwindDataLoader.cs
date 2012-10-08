@@ -1,4 +1,4 @@
-﻿namespace Effort.Test.Data.Initial
+﻿namespace Effort.Test.Data.Northwind
 {
     using System;
     using System.IO;

@@ -45,7 +45,7 @@ namespace Effort.Test.Data.Feature
 
         private static EntityConnection CreateEntityConnection(string connectionString)
         {
-            return EntityConnectionFactory.CreatePersistent(connectionString, new FeatureLocalDataLoader());
+            return EntityConnectionFactory.CreateTransient(connectionString, new FeatureLocalDataLoader());
         }
     }
 }

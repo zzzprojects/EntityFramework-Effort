@@ -26,7 +26,7 @@ namespace Effort.Test.Environment.Queries
             this.ordered = ordered;
         }
 
-        public void Assert()
+        public bool Check()
         {
             IEqualityComparer<IResultSet> comparer = null;
 
@@ -39,9 +39,7 @@ namespace Effort.Test.Environment.Queries
                 comparer = new ResultSetComparer();
             }
 
-            bool result = comparer.Equals(this.Expected, this.Actual);
-
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsTrue(result);
+            return comparer.Equals(this.Expected, this.Actual);
         }
 
         public IResultSet Expected

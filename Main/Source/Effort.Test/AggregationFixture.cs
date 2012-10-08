@@ -53,8 +53,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -74,8 +73,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -96,8 +94,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -112,8 +109,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -133,8 +129,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -155,8 +150,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -171,8 +165,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
 
@@ -194,8 +187,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -212,8 +204,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -228,8 +219,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
 
@@ -250,8 +240,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -272,8 +261,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -288,8 +276,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
 
@@ -310,8 +297,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -332,8 +318,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -359,8 +344,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -386,8 +370,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -405,8 +388,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name + "\r\n" + result.Expected.ConvertToJsonSerializedCSharpString() + "\r\n");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
     }
 }

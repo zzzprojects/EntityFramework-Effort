@@ -55,7 +55,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -96,7 +96,7 @@ namespace Effort.Test
                     , expected, true
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -112,7 +112,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -158,7 +158,7 @@ namespace Effort.Test
                         , expected[i]
                     );
 
-                result.Assert();
+                Assert.IsTrue(result.Check());
             }
         }
 
@@ -174,7 +174,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -191,7 +191,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
     }
 }

@@ -55,8 +55,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            string ex = result.Expected.ConvertToJsonSerializedCSharpString();
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -85,7 +84,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -112,7 +111,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
     }
 }

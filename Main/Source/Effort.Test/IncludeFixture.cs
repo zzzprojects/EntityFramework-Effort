@@ -57,10 +57,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -80,10 +77,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -101,10 +95,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -122,10 +113,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -143,10 +131,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -165,10 +150,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -186,10 +168,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
 
@@ -209,10 +188,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -236,10 +212,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            System.Diagnostics.Debug.WriteLine(System.Reflection.MethodInfo.GetCurrentMethod().Name);
-            System.Diagnostics.Debug.WriteLine(result.Expected.ConvertToJsonSerializedCSharpString());
-            System.Diagnostics.Debug.WriteLine("");
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
     }
 }

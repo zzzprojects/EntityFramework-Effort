@@ -8,7 +8,7 @@
 
     internal interface ICorrectness
     {
-        void Assert();
+        bool Check();
 
         IResultSet Expected { get; }
 

@@ -55,7 +55,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -89,7 +89,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -123,7 +123,7 @@ namespace Effort.Test
                    , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
        }
 
 
@@ -140,7 +140,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -157,7 +157,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -174,7 +174,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -191,7 +191,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -208,7 +208,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
 
         [TestMethod]
@@ -225,7 +225,7 @@ namespace Effort.Test
                     , expected
                 );
 
-            result.Assert();
+            Assert.IsTrue(result.Check());
         }
     }
 }

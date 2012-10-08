@@ -67,7 +67,6 @@ namespace Effort.Test
             Assert.IsTrue(customerWasNotAdded);
         }
 
-
         [TestMethod]
         public void TransactionScopeCommit()
         {
@@ -87,7 +86,6 @@ namespace Effort.Test
             bool customerWasAdded = context.Customers.FirstOrDefault(c => c.CustomerID == "CUSTO") != null;
             
             Assert.IsTrue(customerWasAdded);
-            
         }
     }
 }

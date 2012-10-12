@@ -5,6 +5,7 @@ using Effort.Provider;
 
 namespace Effort
 {
+//Értelmes komment
     public static class DbConnectionFactory
     {
         static DbConnectionFactory()

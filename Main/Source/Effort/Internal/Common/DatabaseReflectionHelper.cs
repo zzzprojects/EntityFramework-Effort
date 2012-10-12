@@ -49,7 +49,7 @@ namespace Effort.Internal.Common
             PropertyInfo[] primaryKeyFields,
            
             PropertyInfo identityField,
-             object constraints,
+             object[] constraints,
             IEnumerable<object> initialEntities)
         {
             if (primaryKeyFields.Length == 0)
@@ -323,7 +323,7 @@ namespace Effort.Internal.Common
                 Database database,  
                 Expression<Func<TEntity, TPrimaryKey>> primaryKey,
                 Expression<Func<TEntity, long>> identity,
-                IEnumerable<object> initialEntities, List<NMemory.Constraints.IConstraint<TEntity>> constraints)
+                IEnumerable<object> initialEntities, object[] constraints)
 
                 where TEntity : class
             {
@@ -333,7 +333,7 @@ namespace Effort.Internal.Common
 
                 ((IInitializableTable<TEntity>)table).Initialize(initialEntities.Cast<TEntity>());
 
-                foreach (var constraint in constraints)
+                foreach (var constraint in constraints.Cast<NMemory.Constraints.IConstraint<TEntity>>())
                 {
                     table.AddConstraint(constraint);
                 }

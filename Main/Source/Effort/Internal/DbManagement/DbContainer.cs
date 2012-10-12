@@ -265,9 +265,7 @@ namespace Effort.Internal.DbManagement
                 Type constraintListType = typeof(List<>)
                                       .MakeGenericType(typeof(NMemory.Constraints.IConstraint<>).MakeGenericType(entityType));
 
-                var listInstanceOfConstraints = (IList)constraintListType
-                      .GetConstructor(Type.EmptyTypes)
-                      .Invoke(null);
+                var listInstanceOfConstraints = new List<object>();
                 foreach (PropertyInfo prop in entityType.GetProperties())
                 {
                     properties.Add(prop);
@@ -285,13 +283,12 @@ namespace Effort.Internal.DbManagement
                     if (notNullableFields.Contains(prop.Name))
                     {
                         var param = Expression.Parameter(entityType, "x");
-                        constraintListType.GetMethod("Add").Invoke(listInstanceOfConstraints, new object[]{
+                        listInstanceOfConstraints.Add(
                             typeof(NMemory.Constraints.NotNullableConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
                             new object[]{
                                     Expression.Lambda(Expression.Convert(Expression.PropertyOrField(param,prop.Name),typeof(object)),param)
                             }
-                            
-                            )});
+                            ));
                     }
                 }
 

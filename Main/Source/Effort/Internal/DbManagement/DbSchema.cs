@@ -45,7 +45,7 @@ namespace Effort.Internal.DbManagement
             PropertyInfo[] properties)
         {
             DbTableInformation table = new DbTableInformation(tableName, entityType, primaryKeyFields, identityField, properties);
-
+            
             this.tables.Add(tableName, table);
         }
 

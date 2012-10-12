@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl"
+        Namespace="SSDLV2" Provider="System.Data.SqlClient" ProviderManifestToken="2008">
+  <EntityContainer Name="Container">
+    <EntitySet Name="EntitySet" EntityType="SSDLV2.EntityType1" />
+  </EntityContainer>
+  
+  <EntityType Name="EntityType1">
+    <Key>
+      <PropertyRef Name="Key1" />
+    </Key>
+    <Property Name="Key1" Type="int" Nullable="false" />
+    <Property Name="Property2" Type="image" />
+  </EntityType>
+  
+  <Function Name="Function1" ReturnType="nvarchar">
+    <Parameter Name="Param1" Type="nvarchar" />
+    <Parameter Name="Param2" Type="image" />
+    <Parameter Name="Param3" Type="Collection(int)" />
+  </Function>
+  
+  <Function Name="Function2" ReturnType="Collection(nvarchar)">
+    <Parameter Name="Param1" Type="nvarchar" />
+    <Parameter Name="Param2" Type="image" />
+    <Parameter Name="Param3" Type="Collection(int)" />
+  </Function>
+  
+</Schema>

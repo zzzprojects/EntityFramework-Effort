@@ -46,8 +46,6 @@ namespace Effort.Internal.Common
         private static Regex resRegex = new Regex(@"^res://(?<assembly>.*)/(?<resource>.*)$");
         private static string httpContextTypeName = "System.Web.HttpContext, System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
 
-        private static XNamespace ssdlNamespace = "http://schemas.microsoft.com/ado/2009/02/edm/ssdl";
-
         public static EntityContainer GetEntityContainer(MetadataWorkspace workspace)
         {
             // Get the Storage Schema Definition
@@ -106,38 +104,68 @@ namespace Effort.Internal.Common
 
         public static void RewriteTypeAttributeValues(XElement ssdlFile, DbProviderManifest providerManifest, DbProviderManifest oldProviderManifest)
         {
-            var oldStoreTypes = oldProviderManifest.GetStoreTypes();
+            var oldStoreTypes = oldProviderManifest.GetStoreTypes().ToDictionary(p => p.Name);
 
-            foreach (XElement property in ssdlFile.Descendants())
+            // SSDL specification
+            // http://msdn.microsoft.com/en-us/data/jj652016.aspx
+
+            foreach (XAttribute typeAttribute in GetTypeAttributes(ssdlFile))
             {
-                XName name = property.Name;
-
-                if (name != null &&
-                    name.Namespace == ssdlNamespace &&
-                    name.LocalName == "Property")
+                PrimitiveType oldStorageType = null;
+                string oldStorageTypeName = typeAttribute.Value;
+                
+                if (oldStoreTypes.TryGetValue(oldStorageTypeName, out oldStorageType))
                 {
-                    XAttribute typeContainer = property.Attribute("Type");
+                    string newStorageTypeName = RewriteTypeAttributeValue(oldStorageType, providerManifest, oldProviderManifest);
+                    
+                    typeAttribute.Value = newStorageTypeName;
+                }
+            }
 
-                    if (typeContainer != null)
+            foreach (XAttribute typeAttribute in GetFunctionTypeAttributes(ssdlFile))
+            {
+                PrimitiveType oldStorageType = null;
+                string oldStorageTypeName = typeAttribute.Value;
+                
+                string pattern = @"Collection\(([^ \t]{1,}(?:\.[^ \\t]{1,}){0,})\)";
+                Match regex = Regex.Match(oldStorageTypeName, pattern);
+                bool isCollection = regex.Success;
+
+                if (isCollection)
+                {
+                    oldStorageTypeName = regex.Groups[1].Value;
+                }
+
+                if (oldStoreTypes.TryGetValue(oldStorageTypeName, out oldStorageType))
+                {
+                    string newStorageTypeName = RewriteTypeAttributeValue(oldStorageType, providerManifest, oldProviderManifest);
+
+                    if (isCollection)
                     {
-                        string oldStorageTypeName = typeContainer.Value;
-                        PrimitiveType oldStorageType = oldStoreTypes.FirstOrDefault(t => t.Name == oldStorageTypeName);
-
-                        // TODO: extension point
-                        if (oldStorageType.NamespaceName == "SqlServer" && 
-                            (oldStorageType.Name == "timestamp" || oldStorageType.Name == "rowversion"))
-                        {
-                            typeContainer.Value = "rowversion";
-                            continue;
-                        }
-
-                        TypeUsage edmType = oldProviderManifest.GetEdmType(TypeUsage.CreateDefaultTypeUsage(oldStorageType));
-                        TypeUsage newStorageType = providerManifest.GetStoreType(edmType);
-                        string newStorageTypeName = newStorageType.EdmType.Name;
-
-                        typeContainer.Value = newStorageTypeName;
+                        typeAttribute.Value = string.Format("Collection({0})", newStorageTypeName);
+                    }
+                    else
+                    {
+                        typeAttribute.Value = newStorageTypeName;
                     }
                 }
+            }
+        }
+
+        private static string RewriteTypeAttributeValue(PrimitiveType storageType, DbProviderManifest providerManifest, DbProviderManifest oldProviderManifest)
+        {
+            // TODO: extension point
+            if (storageType.NamespaceName == "SqlServer" &&
+                (storageType.Name == "timestamp" || storageType.Name == "rowversion"))
+            {
+                return "rowversion";
+            }
+            else
+            {
+                TypeUsage edmType = oldProviderManifest.GetEdmType(TypeUsage.CreateDefaultTypeUsage(storageType));
+                TypeUsage newStorageType = providerManifest.GetStoreType(edmType);
+
+                return newStorageType.EdmType.Name;
             }
         }
 
@@ -182,6 +210,75 @@ namespace Effort.Internal.Common
                 else
                 {
                     throw new NotSupportedException("Unknown metadata component: " + component);
+                }
+            }
+        }
+
+        private static IEnumerable<XAttribute> GetTypeAttributes(XElement ssdlFile)
+        {
+            XNamespace ssdlNamespace = ssdlFile.Name.Namespace;
+
+            XName ssdlProperty = ssdlNamespace + "Property";
+            XName ssdlEntityType = ssdlNamespace + "EntityType";
+            XName ssdlRowType = ssdlNamespace + "RowType";
+            XName ssdlParameter = ssdlNamespace + "Parameter";
+            XName ssdlFunction = ssdlNamespace + "Function";
+            XName ssdlType = "Type";
+
+            foreach (XElement propertyElement in ssdlFile.Descendants(ssdlProperty))
+            {
+                // RowType.Property
+                // EntityType.Property
+                if (propertyElement.Parent.Name != ssdlEntityType &&
+                    propertyElement.Parent.Name != ssdlRowType)
+                {
+                    continue;
+                }
+
+                XAttribute typeAttribute = propertyElement.Attribute(ssdlType);
+
+                if (typeAttribute != null)
+                {
+                    yield return typeAttribute;
+                }
+            }
+        }
+
+        private static IEnumerable<XAttribute> GetFunctionTypeAttributes(XElement ssdlFile)
+        {
+            XNamespace ssdlNamespace = ssdlFile.Name.Namespace;
+
+            XName ssdlProperty = ssdlNamespace + "Property";
+            XName ssdlEntityType = ssdlNamespace + "EntityType";
+            XName ssdlRowType = ssdlNamespace + "RowType";
+            XName ssdlParameter = ssdlNamespace + "Parameter";
+            XName ssdlFunction = ssdlNamespace + "Function";
+            XName ssdlType = "Type";
+            XName ssdlReturnType = "ReturnType";
+
+            foreach (XElement propertyElement in ssdlFile.Descendants(ssdlFunction))
+            {
+                XAttribute typeAttribute = propertyElement.Attribute(ssdlReturnType);
+
+                if (typeAttribute != null)
+                {
+                    yield return typeAttribute;
+                }
+            }
+
+            foreach (XElement parameterElement in ssdlFile.Descendants(ssdlParameter))
+            {
+                // Function.Parameter
+                if (parameterElement.Parent.Name != ssdlFunction)
+                {
+                    continue;
+                }
+
+                XAttribute typeAttribute = parameterElement.Attribute(ssdlType);
+
+                if (typeAttribute != null)
+                {
+                    yield return typeAttribute;
                 }
             }
         }

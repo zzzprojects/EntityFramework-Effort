@@ -39,6 +39,8 @@ using Effort.Internal.Diagnostics;
 using Effort.Internal.TypeConversion;
 using NMemory;
 using NMemory.StoredProcedures;
+using System.Collections;
+using System.Linq.Expressions;
 
 namespace Effort.Internal.DbManagement
 {
@@ -139,12 +141,16 @@ namespace Effort.Internal.DbManagement
 
                     IEnumerable<object> initialData = this.GetInitialData(loaderFactory, tableInfo);
 
+                    //todo: DefaultKeyInfoFactory használata IKeyInfo létrehozására
+                    //todo: Identity közvetlen létrehozása. 
+
                     // Initialize the table
                     DatabaseReflectionHelper.CreateTable(
                         this.database,
                         tableInfo.EntityType,
                         tableInfo.PrimaryKeyFields,
                         tableInfo.IdentityField,
+                        tableInfo.Constraints,
                         initialData);
 
                     swTable.Stop();
@@ -222,6 +228,7 @@ namespace Effort.Internal.DbManagement
 
                 List<string> primaryKeyFieldNames = new List<string>();
                 List<string> identityFieldNames = new List<string>();
+                List<string> notNullableFields = new List<string>();
 
                 // Add properties as entity fields
                 foreach (EdmProperty field in type.Properties)
@@ -242,6 +249,10 @@ namespace Effort.Internal.DbManagement
                     {
                         identityFieldNames.Add(propBuilder.Name);
                     }
+                    if (facets.Nullable == false)
+                    {
+                        notNullableFields.Add(propBuilder.Name);
+                    }
                 }
 
                 if (identityFields.Count > 1)
@@ -251,6 +262,12 @@ namespace Effort.Internal.DbManagement
 
                 Type entityType = entityTypeBuilder.CreateType();
 
+                Type constraintListType = typeof(List<>)
+                                      .MakeGenericType(typeof(NMemory.Constraints.IConstraint<>).MakeGenericType(entityType));
+
+                var listInstanceOfConstraints = (IList)constraintListType
+                      .GetConstructor(Type.EmptyTypes)
+                      .Invoke(null);
                 foreach (PropertyInfo prop in entityType.GetProperties())
                 {
                     properties.Add(prop);
@@ -264,6 +281,18 @@ namespace Effort.Internal.DbManagement
                     {
                         identityFields.Add(prop);
                     }
+
+                    if (notNullableFields.Contains(prop.Name))
+                    {
+                        var param = Expression.Parameter(entityType, "x");
+                        constraintListType.GetMethod("Add").Invoke(listInstanceOfConstraints, new object[]{
+                            typeof(NMemory.Constraints.NotNullableConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                            new object[]{
+                                    Expression.Lambda(Expression.Convert(Expression.PropertyOrField(param,prop.Name),typeof(object)),param)
+                            }
+                            
+                            )});
+                    }
                 }
 
                 schema.RegisterTable(
@@ -271,7 +300,7 @@ namespace Effort.Internal.DbManagement
                     entityType,
                     primaryKeyFields.ToArray(),
                     identityFields.SingleOrDefault(),
-                    properties.ToArray());
+                    properties.ToArray(), listInstanceOfConstraints);
             }
 
             foreach (AssociationSet associationSet in entityContainer.BaseEntitySets.OfType<AssociationSet>())
@@ -293,7 +322,6 @@ namespace Effort.Internal.DbManagement
 
                 PropertyInfo[] fromTableProperties = GetRelationProperties(constraint.FromProperties, fromTable);
                 PropertyInfo[] toTableProperties = GetRelationProperties(constraint.ToProperties, toTable);
-
                 schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties);
             }
 

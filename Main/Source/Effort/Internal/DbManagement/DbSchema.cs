@@ -42,9 +42,9 @@ namespace Effort.Internal.DbManagement
         }
 
         public void RegisterTable(string tableName, Type entityType, PropertyInfo[] primaryKeyFields, PropertyInfo identityField,
-            PropertyInfo[] properties)
+            PropertyInfo[] properties,object constraints)
         {
-            DbTableInformation table = new DbTableInformation(tableName, entityType, primaryKeyFields, identityField, properties);
+            DbTableInformation table = new DbTableInformation(tableName, entityType, primaryKeyFields, identityField, properties, constraints);
 
             this.tables.Add(tableName, table);
         }

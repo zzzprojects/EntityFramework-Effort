@@ -46,9 +46,10 @@ namespace Effort.Internal.Common
             Database database, 
             Type entityType, 
             
-            PropertyInfo[] primaryKeyFields, 
-            PropertyInfo identityField, 
-            
+            PropertyInfo[] primaryKeyFields,
+           
+            PropertyInfo identityField,
+             object constraints,
             IEnumerable<object> initialEntities)
         {
             if (primaryKeyFields.Length == 0)
@@ -76,7 +77,7 @@ namespace Effort.Internal.Common
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("CreateTable")
                 .MakeGenericMethod(entityType, primaryKeyType)
-                .Invoke(null, new object[] { database, primaryKeyExpression, identity, initialEntities});
+                .Invoke(null, new object[] { database, primaryKeyExpression, identity, initialEntities, constraints });
 
             return table as ITable;
         }
@@ -173,11 +174,23 @@ namespace Effort.Internal.Common
             return database.GetTable(refType.ElementType.Name);
         }
 
+
+        /// <summary>
+        /// todo: RelationKeyConverterFactory
+        /// </summary>
+        /// <param name="database"></param>
+        /// <param name="relation"></param>
         public static void CreateAssociation(Database database, DbRelationInformation relation)
         {
+            
             // Get the referenced tables
             ITable primaryTable = database.GetTable(relation.PrimaryTable);
             ITable foreignTable = database.GetTable(relation.ForeignTable);
+
+            
+
+            //CreatePrimaryToForeignConverter //constraints
+            
 
             Type[] toTableGenericsArgs = foreignTable.GetType().GetGenericArguments();
 
@@ -199,7 +212,6 @@ namespace Effort.Internal.Common
                     {
                         continue;
                     }
-
                     MemberInfo[] indexMembers = existingPrimaryTableIndex.KeyInfo.EntityKeyMembers;
 
                     if (indexMembers.Length == 1 && indexMembers[0].Name == primaryKeyProp.Name)
@@ -245,6 +257,9 @@ namespace Effort.Internal.Common
                 }
 
                 // Register association in the database
+
+
+                //todo: database.Tables.CreateRelation() meghívni. 
 
                 // Identical index type
                 if (uniqueKeyIndex.KeyInfo.KeyType == foreignKeyIndex.KeyInfo.KeyType)
@@ -305,10 +320,10 @@ namespace Effort.Internal.Common
             }
 
             public static Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
-                Database database, 
+                Database database,  
                 Expression<Func<TEntity, TPrimaryKey>> primaryKey,
                 Expression<Func<TEntity, long>> identity,
-                IEnumerable<object> initialEntities)
+                IEnumerable<object> initialEntities, List<NMemory.Constraints.IConstraint<TEntity>> constraints)
 
                 where TEntity : class
             {
@@ -317,6 +332,11 @@ namespace Effort.Internal.Common
                     identity != null ? new IdentitySpecification<TEntity>(identity) : null);
 
                 ((IInitializableTable<TEntity>)table).Initialize(initialEntities.Cast<TEntity>());
+
+                foreach (var constraint in constraints)
+                {
+                    table.AddConstraint(constraint);
+                }
 
                 return table;
             }

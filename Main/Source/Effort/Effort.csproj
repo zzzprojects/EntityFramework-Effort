@@ -109,8 +109,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NMemory">
-      <HintPath>..\Imports\NMemory.dll</HintPath>
+    <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\Fork_NMemory\Main\Source\NMemory\bin\Debug\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -163,6 +163,7 @@
     <Compile Include="Internal\CommandActions\ICommandAction.cs" />
     <Compile Include="Internal\CommandActions\ActionContext.cs" />
     <Compile Include="Internal\CommandActions\Parameter.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\DbFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Null.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Apply.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.And.cs" />

@@ -19,5 +19,6 @@ namespace Effort.Internal.DbManagement
         public PropertyInfo[] PrimaryProperties { get; private set; }
 
         public PropertyInfo[] ForeignProperties { get; private set; }
+        //todo: konverziós függvények, keyinfok (mindent ami állapotmentes)
     }
 }

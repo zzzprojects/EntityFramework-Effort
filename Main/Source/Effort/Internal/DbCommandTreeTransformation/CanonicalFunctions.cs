@@ -38,6 +38,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
 		private Dictionary<string, Func<EdmFunction, Expression[], MethodCallExpression>> mappings;
 		private EdmTypeConverter converter;
 
+        /// <summary>
+        /// The function is invoked on the LAST argument!
+        /// </summary>
+        /// <param name="converter"></param>
 		public CanonicalFunctionMapper(ITypeConverter converter)
 		{
 			this.converter = new EdmTypeConverter(converter);
@@ -45,16 +49,33 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
 			// Mappingek leirasa: http://msdn.microsoft.com/en-us/library/bb738681.aspx
 
-			this.mappings["Edm.Round"] = (f, args) => Expression.Call(null,
-			   FindMethod(typeof(Math), "Round", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
-			   ExpressionHelper.ConvertToNotNull(args[0]));
+            //String
+
+            this.mappings["Edm.Concat"] = (f, args) => Expression.Call(null,
+                FindMethod(typeof(string), "Concat", typeof(string), typeof(string)), args[0], args[1]);
 
 			this.mappings["Edm.ToUpper"] = (f, args) => Expression.Call(args[0],
 				FindMethod(typeof(string), "ToUpper"));
 			this.mappings["Edm.ToLower"] = (f, args) => Expression.Call(args[0],
 				FindMethod(typeof(string), "ToLower"));
-			this.mappings["Edm.Concat"] = (f, args) => Expression.Call(null,
-				FindMethod(typeof(string), "Concat", typeof(string), typeof(string)), args[0], args[1]);
+
+            this.mappings["Edm.IndexOf"] = (f, args) => Expression.Call(null,
+                 FindMethod(typeof(DbFunctions), "IndexOf", typeof(string), typeof(string)), args[1], args[0]);
+
+            this.mappings["Edm.Trim"] = (f, args) => Expression.Call(args[0],
+                FindMethod(typeof(string), "Trim"));
+
+            this.mappings["Edm.Length"] = (f, args) => Expression.Call(args[0],typeof(string).GetProperties().Where(x => x.Name == "Length").First().GetGetMethod());
+
+            //Mathematical Function Mapping
+
+            this.mappings["Edm.Abs"] = (f, args) => Expression.Call(null,
+                FindMethod(typeof(DbFunctions), "Abs", typeof(decimal?)), args[0]);
+
+            this.mappings["Edm.Round"] = (f, args) => Expression.Call(null,
+               FindMethod(typeof(Math), "Round", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+               ExpressionHelper.ConvertToNotNull(args[0]));
+
 		}
 
 		public MethodCallExpression CreateMethodCall(EdmFunction function, Expression[] arguments)
@@ -75,5 +96,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 				&& mi.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameterTypes)
 				).Single();
 		}
+
+
 	}
 }

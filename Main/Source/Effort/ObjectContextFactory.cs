@@ -154,7 +154,7 @@ namespace Effort
         public static T CreateTransient<T>()
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreateTransientType<T>()) as T;
+             return Activator.CreateInstance(CreateTransientType<T>()) as T;
         }
 
         #endregion

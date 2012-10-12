@@ -29,13 +29,14 @@ namespace Effort.Internal.DbManagement
 {
 	internal class DbTableInformation
 	{
-		public DbTableInformation(string tableName, Type entityType, PropertyInfo[] primaryKeys, PropertyInfo identityField, PropertyInfo[] properties)
+		public DbTableInformation(string tableName, Type entityType, PropertyInfo[] primaryKeys, PropertyInfo identityField, PropertyInfo[] properties,object constraints)
 		{
             this.TableName = tableName;
 			this.EntityType = entityType;
 			this.PrimaryKeyFields = primaryKeys;
 			this.IdentityField = identityField;
 			this.Properties = properties;
+            this.Constraints = constraints;
 		}
 
         public string TableName { get; set; }
@@ -47,5 +48,8 @@ namespace Effort.Internal.DbManagement
 		public PropertyInfo IdentityField { get; private set; }
 
 		public PropertyInfo[] Properties { get; private set; }
+
+        public object Constraints { get; private set; }
+        //todo: object Constraints
 	}
 }

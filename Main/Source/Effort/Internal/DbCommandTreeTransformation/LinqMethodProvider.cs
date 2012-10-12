@@ -28,6 +28,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using Effort.Internal.Common;
+using System.Collections.Generic;
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
@@ -218,6 +219,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return result.GetGenericMethodDefinition();
         }
 
+        private MethodInfo GetMethod2<T>(Expression<Func<IEnumerable<object>, T>> function)
+        {
+            MethodCallExpression methodCall = function.Body as MethodCallExpression;
+            MethodInfo result = methodCall.Method;
+
+            return result.GetGenericMethodDefinition();
+        }
+
         private MethodInfo GetOrderedMethod<T>(Expression<Func<IOrderedQueryable<object>, T>> function)
         {
             MethodInfo result = ReflectionHelper.GetMethodInfo<IOrderedQueryable<object>, T>(function);
@@ -253,12 +262,35 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         private MethodInfo CreateLeftOuterJoin()
         {
-            return GetMethod(x => NMemory.Linq.QueryableEx.LeftOuterJoin(
-                x, 
-                Enumerable.Empty<object>(), 
-                l => new object(), 
-                r => new object(), 
+    //        var qry = Foo.GroupJoin(
+    //      Bar,
+    //      foo => foo.Foo_Id,
+    //      bar => bar.Foo_Id,
+    //      (x, y) => new { Foo = x, Bars = y })
+    //.SelectMany(
+    //      x => x.Bars.DefaultIfEmpty(),
+    //      (x, y) => new { Foo = x.Foo, Bar = y });
+
+
+
+            //return GetMethod(x=>x.GroupJoin(
+            //    Enumerable.Empty<object>(),                
+            //    l => new object(), 
+            //    r => new object(), 
+            //    (l, r) => new { a = l, b = r })
+            //    .SelectMany(
+            //       y=>y.b.DefaultIfEmpty(),
+            //       (y,z) => new {a = y.a,b = z})
+            //    );
+
+            return GetMethod(x => LolClass.LeftOuterJoin(
+                x,
+                Enumerable.Empty<object>(),
+                l => new object(),
+                r => new object(),
                 (l, r) => new object()));
+
+            
         }
 
         private MethodInfo CreateCount()
@@ -349,5 +381,70 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         #endregion
 
+    }
+
+    public static class LolClass
+    {
+        public static IQueryable<TResult> LeftOuterJoin<TOuter, TInner, TKey, TResult>(
+        this IQueryable<TOuter> outer,
+        IEnumerable<TInner> inner,
+        Expression<Func<TOuter, TKey>> outerKeySelector,
+        Expression<Func<TInner, TKey>> innerKeySelector,
+        Expression<Func<TOuter, TInner, TResult>> resultSelector)
+        {
+            var joined = outer.GroupJoin(inner, outerKeySelector, innerKeySelector,
+                                          (o, i) => new Tuple<TOuter, IEnumerable<TInner>>(o, i));
+
+            Type tupleType = joined.GetType().GetGenericArguments().First();
+
+            ReplaceVisitor rv;
+
+            ParameterExpression oldResultParam1 = resultSelector.Parameters[0];
+            ParameterExpression oldResultParam2 = resultSelector.Parameters[1];
+
+            Expression newResultSelectorBody = resultSelector.Body;
+
+            ParameterExpression anonParam = Expression.Parameter(tupleType);
+            ParameterExpression innerParam = Expression.Parameter(typeof(TInner));
+
+            Expression oSelector = Expression.Property(anonParam, tupleType.GetProperty("Item1"));
+
+            rv = new ReplaceVisitor(exp => exp == oldResultParam1, exp => oSelector);
+            newResultSelectorBody = rv.Visit(newResultSelectorBody);
+            rv = new ReplaceVisitor(exp => exp == oldResultParam2, exp => innerParam);
+            newResultSelectorBody = rv.Visit(newResultSelectorBody);
+
+            LambdaExpression newResultSelector = Expression.Lambda(newResultSelectorBody, anonParam, innerParam);
+
+            var res = joined.SelectMany(o => o.Item2.DefaultIfEmpty(), (newResultSelector as Expression<Func<Tuple<TOuter, IEnumerable<TInner>>, TInner, TResult>>));
+            
+            return res;
+        }
+
+
+        internal class ReplaceVisitor : ExpressionVisitor
+        {
+            public Func<Expression, bool> Condition { get; set; }
+            public Func<Expression, Expression> NewExpression { get; set; }
+
+            public ReplaceVisitor(Func<Expression, bool> condition, Func<Expression, Expression> newExpression)
+            {
+                this.Condition = condition;
+                this.NewExpression = newExpression;
+            }
+
+            public override Expression Visit(Expression exp)
+            {
+                if (Condition(exp))
+                {
+                    return NewExpression(exp);
+                }
+                else
+                {
+                    return base.Visit(exp);
+                }
+            }
+        }
+    
     }
 }

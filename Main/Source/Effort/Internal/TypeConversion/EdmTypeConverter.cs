@@ -65,6 +65,7 @@ namespace Effort.Internal.TypeConversion
 
         public TypeFacets GetTypeFacets(TypeUsage type)
         {
+            //todo: Constraintek is itt...
             TypeFacets facets = new TypeFacets();
             Facet facet = null;
 
@@ -72,6 +73,7 @@ namespace Effort.Internal.TypeConversion
             {
                 facets.Nullable = (bool)facet.Value == true;
             }
+
 
             if (type.Facets.TryGetValue("StoreGeneratedPattern", false, out facet))
             {

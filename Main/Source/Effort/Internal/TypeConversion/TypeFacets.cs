@@ -31,5 +31,6 @@ namespace Effort.Internal.TypeConversion
         public bool Identity { get; set; }
 
         public bool Computed { get; set; }
+
     }
 }

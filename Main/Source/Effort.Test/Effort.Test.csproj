@@ -69,10 +69,10 @@
       <HintPath>..\Imports\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Fork_NMemory\Main\Source\NMemory\bin\Debug\NMemory.dll</HintPath>
+      <HintPath>..\Imports\NMemory.dll</HintPath>
     </Reference>
-    <Reference Include="SoftwareApproach.TestingExtensions">
-      <HintPath>..\packages\VisualStudioTestingExtensions.1.2.0.0\lib\net40\SoftwareApproach.TestingExtensions.dll</HintPath>
+    <Reference Include="SoftwareApproach.TestingExtensions, Version=1.2.4420.19431, Culture=neutral, PublicKeyToken=8643fe5b014704ca, processorArchitecture=MSIL">
+      <HintPath>..\Imports\SoftwareApproach.TestingExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

@@ -41,6 +41,8 @@ using NMemory;
 using NMemory.StoredProcedures;
 using System.Collections;
 using System.Linq.Expressions;
+using Effort.Internal.TypeGeneration;
+using NMemory.Indexes;
 
 namespace Effort.Internal.DbManagement
 {
@@ -310,19 +312,58 @@ namespace Effort.Internal.DbManagement
                 }
 
                 ReferentialConstraint constraint = constraints[0];
-
+              
                 string fromTableName = GetTableName(constraint.FromRole);
                 string toTableName = GetTableName(constraint.ToRole);
 
+                //fromTable is the primary table, toTable is the foreign table...
                 DbTableInformation fromTable = schema.GetTable(fromTableName);
                 DbTableInformation toTable = schema.GetTable(toTableName);
-
+                
                 PropertyInfo[] fromTableProperties = GetRelationProperties(constraint.FromProperties, fromTable);
                 PropertyInfo[] toTableProperties = GetRelationProperties(constraint.ToProperties, toTable);
-                schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties);
+
+                object primaryKeyInfo = CreateKeyInfo(fromTable, fromTableProperties);
+                object foreignKeyInfo = CreateKeyInfo(toTable, toTableProperties);
+
+                //Dictionary<string, Type> foreignKeyProperties = new Dictionary<string, Type>();
+                //foreach (var x in fromTableProperties)
+                //{
+                //    primaryKeyProperties.Add(x.Name, x.PropertyType);
+                //}
+                //var foreignKey = AnonymousTypeFactory.Create(primaryKeyProperties);
+                //ParameterExpression p2 = Expression.Parameter(toTable.EntityType);
+                //Expression constructor = Expression.New(primaryKey.GetConstructors().First(), p2);
+                //Expression resultSelector = Expression.Lambda(constructor, p2);
+
+
+
+
+
+
+                schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties, primaryKeyInfo, foreignKeyInfo);
             }
 
             return schema;
+        }
+
+        private static object CreateKeyInfo(DbTableInformation fromTable, PropertyInfo[] fromTableProperties)
+        {
+            Dictionary<string, Type> primaryKeyProperties = new Dictionary<string, Type>();
+            foreach (var x in fromTableProperties)
+            {
+                primaryKeyProperties.Add(x.Name, x.PropertyType);
+            }
+            var primaryKey = AnonymousTypeFactory.Create(primaryKeyProperties);
+            ParameterExpression p1 = Expression.Parameter(fromTable.EntityType);
+            Expression[] properties = fromTableProperties.Select(x=>Expression.Property(p1,x)).ToArray();
+            Expression constructor = Expression.New(primaryKey.GetConstructors().First(), properties);
+            Expression resultSelector = Expression.Lambda(constructor, p1);
+
+            object keyInfo = typeof(DefaultKeyInfoFactory).GetMethod("Create").MakeGenericMethod(fromTable.EntityType, primaryKey)
+                .Invoke(new DefaultKeyInfoFactory(), new object[] { resultSelector });
+
+            return keyInfo;
         }
 
         private static string GetTableName(RelationshipEndMember relationEndpoint)

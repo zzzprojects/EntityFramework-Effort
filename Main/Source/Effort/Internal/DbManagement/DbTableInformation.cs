@@ -50,6 +50,7 @@ namespace Effort.Internal.DbManagement
 
 		public PropertyInfo[] Properties { get; private set; }
 
+        //NMemory.Constraints.IConstraint<TEntity> array
         public object[] Constraints { get; private set; }
 	}
 }

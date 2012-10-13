@@ -258,7 +258,7 @@ namespace Effort.Internal.Common
 
                 // Register association in the database
 
-
+                //CreateRelationWithComplexTypes!!!
                 //todo: database.Tables.CreateRelation() meghívni. 
 
                 // Identical index type
@@ -388,6 +388,7 @@ namespace Effort.Internal.Common
                     return NMemory.Linq.QueryableEx.Delete(query);
                 }
             }
+
 
 
             public static void CreateRelationWithComplexTypes<TPrimary, TPrimaryKey, TForeign, TForeignKey>(

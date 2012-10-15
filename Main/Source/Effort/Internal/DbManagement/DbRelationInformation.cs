@@ -5,7 +5,7 @@ namespace Effort.Internal.DbManagement
 {
     public class DbRelationInformation
     {
-        public DbRelationInformation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties, object primaryKeyInfo, object foreignKeyInfo)
+        public DbRelationInformation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties, object primaryKeyInfo, object foreignKeyInfo, object primaryToForeignConverter, object foreignToPrimaryConverter)
         {
             this.PrimaryTable = fromTable;
             this.ForeignTable = toTable;
@@ -13,6 +13,8 @@ namespace Effort.Internal.DbManagement
             this.ForeignProperties = toProperties;
             this.PrimaryKeyInfo = primaryKeyInfo;
             this.ForeignKeyInfo = foreignKeyInfo;
+            this.PrimaryToForeignConverter = primaryToForeignConverter;
+            this.ForeignToPrimaryConverter = foreignToPrimaryConverter;
         }
 
         public string PrimaryTable { get; private set; }
@@ -27,8 +29,12 @@ namespace Effort.Internal.DbManagement
         public object PrimaryKeyInfo { get; private set; }
         public object ForeignKeyInfo { get; private set; }
 
-        public object ForeignToPrimary{ get; private set; }
-        public object PrimaryToForeign { get; private set; }
+        //Func<TPrimaryKey, TForeignKey>
+        public object PrimaryToForeignConverter { get; private set; }
+
+        //Func<TForeignKey, TPrimaryKey>
+        public object ForeignToPrimaryConverter { get; private set; }
+        
 
         //todo: konverziós függvények, keyinfok (mindent ami állapotmentes)
     }

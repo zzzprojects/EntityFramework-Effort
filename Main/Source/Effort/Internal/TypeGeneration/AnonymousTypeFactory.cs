@@ -31,6 +31,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading;
 using Effort.Internal.Caching;
+using System.Runtime.CompilerServices;
 
 namespace Effort.Internal.TypeGeneration
 {
@@ -162,6 +163,7 @@ namespace Effort.Internal.TypeGeneration
                     .GetCustomAttributes(typeof(DebuggerDisplayAttribute), false)
                     .OfType<DebuggerDisplayAttribute>()
                     .Any(a => a.Type == "<Anonymous Type>")
+                    || NMemory.Common.ReflectionHelper.IsAnonymousType(type)
                 let
                     props = type.GetProperties()
                 where
@@ -202,8 +204,8 @@ namespace Effort.Internal.TypeGeneration
                 typeCount++;
                 typeBuilder =
                     moduleBuilder.DefineType(
-                        string.Format("at{0}", typeCount),
-                        TypeAttributes.Public,
+                        string.Format("<>AnonymousType{0}", typeCount),
+                        TypeAttributes.Public ,
                     //Derive from object
                         typeof(Object),
                     //No interfaces

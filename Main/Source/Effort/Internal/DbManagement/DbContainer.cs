@@ -43,6 +43,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using Effort.Internal.TypeGeneration;
 using NMemory.Indexes;
+using NMemory.Tables;
 
 namespace Effort.Internal.DbManagement
 {
@@ -319,48 +320,72 @@ namespace Effort.Internal.DbManagement
                 //fromTable is the primary table, toTable is the foreign table...
                 DbTableInformation fromTable = schema.GetTable(fromTableName);
                 DbTableInformation toTable = schema.GetTable(toTableName);
-                
+
+                //Creating the parameters for NMemory.Tables.RelationKeyConverterFactory
                 PropertyInfo[] fromTableProperties = GetRelationProperties(constraint.FromProperties, fromTable);
                 PropertyInfo[] toTableProperties = GetRelationProperties(constraint.ToProperties, toTable);
 
-                object primaryKeyInfo = CreateKeyInfo(fromTable, fromTableProperties);
-                object foreignKeyInfo = CreateKeyInfo(toTable, toTableProperties);
+                Type primaryAnonymType;
+                Type foreignAnonymType;
+                object primaryKeyInfo = CreateKeyInfo(fromTable, fromTableProperties,out primaryAnonymType);
+                object foreignKeyInfo = CreateKeyInfo(toTable, toTableProperties, out foreignAnonymType);
 
-                //Dictionary<string, Type> foreignKeyProperties = new Dictionary<string, Type>();
-                //foreach (var x in fromTableProperties)
-                //{
-                //    primaryKeyProperties.Add(x.Name, x.PropertyType);
-                //}
-                //var foreignKey = AnonymousTypeFactory.Create(primaryKeyProperties);
-                //ParameterExpression p2 = Expression.Parameter(toTable.EntityType);
-                //Expression constructor = Expression.New(primaryKey.GetConstructors().First(), p2);
-                //Expression resultSelector = Expression.Lambda(constructor, p2);
+                //Creating IRelationContraints for RelationKeyConverterFactory
+                ParameterExpression paramPrimary = Expression.Parameter(fromTable.EntityType);
+                ParameterExpression paramForeign = Expression.Parameter(toTable.EntityType);
+                List<IRelationContraint> relationConstraints = new List<IRelationContraint>();
+
+                for (int i = 0; i < fromTableProperties.Count(); i++)
+                {
+                    // should not use the generic RelationConstraint here. 
+                    relationConstraints.Add(new RelationConstraint(fromTableProperties[i], toTableProperties[i]));
+                }
+
+                object primaryToForeignConverter = typeof(RelationKeyConverterFactory).GetMethod("CreatePrimaryToForeignConverter")
+                    .MakeGenericMethod(primaryAnonymType, foreignAnonymType).
+                    Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() });
+
+                object foreignToPrimaryConverter = typeof(RelationKeyConverterFactory).GetMethod("CreateForeignToPrimaryConverter")
+                    .MakeGenericMethod(primaryAnonymType, foreignAnonymType).
+                    Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() });
+                    
+
+                    //Dictionary<string, Type> foreignKeyProperties = new Dictionary<string, Type>();
+                        //foreach (var x in fromTableProperties)
+                        //{
+                        //    primaryKeyProperties.Add(x.Name, x.PropertyType);
+                        //}
+                        //var foreignKey = AnonymousTypeFactory.Create(primaryKeyProperties);
+                        //ParameterExpression p2 = Expression.Parameter(toTable.EntityType);
+                        //Expression constructor = Expression.New(primaryKey.GetConstructors().First(), p2);
+                        //Expression resultSelector = Expression.Lambda(constructor, p2);
 
 
 
 
 
 
-                schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties, primaryKeyInfo, foreignKeyInfo);
+                schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties, primaryKeyInfo, foreignKeyInfo, primaryToForeignConverter, foreignToPrimaryConverter);
             }
 
             return schema;
         }
 
-        private static object CreateKeyInfo(DbTableInformation fromTable, PropertyInfo[] fromTableProperties)
+        private static object CreateKeyInfo(DbTableInformation fromTable, PropertyInfo[] fromTableProperties, out Type anonymtype)
         {
             Dictionary<string, Type> primaryKeyProperties = new Dictionary<string, Type>();
             foreach (var x in fromTableProperties)
             {
                 primaryKeyProperties.Add(x.Name, x.PropertyType);
             }
-            var primaryKey = AnonymousTypeFactory.Create(primaryKeyProperties);
+            anonymtype = AnonymousTypeFactory.Create(primaryKeyProperties);
             ParameterExpression p1 = Expression.Parameter(fromTable.EntityType);
-            Expression[] properties = fromTableProperties.Select(x=>Expression.Property(p1,x)).ToArray();
-            Expression constructor = Expression.New(primaryKey.GetConstructors().First(), properties);
+            Expression[] properties = fromTableProperties.Select(x => Expression.Property(p1, x)).ToArray();
+            Expression constructor = Expression.New(anonymtype.GetConstructors().First(), properties);
             Expression resultSelector = Expression.Lambda(constructor, p1);
 
-            object keyInfo = typeof(DefaultKeyInfoFactory).GetMethod("Create").MakeGenericMethod(fromTable.EntityType, primaryKey)
+
+            object keyInfo = typeof(DefaultKeyInfoFactory).GetMethod("Create").MakeGenericMethod(fromTable.EntityType, anonymtype)
                 .Invoke(new DefaultKeyInfoFactory(), new object[] { resultSelector });
 
             return keyInfo;

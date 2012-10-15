@@ -49,9 +49,9 @@ namespace Effort.Internal.DbManagement
             this.tables.Add(tableName, table);
         }
 
-        public void RegisterRelation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties, object primaryKeyInfo, object foreignKeyInfo)
+        public void RegisterRelation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties, object primaryKeyInfo, object foreignKeyInfo, object primaryToForeignConverter, object foreignToPrimaryConverter)
         {
-            DbRelationInformation relation = new DbRelationInformation(fromTable, fromProperties, toTable, toProperties, primaryKeyInfo, foreignKeyInfo);
+            DbRelationInformation relation = new DbRelationInformation(fromTable, fromProperties, toTable, toProperties, primaryKeyInfo, foreignKeyInfo, primaryToForeignConverter, foreignToPrimaryConverter);
 
             this.relations.Add(relation);
         }

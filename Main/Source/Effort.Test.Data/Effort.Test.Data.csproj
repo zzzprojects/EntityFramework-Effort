@@ -47,6 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Feature\ForeignEntity.cs">
+      <DependentUpon>Feature.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\PrimaryEntity.cs">
+      <DependentUpon>Feature.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\TimestampSupport.cs">
+      <DependentUpon>Feature.tt</DependentUpon>
+    </Compile>
     <Compile Include="Northwind\Category.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
@@ -78,9 +87,6 @@
     </Compile>
     <Compile Include="Feature\LocalFeatureObjectContext.cs" />
     <Compile Include="Feature\LocalFeatureDataLoader.cs" />
-    <Compile Include="Feature\TimestampSupport.cs">
-      <DependentUpon>Feature.tt</DependentUpon>
-    </Compile>
     <Compile Include="Northwind\Customer.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>

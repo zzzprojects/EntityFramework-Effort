@@ -151,7 +151,7 @@ namespace Effort.Internal.DbManagement
                     DatabaseReflectionHelper.CreateTable(
                         this.database,
                         tableInfo.EntityType,
-                        tableInfo.PrimaryKeyFields,
+                        (IKeyInfo)tableInfo.PrimaryKeyInfo,
                         tableInfo.IdentityField,
                         tableInfo.Constraints,
                         initialData);
@@ -294,13 +294,15 @@ namespace Effort.Internal.DbManagement
                             ));
                     }
                 }
+                Type primaryKeyAnonymType;
+                object primaryKeyInfo = CreateKeyInfo(entityType, primaryKeyFields.ToArray(), out primaryKeyAnonymType);
 
                 schema.RegisterTable(
                     entityType.Name,
                     entityType,
                     primaryKeyFields.ToArray(),
                     identityFields.SingleOrDefault(),
-                    properties.ToArray(), listInstanceOfConstraints);
+                    properties.ToArray(), listInstanceOfConstraints,primaryKeyInfo);
             }
 
             foreach (AssociationSet associationSet in entityContainer.BaseEntitySets.OfType<AssociationSet>())
@@ -317,7 +319,7 @@ namespace Effort.Internal.DbManagement
                 string fromTableName = GetTableName(constraint.FromRole);
                 string toTableName = GetTableName(constraint.ToRole);
 
-                //fromTable is the primary table, toTable is the foreign table...
+                //entityType is the primary table, toTable is the foreign table...
                 DbTableInformation fromTable = schema.GetTable(fromTableName);
                 DbTableInformation toTable = schema.GetTable(toTableName);
 
@@ -327,8 +329,8 @@ namespace Effort.Internal.DbManagement
 
                 Type primaryAnonymType;
                 Type foreignAnonymType;
-                object primaryKeyInfo = CreateKeyInfo(fromTable, fromTableProperties,out primaryAnonymType);
-                object foreignKeyInfo = CreateKeyInfo(toTable, toTableProperties, out foreignAnonymType);
+                object primaryKeyInfo = CreateKeyInfo(fromTable.EntityType, fromTableProperties,out primaryAnonymType);
+                object foreignKeyInfo = CreateKeyInfo(toTable.EntityType, toTableProperties, out foreignAnonymType);
 
                 //Creating IRelationContraints for RelationKeyConverterFactory
                 ParameterExpression paramPrimary = Expression.Parameter(fromTable.EntityType);
@@ -357,7 +359,7 @@ namespace Effort.Internal.DbManagement
                         //}
                         //var foreignKey = AnonymousTypeFactory.Create(primaryKeyProperties);
                         //ParameterExpression p2 = Expression.Parameter(toTable.EntityType);
-                        //Expression constructor = Expression.New(primaryKey.GetConstructors().First(), p2);
+                        //Expression constructor = Expression.New(primaryKeyInfo.GetConstructors().First(), p2);
                         //Expression resultSelector = Expression.Lambda(constructor, p2);
 
 
@@ -371,7 +373,7 @@ namespace Effort.Internal.DbManagement
             return schema;
         }
 
-        private static object CreateKeyInfo(DbTableInformation fromTable, PropertyInfo[] fromTableProperties, out Type anonymtype)
+        private static object CreateKeyInfo(Type entityType, PropertyInfo[] fromTableProperties, out Type anonymtype)
         {
             Dictionary<string, Type> primaryKeyProperties = new Dictionary<string, Type>();
             foreach (var x in fromTableProperties)
@@ -379,13 +381,13 @@ namespace Effort.Internal.DbManagement
                 primaryKeyProperties.Add(x.Name, x.PropertyType);
             }
             anonymtype = AnonymousTypeFactory.Create(primaryKeyProperties);
-            ParameterExpression p1 = Expression.Parameter(fromTable.EntityType);
+            ParameterExpression p1 = Expression.Parameter(entityType);
             Expression[] properties = fromTableProperties.Select(x => Expression.Property(p1, x)).ToArray();
             Expression constructor = Expression.New(anonymtype.GetConstructors().First(), properties);
             Expression resultSelector = Expression.Lambda(constructor, p1);
 
 
-            object keyInfo = typeof(DefaultKeyInfoFactory).GetMethod("Create").MakeGenericMethod(fromTable.EntityType, anonymtype)
+            object keyInfo = typeof(DefaultKeyInfoFactory).GetMethod("Create").MakeGenericMethod(entityType, anonymtype)
                 .Invoke(new DefaultKeyInfoFactory(), new object[] { resultSelector });
 
             return keyInfo;

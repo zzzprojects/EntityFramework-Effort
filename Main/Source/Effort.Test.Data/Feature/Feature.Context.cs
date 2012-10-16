@@ -42,6 +42,18 @@ namespace Effort.Test.Data.Feature
             get { return _timestampSupports  ?? (_timestampSupports = CreateObjectSet<TimestampSupport>("TimestampSupports")); }
         }
         private ObjectSet<TimestampSupport> _timestampSupports;
+    
+        public ObjectSet<PrimaryEntity> PrimaryEntities
+        {
+            get { return _primaryEntities  ?? (_primaryEntities = CreateObjectSet<PrimaryEntity>("PrimaryEntities")); }
+        }
+        private ObjectSet<PrimaryEntity> _primaryEntities;
+    
+        public ObjectSet<ForeignEntity> ForeignEntities
+        {
+            get { return _foreignEntities  ?? (_foreignEntities = CreateObjectSet<ForeignEntity>("ForeignEntities")); }
+        }
+        private ObjectSet<ForeignEntity> _foreignEntities;
 
         #endregion
     

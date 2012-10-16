@@ -232,13 +232,13 @@ namespace Effort.Internal.DbManagement
                 List<string> primaryKeyFieldNames = new List<string>();
                 List<string> identityFieldNames = new List<string>();
                 List<string> notNullableFields = new List<string>();
+                Dictionary<string, int> maxLenghtStringFields = new Dictionary<string, int>();
 
                 // Add properties as entity fields
                 foreach (EdmProperty field in type.Properties)
                 {
                     TypeFacets facets = typeConverter.GetTypeFacets(field.TypeUsage);
                     Type fieldClrType = typeConverter.Convert(field.TypeUsage);
-
                     PropertyBuilder propBuilder = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
 
                     // Register primary key field
@@ -255,6 +255,11 @@ namespace Effort.Internal.DbManagement
                     if (facets.Nullable == false)
                     {
                         notNullableFields.Add(propBuilder.Name);
+                    }
+
+                    if (facets.HasMaxLenght && field.TypeUsage.EdmType.Name == "string")
+                    {
+                        maxLenghtStringFields.Add(propBuilder.Name, facets.MaxLenght);
                     }
                 }
 
@@ -290,6 +295,17 @@ namespace Effort.Internal.DbManagement
                             typeof(NMemory.Constraints.NotNullableConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
                             new object[]{
                                     Expression.Lambda(Expression.Convert(Expression.PropertyOrField(param,prop.Name),typeof(object)),param)
+                            }
+                            ));
+                    }
+
+                    if (maxLenghtStringFields.Keys.Contains(prop.Name))
+                    {
+                        var param = Expression.Parameter(entityType, "x");
+                        listInstanceOfConstraints.Add(
+                            typeof(NMemory.Constraints.NVarCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                            new object[]{
+                                    Expression.Lambda(Expression.PropertyOrField(param,prop.Name),param),maxLenghtStringFields[prop.Name]
                             }
                             ));
                     }
@@ -351,21 +367,6 @@ namespace Effort.Internal.DbManagement
                     .MakeGenericMethod(primaryAnonymType, foreignAnonymType).
                     Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() });
                     
-
-                    //Dictionary<string, Type> foreignKeyProperties = new Dictionary<string, Type>();
-                        //foreach (var x in fromTableProperties)
-                        //{
-                        //    primaryKeyProperties.Add(x.Name, x.PropertyType);
-                        //}
-                        //var foreignKey = AnonymousTypeFactory.Create(primaryKeyProperties);
-                        //ParameterExpression p2 = Expression.Parameter(toTable.EntityType);
-                        //Expression constructor = Expression.New(primaryKeyInfo.GetConstructors().First(), p2);
-                        //Expression resultSelector = Expression.Lambda(constructor, p2);
-
-
-
-
-
 
                 schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties, primaryKeyInfo, foreignKeyInfo, primaryToForeignConverter, foreignToPrimaryConverter);
             }

@@ -29,7 +29,7 @@
     </Key>
     <Property Name="ID1" Type="int" Nullable="false" />
     <Property Name="ID2" Type="int" Nullable="false" />
-    <Property Name="PrimaryData" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PrimaryData" Type="nvarchar" MaxLength="20" Nullable="false" />
   </EntityType>
   <EntityType Name="ForeignEntities">
     <Key>
@@ -81,7 +81,7 @@
           </Key>
           <Property Type="Int32" Name="ID1" Nullable="false" />
           <Property Type="Int32" Name="ID2" Nullable="false" />
-          <Property Type="String" Name="PrimaryData" Nullable="false" />
+          <Property Type="String" Name="PrimaryData" Nullable="false" MaxLength="20" FixedLength="false" />
           <NavigationProperty Name="ForeignEntities" Relationship="FeatureModel.PrimaryEntityForeignEntity" FromRole="PrimaryEntity" ToRole="ForeignEntity" />
         </EntityType>
         <EntityType Name="ForeignEntity" >

@@ -68,7 +68,7 @@ namespace Effort.Internal.TypeConversion
             //todo: Constraintek is itt...
             TypeFacets facets = new TypeFacets();
             Facet facet = null;
-
+            
             if (type.Facets.TryGetValue("Nullable", false, out facet))
             {
                 facets.Nullable = (bool)facet.Value == true;
@@ -85,6 +85,15 @@ namespace Effort.Internal.TypeConversion
                     case StoreGeneratedPattern.Identity:
                         facets.Identity = true;
                         break;
+                }
+            }
+
+            if (type.Facets.TryGetValue("MaxLength", false, out facet))
+            {
+                if (((int?)facet.Value).HasValue)
+                {
+                    facets.MaxLenght = (int)facet.Value;
+                    facets.HasMaxLenght = true;
                 }
             }
 

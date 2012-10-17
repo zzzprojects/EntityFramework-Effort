@@ -14,6 +14,7 @@ namespace Effort.Test.Environment
     using EFProviderWrapperToolkit;
     using Effort.Test.Environment.ResultSets;
     using Effort.Test.Environment.DataReaderInspector;
+    using Effort.Internal.StorageSchema;
 
     internal static class EntityConnectionHelper
     {
@@ -56,14 +57,7 @@ namespace Effort.Test.Environment
 
                 if (createFake)
                 {
-                    DbProviderManifest originalProviderManifest = ProviderHelper.GetProviderManifest(xProvider.Value, xProviderManifestToken.Value);
-                    
-                    xProvider.Value = EffortProviderConfiguration.ProviderInvariantName;
-                    xProviderManifestToken.Value = EffortProviderManifestTokens.Version1;
-
-                    DbProviderManifest effortProviderManifest = ProviderHelper.GetProviderManifest(xProvider.Value, xProviderManifestToken.Value);
-
-                    MetadataWorkspaceHelper.RewriteTypeAttributeValues(ssdlFile, effortProviderManifest, originalProviderManifest);
+                    UniversalStorageSchemaModifier.Instance.Modify(ssdlFile, new EffortProviderInformation());
                 }
 
                 string oldProviderInvariantName = xProvider.Value;

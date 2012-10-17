@@ -105,7 +105,7 @@
     <Compile Include="ComplexQueryFixture.cs" />
     <Compile Include="JoinFixture.cs" />
     <Compile Include="ManipulationFixture.cs" />
-    <Compile Include="MetadataWorkspaceRewriteFixture.cs" />
+    <Compile Include="StorageSchemaModifierFixture.cs" />
     <Compile Include="ObjectContextFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicFixture.cs" />
@@ -163,7 +163,9 @@
     <EmbeddedResource Include="Environment\Resources\StorageSchemas\SSDLv3.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Environment\Resources\StorageSchemas\SSDLv2.xml" />
+    <EmbeddedResource Include="Environment\Resources\StorageSchemas\SSDLv2.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Environment\Resources\StorageSchemas\SSDLv1.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

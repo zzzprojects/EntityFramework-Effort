@@ -10,24 +10,15 @@ using System.Xml.Linq;
 using System.IO;
 using System.Data.Common;
 using System.Xml;
+using Effort.Internal.StorageSchema;
 
 namespace Effort.Test
 {
     [TestClass]
-    public class MetadataWorkspaceRewriteFixture
+    public class StorageSchemaModifierFixture
     {
-        private DbProviderManifest sqlProviderManifest;
-        private DbProviderManifest effortProviderManifest;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            this.sqlProviderManifest = ProviderHelper.GetProviderManifest("System.Data.SqlClient", "2008");
-            this.effortProviderManifest = ProviderHelper.GetProviderManifest(EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
-        }
-
         [TestMethod]
-        public void RewriteMetadataWorkspace()
+        public void MetadataWorkspaceHelperRewrite()
         {
             EntityConnectionStringBuilder nameResolver = new EntityConnectionStringBuilder(NorthwindObjectContext.DefaultConnectionString);
             string resolvedConnectionString = ConfigurationManager.ConnectionStrings[nameResolver.Name].ConnectionString;
@@ -40,9 +31,8 @@ namespace Effort.Test
         public void RewriteSsdlV1()
         {
             XElement ssdl = LoadXml("Effort.Test.Environment.Resources.StorageSchemas.SSDLv1.xml");
-            ChangeProviderAttributes(ssdl);
 
-            MetadataWorkspaceHelper.RewriteTypeAttributeValues(ssdl, this.effortProviderManifest, this.sqlProviderManifest);
+            UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
 
             ValidateSsdl(ssdl); 
         }
@@ -51,9 +41,8 @@ namespace Effort.Test
         public void RewriteSsdlV2()
         {
             XElement ssdl = LoadXml("Effort.Test.Environment.Resources.StorageSchemas.SSDLv2.xml");
-            ChangeProviderAttributes(ssdl);
 
-            MetadataWorkspaceHelper.RewriteTypeAttributeValues(ssdl, this.effortProviderManifest, this.sqlProviderManifest);
+            UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
 
             ValidateSsdl(ssdl); 
         }
@@ -62,9 +51,8 @@ namespace Effort.Test
         public void RewriteSsdlV3()
         {
             XElement ssdl = LoadXml("Effort.Test.Environment.Resources.StorageSchemas.SSDLv3.xml");
-            ChangeProviderAttributes(ssdl);
 
-            MetadataWorkspaceHelper.RewriteTypeAttributeValues(ssdl, this.effortProviderManifest, this.sqlProviderManifest);
+            UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
 
             ValidateSsdl(ssdl); 
         }
@@ -73,12 +61,6 @@ namespace Effort.Test
         {
             Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
             return XDocument.Load(stream).Root;
-        }
-
-        private static void ChangeProviderAttributes(XElement ssdl)
-        {
-            ssdl.Attribute("Provider").Value = EffortProviderConfiguration.ProviderInvariantName;
-            ssdl.Attribute("ProviderManifestToken").Value = EffortProviderManifestTokens.Version1;
         }
 
         private static void ValidateSsdl(XElement ssdl)

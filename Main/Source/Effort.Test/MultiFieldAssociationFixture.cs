@@ -24,7 +24,7 @@ namespace Effort.Test
         {
             this.context.PrimaryEntities.AddObject(new PrimaryEntity { ID1 = 1, ID2 = 10, PrimaryData = "Data" });
             this.context.PrimaryEntities.AddObject(new PrimaryEntity { ID1 = 2, ID2 = 20, PrimaryData = "Beta" });
-            this.context.ForeignEntities.AddObject(new ForeignEntity { FID1 = 1, FID2 = 10, ID = 1 });
+            this.context.ForeignEntities.AddObject(new ForeignEntity { FID1 = 1, FID2 = 10, ID = 1});
             this.context.SaveChanges();
 
             var query = from prim in this.context.PrimaryEntities

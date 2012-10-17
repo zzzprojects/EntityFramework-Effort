@@ -40,22 +40,6 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void StringContains()
-        {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
-
-            });
-            context.SaveChanges();
-
-            var query = context.Products.Where(x => x.ProductName.Contains("Sp"));
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
-        }
-
-        [TestMethod]
         public void StringIsNullOrEmpty()
         {
             context.Products.AddObject(new Product
@@ -75,6 +59,174 @@ namespace Effort.Test
         #endregion
 
         #region System.String Method (Instance) Mapping
+
+        [TestMethod]
+        public void StringContains()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Contains("Sp"));
+            var products = query.ToList();
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringEndsWith()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.EndsWith("ct"));
+            var products = query.ToList();
+            products.Count.ShouldBeLessThan(20);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringStartsWith()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.StartsWith("Sp"));
+            var products = query.ToList();
+            products.Count.ShouldEqual(2);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringLength()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Length == 15);
+
+            var products = query.ToList();
+            products.Count.ShouldBeLessThan(20);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringIndexOf()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.IndexOf("pe") == 1);
+            var products = query.ToList();
+            products.Count.ShouldBeLessThan(20);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringInsert()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Insert(1, "data") == "Sdatapecial product");
+            var products = query.ToList();
+            products.Count.ShouldEqual(1);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringRemove1()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Remove(3) == "Spe");
+            var products = query.ToList();
+            products.Count.ShouldBeLessThan(20);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringRemove2()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Remove(1, 2) == "Scial product");
+            var products = query.ToList();
+            products.Count.ShouldEqual(1);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringReplace()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product of product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Replace("product", "item") == "Special item of item");
+            var products = query.ToList();
+            products.Count.ShouldEqual(1);
+            products.FirstOrDefault(x => x.ProductName == "Special product of product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringSubstring()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product of product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Replace("product", "item") == "Special item of item");
+            var products = query.ToList();
+            products.Count.ShouldEqual(1);
+            products.FirstOrDefault(x => x.ProductName == "Special product of product").ShouldNotBeNull();
+        }
 
         [TestMethod]
         public void Trim()
@@ -115,39 +267,6 @@ namespace Effort.Test
 
 
 
-        [TestMethod]
-        public void StringStartsWith()
-        {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
 
-            });
-            context.SaveChanges();
-
-            var query = context.Products.Where(x => x.ProductName.StartsWith("Sp"));
-            var lol = context.Products.Select(x => x.ProductName).ToList();
-            var verylol = lol.Where(x => x.Contains("Sp")).ToList();
-            var products = query.ToList();
-            products.Count.ShouldEqual(2);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
-        }
-
-
-        [TestMethod]
-        public void StringLength()
-        {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-            });
-            context.SaveChanges();
-
-            var query = context.Products.Where(x => x.ProductName.Length ==  15);
-
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
-        }
     }
 }

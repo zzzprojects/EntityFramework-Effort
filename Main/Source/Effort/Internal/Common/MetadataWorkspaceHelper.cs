@@ -131,6 +131,11 @@ namespace Effort.Internal.Common
                             continue;
                         }
 
+                        if (oldStorageType.Name == "nchar")
+                        {
+                            property.Add(new XAttribute("FixedLength","true"));
+                        }
+
                         TypeUsage edmType = oldProviderManifest.GetEdmType(TypeUsage.CreateDefaultTypeUsage(oldStorageType));
                         TypeUsage newStorageType = providerManifest.GetStoreType(edmType);
                         string newStorageTypeName = newStorageType.EdmType.Name;

@@ -24,6 +24,8 @@ namespace Effort.Test.Data.Feature
     
         public virtual int FID2 { get; set; }
     
+        public virtual string ForeignData { get; set; }
+    
         public virtual PrimaryEntity PrimaryEntity { get; set; }
     
     

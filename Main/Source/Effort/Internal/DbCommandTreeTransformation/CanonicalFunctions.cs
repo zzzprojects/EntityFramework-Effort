@@ -67,8 +67,18 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             this.mappings["Edm.Length"] = (f, args) => Expression.Call(args[0],typeof(string).GetProperties().Where(x => x.Name == "Length").First().GetGetMethod());
 
-            //Mathematical Function Mapping
+            this.mappings["Edm.Reverse"] = (f, args) => Expression.Call(null,
+                 FindMethod(typeof(DbFunctions), "ReverseString", typeof(string)), args[0]);
 
+            this.mappings["Edm.Substring"] = (f, args) => Expression.Call(null,
+                 FindMethod(typeof(DbFunctions), "Substring", typeof(string), typeof(int?), typeof(int?)), args[0], args[1], args[2]);
+
+            this.mappings["Edm.Replace"] = (f, args) => Expression.Call(args[0],
+                FindMethod(typeof(string), "Replace", typeof(string), typeof(string)),args[1],args[2]);
+            
+             
+            //Mathematical Function Mapping
+            
             this.mappings["Edm.Abs"] = (f, args) => Expression.Call(null,
                 FindMethod(typeof(DbFunctions), "Abs", typeof(decimal?)), args[0]);
 

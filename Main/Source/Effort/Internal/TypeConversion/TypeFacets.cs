@@ -36,5 +36,6 @@ namespace Effort.Internal.TypeConversion
 
         public int MaxLenght { get; set; }
 
+        public bool FixedLength { get; set; }
     }
 }

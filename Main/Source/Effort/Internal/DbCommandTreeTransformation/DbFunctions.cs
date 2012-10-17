@@ -24,5 +24,15 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return a.IndexOf(b) +1;
         }
 
+        public static string ReverseString(string old)
+        {
+            return new string(old.ToCharArray().Reverse().ToArray());
+        }
+
+        public static string Substring(string data, int? begin,int? length)
+        {
+            return data.Substring(begin.Value - 1, length.Value );
+        }
+
     }
 }

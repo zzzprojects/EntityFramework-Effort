@@ -74,6 +74,12 @@ namespace Effort.Internal.TypeConversion
                 facets.Nullable = (bool)facet.Value == true;
             }
 
+            if (type.Facets.TryGetValue("FixedLength", false, out facet))
+            {
+                if (((bool?)facet.Value).HasValue)
+                    facets.FixedLength = (bool)facet.Value == true;
+            }
+
 
             if (type.Facets.TryGetValue("StoreGeneratedPattern", false, out facet))
             {

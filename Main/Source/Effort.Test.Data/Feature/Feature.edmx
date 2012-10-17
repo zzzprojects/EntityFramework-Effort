@@ -38,6 +38,7 @@
     <Property Name="FID1" Type="int" Nullable="false" />
     <Property Name="FID2" Type="int" Nullable="false" />
     <Property Name="ID" Type="int" Nullable="false" />
+	<Property Name="ForeignData" Type="nchar" MaxLength="20" Nullable="true" />
   </EntityType>
   <Association Name="PrimaryEntityForeignEntity">
     <End Role="PrimaryEntity" Type="FeatureModel.Store.PrimaryEntities" Multiplicity="1" />
@@ -91,7 +92,9 @@
           <Property Type="Int32" Name="ID" Nullable="false" />
           <Property Type="Int32" Name="FID1" Nullable="false" />
           <Property Type="Int32" Name="FID2" Nullable="false" />
+		  
           <NavigationProperty Name="PrimaryEntity" Relationship="FeatureModel.PrimaryEntityForeignEntity" FromRole="ForeignEntity" ToRole="PrimaryEntity" />
+          <Property Type="String" Name="ForeignData" Nullable="true" MaxLength="20" FixedLength="true" />
         </EntityType>
         <Association Name="PrimaryEntityForeignEntity">
           <End Type="FeatureModel.PrimaryEntity" Role="PrimaryEntity" Multiplicity="1" />
@@ -134,6 +137,7 @@
           <EntitySetMapping Name="ForeignEntities">
             <EntityTypeMapping TypeName="IsTypeOf(FeatureModel.ForeignEntity)">
               <MappingFragment StoreEntitySet="ForeignEntities">
+                <ScalarProperty Name="ForeignData" ColumnName="ForeignData" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="FID2" ColumnName="FID2" />
                 <ScalarProperty Name="FID1" ColumnName="FID1" />
@@ -164,10 +168,10 @@
       <Diagram Name="Feature">
         <EntityTypeShape EntityType="FeatureModel.TimestampSupport" Width="1.5" PointX="0.75" PointY="0.75" Height="1.5956835937499996" />
         <EntityTypeShape EntityType="FeatureModel.PrimaryEntity" Width="1.5" PointX="3.25" PointY="1.375" Height="1.59568359375" />
-        <EntityTypeShape EntityType="FeatureModel.ForeignEntity" Width="1.5" PointX="6.25" PointY="1.375" Height="1.59568359375" />
+        <EntityTypeShape EntityType="FeatureModel.ForeignEntity" Width="1.5" PointX="6.5" PointY="1.375" Height="1.9802864583333339" />
         <AssociationConnector Association="FeatureModel.PrimaryEntityForeignEntity">
           <ConnectorPoint PointX="4.75" PointY="2.2689925130208337" />
-          <ConnectorPoint PointX="6.25" PointY="2.2689925130208337" />
+          <ConnectorPoint PointX="6.5" PointY="2.2689925130208337" />
         </AssociationConnector>
       </Diagram>
     </Diagrams>

@@ -55,7 +55,7 @@ namespace Effort
 
         public static EntityConnection CreatePersistent(string entityConnectionString)
         {
-            return CreatePersistent(entityConnectionString);
+            return CreatePersistent(entityConnectionString, null);
         }
 
         #endregion

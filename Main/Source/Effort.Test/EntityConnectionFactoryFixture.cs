@@ -19,7 +19,7 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void EntityConnectionFactory_InitializesDataSchema()
+        public void EntityConnectionFactory_CreateTransientEntityConnection_InitializesDataSchema()
         {
             EntityConnection connection = EntityConnectionFactory.CreateTransient(NorthwindObjectContext.DefaultConnectionString);
 
@@ -28,6 +28,14 @@ namespace Effort.Test
                 Assert.IsTrue(context.DatabaseExists());
                 Assert.AreEqual(0, context.CreateObjectSet<Product>().Count(), "Zero rows in the fake table");
             }
+        }
+
+        [TestMethod]
+        public void EntityConnectionFactory_CreatePersistentEntityConnection()
+        {
+            // TODO: Use unique connection string
+
+            EntityConnection connection = EntityConnectionFactory.CreatePersistent(NorthwindObjectContext.DefaultConnectionString);
         }
     }
 }

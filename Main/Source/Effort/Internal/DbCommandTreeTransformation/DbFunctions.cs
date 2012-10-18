@@ -34,5 +34,43 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return data.Substring(begin.Value - 1, length.Value );
         }
 
+        public static int? GetDay(DateTime? time)
+        {
+            if (time == null) return null;
+            return time.Value.Day;
+        }
+
+        public static int? GetHour(DateTime? time)
+        {
+            if (time == null) return null;
+            return time.Value.Hour;
+        }
+        public static int? GetMillisecond(DateTime? time)
+        {
+            if (time == null) return null;
+            return time.Value.Millisecond;
+        }
+        public static int? GetMinute(DateTime? time)
+        {
+            if (time == null) return null;
+            return time.Value.Minute;
+        }
+        public static int? GetMonth(DateTime? time)
+        {
+            if (time == null) return null;
+            return time.Value.Month;
+        }
+        public static int? GetSecond(DateTime? time)
+        {
+            if (time == null) return null;
+            return time.Value.Second;
+        }
+        public static int? GetYear(DateTime? time)
+        {
+            if (time == null) return null;
+            return time.Value.Year;
+        }
+
+
     }
 }

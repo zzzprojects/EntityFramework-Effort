@@ -212,20 +212,71 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void StringSubstring()
+        public void StringSubstring1()
         {
             context.Products.AddObject(new Product
             {
-                ProductName = "Special product of product",
+                ProductName = "Special product",
                 UnitPrice = -250
 
             });
             context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Replace("product", "item") == "Special item of item");
+            var query = context.Products.Where(x => x.ProductName.Substring(3) == "cial product");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product of product").ShouldNotBeNull();
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringSubstring2()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.Substring(2,2) == "ec");
+            var products = query.ToList();
+            products.Count.ShouldEqual(1);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringToLower()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.ToLower() == "special product");
+            var products = query.ToList();
+            products.Count.ShouldEqual(1);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void StringToUpper()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "Special product",
+                UnitPrice = -250
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.ToUpper() == "SPECIAL PRODUCT");
+            var products = query.ToList();
+            products.Count.ShouldEqual(1);
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
         }
 
         [TestMethod]
@@ -244,6 +295,180 @@ namespace Effort.Test
             var products = query.ToList();
             products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
         }
+
+        [TestMethod]
+        public void TrimEnd()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "  One Product ",
+                UnitPrice = -250,
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.TrimEnd() == "  One Product");
+            var products = query.ToList();
+            products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void TrimStart()
+        {
+            context.Products.AddObject(new Product
+            {
+                ProductName = "  One Product ",
+                UnitPrice = -250,
+
+            });
+            context.SaveChanges();
+
+            var query = context.Products.Where(x => x.ProductName.TrimStart() == "One Product ");
+            var products = query.ToList();
+            products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
+        }
+
+        #endregion
+
+        #region System.DateTime Method (Static) Mapping
+
+
+        [TestMethod]
+        public void DateTimeNow()
+        {
+            var query = context.Orders.Where(x => x.OrderDate > DateTime.Now);
+            var orders = query.ToList();
+            orders.Count.ShouldEqual(0);
+
+            query = context.Orders.Where(x => x.OrderDate < DateTime.Now);
+            orders = query.ToList();
+            orders.Count.ShouldEqual(830);
+        }
+
+        [TestMethod]
+        public void DateTimeUtcNow()
+        {
+            var query = context.Orders.Where(x => x.OrderDate > DateTime.UtcNow);
+            var orders = query.ToList();
+            orders.Count.ShouldEqual(0);
+
+            query = context.Orders.Where(x => x.OrderDate < DateTime.UtcNow);
+            orders = query.ToList();
+            orders.Count.ShouldEqual(830);
+        }
+
+        #endregion
+
+        #region System.DateTime Method (Instance) Mapping
+
+        [TestMethod]
+        public void DateTimeDay()
+        {
+            context.Orders.AddObject(new Order
+            {
+                OrderDate = new DateTime(2012,1,2,3,4,5,100),
+                ShipName = "SuperShip"                
+
+            });
+            context.SaveChanges();
+            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Day == 2);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x=>x.ShipName == "SuperShip").ShouldNotBeNull();
+
+        }
+
+        [TestMethod]
+        public void DateTimeDayHour()
+        {
+            context.Orders.AddObject(new Order
+            {
+                OrderDate = new DateTime(2012, 1, 2, 3, 4, 5,100),
+                ShipName = "SuperShip"
+
+            });
+            context.SaveChanges();
+            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Hour == 3);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
+        }
+        [TestMethod]
+        public void DateTimeDayMillisecond()
+        {
+            context.Orders.AddObject(new Order
+            {
+                OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
+                ShipName = "SuperShip"
+
+            });
+            context.SaveChanges();
+            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Millisecond == 100);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
+        }
+        [TestMethod]
+        public void DateTimeDayMinute()
+        {
+            context.Orders.AddObject(new Order
+            {
+                OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
+                ShipName = "SuperShip"
+
+            });
+            context.SaveChanges();
+            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Minute == 4);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
+        }
+        [TestMethod]
+        public void DateTimeDayMonth()
+        {
+            context.Orders.AddObject(new Order
+            {
+                OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
+                ShipName = "SuperShip"
+
+            });
+            context.SaveChanges();
+            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Month == 1);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
+        }
+        [TestMethod]
+        public void DateTimeDaySecond()
+        {
+            context.Orders.AddObject(new Order
+            {
+                OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
+                ShipName = "SuperShip"
+
+            });
+            context.SaveChanges();
+            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Second == 5);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
+        }
+        [TestMethod]
+        public void DateTimeDayYear()
+        {
+            context.Orders.AddObject(new Order
+            {
+                OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
+                ShipName = "SuperShip"
+
+            });
+            context.SaveChanges();
+            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Year == 2012);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
+        }
+
+
 
         #endregion
 

@@ -521,7 +521,7 @@ namespace Effort.Test
             });
             context.SaveChanges();
 
-            var query = context.OrderDetails.Where(x => Math.Round(x.Discount,2) == 0);
+            var query = context.OrderDetails.Where(x => Math.Round(x.Discount) == 0);
 
             var orderdetails = query.ToList();
             orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();

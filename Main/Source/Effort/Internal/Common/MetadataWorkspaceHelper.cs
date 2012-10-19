@@ -97,10 +97,7 @@ namespace Effort.Internal.Common
             return workspace;
         }
 
-                        if (oldStorageType.Name == "nchar")
-                        {
-                            property.Add(new XAttribute("FixedLength","true"));
-                        }
+
 
         public static void ParseMetadata(string metadata, List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)
         {

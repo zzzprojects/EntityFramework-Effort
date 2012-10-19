@@ -49,7 +49,6 @@ namespace Effort.Test
         [TestMethod]
         public void InsertWithIdentity()
         {
-
             Category cat1 = new Category();
             cat1.CategoryName = "Category 1";
 

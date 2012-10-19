@@ -45,7 +45,7 @@ namespace Effort.Internal.DbManagement
             PropertyInfo[] properties,List<object> constraints,object primaryKeyInfo)
         {
             DbTableInformation table = new DbTableInformation(tableName, entityType, primaryKeyFields, identityField, properties, constraints.ToArray(),primaryKeyInfo);
-
+            
             this.tables.Add(tableName, table);
         }
 

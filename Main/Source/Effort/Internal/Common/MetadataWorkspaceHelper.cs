@@ -34,6 +34,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using Effort.Internal.StorageSchema;
 
 namespace Effort.Internal.Common
 {
@@ -45,8 +46,6 @@ namespace Effort.Internal.Common
         private static byte[] systemPublicKeyToken = { 0xB0, 0x3F, 0x5F, 0x7F, 0x11, 0xD5, 0x0A, 0x3A };
         private static Regex resRegex = new Regex(@"^res://(?<assembly>.*)/(?<resource>.*)$");
         private static string httpContextTypeName = "System.Web.HttpContext, System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
-
-        private static XNamespace ssdlNamespace = "http://schemas.microsoft.com/ado/2009/02/edm/ssdl";
 
         public static EntityContainer GetEntityContainer(MetadataWorkspace workspace)
         {
@@ -76,13 +75,7 @@ namespace Effort.Internal.Common
 
             foreach (var ssdlFile in ssdl)
             {
-                DbProviderManifest oldProviderManifest =
-                    ProviderHelper.GetProviderManifest(ssdlFile.Attribute("Provider").Value, ssdlFile.Attribute("ProviderManifestToken").Value);
-
-                ssdlFile.Attribute("Provider").Value = providerInvariantName;
-                ssdlFile.Attribute("ProviderManifestToken").Value = providerManifestToken;
-
-                RewriteTypeAttributeValues(ssdlFile, providerManifest, oldProviderManifest);
+                UniversalStorageSchemaModifier.Instance.Modify(ssdlFile, new ProviderInformation(providerInvariantName, providerManifestToken));
             }
 
             MetadataWorkspace workspace = CreateMetadataWorkspace(csdl, ssdl, msl);
@@ -104,47 +97,10 @@ namespace Effort.Internal.Common
             return workspace;
         }
 
-        public static void RewriteTypeAttributeValues(XElement ssdlFile, DbProviderManifest providerManifest, DbProviderManifest oldProviderManifest)
-        {
-            var oldStoreTypes = oldProviderManifest.GetStoreTypes();
-
-            foreach (XElement property in ssdlFile.Descendants())
-            {
-                XName name = property.Name;
-
-                if (name != null &&
-                    name.Namespace == ssdlNamespace &&
-                    name.LocalName == "Property")
-                {
-                    XAttribute typeContainer = property.Attribute("Type");
-
-                    if (typeContainer != null)
-                    {
-                        string oldStorageTypeName = typeContainer.Value;
-                        PrimitiveType oldStorageType = oldStoreTypes.FirstOrDefault(t => t.Name == oldStorageTypeName);
-
-                        // TODO: extension point
-                        if (oldStorageType.NamespaceName == "SqlServer" && 
-                            (oldStorageType.Name == "timestamp" || oldStorageType.Name == "rowversion"))
-                        {
-                            typeContainer.Value = "rowversion";
-                            continue;
-                        }
-
                         if (oldStorageType.Name == "nchar")
                         {
                             property.Add(new XAttribute("FixedLength","true"));
                         }
-
-                        TypeUsage edmType = oldProviderManifest.GetEdmType(TypeUsage.CreateDefaultTypeUsage(oldStorageType));
-                        TypeUsage newStorageType = providerManifest.GetStoreType(edmType);
-                        string newStorageTypeName = newStorageType.EdmType.Name;
-
-                        typeContainer.Value = newStorageTypeName;
-                    }
-                }
-            }
-        }
 
         public static void ParseMetadata(string metadata, List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)
         {

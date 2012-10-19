@@ -16,6 +16,12 @@
             }
 
             DbProviderServices providerServices = serviceProvider.GetService(typeof(DbProviderServices)) as DbProviderServices;
+
+            if (providerServices == null)
+            {
+                throw new ProviderIncompatibleException();
+            }
+            
             return providerServices.GetProviderManifest(providerManifestToken);
         }
 

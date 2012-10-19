@@ -223,8 +223,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         }
 
-
-
         #region Aggregation
 
         public Expression Count(Expression source)
@@ -363,6 +361,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return result;
 
         }
+
         public Expression Join(Expression left, Expression right, string name1, string name2, LambdaExpression leftKeySelector, LambdaExpression rightKeySelector, DbExpressionKind joinType)
         {
             Type rightType = TypeHelper.GetElementType(right.Type);

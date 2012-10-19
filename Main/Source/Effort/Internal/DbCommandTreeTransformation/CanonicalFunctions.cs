@@ -38,6 +38,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
 		private Dictionary<string, Func<EdmFunction, Expression[], MethodCallExpression>> mappings;
 		private EdmTypeConverter converter;
 
+        /// <summary>
+        /// Still missing:
+        /// 3 System.Decimal. functions
+        /// System.TimeSpan
+        /// System.DateTimeOffset
+        /// Math.Round with digits
+        /// </summary>
+        /// <param name="converter"></param>
 		public CanonicalFunctionMapper(ITypeConverter converter)
 		{
 			this.converter = new EdmTypeConverter(converter);
@@ -84,31 +92,40 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             this.mappings["Edm.CurrentUtcDateTime"] = (f, args) => Expression.Call(null, typeof(DateTime).GetProperties().Where(x => x.Name == "UtcNow").First().GetGetMethod());
 
-            this.mappings["Edm.Day"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "GetDay", typeof(DateTime?)), args[0]);
-            this.mappings["Edm.Hour"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "GetHour", typeof(DateTime?)), args[0]);
-            this.mappings["Edm.Millisecond"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "GetMillisecond", typeof(DateTime?)), args[0]);
-            this.mappings["Edm.Minute"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "GetMinute", typeof(DateTime?)), args[0]);
-            this.mappings["Edm.Month"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "GetMonth", typeof(DateTime?)), args[0]);
-            this.mappings["Edm.Second"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "GetSecond", typeof(DateTime?)), args[0]);
-            this.mappings["Edm.Year"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "GetYear", typeof(DateTime?)), args[0]);
+            this.mappings["Edm.Day"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), typeof(DateTime).GetProperties().Where(x => x.Name == "Day").First().GetGetMethod());
+            this.mappings["Edm.Hour"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), typeof(DateTime).GetProperties().Where(x => x.Name == "Hour").First().GetGetMethod());
+            this.mappings["Edm.Millisecond"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), typeof(DateTime).GetProperties().Where(x => x.Name == "Millisecond").First().GetGetMethod());
+            this.mappings["Edm.Minute"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), typeof(DateTime).GetProperties().Where(x => x.Name == "Minute").First().GetGetMethod());
+            this.mappings["Edm.Month"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), typeof(DateTime).GetProperties().Where(x => x.Name == "Month").First().GetGetMethod());
+            this.mappings["Edm.Second"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), typeof(DateTime).GetProperties().Where(x => x.Name == "Second").First().GetGetMethod());
+            this.mappings["Edm.Year"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), typeof(DateTime).GetProperties().Where(x => x.Name == "Year").First().GetGetMethod());
 
             
              
             //Mathematical Function Mapping
-            
-            this.mappings["Edm.Abs"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(DbFunctions), "Abs", typeof(decimal?)), args[0]);
+
+            this.mappings["Edm.Ceiling"] = (f, args) => Expression.Call(null,
+                FindMethod(typeof(Math), "Ceiling", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+                ExpressionHelper.ConvertToNotNull(args[0]));
+
+            this.mappings["Edm.Floor"] = (f, args) => Expression.Call(null,
+                FindMethod(typeof(Math), "Floor", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+                ExpressionHelper.ConvertToNotNull(args[0]));
 
             this.mappings["Edm.Round"] = (f, args) => Expression.Call(null,
                FindMethod(typeof(Math), "Round", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
                ExpressionHelper.ConvertToNotNull(args[0]));
+
+            this.mappings["Edm.Abs"] = (f, args) => Expression.Call(null,
+                FindMethod(typeof(Math), "Abs", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+                ExpressionHelper.ConvertToNotNull(args[0]));
+
+            this.mappings["Edm.Power"] = (f, args) => Expression.Call(null,
+                FindMethod(typeof(Math), "Pow", 
+                    this.converter.ConvertNotNull(f.Parameters[0].TypeUsage), 
+                    this.converter.ConvertNotNull(f.Parameters[1].TypeUsage)),
+                ExpressionHelper.ConvertToNotNull(args[0]), ExpressionHelper.ConvertToNotNull(args[1]));
+             
 
 		}
 

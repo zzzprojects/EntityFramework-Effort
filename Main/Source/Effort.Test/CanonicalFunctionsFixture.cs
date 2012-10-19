@@ -472,6 +472,61 @@ namespace Effort.Test
 
         #endregion
 
+        #region Mathematical Function Mapping
+
+
+
+        [TestMethod]
+        public void MathCeiling()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 0.3f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x => Math.Ceiling(x.Discount) == 1);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x =>x.Quantity == -123).ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void MathFloor()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 0.3f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x => Math.Floor(x.Discount) == 0);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void MathRound()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 0.3f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x => Math.Round(x.Discount,2) == 0);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+        }
+
         [TestMethod]
         public void MathAbs()
         {
@@ -482,12 +537,33 @@ namespace Effort.Test
 
             });
             context.SaveChanges();
-            
+
             var query = context.Products.Where(x => Math.Abs(x.UnitPrice.Value) == 250);
-                        
+
             var products = query.ToList();
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull(); 
+            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
         }
+
+        [TestMethod]
+        public void MathPower()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 10.3f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x=> Math.Pow(x.Quantity,2) == 123*123);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+        }
+
+        #endregion
+
+
 
 
 

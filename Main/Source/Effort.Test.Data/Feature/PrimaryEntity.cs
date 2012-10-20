@@ -24,6 +24,8 @@ namespace Effort.Test.Data.Feature
     
         public virtual string PrimaryData { get; set; }
     
+        public virtual Nullable<System.DateTimeOffset> Offset { get; set; }
+    
         public virtual ICollection<ForeignEntity> ForeignEntities { get; set; }
     
     

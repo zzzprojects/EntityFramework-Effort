@@ -30,6 +30,7 @@
     <Property Name="ID1" Type="int" Nullable="false" />
     <Property Name="ID2" Type="int" Nullable="false" />
     <Property Name="PrimaryData" Type="nvarchar" MaxLength="20" Nullable="false" />
+	<Property Name="offset" Type="datetimeoffset" Nullable="true" />
   </EntityType>
   <EntityType Name="ForeignEntities">
     <Key>
@@ -84,6 +85,7 @@
           <Property Type="Int32" Name="ID2" Nullable="false" />
           <Property Type="String" Name="PrimaryData" Nullable="false" MaxLength="20" FixedLength="false" />
           <NavigationProperty Name="ForeignEntities" Relationship="FeatureModel.PrimaryEntityForeignEntity" FromRole="PrimaryEntity" ToRole="ForeignEntity" />
+          <Property Type="DateTimeOffset" Name="Offset" Nullable="true" />
         </EntityType>
         <EntityType Name="ForeignEntity" >
           <Key>
@@ -128,6 +130,7 @@
           <EntitySetMapping Name="PrimaryEntities">
             <EntityTypeMapping TypeName="IsTypeOf(FeatureModel.PrimaryEntity)">
               <MappingFragment StoreEntitySet="PrimaryEntities">
+                <ScalarProperty Name="Offset" ColumnName="offset" />
                 <ScalarProperty Name="PrimaryData" ColumnName="PrimaryData" />
                 <ScalarProperty Name="ID2" ColumnName="ID2" />
                 <ScalarProperty Name="ID1" ColumnName="ID1" />
@@ -167,11 +170,11 @@
     <Diagrams>
       <Diagram Name="Feature">
         <EntityTypeShape EntityType="FeatureModel.TimestampSupport" Width="1.5" PointX="0.75" PointY="0.75" Height="1.5956835937499996" />
-        <EntityTypeShape EntityType="FeatureModel.PrimaryEntity" Width="1.5" PointX="3.25" PointY="1.375" Height="1.59568359375" />
+        <EntityTypeShape EntityType="FeatureModel.PrimaryEntity" Width="1.5" PointX="3.25" PointY="1.375" Height="1.9802864583333339" />
         <EntityTypeShape EntityType="FeatureModel.ForeignEntity" Width="1.5" PointX="6.5" PointY="1.375" Height="1.9802864583333339" />
         <AssociationConnector Association="FeatureModel.PrimaryEntityForeignEntity">
-          <ConnectorPoint PointX="4.75" PointY="2.2689925130208337" />
-          <ConnectorPoint PointX="6.5" PointY="2.2689925130208337" />
+          <ConnectorPoint PointX="4.75" PointY="2.3651432291666667" />
+          <ConnectorPoint PointX="6.5" PointY="2.3651432291666667" />
         </AssociationConnector>
       </Diagram>
     </Diagrams>

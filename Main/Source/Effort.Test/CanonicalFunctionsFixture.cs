@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Effort.Test.Data.Northwind;
 using SoftwareApproach.TestingExtensions;
+using Effort.Test.Data.Feature;
 
 namespace Effort.Test
 {
@@ -472,6 +473,147 @@ namespace Effort.Test
 
         #endregion
 
+        #region System.DateTimeOffset Method (Instance) Mapping
+
+        [TestMethod]
+        public void DateTimeOffsetDay()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x=>x.Offset.HasValue && x.Offset.Value.Day == 2);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void DateTimeOffsetDayHour()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Hour == 3);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+        [TestMethod]
+        public void DateTimeOffsetDayMillisecond()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Millisecond == 100);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+        [TestMethod]
+        public void DateTimeOffsetDayMinute()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Minute == 4);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+        [TestMethod]
+        public void DateTimeOffsetDayMonth()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Month == 1);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+        [TestMethod]
+        public void DateTimeOffsetDaySecond()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Second == 5);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+        [TestMethod]
+        public void DateTimeOffsetDayYear()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Year == 2012);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+
+
+
+        #endregion
+
+        #region System.DateTimeOffset Method (Static) Mapping
+
+        [TestMethod]
+        public void DateTimeOffsetCurrentDateTimeOffset()
+        {
+            FeatureObjectContext context = new LocalFeatureObjectContext();
+            context.PrimaryEntities.AddObject(new PrimaryEntity
+            {
+                ID1 = 1,
+                ID2 = 1,
+                PrimaryData = "MyData",
+                Offset = DateTimeOffset.Now
+            });
+            context.SaveChanges();
+            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Year == DateTimeOffset.Now.Year);
+            var orders = query.ToList();
+            orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
+        }
+
+        #endregion
+
         #region Mathematical Function Mapping
 
         [TestMethod]
@@ -486,6 +628,40 @@ namespace Effort.Test
             context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Decimal.Ceiling(0.3m) == 1);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void DecimalFloor()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 0.3f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x => Decimal.Floor(0.3m) == 0);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void DecimalRound()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 0.3f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x => Decimal.Round(0.3m) == 0);
 
             var orderdetails = query.ToList();
             orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
@@ -538,6 +714,23 @@ namespace Effort.Test
             context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Math.Round(x.Discount) == 0);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void MathRoundWithDigits()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 123.396f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x => Math.Round(x.Discount,2) == 123.40);
 
             var orderdetails = query.ToList();
             orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();

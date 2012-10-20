@@ -32,6 +32,7 @@ using System.Reflection;
 using Effort.DataLoaders;
 using Effort.Internal.Common;
 using Effort.Provider;
+using Effort.Internal.Caching;
 
 namespace Effort
 {
@@ -148,7 +149,9 @@ namespace Effort
             entityConnectionString = GetFullEntityConnectionString(entityConnectionString);
             EntityConnectionStringBuilder ecsb = new EntityConnectionStringBuilder(entityConnectionString);
 
-            return MetadataWorkspaceHelper.Rewrite(ecsb.Metadata, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
+            return MetadataWorkspaceStore.GetMetadataWorkspace(
+                ecsb.Metadata, 
+                x=>MetadataWorkspaceHelper.Rewrite(x, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1));
         }
     }
 }

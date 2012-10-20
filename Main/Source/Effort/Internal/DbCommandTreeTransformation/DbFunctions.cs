@@ -11,7 +11,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 {
     internal class DbFunctions
     {
-
+            
         public static int IndexOf(string a, string b)
         {
             return a.IndexOf(b) +1;

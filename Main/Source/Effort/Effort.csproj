@@ -132,6 +132,7 @@
     <Compile Include="DataLoaders\ITableDataLoaderFactory.cs" />
     <Compile Include="DataLoaders\TableDescription.cs" />
     <Compile Include="DbConnectionFactory.cs" />
+    <Compile Include="Internal\Caching\MetadataWorkspaceStore.cs" />
     <Compile Include="Internal\Caching\ObjectContextTypeKey.cs" />
     <Compile Include="Internal\Caching\ObjectContextTypeStore.cs" />
     <Compile Include="Internal\Caching\DbSchemaKey.cs" />

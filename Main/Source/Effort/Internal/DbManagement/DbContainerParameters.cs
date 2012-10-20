@@ -11,5 +11,7 @@ namespace Effort.Internal.DbManagement
         public bool IsDataLoaderCached { get; set; }
 
         public IDataLoader DataLoader { get; set; }
+
+        public bool IsTransient { get; set; }
     }
 }

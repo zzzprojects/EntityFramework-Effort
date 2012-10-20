@@ -474,6 +474,22 @@ namespace Effort.Test
 
         #region Mathematical Function Mapping
 
+        [TestMethod]
+        public void DecimalCeiling()
+        {
+            context.OrderDetails.AddObject(new OrderDetail
+            {
+                OrderID = 1,
+                Discount = 0.3f,
+                Quantity = -123
+            });
+            context.SaveChanges();
+
+            var query = context.OrderDetails.Where(x => Decimal.Ceiling(0.3m) == 1);
+
+            var orderdetails = query.ToList();
+            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+        }
 
 
         [TestMethod]

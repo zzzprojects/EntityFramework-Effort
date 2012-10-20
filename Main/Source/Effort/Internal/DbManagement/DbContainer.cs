@@ -44,6 +44,7 @@ using System.Linq.Expressions;
 using Effort.Internal.TypeGeneration;
 using NMemory.Indexes;
 using NMemory.Tables;
+using NMemory.Modularity;
 
 namespace Effort.Internal.DbManagement
 {
@@ -55,6 +56,12 @@ namespace Effort.Internal.DbManagement
 
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;
+
+
+        ~DbContainer()
+        {
+            Console.WriteLine("DbContainer destructor");
+        }
 
         public DbContainer(DbContainerParameters parameters)
         {
@@ -92,6 +99,7 @@ namespace Effort.Internal.DbManagement
 
         public bool IsInitialized(StoreItemCollection edmStoreSchema)
         {
+            //lock
             if (this.database == null)
             {
                 return false;
@@ -113,6 +121,10 @@ namespace Effort.Internal.DbManagement
         }
 
 
+        /// <summary>
+        /// kitalálni mi lenne az optimális zárolás
+        /// </summary>
+        /// <param name="edmStoreSchema"></param>
         public void Initialize(StoreItemCollection edmStoreSchema)
         {
             if (this.IsInitialized(edmStoreSchema))
@@ -120,20 +132,23 @@ namespace Effort.Internal.DbManagement
                 return;
             }
 
-            // TODO: locking
-
             DbSchema schema = DbSchemaStore.GetDbSchema(edmStoreSchema, CreateDbSchema);
+            
             this.Initialize(schema);
         }
 
         public void Initialize(DbSchema schema)
         {
+            //lock
             Stopwatch swDatabase = Stopwatch.StartNew();
 
             // Database initialization (put it in the constructor?)
             if (this.database == null)
             {
-                this.database = new Database();
+                if (parameters.IsTransient)
+                    this.database = new Database(new NoLockingDatabaseComponentFactory());
+                else
+                    this.database = new Database();
             }
 
             using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())

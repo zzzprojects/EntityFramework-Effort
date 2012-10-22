@@ -13,6 +13,11 @@
 
         public FunctionParameterElementSelector(StorageSchemaContentNameProvider nameProvider)
         {
+            if (nameProvider == null)
+            {
+                throw new ArgumentNullException("nameProvider");
+            }
+
             this.nameProvider = nameProvider;
         }
 

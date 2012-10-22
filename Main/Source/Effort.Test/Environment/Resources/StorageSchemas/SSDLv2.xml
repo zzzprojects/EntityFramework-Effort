@@ -10,12 +10,16 @@
       <PropertyRef Name="Key1" />
     </Key>
     <Property Name="Key1" Type="int" Nullable="false" />
-    <Property Name="Property2" Type="image" />
+    <Property Name="Property1" Type="image" />
+    <Property Name="Property2" Type="nvarchar" />
+    <Property Name="Property3" Type="nchar" />
+    <Property Name="Property4" Type="varchar" />
+    <Property Name="Property5" Type="char" />
   </EntityType>
   
   <Function Name="Function1" ReturnType="nvarchar">
     <Parameter Name="Param1" Type="nvarchar" />
-    <Parameter Name="Param2" Type="image" />
+    <Parameter Name="Param2" Type="nchar" />
     <Parameter Name="Param3" Type="Collection(int)" />
   </Function>
   

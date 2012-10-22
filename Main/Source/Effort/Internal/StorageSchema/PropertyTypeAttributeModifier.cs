@@ -3,6 +3,7 @@
     using System;
     using System.Xml.Linq;
     using Effort.Internal.Common.XmlProcessing;
+    using System.Data.Metadata.Edm;
 
     internal class PropertyTypeAttributeModifier : IAttributeModifier
     {
@@ -22,8 +23,9 @@
             StorageTypeConverter converter = ModificationContextHelper.GetTypeConverter(context);
 
             string newStorageType = null;
+            Facet[] facets;
 
-            if (converter.TryConvertType(oldStorageType, out newStorageType))
+            if (converter.TryConvertType(oldStorageType, out newStorageType, out facets))
             {
                 attribute.Value = newStorageType;
             }

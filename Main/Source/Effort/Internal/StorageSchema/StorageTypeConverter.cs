@@ -21,15 +21,15 @@
             this.oldStoreTypes = this.oldProvider.Manifest.GetStoreTypes().ToDictionary(p => p.Name);
         }
 
-        public bool TryConvertType(string oldStorageTypeName, out string result)
+        public bool TryConvertType(string oldStorageTypeName, out string result, out Facet[] facets)
         {
-            IDictionary<string, PrimitiveType> oldStoreTypes =
-                this.oldProvider.Manifest.GetStoreTypes().ToDictionary(p => p.Name);
-
             PrimitiveType oldStorageType = null;
 
-            if (oldStoreTypes.TryGetValue(oldStorageTypeName, out oldStorageType))
+            if (this.oldStoreTypes.TryGetValue(oldStorageTypeName, out oldStorageType))
             {
+                TypeUsage oldStorageTypeUsage = TypeUsage.CreateDefaultTypeUsage(oldStorageType);
+                facets = oldStorageTypeUsage.Facets.ToArray();
+
                 // TODO: Add injection point
                 if (oldStorageType.NamespaceName == "SqlServer" &&
                     (oldStorageType.Name == "timestamp" || oldStorageType.Name == "rowversion"))
@@ -39,10 +39,9 @@
                 }
                 else
                 {
-                    TypeUsage edmType = 
-                        this.oldProvider.Manifest.GetEdmType(
-                            TypeUsage.CreateDefaultTypeUsage(oldStorageType));
+                    TypeUsage edmType = this.oldProvider.Manifest.GetEdmType(oldStorageTypeUsage);
 
+                  
                     TypeUsage newStorageType = this.newProvider.Manifest.GetStoreType(edmType);
 
                     result = newStorageType.EdmType.Name;
@@ -50,6 +49,7 @@
                 }
             }
 
+            facets = new Facet[0];
             result = string.Empty;
             return false;
         }

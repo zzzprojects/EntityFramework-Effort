@@ -37,33 +37,31 @@
                     new ProviderManifestTokenAttributeSelector(this.nameProvider),
                     new ProviderManifestTokenAttributeModifier()));
 
-            // EntityType[Type] : PropertyType
+            // Schema.EntityType.Property : CommonProperty
             this.modificationLogic.AddModifier(
                 new ComposedElementModifier(
                     new EntityTypePropertyElementSelector(this.nameProvider),
-                    new TypeAttributeSelector(this.nameProvider),
-                    new PropertyTypeAttributeModifier()));
+                    new CommonPropertyElementModifier(this.nameProvider)));
 
-            // Function.Parameter[Type] : FunctionType
+            // Schema.Function.Parameter[Type] : FunctionType
             this.modificationLogic.AddModifier(
                 new ComposedElementModifier(
                     new FunctionParameterElementSelector(this.nameProvider),
                     new TypeAttributeSelector(this.nameProvider),
                     new FunctionTypeAttributeModifier()));
 
-            // Function[ReturnType] : FunctionType
+            // Schema.Function[ReturnType] : FunctionType
             this.modificationLogic.AddModifier(
                 new ComposedElementModifier(
                     new FunctionElementSelector(this.nameProvider),
                     new ReturnTypeAttributeSelector(this.nameProvider),
                     new FunctionTypeAttributeModifier()));
 
-            // Function.ReturnType.CollectionType.RowType[Type] : PropertyType
+            // Schema.Function.ReturnType.CollectionType.RowType.Property : CommonProperty
             this.modificationLogic.AddModifier(
                 new ComposedElementModifier(
                     new FunctionReturnRowTypePropertyElementSelector(this.nameProvider),
-                    new TypeAttributeSelector(this.nameProvider),
-                    new PropertyTypeAttributeModifier()));
+                    new CommonPropertyElementModifier(this.nameProvider)));
         }
 
         public void Modify(XElement ssdl, IModificationContext context)

@@ -11,6 +11,7 @@
         private IElementSelector elementSelector;
         private IElementAttributeSelector attributeSelector;
         private IAttributeModifier attributeModifier;
+        private IElementModifier elementModifier;
 
         public ComposedElementModifier(IElementSelector elementSelector, IElementAttributeSelector attributeSelector, IAttributeModifier attributeModifier)
         {
@@ -34,6 +35,22 @@
             this.attributeModifier = attributeModifier;
         }
 
+        public ComposedElementModifier(IElementSelector elementSelector, IElementModifier elementModifier)
+        {
+            if (elementSelector == null)
+            {
+                throw new ArgumentNullException("elementSelector");
+            }
+
+            if (elementModifier == null)
+            {
+                throw new ArgumentNullException("elementModifier");
+            }
+
+            this.elementSelector = elementSelector;
+            this.elementModifier = elementModifier;
+        }
+
         public void Modify(XElement element, IModificationContext context)
         {
             if (element == null)
@@ -43,14 +60,21 @@
 
             foreach (XElement selected in this.elementSelector.SelectElements(element))
             {
-                XAttribute attribute = this.attributeSelector.SelectAttribute(selected);
-
-                if (attribute != null)
+                if (this.attributeSelector != null && this.attributeModifier != null)
                 {
-                    this.attributeModifier.Modify(attribute, context);
+                    XAttribute attribute = this.attributeSelector.SelectAttribute(selected);
+
+                    if (attribute != null)
+                    {
+                        this.attributeModifier.Modify(attribute, context);
+                    }
+                }
+
+                if (this.elementModifier != null)
+                {
+                    this.elementModifier.Modify(selected, context);
                 }
             }
-
         }
     }
 }

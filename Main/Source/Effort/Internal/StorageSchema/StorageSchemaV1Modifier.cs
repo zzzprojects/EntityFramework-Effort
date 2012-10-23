@@ -37,21 +37,20 @@
                     new ProviderManifestTokenAttributeSelector(this.nameProvider),
                     new ProviderManifestTokenAttributeModifier()));
 
-            // EntityType[Type] : PropertyType
+            // Schema.EntityType[Type] : PropertyType
             this.modificationLogic.AddModifier(
                 new ComposedElementModifier(
                     new EntityTypePropertyElementSelector(this.nameProvider),
-                    new TypeAttributeSelector(this.nameProvider),
-                    new PropertyTypeAttributeModifier()));
+                    new CommonPropertyElementModifier(this.nameProvider)));
 
-            // Function.Parameter[Type] : FunctionType
+            // Schema.Function.Parameter[Type] : FunctionType
             this.modificationLogic.AddModifier(
                 new ComposedElementModifier(
                     new FunctionParameterElementSelector(this.nameProvider),
                     new TypeAttributeSelector(this.nameProvider),
                     new FunctionTypeAttributeModifier()));
 
-            // Function[ReturnType] : FunctionType
+            // Schema.Function[ReturnType] : FunctionType
             this.modificationLogic.AddModifier(
                 new ComposedElementModifier(
                     new FunctionElementSelector(this.nameProvider),

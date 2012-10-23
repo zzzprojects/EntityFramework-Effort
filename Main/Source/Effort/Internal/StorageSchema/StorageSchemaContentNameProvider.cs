@@ -74,5 +74,45 @@
         {
             get { return "ProviderManifestToken"; }
         }
+
+        public XName MaxLengthAttribute
+        {
+            get { return "MaxLength"; }
+        }
+
+        public XName FixedLengthAttribute
+        {
+            get { return "FixedLength"; }
+        }
+
+        public XName PrecisionAttribute
+        {
+            get { return "Precision"; }
+        }
+
+        public XName ScaleAttribute
+        {
+            get { return "Scale"; }
+        }
+
+        public XName UnicodeAttribute
+        {
+            get { return "Unicode"; }
+        }
+
+        public XName CollationAttribute
+        {
+            get { return "Collation"; }
+        }
+
+        public XName NullableAttribute
+        {
+            get { return "Nullable"; }
+        }
+
+        public XName DefaultValueAttribute
+        {
+            get { return "DefaultValue"; }
+        }
     }
 }

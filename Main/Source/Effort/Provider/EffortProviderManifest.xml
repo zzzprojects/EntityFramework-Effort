@@ -10,8 +10,8 @@
     <Type Name="single" PrimitiveTypeKind="Single" />
     <Type Name="decimal" PrimitiveTypeKind="Decimal">
       <FacetDescriptions>
-        <Precision Minimum="1" Maximum="38" DefaultValue="18" Constant="false" />
-        <Scale Minimum="0" Maximum="38" DefaultValue="0" Constant="false" />
+        <Precision Minimum="1" Maximum="1000" DefaultValue="1" Constant="false" />
+        <Scale Minimum="0" Maximum="1000" DefaultValue="0" Constant="false" />
       </FacetDescriptions>
     </Type>
     <Type Name="binary" PrimitiveTypeKind="Binary">
@@ -22,17 +22,17 @@
     </Type>
     <Type Name="datetime" PrimitiveTypeKind="DateTime">
       <FacetDescriptions>
-        <Precision DefaultValue="0" Constant="true" />
+        <Precision Minimum="1" Maximum="1000" DefaultValue="1" Constant="false" />
       </FacetDescriptions>
     </Type>
     <Type Name="time" PrimitiveTypeKind="Time">
       <FacetDescriptions>
-        <Precision Minimum="0" Maximum="7" DefaultValue="7" Constant="false" />
+        <Precision Minimum="1" Maximum="1000" DefaultValue="1" Constant="false" />
       </FacetDescriptions>
     </Type>
     <Type Name="datetimeoffset" PrimitiveTypeKind="DateTimeOffset">
       <FacetDescriptions>
-        <Precision Minimum="0" Maximum="7" DefaultValue="7" Constant="false" />
+        <Precision Minimum="1" Maximum="1000" DefaultValue="1" Constant="false" />
       </FacetDescriptions>
     </Type>
     <Type Name="string" PrimitiveTypeKind="String">
@@ -45,8 +45,8 @@
     <Type Name="guid" PrimitiveTypeKind="Guid" />
     <Type Name="rowversion" PrimitiveTypeKind="Binary">
       <FacetDescriptions>
-        <MaxLength DefaultValue="8" Constant="true" />
-        <FixedLength DefaultValue="true" Constant="true" />
+        <MaxLength DefaultValue="8" Constant="false" Minimum="0" Maximum="1000" />
+        <FixedLength DefaultValue="true" Constant="false" />
       </FacetDescriptions>
     </Type>
   </Types>

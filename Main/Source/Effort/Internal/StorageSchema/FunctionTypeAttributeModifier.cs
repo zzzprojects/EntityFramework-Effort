@@ -4,6 +4,7 @@
     using System.Text.RegularExpressions;
     using System.Xml.Linq;
     using Effort.Internal.Common.XmlProcessing;
+    using System.Data.Metadata.Edm;
 
     internal class FunctionTypeAttributeModifier : IAttributeModifier
     {
@@ -35,7 +36,9 @@
 
             string newStorageType = null;
 
-            if (converter.TryConvertType(oldStorageType, out newStorageType))
+            Facet[] facets = null;
+
+            if (converter.TryConvertType(oldStorageType, out newStorageType, out facets))
             {
                 if (isCollection)
                 {

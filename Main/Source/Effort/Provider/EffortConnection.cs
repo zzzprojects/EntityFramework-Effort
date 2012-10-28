@@ -165,8 +165,11 @@ namespace Effort.Provider
 
         protected override void Dispose(bool disposing)
         {
+
             if (iamtransient)
-                DbContainerStore.DeleteDbContainer(identifier.ToString());
+            {
+                DbContainerStore.DeleteDbContainer(new EffortConnectionStringBuilder(this.ConnectionString).InstanceId);
+            }
             base.Dispose(disposing);
         }
     }

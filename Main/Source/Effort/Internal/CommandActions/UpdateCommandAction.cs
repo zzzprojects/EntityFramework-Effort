@@ -12,16 +12,23 @@ using NMemory.Tables;
 
 namespace Effort.Internal.CommandActions
 {
-    internal class UpdateCommandAction : CommandActionBase<DbUpdateCommandTree>
+    internal class UpdateCommandAction : ICommandAction
     {
-        protected override DbDataReader ExecuteDataReaderAction(DbUpdateCommandTree commandTree, ActionContext context)
+        private DbUpdateCommandTree commandTree;
+
+        public UpdateCommandAction(DbUpdateCommandTree commandTree)
         {
-            FieldDescription[] returningFields = DbCommandActionHelper.GetReturningFields(commandTree.Returning);
+            this.commandTree = commandTree;
+        }
+
+        public DbDataReader ExecuteDataReader(ActionContext context)
+        {
+            FieldDescription[] returningFields = DbCommandActionHelper.GetReturningFields(this.commandTree.Returning);
             IList<IDictionary<string, object>> returningEntities = new List<IDictionary<string, object>>();
 
             ITable table = null;
 
-            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(commandTree.Predicate, commandTree, context.DbContainer, out table);
+            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(this.commandTree.Predicate, this.commandTree, context.DbContainer, out table);
             IQueryable entitiesToUpdate = DatabaseReflectionHelper.CreateTableQuery(expr, context.DbContainer.Internal);
 
             Type type = TypeHelper.GetElementType(table.GetType());
@@ -77,7 +84,7 @@ namespace Effort.Internal.CommandActions
             return new EffortDataReader(returningEntities, returningFields, context.DbContainer);
         }
 
-        protected override int ExecuteNonQueryAction(DbUpdateCommandTree commandTree, ActionContext context)
+        public int ExecuteNonQuery(ActionContext context)
         {
             ITable table = null;
 
@@ -128,7 +135,7 @@ namespace Effort.Internal.CommandActions
             return DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater, context.Transaction).Count();
         }
 
-        protected override object ExecuteScalarAction(DbUpdateCommandTree commandTree, ActionContext context)
+        public object ExecuteScalar(ActionContext context)
         {
             throw new NotSupportedException();
         }

@@ -138,6 +138,7 @@
     <Compile Include="Internal\Caching\TableInitialDataKey.cs" />
     <Compile Include="Internal\Caching\TableInitialDataStore.cs" />
     <Compile Include="Internal\Caching\DbSchemaStore.cs" />
+    <Compile Include="Internal\CommandActions\CommandActionFactory.cs" />
     <Compile Include="Internal\Common\FieldDescription.cs" />
     <Compile Include="Internal\Common\ProviderHelper.cs" />
     <Compile Include="Internal\Common\XmlProcessing\IElementVisitor`1.cs" />
@@ -160,12 +161,11 @@
     <Compile Include="Internal\CommandActions\DeleteCommandAction.cs" />
     <Compile Include="Internal\CommandActions\InsertCommandAction.cs" />
     <Compile Include="Internal\CommandActions\UpdateCommandAction.cs" />
-    <Compile Include="Internal\CommandActions\CommandActionBase.cs" />
     <Compile Include="Internal\CommandActions\QueryCommandAction.cs" />
     <Compile Include="Internal\CommandActions\DbCommandActionHelper.cs" />
     <Compile Include="Internal\CommandActions\ICommandAction.cs" />
     <Compile Include="Internal\CommandActions\ActionContext.cs" />
-    <Compile Include="Internal\CommandActions\Parameter.cs" />
+    <Compile Include="Internal\CommandActions\CommandActionParameter.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Null.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Apply.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.And.cs" />

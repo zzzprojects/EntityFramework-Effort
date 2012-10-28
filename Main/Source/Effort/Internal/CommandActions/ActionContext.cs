@@ -12,7 +12,7 @@ namespace Effort.Internal.CommandActions
         public ActionContext(DbContainer dbContainer)
         {
             this.dbContainer = dbContainer;
-            this.Parameters = new List<Parameter>();
+            this.Parameters = new List<CommandActionParameter>();
         }
 
         public DbContainer DbContainer
@@ -22,7 +22,7 @@ namespace Effort.Internal.CommandActions
 
         public CommandBehavior CommandBehavior { get; set; }
 
-        public IList<Parameter> Parameters { get; private set; }
+        public IList<CommandActionParameter> Parameters { get; private set; }
 
         public Transaction Transaction { get; set; }
     }

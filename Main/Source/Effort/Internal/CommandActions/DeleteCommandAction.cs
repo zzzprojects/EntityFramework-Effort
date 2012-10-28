@@ -8,23 +8,30 @@ using NMemory.Tables;
 
 namespace Effort.Internal.CommandActions
 {
-    internal class DeleteCommandAction : CommandActionBase<DbDeleteCommandTree>
+    internal class DeleteCommandAction : ICommandAction
     {
-        protected override DbDataReader ExecuteDataReaderAction(DbDeleteCommandTree commandTree, ActionContext context)
+        private DbDeleteCommandTree commandTree;
+
+        public DeleteCommandAction(DbDeleteCommandTree commandTree)
+        {
+            this.commandTree = commandTree;
+        }
+
+        public DbDataReader ExecuteDataReader(ActionContext context)
         {
             throw new NotSupportedException();
         }
 
-        protected override object ExecuteScalarAction(DbDeleteCommandTree commandTree, ActionContext context)
+        public object ExecuteScalar(ActionContext context)
         {
             throw new NotSupportedException();
         }
 
-        protected override int ExecuteNonQueryAction(DbDeleteCommandTree commandTree, ActionContext context)
+        public int ExecuteNonQuery(ActionContext context)
         {
             ITable table = null;
 
-            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(commandTree.Predicate, commandTree, context.DbContainer, out table);
+            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(this.commandTree.Predicate, commandTree, context.DbContainer, out table);
             IQueryable entitiesToDelete = DatabaseReflectionHelper.CreateTableQuery(expr, context.DbContainer.Internal);
 
             return DatabaseReflectionHelper.DeleteEntities(entitiesToDelete, context.Transaction);

@@ -16,9 +16,16 @@ using NMemory.Modularity;
 
 namespace Effort.Internal.CommandActions
 {
-    internal class QueryCommandAction : CommandActionBase<DbQueryCommandTree>
+    internal class QueryCommandAction : ICommandAction
     {
-        protected override DbDataReader ExecuteDataReaderAction(DbQueryCommandTree commandTree, ActionContext context)
+        private DbQueryCommandTree commandTree;
+
+        public QueryCommandAction(DbQueryCommandTree commandTree)
+        {
+            this.commandTree = commandTree;
+        }
+
+        public DbDataReader ExecuteDataReader(ActionContext context)
         {
             TransformVisitor visitor = new TransformVisitor(context.DbContainer.TypeConverter);
             visitor.SetParameters(commandTree.Parameters.ToArray());
@@ -41,7 +48,7 @@ namespace Effort.Internal.CommandActions
             // Determine parameter values
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-            foreach (Parameter param in context.Parameters)
+            foreach (CommandActionParameter param in context.Parameters)
             {
                 string name = param.Name;
                 object value = param.Value;
@@ -71,12 +78,12 @@ namespace Effort.Internal.CommandActions
             return new EffortDataReader(result, fields.ToArray(), context.DbContainer);
         }
 
-        protected override object ExecuteScalarAction(DbQueryCommandTree commandTree, ActionContext context)
+        public object ExecuteScalar(ActionContext context)
         {
             throw new NotSupportedException();
         }
 
-        protected override int ExecuteNonQueryAction(DbQueryCommandTree commandTree, ActionContext context)
+        public int ExecuteNonQuery(ActionContext context)
         {
             throw new NotSupportedException();
         }

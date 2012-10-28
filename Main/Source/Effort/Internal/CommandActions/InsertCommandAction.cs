@@ -12,16 +12,23 @@ using NMemory.Transactions;
 
 namespace Effort.Internal.CommandActions
 {
-    internal class InsertCommandAction : CommandActionBase<DbInsertCommandTree>
+    internal class InsertCommandAction : ICommandAction
     {
-        protected override DbDataReader ExecuteDataReaderAction(DbInsertCommandTree commandTree, ActionContext context)
+        private DbInsertCommandTree commandTree;
+
+        public InsertCommandAction(DbInsertCommandTree commandTree)
+        {
+            this.commandTree = commandTree;
+        }
+
+        public DbDataReader ExecuteDataReader(ActionContext context)
         {
             // Find returning fields
-            FieldDescription[] returningFields = DbCommandActionHelper.GetReturningFields(commandTree.Returning);
+            FieldDescription[] returningFields = DbCommandActionHelper.GetReturningFields(this.commandTree.Returning);
             List<IDictionary<string, object>> returningValues = new List<IDictionary<string, object>>();
 
             // Find NMemory table
-            ITable table = DbCommandActionHelper.GetTable(commandTree, context.DbContainer);
+            ITable table = DbCommandActionHelper.GetTable(this.commandTree, context.DbContainer);
 
             // Collect the SetClause DbExpressions into a dictionary
             IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(commandTree.SetClauses);
@@ -59,9 +66,7 @@ namespace Effort.Internal.CommandActions
             return new EffortDataReader(returningValues.ToArray(), returningFields, context.DbContainer);
         }
 
-        
-
-        protected override int ExecuteNonQueryAction(DbInsertCommandTree commandTree, ActionContext context)
+        public int ExecuteNonQuery(ActionContext context)
         {
             // Get the source table
             ITable table = DbCommandActionHelper.GetTable(commandTree, context.DbContainer);
@@ -99,7 +104,7 @@ namespace Effort.Internal.CommandActions
             return 1;
         }
 
-        protected override object ExecuteScalarAction(DbInsertCommandTree commandTree, ActionContext context)
+        public object ExecuteScalar(ActionContext context)
         {
             throw new NotSupportedException();
         }

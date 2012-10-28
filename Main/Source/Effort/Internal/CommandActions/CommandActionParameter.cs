@@ -1,9 +1,9 @@
 ﻿
 namespace Effort.Internal.CommandActions
 {
-    internal class Parameter
+    internal class CommandActionParameter
     {
-        public Parameter(string name, object value)
+        public CommandActionParameter(string name, object value)
         {
             this.Name = name;
             this.Value = value;

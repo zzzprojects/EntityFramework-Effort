@@ -34,15 +34,25 @@ namespace Effort.Provider
 {
     public class EffortEntityCommand : EffortCommandBase, ICloneable
     {
-        private DbCommandTree commandTree;
+        private ICommandAction commandAction;
 
         public EffortEntityCommand(DbCommandTree commandtree)
         {
-            this.commandTree = commandtree;
+            this.commandAction = CommandActionFactory.Create(commandtree);
 
             foreach (KeyValuePair<string, TypeUsage> param in commandtree.Parameters)
             {
                 this.Parameters.Insert(0, new EffortParameter() { ParameterName = param.Key });
+            }
+        }
+
+        private EffortEntityCommand(EffortEntityCommand prototype)
+        {
+            this.commandAction = prototype.commandAction;
+
+            foreach (EffortParameter parameter in prototype.Parameters)
+            {
+                this.Parameters.Insert(0, new EffortParameter() { ParameterName = parameter.ParameterName });
             }
         }
 
@@ -51,34 +61,27 @@ namespace Effort.Provider
             ActionContext context = this.CreateActionContext();
             context.CommandBehavior = behavior;
 
-            ICommandAction action = CreateCommandAction();
-
-            return action.ExecuteDataReader(this.commandTree, context);
+            return this.commandAction.ExecuteDataReader(context);
         }
 
         public override int ExecuteNonQuery()
         {
             ActionContext context = this.CreateActionContext();
 
-            ICommandAction action = this.CreateCommandAction();
-
-            return action.ExecuteNonQuery(this.commandTree, context);
+            return this.commandAction.ExecuteNonQuery(context);
         }
 
         public override object ExecuteScalar()
         {
             ActionContext context = this.CreateActionContext();
 
-            ICommandAction action = this.CreateCommandAction();
-
-            return action.ExecuteScalar(this.commandTree, context);
+            return this.commandAction.ExecuteScalar(context);
         }
 
-     
-
+ 
         public object Clone()
         {
-            return new EffortEntityCommand(this.commandTree);
+            return new EffortEntityCommand(this);
         }
 
         private ActionContext CreateActionContext()
@@ -88,7 +91,7 @@ namespace Effort.Provider
             // Store parameters in the context
             foreach (DbParameter parameter in this.Parameters)
             {
-                context.Parameters.Add(new Parameter(parameter.ParameterName, parameter.Value));
+                context.Parameters.Add(new CommandActionParameter(parameter.ParameterName, parameter.Value));
             }
 
             if (this.EffortTransaction != null)
@@ -97,34 +100,6 @@ namespace Effort.Provider
             }
 
             return context;
-        }
-
-        private ICommandAction CreateCommandAction()
-        {
-            ICommandAction action = null;
-
-            if (this.commandTree is DbQueryCommandTree)
-            {
-                action = new QueryCommandAction();
-            }
-            else if (this.commandTree is DbInsertCommandTree)
-            {
-                action = new InsertCommandAction();
-            }
-            else if (this.commandTree is DbUpdateCommandTree)
-            {
-                action = new UpdateCommandAction();
-            }
-            else if (this.commandTree is DbDeleteCommandTree)
-            {
-                action = new DeleteCommandAction();
-            }
-
-            if (action == null)
-            {
-                throw new NotSupportedException("Not supported DbCommandTree type");
-            }
-            return action;
         }
     }
 }

@@ -5,10 +5,10 @@ namespace Effort.Internal.CommandActions
 {
     internal interface ICommandAction
     {
-        DbDataReader ExecuteDataReader(DbCommandTree commandTree, ActionContext context);
+        DbDataReader ExecuteDataReader(ActionContext context);
 
-        object ExecuteScalar(DbCommandTree commandTree, ActionContext context);
+        object ExecuteScalar(ActionContext context);
 
-        int ExecuteNonQuery(DbCommandTree commandTree, ActionContext context);
+        int ExecuteNonQuery(ActionContext context);
     }
 }

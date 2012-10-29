@@ -66,6 +66,7 @@ namespace Effort.Provider
             string name = edmType.EdmType.Name.ToLowerInvariant();
 
             PrimitiveType typeKind = base.StoreTypeNameToStorePrimitiveType[name];
+            
             return TypeUsage.CreateDefaultTypeUsage(typeKind);
         }
     }

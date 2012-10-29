@@ -4,3 +4,5 @@ obj/**
 *.suo
 *.user
 TestResults/**
+Effort - Entity Framework Unit Testing Tool.url
+*.orig

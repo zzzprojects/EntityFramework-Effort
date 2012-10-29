@@ -30,7 +30,7 @@ namespace Effort.Test
         {
             TimestampSupport timestamp = new TimestampSupport();
             timestamp.Description = "New record";
-
+            
             context.TimestampSupports.AddObject(timestamp);
             context.SaveChanges();
 

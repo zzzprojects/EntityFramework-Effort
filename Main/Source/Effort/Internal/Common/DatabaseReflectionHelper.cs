@@ -45,20 +45,11 @@ namespace Effort.Internal.Common
         public static ITable CreateTable(
             Database database, 
             Type entityType, 
-            
-            PropertyInfo[] primaryKeyFields, 
-            PropertyInfo identityField, 
-            
+            IKeyInfo primaryKeyInfo,
+            PropertyInfo identityField,
+             object[] constraints,
             IEnumerable<object> initialEntities)
         {
-            if (primaryKeyFields.Length == 0)
-            {
-                throw new ArgumentException("At least one primary key", "primaryKeys");
-            }
-
-            LambdaExpression primaryKeyExpression = LambdaExpressionHelper.CreateSelectorExpression(entityType, primaryKeyFields.OrderBy(f => f.Name).ToArray());
-            Type primaryKeyType = primaryKeyExpression.Body.Type;
-
             object identity = null;
 
             if (identityField != null)
@@ -71,12 +62,11 @@ namespace Effort.Internal.Common
                         typeof(long)),
                     p);
             }
-
             object table = 
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("CreateTable")
-                .MakeGenericMethod(entityType, primaryKeyType)
-                .Invoke(null, new object[] { database, primaryKeyExpression, identity, initialEntities});
+                .MakeGenericMethod(entityType, primaryKeyInfo.KeyType)
+                .Invoke(null, new object[] { database, primaryKeyInfo, identity, initialEntities, constraints });
 
             return table as ITable;
         }
@@ -173,6 +163,7 @@ namespace Effort.Internal.Common
             return database.GetTable(refType.ElementType.Name);
         }
 
+
         public static void CreateAssociation(Database database, DbRelationInformation relation)
         {
             // Get the referenced tables
@@ -181,110 +172,63 @@ namespace Effort.Internal.Common
 
             Type[] toTableGenericsArgs = foreignTable.GetType().GetGenericArguments();
 
-            if (relation.PrimaryProperties.Length == 1 && relation.ForeignProperties.Length == 1)
+            IIndex primaryIndex = null;
+
+            // Check for existing indexes on the primary table. 
+            // The identification of primary index is made by comparing the primaryproperties of relation with the entitykeymembers of the index
+            string[] primarymembers = relation.PrimaryProperties.Select(x => x.Name).OrderBy(x=>x).ToArray();
+            foreach (IIndex existingPrimaryTableIndex in primaryTable.Indexes)
             {
-                // Simple association
+                // Check if not unique index
+                if (!(existingPrimaryTableIndex is IUniqueIndex))
+                    continue;
 
-                // Get the properties of the foreign key
-                PropertyInfo foreignKeyProp = relation.ForeignProperties[0];
-                PropertyInfo primaryKeyProp = relation.PrimaryProperties[0];
+                string[] indexMembers = existingPrimaryTableIndex.KeyInfo.EntityKeyMembers.Select(x => x.Name).OrderBy(x => x).ToArray();
 
-                IIndex uniqueKeyIndex = null;
-
-                // Check for existing indexes on the foreign table
-                foreach (IIndex existingPrimaryTableIndex in primaryTable.Indexes)
+                if (primarymembers.SequenceEqual(indexMembers))
                 {
-                    // Check if not unique index
-                    if (!(existingPrimaryTableIndex is IUniqueIndex))
-                    {
-                        continue;
-                    }
-
-                    MemberInfo[] indexMembers = existingPrimaryTableIndex.KeyInfo.EntityKeyMembers;
-
-                    if (indexMembers.Length == 1 && indexMembers[0].Name == primaryKeyProp.Name)
-                    {
-                        uniqueKeyIndex = existingPrimaryTableIndex;
-                    }
-                }
-
-                if (uniqueKeyIndex == null)
-                {
-                    // TODO: Create unique index
-                    Debug.Print("Unique key index is not defined");
-                    return;
-                }
-
-                IIndex foreignKeyIndex = null;
-
-                // Check for existing indexes on the foreign table
-                foreach (IIndex existingForeignTableIndex in foreignTable.Indexes)
-                {
-                    MemberInfo[] indexMembers = existingForeignTableIndex.KeyInfo.EntityKeyMembers;
-
-                    if (indexMembers.Length == 1 && indexMembers[0].Name == foreignKeyProp.Name)
-                    {
-                        foreignKeyIndex = existingForeignTableIndex;
-                    }
-                }
-
-                // If the approriate index does not exist, it has to be created
-                if (foreignKeyIndex == null)
-                {
-                    // Create foreign key selector expression
-                    LambdaExpression toExpression =
-                        LambdaExpressionHelper.CreateSelectorExpression(
-                            foreignTable.EntityType,
-                            relation.ForeignProperties);
-
-                    // Build foreign key index
-                    foreignKeyIndex = typeof(DatabaseReflectionHelper.WrapperMethods)
-                        .GetMethod("CreateForeignKeyIndex")
-                        .MakeGenericMethod(toTableGenericsArgs[0], toTableGenericsArgs[1], toExpression.Body.Type)
-                        .Invoke(null, new object[] { foreignTable, toExpression }) as IIndex;
-                }
-
-                // Register association in the database
-
-                // Identical index type
-                if (uniqueKeyIndex.KeyInfo.KeyType == foreignKeyIndex.KeyInfo.KeyType)
-                {
-                    typeof(DatabaseReflectionHelper.WrapperMethods)
-                        .GetMethod("CreateRelationWithSameKeyType")
-                        .MakeGenericMethod(primaryTable.EntityType, uniqueKeyIndex.KeyInfo.KeyType, foreignTable.EntityType)
-                        .Invoke(null, new object[] { database, uniqueKeyIndex, foreignKeyIndex });
-
-                }
-                // Identical, but foreign key is nullable
-                else if (
-                    TypeHelper.IsNullable(foreignKeyIndex.KeyInfo.KeyType) &&
-                    TypeHelper.MakeNotNullable(foreignKeyIndex.KeyInfo.KeyType) == uniqueKeyIndex.KeyInfo.KeyType)
-                {
-                    typeof(DatabaseReflectionHelper.WrapperMethods)
-                       .GetMethod("CreateRelationWithSameKeyTypeNullable")
-                       .MakeGenericMethod(primaryTable.EntityType, uniqueKeyIndex.KeyInfo.KeyType, foreignTable.EntityType)
-                       .Invoke(null, new object[] { database, uniqueKeyIndex, foreignKeyIndex });
-                }
-                else
-                {
-                    throw new NotSupportedException();
+                    primaryIndex = existingPrimaryTableIndex;
                 }
             }
-            else
+
+            if (primaryIndex == null)
             {
-                // Complex association is not supported
-                Debug.Print("Complex association is not supported");
+                // TODO: Create primary index
+                Debug.Print("Unique key index is not defined");
                 return;
             }
 
-            ////// Not identical => probably multifield index
-            ////else
-            ////{
-            ////    typeof(DatabaseReflectionHelper.WrapperMethods)
-            ////        .GetMethod("CreateRelation")
-            ////        .MakeGenericMethod(fromTable.EntityType, fromTablePrimaryIndex.KeyType, toTable.EntityType, foreignKeyIndex.KeyType)
-            ////        .Invoke(null, new object[] { database, fromTablePrimaryIndex, foreignKeyIndex });
-            ////}
+            IIndex foreignKeyIndex = null;
+
+            // Check for existing indexes on the foreign table
+            // The identification of foreign index is made by comparing the foreignproperties of relation with the entitykeymembers of the index
+            string[] foreignmembers = relation.ForeignProperties.Select(x => x.Name).OrderBy(x=>x).ToArray();
+            foreach (IIndex existingForeignTableIndex in foreignTable.Indexes)
+            {
+                string[] indexMembers = existingForeignTableIndex.KeyInfo.EntityKeyMembers.Select(x => x.Name).OrderBy(x => x).ToArray();
+
+
+                if (foreignmembers.SequenceEqual(indexMembers))
+                {
+                    foreignKeyIndex = existingForeignTableIndex;
+                }
+            }
+
+            // If the approriate index does not exist, it has to be created
+            if (foreignKeyIndex == null)
+            {
+                // Build foreign key index (with the keyinfo from the relation)
+                foreignKeyIndex = typeof(DatabaseReflectionHelper.WrapperMethods)
+                    .GetMethod("CreateForeignKeyIndex")
+                    .MakeGenericMethod(toTableGenericsArgs[0], toTableGenericsArgs[1], ((IKeyInfo)relation.ForeignKeyInfo).KeyType )
+                    .Invoke(null, new object[] { foreignTable, relation.ForeignKeyInfo }) as IIndex;
+            }
+
+            //Create the relation
+            typeof(DatabaseReflectionHelper.WrapperMethods)
+                .GetMethod("CreateRelationWithComplexTypes")
+                .MakeGenericMethod(primaryTable.EntityType, primaryIndex.KeyInfo.KeyType, foreignTable.EntityType, foreignKeyIndex.KeyInfo.KeyType)
+                .Invoke(null, new object[] { database, primaryIndex, foreignKeyIndex,relation.ForeignToPrimaryConverter,relation.PrimaryToForeignConverter });
 
         }
 
@@ -305,29 +249,33 @@ namespace Effort.Internal.Common
             }
 
             public static Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
-                Database database, 
-                Expression<Func<TEntity, TPrimaryKey>> primaryKey,
+                Database database,  
+                IKeyInfo<TEntity, TPrimaryKey> primaryKeyInfo,
                 Expression<Func<TEntity, long>> identity,
-                IEnumerable<object> initialEntities)
+                IEnumerable<object> initialEntities, object[] constraints)
 
                 where TEntity : class
             {
                 Table<TEntity, TPrimaryKey> table = database.Tables.Create<TEntity, TPrimaryKey>(
-                    primaryKey,
+                    primaryKeyInfo,
                     identity != null ? new IdentitySpecification<TEntity>(identity) : null);
 
                 ((IInitializableTable<TEntity>)table).Initialize(initialEntities.Cast<TEntity>());
 
+                foreach (var constraint in constraints.Cast<NMemory.Constraints.IConstraint<TEntity>>())
+                {
+                    table.AddConstraint(constraint);
+                }
+
                 return table;
             }
 
-            public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, Expression<Func<TEntity, TForeignKey>> foreignKey)
+            public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, IKeyInfo<TEntity, TForeignKey> foreignKeyinfo)
                 where TEntity : class
             {
                 var indexFactory = new RedBlackTreeIndexFactory();
 				////var indexFactory = new DictionaryIndexFactory<TEntity, TPrimaryKey, TEntity>();
-
-                return table.CreateIndex<TForeignKey>(indexFactory, foreignKey);
+                return table.CreateIndex<TForeignKey>(indexFactory, foreignKeyinfo);
             }
 
             public static TableQuery<T> CreateTableQuery<T>(Expression expression, Database database)
@@ -370,17 +318,18 @@ namespace Effort.Internal.Common
             }
 
 
+
             public static void CreateRelationWithComplexTypes<TPrimary, TPrimaryKey, TForeign, TForeignKey>(
                 Database database, 
                 UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, 
                 IIndex<TForeign, TForeignKey> foreignIndex,
-                Expression<Func<TForeignKey, TPrimaryKey>> foreignToPrimary,
-                Expression<Func<TPrimaryKey, TForeignKey>> primaryToForeign)
+                Func<TForeignKey, TPrimaryKey> foreignToPrimary,
+                Func<TPrimaryKey, TForeignKey> primaryToForeign)
 
                 where TPrimary : class
                 where TForeign : class
             {
-                database.Tables.CreateRelation(primaryIndex, foreignIndex, foreignToPrimary.Compile(), primaryToForeign.Compile());
+                database.Tables.CreateRelation(primaryIndex, foreignIndex, foreignToPrimary, primaryToForeign);
             }
 
             public static void CreateRelationWithSameKeyType<TPrimary, TPrimaryKey, TForeign>(

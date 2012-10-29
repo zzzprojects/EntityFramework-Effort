@@ -3,6 +3,8 @@ using System.Linq;
 using Effort.DataLoaders;
 using Effort.Provider;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Effort.Test.Data.Staff;
+using System.Linq;
 
 namespace Effort.Test
 {
@@ -20,5 +22,18 @@ namespace Effort.Test
             Assert.AreEqual(csb.DataLoaderType, typeof(CsvDataLoader));
             Assert.AreEqual(csb.DataLoaderArgument, path);
         }
+
+
+        [TestMethod]
+        public void A()
+        {
+            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+
+            using (StaffDbContext context = new StaffDbContext(connection))
+            {
+                context.People.ToList();
+            }
+        }
+
     }
 }

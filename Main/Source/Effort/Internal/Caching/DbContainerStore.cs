@@ -40,5 +40,10 @@ namespace Effort.Internal.Caching
         {
             return store.Get(instanceId, databaseFactoryMethod);
         }
+
+        public static void DeleteDbContainer(string instanceId)
+        {
+            store.Remove(instanceId);
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             using (this.CreateVariable(leftParam, expression.Left.VariableName))
             using (this.CreateVariable(rightParam, expression.Right.VariableName))
             {
-                Expression joinCondition = this.Visit(expression.JoinCondition);
+                Expression joinCondition = this.Visit(expression.JoinCondition); //what is this used for here?
 
                 DbJoinConditionVisitor v = new DbJoinConditionVisitor();
 

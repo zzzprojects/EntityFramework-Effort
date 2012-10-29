@@ -40,6 +40,7 @@ namespace Effort.Internal.Caching
 
         public ConcurrentCache(Func<TKey, TElement> defaultFactory)
         {
+
             this.store = new ConcurrentDictionary<TKey, Lazy<TElement>>();
 
             this.defaultFactory = defaultFactory;
@@ -48,6 +49,12 @@ namespace Effort.Internal.Caching
         public TElement Get(TKey key)
         {
             return this.Get(key, () => { throw new InvalidOperationException(); });
+        }
+
+        public void Remove(TKey key)
+        {
+            Lazy<TElement> value;
+            this.store.TryRemove(key, out value);
         }
         
         public TElement Get(TKey key, Func<TElement> factory)

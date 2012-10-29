@@ -39,6 +39,12 @@ using Effort.Internal.Diagnostics;
 using Effort.Internal.TypeConversion;
 using NMemory;
 using NMemory.StoredProcedures;
+using System.Collections;
+using System.Linq.Expressions;
+using Effort.Internal.TypeGeneration;
+using NMemory.Indexes;
+using NMemory.Tables;
+using NMemory.Modularity;
 
 namespace Effort.Internal.DbManagement
 {
@@ -50,6 +56,12 @@ namespace Effort.Internal.DbManagement
 
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;
+
+
+        ~DbContainer()
+        {
+            Console.WriteLine("DbContainer destructor");
+        }
 
         public DbContainer(DbContainerParameters parameters)
         {
@@ -87,6 +99,7 @@ namespace Effort.Internal.DbManagement
 
         public bool IsInitialized(StoreItemCollection edmStoreSchema)
         {
+            //lock
             if (this.database == null)
             {
                 return false;
@@ -108,6 +121,10 @@ namespace Effort.Internal.DbManagement
         }
 
 
+        /// <summary>
+        /// kitalálni mi lenne az optimális zárolás
+        /// </summary>
+        /// <param name="edmStoreSchema"></param>
         public void Initialize(StoreItemCollection edmStoreSchema)
         {
             if (this.IsInitialized(edmStoreSchema))
@@ -115,20 +132,23 @@ namespace Effort.Internal.DbManagement
                 return;
             }
 
-            // TODO: locking
-
             DbSchema schema = DbSchemaStore.GetDbSchema(edmStoreSchema, CreateDbSchema);
+            
             this.Initialize(schema);
         }
 
         public void Initialize(DbSchema schema)
         {
+            //lock
             Stopwatch swDatabase = Stopwatch.StartNew();
 
             // Database initialization (put it in the constructor?)
             if (this.database == null)
             {
-                this.database = new Database();
+                if (parameters.IsTransient)
+                    this.database = new Database(new NoLockingDatabaseComponentFactory());
+                else
+                    this.database = new Database();
             }
 
             using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())
@@ -139,12 +159,16 @@ namespace Effort.Internal.DbManagement
 
                     IEnumerable<object> initialData = this.GetInitialData(loaderFactory, tableInfo);
 
+                    //todo: DefaultKeyInfoFactory használata IKeyInfo létrehozására
+                    //todo: Identity közvetlen létrehozása. 
+
                     // Initialize the table
                     DatabaseReflectionHelper.CreateTable(
                         this.database,
                         tableInfo.EntityType,
-                        tableInfo.PrimaryKeyFields,
+                        (IKeyInfo)tableInfo.PrimaryKeyInfo,
                         tableInfo.IdentityField,
+                        tableInfo.Constraints,
                         initialData);
 
                     swTable.Stop();
@@ -222,13 +246,15 @@ namespace Effort.Internal.DbManagement
 
                 List<string> primaryKeyFieldNames = new List<string>();
                 List<string> identityFieldNames = new List<string>();
+                List<string> notNullableFields = new List<string>();
+                Dictionary<string, int> maxLenghtNVarcharFields = new Dictionary<string, int>();
+                Dictionary<string, int> maxLenghtNCharFields = new Dictionary<string, int>();
 
                 // Add properties as entity fields
                 foreach (EdmProperty field in type.Properties)
                 {
                     TypeFacets facets = typeConverter.GetTypeFacets(field.TypeUsage);
                     Type fieldClrType = typeConverter.Convert(field.TypeUsage);
-
                     PropertyBuilder propBuilder = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
 
                     // Register primary key field
@@ -242,6 +268,18 @@ namespace Effort.Internal.DbManagement
                     {
                         identityFieldNames.Add(propBuilder.Name);
                     }
+                    if (facets.Nullable == false)
+                    {
+                        notNullableFields.Add(propBuilder.Name);
+                    }
+                    if (facets.HasMaxLenght && field.TypeUsage.EdmType.Name == "string" && facets.FixedLength)
+                    {
+                        maxLenghtNCharFields.Add(propBuilder.Name, facets.MaxLenght);
+                    }
+                    else if (facets.HasMaxLenght && field.TypeUsage.EdmType.Name == "string")
+                    {
+                        maxLenghtNVarcharFields.Add(propBuilder.Name, facets.MaxLenght);
+                    }
                 }
 
                 if (identityFields.Count > 1)
@@ -251,6 +289,10 @@ namespace Effort.Internal.DbManagement
 
                 Type entityType = entityTypeBuilder.CreateType();
 
+                Type constraintListType = typeof(List<>)
+                                      .MakeGenericType(typeof(NMemory.Constraints.IConstraint<>).MakeGenericType(entityType));
+
+                var listInstanceOfConstraints = new List<object>();
                 foreach (PropertyInfo prop in entityType.GetProperties())
                 {
                     properties.Add(prop);
@@ -264,14 +306,48 @@ namespace Effort.Internal.DbManagement
                     {
                         identityFields.Add(prop);
                     }
+
+                    if (notNullableFields.Contains(prop.Name))
+                    {
+                        var param = Expression.Parameter(entityType, "x");
+                        listInstanceOfConstraints.Add(
+                            typeof(NMemory.Constraints.NotNullableConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                            new object[]{
+                                    Expression.Lambda(Expression.Convert(Expression.PropertyOrField(param,prop.Name),typeof(object)),param)
+                            }
+                            ));
+                    }
+
+                    if (maxLenghtNVarcharFields.Keys.Contains(prop.Name))
+                    {
+                        var param = Expression.Parameter(entityType, "x");
+                        listInstanceOfConstraints.Add(
+                            typeof(NMemory.Constraints.NVarCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                            new object[]{
+                                    Expression.Lambda(Expression.PropertyOrField(param,prop.Name),param),maxLenghtNVarcharFields[prop.Name]
+                            }
+                            ));
+                    }
+                    if (maxLenghtNCharFields.Keys.Contains(prop.Name))
+                    {
+                        var param = Expression.Parameter(entityType, "x");
+                        listInstanceOfConstraints.Add(
+                            typeof(NMemory.Constraints.NCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                            new object[]{
+                                    Expression.Lambda(Expression.PropertyOrField(param,prop.Name),param),maxLenghtNCharFields[prop.Name]
+                            }
+                            ));
+                    }
                 }
+                Type primaryKeyAnonymType;
+                object primaryKeyInfo = CreateKeyInfo(entityType, primaryKeyFields.ToArray(), out primaryKeyAnonymType);
 
                 schema.RegisterTable(
                     entityType.Name,
                     entityType,
                     primaryKeyFields.ToArray(),
                     identityFields.SingleOrDefault(),
-                    properties.ToArray());
+                    properties.ToArray(), listInstanceOfConstraints,primaryKeyInfo);
             }
 
             foreach (AssociationSet associationSet in entityContainer.BaseEntitySets.OfType<AssociationSet>())
@@ -284,20 +360,67 @@ namespace Effort.Internal.DbManagement
                 }
 
                 ReferentialConstraint constraint = constraints[0];
-
+              
                 string fromTableName = GetTableName(constraint.FromRole);
                 string toTableName = GetTableName(constraint.ToRole);
 
+                //entityType is the primary table, toTable is the foreign table...
                 DbTableInformation fromTable = schema.GetTable(fromTableName);
                 DbTableInformation toTable = schema.GetTable(toTableName);
 
+                //Creating the parameters for NMemory.Tables.RelationKeyConverterFactory
                 PropertyInfo[] fromTableProperties = GetRelationProperties(constraint.FromProperties, fromTable);
                 PropertyInfo[] toTableProperties = GetRelationProperties(constraint.ToProperties, toTable);
 
-                schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties);
+                Type primaryAnonymType;
+                Type foreignAnonymType;
+                object primaryKeyInfo = CreateKeyInfo(fromTable.EntityType, fromTableProperties,out primaryAnonymType);
+                object foreignKeyInfo = CreateKeyInfo(toTable.EntityType, toTableProperties, out foreignAnonymType);
+
+                //Creating IRelationContraints for RelationKeyConverterFactory
+                ParameterExpression paramPrimary = Expression.Parameter(fromTable.EntityType);
+                ParameterExpression paramForeign = Expression.Parameter(toTable.EntityType);
+                List<IRelationContraint> relationConstraints = new List<IRelationContraint>();
+
+                for (int i = 0; i < fromTableProperties.Count(); i++)
+                {
+                    // should not use the generic RelationConstraint here. 
+                    relationConstraints.Add(new RelationConstraint(fromTableProperties[i], toTableProperties[i]));
+                }
+
+                object primaryToForeignConverter = typeof(RelationKeyConverterFactory).GetMethod("CreatePrimaryToForeignConverter")
+                    .MakeGenericMethod(primaryAnonymType, foreignAnonymType).
+                    Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() });
+
+                object foreignToPrimaryConverter = typeof(RelationKeyConverterFactory).GetMethod("CreateForeignToPrimaryConverter")
+                    .MakeGenericMethod(primaryAnonymType, foreignAnonymType).
+                    Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() });
+                    
+
+                schema.RegisterRelation(fromTableName, fromTableProperties, toTableName, toTableProperties, primaryKeyInfo, foreignKeyInfo, primaryToForeignConverter, foreignToPrimaryConverter);
             }
 
             return schema;
+        }
+
+        private static object CreateKeyInfo(Type entityType, PropertyInfo[] fromTableProperties, out Type anonymtype)
+        {
+            Dictionary<string, Type> primaryKeyProperties = new Dictionary<string, Type>();
+            foreach (var x in fromTableProperties)
+            {
+                primaryKeyProperties.Add(x.Name, x.PropertyType);
+            }
+            anonymtype = AnonymousTypeFactory.Create(primaryKeyProperties);
+            ParameterExpression p1 = Expression.Parameter(entityType);
+            Expression[] properties = fromTableProperties.Select(x => Expression.Property(p1, x)).ToArray();
+            Expression constructor = Expression.New(anonymtype.GetConstructors().First(), properties);
+            Expression resultSelector = Expression.Lambda(constructor, p1);
+
+
+            object keyInfo = typeof(DefaultKeyInfoFactory).GetMethod("Create").MakeGenericMethod(entityType, anonymtype)
+                .Invoke(new DefaultKeyInfoFactory(), new object[] { resultSelector });
+
+            return keyInfo;
         }
 
         private static string GetTableName(RelationshipEndMember relationEndpoint)

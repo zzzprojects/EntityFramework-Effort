@@ -68,6 +68,12 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Imports\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Imports\NMemory.dll</HintPath>
+    </Reference>
+    <Reference Include="SoftwareApproach.TestingExtensions, Version=1.2.4420.19431, Culture=neutral, PublicKeyToken=8643fe5b014704ca, processorArchitecture=MSIL">
+      <HintPath>..\Imports\SoftwareApproach.TestingExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -90,6 +96,8 @@
   <ItemGroup>
     <Compile Include="AggregationFixture.cs" />
     <Compile Include="BinaryFixture.cs" />
+    <Compile Include="CanonicalFunctionsFixture.cs" />
+    <Compile Include="ConstraintFixture.cs" />
     <Compile Include="DataReaderInspectorFixture.cs" />
     <Compile Include="DbConnectionFactoryFixture.cs" />
     <Compile Include="DbContextFixture.cs" />
@@ -104,8 +112,10 @@
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
     <Compile Include="JoinFixture.cs" />
+    <Compile Include="JoinFixture2.cs" />
     <Compile Include="ManipulationFixture.cs" />
     <Compile Include="StorageSchemaModifierFixture.cs" />
+    <Compile Include="MultiFieldAssociationFixture.cs" />
     <Compile Include="ObjectContextFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicFixture.cs" />
@@ -148,6 +158,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Effort.Test.Data\Effort.Test.Data.csproj">

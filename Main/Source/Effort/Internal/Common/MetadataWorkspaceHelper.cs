@@ -97,6 +97,8 @@ namespace Effort.Internal.Common
             return workspace;
         }
 
+
+
         public static void ParseMetadata(string metadata, List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)
         {
             foreach (string component in metadata.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim()))

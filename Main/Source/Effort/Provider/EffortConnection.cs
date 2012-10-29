@@ -36,6 +36,7 @@ namespace Effort.Provider
         private Guid identifier;
         private ConnectionState state;
         private DbContainer dbContainer;
+        private bool iamtransient;
 
         public EffortConnection()
         {
@@ -113,6 +114,8 @@ namespace Effort.Provider
 
             parameters.IsDataLoaderCached = connectionString.DataLoaderCached;
 
+            parameters.IsTransient = iamtransient;
+
             return new DbContainer(parameters);
         }
 
@@ -139,7 +142,7 @@ namespace Effort.Provider
 
         internal void MarkAsTransient()
         {
-            // TODO: implement
+            iamtransient = true;
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
@@ -162,6 +165,11 @@ namespace Effort.Provider
 
         protected override void Dispose(bool disposing)
         {
+
+            if (iamtransient)
+            {
+                DbContainerStore.DeleteDbContainer(new EffortConnectionStringBuilder(this.ConnectionString).InstanceId);
+            }
             base.Dispose(disposing);
         }
     }

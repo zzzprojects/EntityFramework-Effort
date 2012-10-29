@@ -42,16 +42,16 @@ namespace Effort.Internal.DbManagement
         }
 
         public void RegisterTable(string tableName, Type entityType, PropertyInfo[] primaryKeyFields, PropertyInfo identityField,
-            PropertyInfo[] properties)
+            PropertyInfo[] properties,List<object> constraints,object primaryKeyInfo)
         {
-            DbTableInformation table = new DbTableInformation(tableName, entityType, primaryKeyFields, identityField, properties);
+            DbTableInformation table = new DbTableInformation(tableName, entityType, primaryKeyFields, identityField, properties, constraints.ToArray(),primaryKeyInfo);
             
             this.tables.Add(tableName, table);
         }
 
-        public void RegisterRelation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties)
+        public void RegisterRelation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties, object primaryKeyInfo, object foreignKeyInfo, object primaryToForeignConverter, object foreignToPrimaryConverter)
         {
-            DbRelationInformation relation = new DbRelationInformation(fromTable, fromProperties, toTable, toProperties);
+            DbRelationInformation relation = new DbRelationInformation(fromTable, fromProperties, toTable, toProperties, primaryKeyInfo, foreignKeyInfo, primaryToForeignConverter, foreignToPrimaryConverter);
 
             this.relations.Add(relation);
         }

@@ -44,7 +44,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         public Expression Select(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type  sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Select;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -384,7 +384,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     genericJoin = this.queryMethods.Join;
                     break;
                 case DbExpressionKind.LeftOuterJoin:
-                    genericJoin = this.queryMethods.LeftOuterJoin;
+                    genericJoin = this.queryMethods.LeftOuterJoin; //todo leave NMemory out
                     break;
                 case DbExpressionKind.FullOuterJoin:
                     throw new NotImplementedException();

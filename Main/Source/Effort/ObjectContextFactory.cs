@@ -154,7 +154,7 @@ namespace Effort
         public static T CreateTransient<T>()
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreateTransientType<T>()) as T;
+             return Activator.CreateInstance(CreateTransientType<T>()) as T;
         }
 
         #endregion
@@ -205,7 +205,7 @@ namespace Effort
                     }
                 }
 
-                throw new InvalidOperationException("DbContext does not have a default connection string");
+                throw new InvalidOperationException("ObjectContext/DbContext does not have a default connection string");
             }
         }
 

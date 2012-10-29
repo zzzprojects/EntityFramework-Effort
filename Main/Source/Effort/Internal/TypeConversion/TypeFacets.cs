@@ -31,5 +31,11 @@ namespace Effort.Internal.TypeConversion
         public bool Identity { get; set; }
 
         public bool Computed { get; set; }
+
+        public bool HasMaxLenght { get; set; }
+
+        public int MaxLenght { get; set; }
+
+        public bool FixedLength { get; set; }
     }
 }

@@ -24,18 +24,21 @@
 
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace Effort.Internal.DbManagement
 {
 	internal class DbTableInformation
 	{
-		public DbTableInformation(string tableName, Type entityType, PropertyInfo[] primaryKeys, PropertyInfo identityField, PropertyInfo[] properties)
+        public DbTableInformation(string tableName, Type entityType, PropertyInfo[] primaryKeys, PropertyInfo identityField, PropertyInfo[] properties, object[] constraints, object primaryKeyInfo)
 		{
             this.TableName = tableName;
 			this.EntityType = entityType;
 			this.PrimaryKeyFields = primaryKeys;
 			this.IdentityField = identityField;
 			this.Properties = properties;
+            this.Constraints = constraints;
+            this.PrimaryKeyInfo = primaryKeyInfo;
 		}
 
         public string TableName { get; set; }
@@ -47,5 +50,11 @@ namespace Effort.Internal.DbManagement
 		public PropertyInfo IdentityField { get; private set; }
 
 		public PropertyInfo[] Properties { get; private set; }
+
+        //NMemory.Constraints.IConstraint<TEntity> array
+        public object[] Constraints { get; private set; }
+
+        public object PrimaryKeyInfo { get; private set; }
+
 	}
 }

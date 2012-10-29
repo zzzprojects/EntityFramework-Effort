@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Effort.Test.Data.Northwind;
-using SoftwareApproach.TestingExtensions;
 using Effort.Test.Data.Feature;
+using Effort.Test.Data.Northwind;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SoftwareApproach.TestingExtensions;
 
 namespace Effort.Test
 {
@@ -310,6 +308,7 @@ namespace Effort.Test
 
             var query = context.Products.Where(x => x.ProductName.TrimEnd() == "  One Product");
             var products = query.ToList();
+
             products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
         }
 
@@ -771,12 +770,5 @@ namespace Effort.Test
         }
 
         #endregion
-
-
-
-
-
-
-
     }
 }

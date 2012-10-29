@@ -4,7 +4,6 @@ using Effort.DataLoaders;
 using Effort.Provider;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Effort.Test.Data.Staff;
-using System.Linq;
 
 namespace Effort.Test
 {

@@ -54,6 +54,7 @@ namespace Effort.Test
 
             UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
 
+            // FAILS: Requires .NET 4.5
             ValidateSsdl(ssdl); 
         }
 

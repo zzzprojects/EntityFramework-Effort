@@ -106,13 +106,12 @@
     <Compile Include="Environment\Fakes\ResultSetComposerMock.cs" />
     <Compile Include="Environment\Queries\Correctness.cs" />
     <Compile Include="Environment\Queries\ICorrectness.cs" />
-    <Compile Include="Environment\Queries\IQueryTester.cs" />
+    <Compile Include="Environment\Queries\IQueryTester`1.cs" />
     <Compile Include="Environment\Queries\NorthwindQueryTester.cs" />
     <Compile Include="Environment\Queries\ResultSetExtensions.cs" />
     <Compile Include="IncludeFixture.cs" />
     <Compile Include="ComplexQueryFixture.cs" />
     <Compile Include="JoinFixture.cs" />
-    <Compile Include="JoinFixture2.cs" />
     <Compile Include="ManipulationFixture.cs" />
     <Compile Include="StorageSchemaModifierFixture.cs" />
     <Compile Include="MultiFieldAssociationFixture.cs" />
@@ -141,7 +140,7 @@
     <Compile Include="Environment\ResultSets\IResultSetComposer.cs" />
     <Compile Include="Environment\ResultSets\IResultSetElement.cs" />
     <Compile Include="Environment\ResultSets\JsonResultSet.cs" />
-    <Compile Include="Environment\Queries\QueryTester.cs" />
+    <Compile Include="Environment\Queries\QueryTester`1.cs" />
     <Compile Include="Environment\ResultSets\ResultSetComparer.cs" />
     <Compile Include="Environment\ResultSets\ResultSetJsonSerializer.cs" />
     <Compile Include="TransactionFixture.cs" />
@@ -151,14 +150,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Effort.licenseheader">
-      <Link>Effort.licenseheader</Link>
-    </None>
     <None Include="App.Config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Effort.Test.Data\Effort.Test.Data.csproj">

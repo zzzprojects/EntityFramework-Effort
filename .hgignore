@@ -6,3 +6,4 @@ obj/**
 TestResults/**
 Effort - Entity Framework Unit Testing Tool.url
 *.orig
+StyleCop.Cache

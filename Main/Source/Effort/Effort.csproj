@@ -145,6 +145,14 @@
     <Compile Include="Internal\Common\XmlProcessing\IElementVisitor`1.cs" />
     <Compile Include="Internal\Common\XmlProcessing\ModificationContext.cs" />
     <Compile Include="Internal\Common\XmlProcessing\SelfElementSelector.cs" />
+    <Compile Include="Internal\CommandActions\DeleteCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\InsertCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\UpdateCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\QueryCommandAction.cs" />
+    <Compile Include="Internal\CommandActions\DbCommandActionHelper.cs" />
+    <Compile Include="Internal\CommandActions\ICommandAction.cs" />
+    <Compile Include="Internal\CommandActions\ActionContext.cs" />
+    <Compile Include="Internal\CommandActions\CommandActionParameter.cs" />
     <Compile Include="Internal\Csv\CsvReader.cs" />
     <Compile Include="Internal\Csv\CsvReader.DataReaderValidations.cs" />
     <Compile Include="Internal\Csv\CsvReader.RecordEnumerator.cs" />
@@ -154,19 +162,11 @@
     <Compile Include="Internal\Csv\MissingFieldAction.cs" />
     <Compile Include="Internal\Csv\ParseErrorAction.cs" />
     <Compile Include="Internal\Csv\Resources\ExceptionMessage.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessage.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Internal\Csv\ValueTrimmingOptions.cs" />
-    <Compile Include="Internal\CommandActions\DeleteCommandAction.cs" />
-    <Compile Include="Internal\CommandActions\InsertCommandAction.cs" />
-    <Compile Include="Internal\CommandActions\UpdateCommandAction.cs" />
-    <Compile Include="Internal\CommandActions\QueryCommandAction.cs" />
-    <Compile Include="Internal\CommandActions\DbCommandActionHelper.cs" />
-    <Compile Include="Internal\CommandActions\ICommandAction.cs" />
-    <Compile Include="Internal\CommandActions\ActionContext.cs" />
-    <Compile Include="Internal\CommandActions\CommandActionParameter.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\DbFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Null.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Apply.cs" />
@@ -287,7 +287,6 @@
     <Compile Include="Internal\StorageSchema\StorageSchemaV1Modifier.cs" />
     <Compile Include="Internal\TypeConversion\DefaultTypeConverter.cs" />
     <Compile Include="Internal\TypeConversion\EdmTypeConverter.cs" />
-    <Compile Include="Internal\TypeConversion\EdmTypeHelper.cs" />
     <Compile Include="Internal\TypeConversion\ITypeConverter.cs" />
     <Compile Include="Internal\TypeConversion\TypeFacets.cs" />
     <Compile Include="ObjectContextFactory.cs" />
@@ -298,7 +297,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\Common\DatabaseReflectionHelper.cs" />
     <Compile Include="Internal\Caching\DbContainerStore.cs" />
-    <Compile Include="Internal\TypeGeneration\TupleTypeFactory.cs" />
     <Compile Include="Provider\EffortCommand.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -325,18 +323,13 @@
     <Compile Include="Provider\EffortProviderManifestTokens.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Effort.licenseheader">
-      <Link>Effort.licenseheader</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Internal\Csv\Resources\ExceptionMessage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessage.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Provider\EffortProviderManifest.xml" />
+    <EmbeddedResource Include="Provider\EffortProviderManifest.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

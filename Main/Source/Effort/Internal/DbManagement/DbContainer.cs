@@ -1,53 +1,53 @@
-﻿#region License
-
-// Copyright (c) 2011 Effort Team
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is 
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-#endregion
-
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Data.Metadata.Edm;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Threading;
-using Effort.DataLoaders;
-using Effort.Internal.Caching;
-using Effort.Internal.Common;
-using Effort.Internal.DbCommandTreeTransformation;
-using Effort.Internal.Diagnostics;
-using Effort.Internal.TypeConversion;
-using NMemory;
-using NMemory.StoredProcedures;
-using System.Collections;
-using System.Linq.Expressions;
-using Effort.Internal.TypeGeneration;
-using NMemory.Indexes;
-using NMemory.Tables;
-using NMemory.Modularity;
+﻿// ----------------------------------------------------------------------------------
+// <copyright file="DbContainer.cs" company="Effort Team">
+//     Copyright (C) 2012 by Effort Team
+//
+//     Permission is hereby granted, free of charge, to any person obtaining a copy
+//     of this software and associated documentation files (the "Software"), to deal
+//     in the Software without restriction, including without limitation the rights
+//     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//     copies of the Software, and to permit persons to whom the Software is
+//     furnished to do so, subject to the following conditions:
+//
+//     The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//
+//     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//     THE SOFTWARE.
+// </copyright>
+// ----------------------------------------------------------------------------------
 
 namespace Effort.Internal.DbManagement
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Data.Metadata.Edm;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Threading;
+    using Effort.DataLoaders;
+    using Effort.Internal.Caching;
+    using Effort.Internal.Common;
+    using Effort.Internal.DbCommandTreeTransformation;
+    using Effort.Internal.Diagnostics;
+    using Effort.Internal.TypeConversion;
+    using Effort.Internal.TypeGeneration;
+    using NMemory;
+    using NMemory.Indexes;
+    using NMemory.Modularity;
+    using NMemory.StoredProcedures;
+    using NMemory.Tables;
+
     internal class DbContainer : ITableProvider
     {
         private Database database;
@@ -57,12 +57,6 @@ namespace Effort.Internal.DbManagement
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;
 
-
-        ~DbContainer()
-        {
-            Console.WriteLine("DbContainer destructor");
-        }
-
         public DbContainer(DbContainerParameters parameters)
         {
             this.parameters = parameters;
@@ -70,6 +64,11 @@ namespace Effort.Internal.DbManagement
             this.logger = new Logger();
             this.transformCache = new ConcurrentDictionary<string, IStoredProcedure>();
             this.converter = new DefaultTypeConverter();
+        }
+
+        ~DbContainer()
+        {
+            Console.WriteLine("DbContainer destructor");
         }
 
         public object GetTable(string name)
@@ -142,13 +141,16 @@ namespace Effort.Internal.DbManagement
             //lock
             Stopwatch swDatabase = Stopwatch.StartNew();
 
-            // Database initialization (put it in the constructor?)
             if (this.database == null)
             {
                 if (parameters.IsTransient)
+                {
                     this.database = new Database(new NoLockingDatabaseComponentFactory());
+                }
                 else
+                {
                     this.database = new Database();
+                }
             }
 
             using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())

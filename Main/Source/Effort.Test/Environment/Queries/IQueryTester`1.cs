@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="IDbMethodProvider.cs" company="Effort Team">
+// <copyright file="IQueryTester`1.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,12 +22,17 @@
 // </copyright>
 // ----------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation
+namespace Effort.Test.Environment.Queries
 {
-    using System.Reflection;
+    using System;
+    using System.Data.Objects;
+    using Effort.Test.Environment.ResultSets;
 
-    internal interface IDbMethodProvider
+    internal interface IQueryTester<TObjectContext> 
+        where TObjectContext : ObjectContext
     {
-        MethodInfo Like { get; }
+        IResultSet CreateExpectedResult<TResult>(Func<TObjectContext, TResult> queryFactory);
+
+        ICorrectness TestQuery<TResult>(Func<TObjectContext, TResult> queryFactory, string expectedResultJson, bool strictOrder = false);
     }
 }

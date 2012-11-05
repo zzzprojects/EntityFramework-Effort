@@ -32,10 +32,18 @@ namespace Effort.Provider
     using System.Data.Metadata.Edm;
     using Effort.Internal.CommandActions;
 
-    public class EffortEntityCommand : EffortCommandBase, ICloneable
+    /// <summary>
+    /// Represent an Effort command that realizes Entity Framework command tree representations.
+    /// </summary>
+    public sealed class EffortEntityCommand : EffortCommandBase, ICloneable
     {
         private ICommandAction commandAction;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortEntityCommand" /> class based on a
+        /// provided command tree.
+        /// </summary>
+        /// <param name="commandtree">The command tree that describes the operation.</param>
         public EffortEntityCommand(DbCommandTree commandtree)
         {
             this.commandAction = CommandActionFactory.Create(commandtree);
@@ -46,6 +54,11 @@ namespace Effort.Provider
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortEntityCommand" /> class based on a 
+        /// prototype instance.
+        /// </summary>
+        /// <param name="prototype">The prototype <see cref="EffortEntityCommand" /> object.</param>
         private EffortEntityCommand(EffortEntityCommand prototype)
         {
             this.commandAction = prototype.commandAction;
@@ -56,14 +69,12 @@ namespace Effort.Provider
             }
         }
 
-        protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
-        {
-            ActionContext context = this.CreateActionContext();
-            context.CommandBehavior = behavior;
-
-            return this.commandAction.ExecuteDataReader(context);
-        }
-
+        /// <summary>
+        /// Executes the query.
+        /// </summary>
+        /// <returns>
+        /// The number of rows affected.
+        /// </returns>
         public override int ExecuteNonQuery()
         {
             ActionContext context = this.CreateActionContext();
@@ -71,6 +82,12 @@ namespace Effort.Provider
             return this.commandAction.ExecuteNonQuery(context);
         }
 
+        /// <summary>
+        /// Executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.
+        /// </summary>
+        /// <returns>
+        /// The first column of the first row in the result set.
+        /// </returns>
         public override object ExecuteScalar()
         {
             ActionContext context = this.CreateActionContext();
@@ -78,10 +95,30 @@ namespace Effort.Provider
             return this.commandAction.ExecuteScalar(context);
         }
 
- 
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new object that is a copy of this instance.
+        /// </returns>
         public object Clone()
         {
             return new EffortEntityCommand(this);
+        }
+
+        /// <summary>
+        /// Executes the command text against the connection.
+        /// </summary>
+        /// <param name="behavior">An instance of <see cref="T:System.Data.CommandBehavior" />.</param>
+        /// <returns>
+        /// A <see cref="EffortDataReader" />.
+        /// </returns>
+        protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
+        {
+            ActionContext context = this.CreateActionContext();
+            context.CommandBehavior = behavior;
+
+            return this.commandAction.ExecuteDataReader(context);
         }
 
         private ActionContext CreateActionContext()

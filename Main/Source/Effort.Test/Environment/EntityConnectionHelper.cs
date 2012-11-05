@@ -75,19 +75,19 @@ namespace Effort.Test.Environment
 
             foreach (XElement ssdlFile in ssdl)
             {
-                XAttribute xProvider = ssdlFile.Attribute("Provider");
-                XAttribute xProviderManifestToken = ssdlFile.Attribute("ProviderManifestToken");
+                XAttribute providerAttribute = ssdlFile.Attribute("Provider");
+                XAttribute providerManifestTokenAttribute = ssdlFile.Attribute("ProviderManifestToken");
 
                 if (createFake)
                 {
                     UniversalStorageSchemaModifier.Instance.Modify(ssdlFile, new EffortProviderInformation());
                 }
 
-                string oldProviderInvariantName = xProvider.Value;
-                string oldProviderManifestToken = xProviderManifestToken.Value;
+                string oldProviderInvariantName = providerAttribute.Value;
+                string oldProviderManifestToken = providerManifestTokenAttribute.Value;
 
-                xProvider.Value = DataReaderInspectorProviderConfiguration.ProviderInvariantName;
-                xProviderManifestToken.Value = string.Format("{0};{1}", oldProviderInvariantName, oldProviderManifestToken);
+                providerAttribute.Value = DataReaderInspectorProviderConfiguration.ProviderInvariantName;
+                providerManifestTokenAttribute.Value = string.Format("{0};{1}", oldProviderInvariantName, oldProviderManifestToken);
             }
 
             MetadataWorkspace convertedWorkspace = MetadataWorkspaceHelper.CreateMetadataWorkspace(csdl, ssdl, msl);

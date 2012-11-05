@@ -26,64 +26,98 @@ namespace Effort.Provider
 {
     using System;
     using System.Data.Common;
+    using Effort.DataLoaders;
 
+    /// <summary>
+    /// Providers a simple way to manage the contents of connection string used by the
+    /// <see cref="EffortConnection"/> class.
+    /// </summary>
     public class EffortConnectionStringBuilder : DbConnectionStringBuilder
     {
-        private static readonly string Key_InstanceId = "InstanceId";
-        private static readonly string Key_DataLoaderType = "DataLoaderType";
-        private static readonly string Key_DataLoaderArg = "DataLoaderArg";
-        private static readonly string Key_DataLoaderCached = "DataLoaderCached";
+        private static readonly string InstanceIdKey = "InstanceId";
+        private static readonly string DataLoaderTypeKey = "DataLoaderType";
+        private static readonly string DataLoaderArgKey = "DataLoaderArg";
+        private static readonly string DataLoaderCachedKey = "DataLoaderCached";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> class.
+        /// </summary>
         public EffortConnectionStringBuilder()
         {
-
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> class.
+        /// The provided connection string provides the data for the internal connection information
+        /// of the instance.
+        /// </summary>
+        /// <param name="connectionString">The basis for the object's internal connection information.</param>
         public EffortConnectionStringBuilder(string connectionString)
         {
-            base.ConnectionString = connectionString;
+            this.ConnectionString = connectionString;
         }
 
-
+        /// <summary>
+        /// Gets or sets the string that identifies the database instance.
+        /// </summary>
+        /// <value>
+        /// The identifier of the database instance.
+        /// </value>
         public string InstanceId
         {
             get
             {
-                if (!base.ContainsKey(Key_InstanceId))
+                if (!this.ContainsKey(InstanceIdKey))
                 {
                     return string.Empty;
                 }
 
-                return base[Key_InstanceId] as string;
+                return this[InstanceIdKey] as string;
             }
+
             set
             {
-                base[Key_InstanceId] = value;
+                this[InstanceIdKey] = value;
             }
         }
 
+        /// <summary>
+        /// Gets or sets the type of the data loader that is used to initialize the state of the database
+        /// instance. It has to implement the <see cref="Effort.DataLoaders.IDataLoader"/> interface.
+        /// </summary>
+        /// <value>
+        /// The type of the data loader. 
+        /// </value>
+        /// <exception cref="System.InvalidOperationException">Cannot set data loader.</exception>
         public Type DataLoaderType
         {
             get
             {
-                if (!base.ContainsKey(Key_DataLoaderType))
+                if (!this.ContainsKey(DataLoaderTypeKey))
                 {
                     return null;
                 }
 
-                string assemblyQualifiedName = base[Key_DataLoaderType] as string;
+                string assemblyQualifiedName = this[DataLoaderTypeKey] as string;
 
                 return Type.GetType(assemblyQualifiedName);
             }
+
             set
             {
                 if (value == null)
                 {
-                    base[Key_DataLoaderType] = null;
+                    this[DataLoaderTypeKey] = null;
                     return;
                 }
 
-                base[Key_DataLoaderType] = value.AssemblyQualifiedName;
+                // Check the type validity
+                if (typeof(IDataLoader).IsAssignableFrom(value.GetType()))
+                {
+                    throw new ArgumentException("Invalid type", "value");
+                }
+
+                this[DataLoaderTypeKey] = value.AssemblyQualifiedName;
 
                 if (this.DataLoaderType != value)
                 {
@@ -92,37 +126,52 @@ namespace Effort.Provider
             }
         }
 
+        /// <summary>
+        /// Gets or sets the data loader argument that is used by the data loader to initialize
+        /// the state of the database.
+        /// </summary>
+        /// <value>
+        /// The data loader argument.
+        /// </value>
         public string DataLoaderArgument
         {
             get
             {
-                if (!base.ContainsKey(Key_DataLoaderArg))
+                if (!this.ContainsKey(DataLoaderArgKey))
                 {
                     return string.Empty;
                 }
 
-                return base[Key_DataLoaderArg] as string;
+                return this[DataLoaderArgKey] as string;
             }
+
             set
             {
-                base[Key_DataLoaderArg] = value;
+                this[DataLoaderArgKey] = value;
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the data retrieved by the data loader should be cached.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the records loaded by the loader should be cached; otherwise, <c>false</c>.
+        /// </value>
         public bool DataLoaderCached
         {
             get
             {
-                if (!base.ContainsKey(Key_DataLoaderCached))
+                if (!this.ContainsKey(DataLoaderCachedKey))
                 {
                     return false;
                 }
 
-                return bool.Parse(base[Key_DataLoaderCached] as string);
+                return bool.Parse(this[DataLoaderCachedKey] as string);
             }
+
             set
             {
-                base[Key_DataLoaderCached] = value.ToString();
+                this[DataLoaderCachedKey] = value.ToString();
             }
         }
     }

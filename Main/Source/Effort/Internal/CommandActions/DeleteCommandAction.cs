@@ -55,7 +55,7 @@ namespace Effort.Internal.CommandActions
         {
             ITable table = null;
 
-            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(this.commandTree.Predicate, commandTree, context.DbContainer, out table);
+            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(this.commandTree.Predicate, this.commandTree, context.DbContainer, out table);
             IQueryable entitiesToDelete = DatabaseReflectionHelper.CreateTableQuery(expr, context.DbContainer.Internal);
 
             return DatabaseReflectionHelper.DeleteEntities(entitiesToDelete, context.Transaction);

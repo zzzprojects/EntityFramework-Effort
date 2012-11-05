@@ -47,10 +47,8 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                    context.Customers.Count()
-
-                    , expected
-                );
+                    context.Customers.Count(), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -67,10 +65,8 @@ namespace Effort.Test
                     {
                         CustomerId = customer.CustomerID,
                         OrderCount = customer.Orders.Count() 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -88,10 +84,8 @@ namespace Effort.Test
                     {
                         CustomerId = customerOrders.Key,
                         OrderCount = customerOrders.Count() 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -103,10 +97,8 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                    context.Orders.Average(o => o.Freight)
-
-                    , expected
-                );
+                    context.Orders.Average(o => o.Freight), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -123,10 +115,8 @@ namespace Effort.Test
                     { 
                         CustomerId = customer.CustomerID, 
                         avg = customer.Orders.Average(o => o.Freight) 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -144,10 +134,8 @@ namespace Effort.Test
                     {
                         CustomerId = customerOrders.Key,
                         OrderAvg = customerOrders.Average(o => o.Freight) 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -159,10 +147,8 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                    context.Orders.Sum(o => o.Freight)
-
-                    , expected
-                );
+                    context.Orders.Sum(o => o.Freight), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -181,10 +167,8 @@ namespace Effort.Test
                     { 
                         CustomerId = customer.CustomerID, 
                         OrderSum = customer.Orders.Sum(o => o.Freight) 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -198,10 +182,8 @@ namespace Effort.Test
                 context =>
                     context.Orders
                     .Where(o => o.Freight > 10000)
-                    .Sum(o => o.Freight)
-
-                    , expected
-                );
+                    .Sum(o => o.Freight), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -213,10 +195,8 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                    context.Orders.Max(o => o.Freight)
-
-                    , expected
-                );
+                    context.Orders.Max(o => o.Freight), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -234,10 +214,8 @@ namespace Effort.Test
                     { 
                         CustomerId = customer.CustomerID, 
                         OrderMax = customer.Orders.Max(o => o.Freight) 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -255,10 +233,8 @@ namespace Effort.Test
                     { 
                         CustomerId = customerOrders.Key, 
                         OrderMax = customerOrders.Max(o => o.Freight) 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -270,10 +246,8 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                    context.Orders.Min(o => o.Freight)
-
-                    , expected
-                );
+                    context.Orders.Min(o => o.Freight), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -291,10 +265,8 @@ namespace Effort.Test
                     {
                         CustomerId = customer.CustomerID,
                         OrderMin = customer.Orders.Min(o => o.Freight)
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -312,10 +284,8 @@ namespace Effort.Test
                     {
                         CustomerId = customerOrders.Key,
                         OrderMin = customerOrders.Min(o => o.Freight) 
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -338,10 +308,8 @@ namespace Effort.Test
                         OrderMax = customerOrders.Max(o => o.Freight),
                         OrderMin = customerOrders.Min(o => o.Freight),
                         OrderSum = customerOrders.Sum(o => o.Freight)
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -362,12 +330,11 @@ namespace Effort.Test
                         FreightAvg = customer.Orders.Average(o => o.Freight),
                         FreightMax = customer.Orders.Max(o => o.Freight),
                         FreightMin = customer.Orders.Min(o => o.Freight),
+
                         // SQL Provider returns sum = NULL, if the underlying collection is empty
                         FreightSum = customer.Orders.Sum(o => o.Freight)
-                    }
-
-                    , expected
-                );
+                    },
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -379,13 +346,11 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                    context.Orders
-
+                    context
+                    .Orders
                     .GroupBy(o => o.CustomerID)
-                    .Where(o => o.Average(x => x.Freight) > 1)
-
-                    , expected
-                );
+                    .Where(o => o.Average(x => x.Freight) > 1), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }

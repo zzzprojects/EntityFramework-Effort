@@ -22,16 +22,15 @@
 // </copyright>
 // ----------------------------------------------------------------------------------
 
-using Effort.Provider;
-
 namespace Effort.Internal.StorageSchema
 {
+    using Effort.Provider;
+
     internal class EffortProviderInformation : ProviderInformation
     {
         public EffortProviderInformation()
             : base(EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1)
         {
-
         }
     }
 }

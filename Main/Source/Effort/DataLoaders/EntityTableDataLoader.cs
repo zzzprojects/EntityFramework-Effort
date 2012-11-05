@@ -32,12 +32,21 @@ namespace Effort.DataLoaders
     using System.Data.Metadata.Edm;
     using Effort.Internal.Common;
 
+    /// <summary>
+    /// Represents a table data loader that retrieves data from the specified table of the
+    /// specified database.
+    /// </summary>
     public class EntityTableDataLoader : TableDataLoaderBase
     {
         private EntityConnection connection;
         private MetadataWorkspace workspace;
         private EntitySet entitySet;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityTableDataLoader" /> class.
+        /// </summary>
+        /// <param name="connection">The connection towards the database.</param>
+        /// <param name="table">The metadata of the table.</param>
         public EntityTableDataLoader(EntityConnection connection, TableDescription table)
             : base(table)
         {
@@ -46,30 +55,49 @@ namespace Effort.DataLoaders
             this.entitySet = MetadataWorkspaceHelper.GetEntityContainer(this.workspace).GetEntitySetByName(table.Name, true);
         }
 
+        /// <summary>
+        /// Creates a data reader that retrieves the initial data from the database.
+        /// </summary>
+        /// <returns>
+        /// The data reader.
+        /// </returns>
         protected override IDataReader CreateDataReader()
         {
             // Build a command tree, which queries all records
             DbCommandTree commandTree = CommandTreeBuilder.CreateSelectAll(this.workspace, this.entitySet);
+            
             // Get the provider services of the wrapped connection
-            DbProviderServices providerServices = DbProviderServices.GetProviderServices(connection.StoreConnection);
+            DbProviderServices providerServices = DbProviderServices.GetProviderServices(this.connection.StoreConnection);
+            
             // Get current manifest token
-            string manifestToken = providerServices.GetProviderManifestToken(connection.StoreConnection);
+            string manifestToken = providerServices.GetProviderManifestToken(this.connection.StoreConnection);
+            
             // Get provider manifest
             DbProviderManifest providerManifest = providerServices.GetProviderManifest(manifestToken);
 
             // Create a command definition from the command tree
             DbCommandDefinition commandDefinition = providerServices.CreateCommandDefinition(providerManifest, commandTree);
+            
             // Compile command 
             DbCommand command = commandDefinition.CreateCommand();
 
             // Setup command 
-            command.Connection = connection.StoreConnection;
+            command.Connection = this.connection.StoreConnection;
+            
             // Execute
             DbDataReader reader = command.ExecuteReader();
 
             return reader;
         }
 
+        /// <summary>
+        /// Converts DBNull values to CLR null.
+        /// </summary>
+        /// <param name="value">The current value.</param>
+        /// <param name="type">The expected type.</param>
+        /// <returns>
+        /// The expected value.
+        /// </returns>
         protected override object ConvertValue(object value, Type type)
         {
             if (value is DBNull)

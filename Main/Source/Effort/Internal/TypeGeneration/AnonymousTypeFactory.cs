@@ -48,21 +48,21 @@ namespace Effort.Internal.TypeGeneration
 
         private class TypeCacheEntryKey : IEquatable<TypeCacheEntryKey>
         {
-            private string[] _propertyNames;
+            private string[] propertyNames;
 
             public TypeCacheEntryKey(string[] propertyNames)
             {
-                _propertyNames = propertyNames;
+                this.propertyNames = propertyNames;
             }
 
             public override int GetHashCode()
             {
                 int result = 0;
 
-                for (int i = 0; i < _propertyNames.Length; i++)
+                for (int i = 0; i < this.propertyNames.Length; i++)
                 {
-                    int hash = _propertyNames[i].GetHashCode();
-                    //Rotate and mod2 addition
+                    int hash = this. propertyNames[i].GetHashCode();
+                    // Rotate and mod2 addition
                     result = result ^ ((hash << i) | (hash >> (32 - i)));
                 }
 
@@ -83,14 +83,14 @@ namespace Effort.Internal.TypeGeneration
 
             public bool Equals(TypeCacheEntryKey other)
             {
-                if (other._propertyNames.Length != this._propertyNames.Length)
+                if (other.propertyNames.Length != this.propertyNames.Length)
                 {
                     return false;
                 }
 
-                for (int i = 0; i < this._propertyNames.Length; i++)
+                for (int i = 0; i < this.propertyNames.Length; i++)
                 {
-                    if (!string.Equals(this._propertyNames[i], other._propertyNames[i]))
+                    if (!string.Equals(this.propertyNames[i], other.propertyNames[i]))
                     {
                         return false;
                     }
@@ -99,7 +99,6 @@ namespace Effort.Internal.TypeGeneration
                 return true;
             }
         }
-
 
         static AnonymousTypeFactory()
         {
@@ -122,27 +121,30 @@ namespace Effort.Internal.TypeGeneration
             string[] propertyNames = properties.Select(kvp => kvp.Key).ToArray();
             TypeCacheEntryKey key = new TypeCacheEntryKey(propertyNames);
 
-            Type genericType = typeCache.Get(key, () =>
-                {
-                    Type result = null;
-
-                    if (!AnonymousTypeFactory.SkipCompiledTypeSearch)
+            Type genericType = 
+                typeCache.Get(
+                    key, 
+                    () =>
                     {
-                        //Search in assemblies
-                        result = SearchForAnonymousType(propertyNames);
-                    }
+                        Type result = null;
 
-                    if (result == null)
-                    {
-                        //Generate dynamic type
-                        result = CreateGenericType(propertyNames);
-                    }
+                        if (!AnonymousTypeFactory.SkipCompiledTypeSearch)
+                        {
+                            // Search in assemblies
+                            result = SearchForAnonymousType(propertyNames);
+                        }
 
-                    return result;
-                });
+                        if (result == null)
+                        {
+                            // Generate dynamic type
+                            result = CreateGenericType(propertyNames);
+                        }
 
-           
+                        return result;
+                    });
+
             Type[] propertyTypes = properties.Select(kvp => kvp.Value).ToArray();
+
             return genericType.MakeGenericType(propertyTypes);
         }
 
@@ -204,10 +206,10 @@ namespace Effort.Internal.TypeGeneration
                 typeBuilder =
                     moduleBuilder.DefineType(
                         string.Format("<>AnonymousType{0}", typeCount),
-                        TypeAttributes.Public ,
-                    //Derive from object
-                        typeof(Object),
-                    //No interfaces
+                        TypeAttributes.Public,
+                        // Derive from object
+                        typeof(object),
+                        // No interfaces
                         Type.EmptyTypes);
             }
 
@@ -242,7 +244,6 @@ namespace Effort.Internal.TypeGeneration
                     new PropertyInfo[] { typeof(DebuggerDisplayAttribute).GetProperty("Type") },
                     new object[] { "<Anonymous Type>" });
 
-
             typeBuilder.SetCustomAttribute(debuggerDisplayAttributeBuilder);
 
             #endregion
@@ -250,7 +251,6 @@ namespace Effort.Internal.TypeGeneration
             FieldBuilder[] fields = new FieldBuilder[propertyNames.Length];
 
             #region Properties and private fields
-
 
             for (int i = 0; i < propertyNames.Length; i++)
             {
@@ -274,7 +274,6 @@ namespace Effort.Internal.TypeGeneration
                         null);
 
                 MethodAttributes getSetAttr = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
-
 
                 MethodBuilder mbGetAccessor = typeBuilder.DefineMethod(
                     "get_" + propertyNames[i],
@@ -324,7 +323,7 @@ namespace Effort.Internal.TypeGeneration
                     null,
                     Type.EmptyTypes);
 
-            getHashCodeBuilder.SetReturnType(typeof(Int32));
+            getHashCodeBuilder.SetReturnType(typeof(int));
 
             GenerateGetHashcodeIL(getHashCodeBuilder.GetILGenerator(), fields);
             getHashCodeBuilder.SetCustomAttribute(new CustomAttributeBuilder(debuggerHiddenAttributeConstructor, new object[] { }));
@@ -408,14 +407,13 @@ namespace Effort.Internal.TypeGeneration
 
         private static void GenerateGetHashcodeIL(ILGenerator gen, FieldBuilder[] fields)
         {
-            LocalBuilder l0 = gen.DeclareLocal(typeof(Int32));
-            LocalBuilder l1 = gen.DeclareLocal(typeof(Int32));
+            LocalBuilder l0 = gen.DeclareLocal(typeof(int));
+            LocalBuilder l1 = gen.DeclareLocal(typeof(int));
             Label label = gen.DefineLabel();
 
             int hashSeed = fields.Aggregate(0, (a, v) => a ^ v.Name.GetHashCode(), a => a);
 
             gen.Emit(OpCodes.Ldc_I4, hashSeed);
-
 
             for (int i = 0; i < fields.Length; i++)
             {
@@ -487,7 +485,7 @@ namespace Effort.Internal.TypeGeneration
                     null);
 
             LocalBuilder builder = gen.DeclareLocal(typeof(StringBuilder));
-            LocalBuilder str = gen.DeclareLocal(typeof(String));
+            LocalBuilder str = gen.DeclareLocal(typeof(string));
 
             Label label = gen.DefineLabel();
 
@@ -499,7 +497,6 @@ namespace Effort.Internal.TypeGeneration
             gen.Emit(OpCodes.Callvirt, stringBuilderAppend);
             gen.Emit(OpCodes.Pop);
 
-
             for (int i = 0; i < fields.Length; i++)
             {
                 gen.Emit(OpCodes.Ldloc_0);
@@ -509,7 +506,7 @@ namespace Effort.Internal.TypeGeneration
                 gen.Emit(OpCodes.Ldloc_0);
                 gen.Emit(OpCodes.Ldarg_0);
                 gen.Emit(OpCodes.Ldfld, fields[i]);
-                //ez itt nem jó
+                // TODO: do not box any value
                 gen.Emit(OpCodes.Box, fields[i].FieldType);
                 gen.Emit(OpCodes.Callvirt, stringBuilderAppend2);
                 gen.Emit(OpCodes.Pop);
@@ -526,7 +523,6 @@ namespace Effort.Internal.TypeGeneration
             gen.MarkLabel(label);
             gen.Emit(OpCodes.Ldloc_1);
             gen.Emit(OpCodes.Ret);
-
 
         }
 
@@ -555,7 +551,8 @@ namespace Effort.Internal.TypeGeneration
                 var equalsMethod =
                         TypeBuilder.GetMethod(equalityComparerType, typeof(EqualityComparer<>).GetMethods().Single(mi => mi.Name == "Equals" && mi.ContainsGenericParameters));
 
-                //gen.Emit(OpCodes.Brfalse_S, label82);    http://www.jasonbock.net/jb/GeneratingExceptionBlocks.aspx
+                //// Check: http://www.jasonbock.net/jb/GeneratingExceptionBlocks.aspx
+                ////gen.Emit(OpCodes.Brfalse_S, label82);    
                 gen.Emit(OpCodes.Brfalse, label82);
                 gen.Emit(OpCodes.Call, defaultEqualityComparerFactoryMethod);
                 gen.Emit(OpCodes.Ldarg_0);
@@ -563,8 +560,6 @@ namespace Effort.Internal.TypeGeneration
                 gen.Emit(OpCodes.Ldloc_0);
                 gen.Emit(OpCodes.Ldfld, fields[i]);
                 gen.Emit(OpCodes.Callvirt, equalsMethod);
-
-
             }
 
             gen.Emit(OpCodes.Br_S, label83);
@@ -576,7 +571,6 @@ namespace Effort.Internal.TypeGeneration
             gen.MarkLabel(label86);
             gen.Emit(OpCodes.Ldloc_1);
             gen.Emit(OpCodes.Ret);
-
         }
 
         #endregion

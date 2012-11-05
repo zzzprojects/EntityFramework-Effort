@@ -26,26 +26,50 @@ namespace Effort.DataLoaders
 {
     using System.Data.EntityClient;
 
+    /// <summary>
+    /// Represents a data loader that loads data from a database that has an
+    /// Entity Framework provider registered.
+    /// </summary>
     public class EntityDataLoader : IDataLoader
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityDataLoader" /> class.
+        /// </summary>
         public EntityDataLoader()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityDataLoader" /> class.
+        /// </summary>
+        /// <param name="entityConnectionString">The entity connection string.</param>
         public EntityDataLoader(string entityConnectionString)
         {
             this.Argument = entityConnectionString;
         }
 
+        /// <summary>
+        /// Gets or sets the argument that contains the entity connection string that
+        /// references to the source database.
+        /// </summary>
+        /// <value>
+        /// The argument.
+        /// </value>
         public string Argument
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Creates a <see cref="EntityTableDataLoaderFactory" /> instance.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="EntityTableDataLoaderFactory" /> instance.
+        /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
-            return new EntityDataLoaderFactory(() => new EntityConnection(this.Argument));
+            return new EntityTableDataLoaderFactory(() => new EntityConnection(this.Argument));
         }
     }
 }

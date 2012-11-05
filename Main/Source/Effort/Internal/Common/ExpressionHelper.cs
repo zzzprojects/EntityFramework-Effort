@@ -67,24 +67,6 @@ namespace Effort.Internal.Common
                     ConvertExpression(ref right, ref left);
                 }
             }
-
-
-        }
-
-        private static void ConvertExpression(ref Expression to, ref Expression expr)
-        {
-            //// Check if the nullable expression is constant
-            //if (to.NodeType == ExpressionType.Constant)
-            //{
-            //    ConstantExpression constant = to as ConstantExpression;
-
-            //    // Change the type of the constant
-            //    to = Expression.Constant(constant.Value, expr.Type);
-            //    return;
-            //}
-
-            // Last chance
-            expr = Expression.Convert(expr, to.Type);
         }
 
         public static Expression ConvertToNotNull(Expression exp)
@@ -121,5 +103,20 @@ namespace Effort.Internal.Common
             throw new NotSupportedException();
         }
 
+        private static void ConvertExpression(ref Expression to, ref Expression expr)
+        {
+            ////// Check if the nullable expression is constant
+            ////if (to.NodeType == ExpressionType.Constant)
+            ////{
+            ////    ConstantExpression constant = to as ConstantExpression;
+
+            ////    // Change the type of the constant
+            ////    to = Expression.Constant(constant.Value, expr.Type);
+            ////    return;
+            ////}
+
+            // Last chance
+            expr = Expression.Convert(expr, to.Type);
+        }
     }
 }

@@ -28,10 +28,10 @@ namespace Effort.Test.Environment.Queries
 
     internal interface ICorrectness
     {
-        bool Check();
-
         IResultSet Expected { get; }
 
         IResultSet Actual { get; }
+
+        bool Check();
     }
 }

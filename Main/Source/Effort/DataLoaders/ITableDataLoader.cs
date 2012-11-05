@@ -26,8 +26,15 @@ namespace Effort.DataLoaders
 {
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Provides functionality for creating initial data for a table.
+    /// </summary>
     public interface ITableDataLoader
     {
+        /// <summary>
+        /// Creates initial data for the table.
+        /// </summary>
+        /// <returns>The data created for the table.</returns>
         IEnumerable<object[]> GetData();
     }
 }

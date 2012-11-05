@@ -37,11 +37,11 @@ namespace Effort.Internal.Common
     using System.Xml.Linq;
     using Effort.Internal.StorageSchema;
 
-    /// <summary>
-    /// Code from http://efwrappers.codeplex.com/SourceControl/changeset/view/a7c12167e801#Source%2fEFProviderWrapperToolkit%2fEntityConnectionWrapperUtils.cs
-    /// </summary>
     internal static class MetadataWorkspaceHelper
     {
+        //// Code from:
+        //// http://efwrappers.codeplex.com/SourceControl/changeset/view/a7c12167e801#Source%2fEFProviderWrapperToolkit%2fEntityConnectionWrapperUtils.cs
+
         private static byte[] systemPublicKeyToken = { 0xB0, 0x3F, 0x5F, 0x7F, 0x11, 0xD5, 0x0A, 0x3A };
         private static Regex resRegex = new Regex(@"^res://(?<assembly>.*)/(?<resource>.*)$");
         private static string httpContextTypeName = "System.Web.HttpContext, System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
@@ -95,8 +95,6 @@ namespace Effort.Internal.Common
             workspace.RegisterItemCollection(smic);
             return workspace;
         }
-
-
 
         public static void ParseMetadata(string metadata, List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)
         {

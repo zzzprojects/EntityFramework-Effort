@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="TableInitialDataKey.cs" company="Effort Team">
+// <copyright file="TransientDatabaseComponentFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,46 +22,16 @@
 // </copyright>
 // ----------------------------------------------------------------------------------
 
-namespace Effort.Internal.Caching
+namespace Effort.Internal.DbManagement
 {
-    using System;
+    using NMemory.Execution;
+    using NMemory.Modularity;
 
-    internal class TableInitialDataKey : IEquatable<TableInitialDataKey>
+    internal class TransientDatabaseComponentFactory : DefaultDatabaseComponentFactory
     {
-        private Type loaderType;
-        private string loaderArg;
-        private Type entityType;
-
-        public TableInitialDataKey(Type loaderType, string loaderArg, Type entityType)
+        public override IConcurrencyManager CreateConcurrencyManager()
         {
-            this.loaderType = loaderType;
-            this.loaderArg = loaderArg ?? string.Empty;
-            this.entityType = entityType;
-        }
-
-        public bool Equals(TableInitialDataKey other)
-        {
-            return
-                this.loaderType.Equals(other.loaderType) &&
-                string.Equals(this.loaderArg, other.loaderArg, StringComparison.InvariantCultureIgnoreCase) &&
-                this.entityType.Equals(other.entityType);
-        }
-
-        public override bool Equals(object obj)
-        {
-            TableInitialDataKey other = obj as TableInitialDataKey;
-
-            if (other == null)
-            {
-                return false;
-            }
-
-            return this.Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return this.loaderType.GetHashCode() % this.loaderArg.GetHashCode() % this.entityType.GetHashCode();
+            return new ChaosConcurrencyManager();
         }
     }
 }

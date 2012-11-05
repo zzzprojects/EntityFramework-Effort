@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------------
-// <copyright file="" company="Effort Team">
+// <copyright file="DbFunctions.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +30,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
     {
         public static int IndexOf(string a, string b)
         {
-            return a.IndexOf(b) +1;
+            return a.IndexOf(b) + 1;
         }
 
         public static string ReverseString(string old)
@@ -38,12 +38,9 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return new string(old.ToCharArray().Reverse().ToArray());
         }
 
-        public static string Substring(string data, int? begin,int? length)
+        public static string Substring(string data, int? begin, int? length)
         {
-            return data.Substring(begin.Value - 1, length.Value );
+            return data.Substring(begin.Value - 1, length.Value);
         }
-
-
-
     }
 }

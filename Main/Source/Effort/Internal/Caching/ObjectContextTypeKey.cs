@@ -39,7 +39,6 @@ namespace Effort.Internal.Caching
             this.objectContextType = objectContextType.FullName;
         }
 
-
         public bool Equals(ObjectContextTypeKey other)
         {
             if (other == null)
@@ -47,7 +46,8 @@ namespace Effort.Internal.Caching
                 return false;
             }
 
-            return this.entityConnectionString.Equals(other.entityConnectionString, StringComparison.InvariantCultureIgnoreCase) &&
+            return 
+                this.entityConnectionString.Equals(other.entityConnectionString, StringComparison.InvariantCultureIgnoreCase) &&
                 this.effortConnectionString.Equals(other.effortConnectionString, StringComparison.InvariantCultureIgnoreCase) &&
                 this.objectContextType.Equals(other.objectContextType, StringComparison.InvariantCultureIgnoreCase);
         }
@@ -62,7 +62,7 @@ namespace Effort.Internal.Caching
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as ObjectContextTypeKey);
+            return this.Equals(obj as ObjectContextTypeKey);
         }
     }
 }

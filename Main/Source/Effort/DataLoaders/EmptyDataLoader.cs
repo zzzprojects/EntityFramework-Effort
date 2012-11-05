@@ -24,14 +24,29 @@
 
 namespace Effort.DataLoaders
 {
+    /// <summary>
+    /// Represents a data loader that retrieves no data.
+    /// </summary>
     public class EmptyDataLoader : IDataLoader
     {
+        /// <summary>
+        /// Gets or sets the argument that does not effect anything.
+        /// </summary>
+        /// <value>
+        /// The argument.
+        /// </value>
         public string Argument
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Creates a <see cref="EmptyTableDataLoaderFactory" /> instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="EmptyTableDataLoaderFactory" /> instance.
+        /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
             return new EmptyTableDataLoaderFactory();

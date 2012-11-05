@@ -49,7 +49,6 @@ namespace Effort.Internal.DbManagement
             }
         }
 
-
         public IEnumerable<object> GetClonedInitialData()
         {
             foreach (object obj in this.data)
@@ -57,7 +56,6 @@ namespace Effort.Internal.DbManagement
                 yield return this.dataCloner.Clone(obj);
             }
         }
-
 
         private interface IEntityCloner
         {
@@ -93,7 +91,5 @@ namespace Effort.Internal.DbManagement
                 return this.cloner.Invoke(entity);
             }
         }
-
-
     }
 }

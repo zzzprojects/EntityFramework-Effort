@@ -25,22 +25,40 @@
 namespace Effort.Provider
 {
     using System;
-    using System.Data.Common;
     using System.Data;
+    using System.Data.Common;
     using System.Text.RegularExpressions;
     using Effort.Internal.Caching;
     using Effort.Internal.DbManagement;
 
-    public class EffortCommand : EffortCommandBase
+    /// <summary>
+    /// Represents an Effort command that realizes text representations.
+    /// </summary>
+    public sealed class EffortCommand : EffortCommandBase
     {
+        /// <summary>
+        /// Executes the command text against the connection.
+        /// </summary>
+        /// <param name="behavior">An instance of <see cref="T:System.Data.CommandBehavior" />.</param>
+        /// <returns>
+        /// A <see cref="T:System.Data.Common.DbDataReader" />.
+        /// </returns>
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// Executes the query.
+        /// </summary>
+        /// <returns>
+        /// The number of rows affected.
+        /// </returns>
         public override int ExecuteNonQuery()
         {
+            // Source:
             //// http://regexadvice.com/forums/thread/55175.aspx
+
             Regex regex = new Regex(@"CREATE *SCHEMA *\((.*)\)");
 
             var matches = regex.Matches(this.CommandText.Trim());
@@ -62,9 +80,15 @@ namespace Effort.Provider
             return 0;
         }
 
+        /// <summary>
+        /// Executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.
+        /// </summary>
+        /// <returns>
+        /// The first column of the first row in the result set.
+        /// </returns>
         public override object ExecuteScalar()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

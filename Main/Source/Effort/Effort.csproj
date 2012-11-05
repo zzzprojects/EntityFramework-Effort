@@ -206,6 +206,7 @@
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
     <Compile Include="Internal\DbManagement\DbRelationInformation.cs" />
+    <Compile Include="Internal\DbManagement\DbSchemaFactory.cs" />
     <Compile Include="Internal\DbManagement\DbTableInitialData.cs" />
     <Compile Include="Internal\DbManagement\DbSchema.cs" />
     <Compile Include="Internal\DbManagement\DbContainer.cs" />
@@ -234,6 +235,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\LinqMethodProvider.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\SingleResult.cs" />
     <Compile Include="Internal\Caching\ConcurrentCache.cs" />
+    <Compile Include="Internal\DbManagement\TransientDatabaseComponentFactory.cs" />
     <Compile Include="Internal\Diagnostics\ILogger.cs" />
     <Compile Include="Internal\Common\CultureScope.cs" />
     <Compile Include="Internal\Common\ExpressionHelper.cs" />
@@ -316,7 +318,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

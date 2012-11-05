@@ -24,10 +24,23 @@
 
 namespace Effort.DataLoaders
 {
+    /// <summary>
+    /// Defines the required members of an Effort data loader.
+    /// </summary>
     public interface IDataLoader
     {
+        /// <summary>
+        /// Gets or sets the argument that describes the complete state of the data loader.
+        /// </summary>
+        /// <value>
+        /// The argument.
+        /// </value>
         string Argument { get; set; }
 
+        /// <summary>
+        /// Creates a table data loader factory.
+        /// </summary>
+        /// <returns>A table data loader factory.</returns>
         ITableDataLoaderFactory CreateTableDataLoaderFactory();
     }
 }

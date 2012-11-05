@@ -30,13 +30,20 @@ namespace Effort.Internal.DbCommandTreeTransformation.Join
 
     internal class ParameterFinderVisitor : ExpressionVisitor
     {
-        public List<ParameterExpression> UsedParameters { get; set; }
-        public List<ParameterExpression> DeclaredParameters { get; set; }
-
         public ParameterFinderVisitor()
         {
             this.UsedParameters = new List<ParameterExpression>();
             this.DeclaredParameters = new List<ParameterExpression>();
+        }
+
+        public List<ParameterExpression> UsedParameters { get; set; }
+
+        public List<ParameterExpression> DeclaredParameters { get; set; }
+
+        public void RemoveDuplicates()
+        {
+            this.UsedParameters = this.UsedParameters.Distinct().ToList();
+            this.DeclaredParameters = this.DeclaredParameters.Distinct().ToList();
         }
 
         protected override Expression VisitParameter(ParameterExpression p)
@@ -51,12 +58,6 @@ namespace Effort.Internal.DbCommandTreeTransformation.Join
             this.DeclaredParameters.AddRange(lambda.Parameters);
 
             return base.VisitLambda<T>(lambda);
-        }
-
-        public void RemoveDuplicates()
-        {
-            this.UsedParameters = this.UsedParameters.Distinct().ToList();
-            this.DeclaredParameters = this.DeclaredParameters.Distinct().ToList();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="" company="Effort Team">
+// <copyright file="EntitySetSearchVisitor.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -46,8 +46,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return this.tables.ToArray();
         }
 
-
-        protected override void OnVisit(DbScanExpression expression)
+        protected override void OnVisited(DbScanExpression expression)
         {
             EntitySetBase table = expression.Target;
 

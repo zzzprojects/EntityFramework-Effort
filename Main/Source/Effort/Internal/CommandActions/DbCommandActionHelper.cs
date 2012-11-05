@@ -60,7 +60,7 @@ namespace Effort.Internal.CommandActions
             return result.ToArray();
         }
 
-        public static ITable GetTable(DbModificationCommandTree commandTree, DbContainer dbContainer)
+        public static ITable GetTable(DbModificationCommandTree commandTree, DbContainer container)
         {
             DbScanExpression source = commandTree.Target.Expression as DbScanExpression;
 
@@ -69,7 +69,7 @@ namespace Effort.Internal.CommandActions
                 throw new NotSupportedException("The type of the Target property is not DbScanExpression");
             }
 
-            return dbContainer.Internal.GetTable(source.Target.Name);
+            return container.Internal.GetTable(source.Target.Name);
         }
 
         public static IDictionary<string, DbExpression> GetSetClauseExpressions(IList<DbModificationClause> clauses)
@@ -91,12 +91,11 @@ namespace Effort.Internal.CommandActions
             return result;
         }
 
-
-        public static Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, DbContainer dbContainer, out ITable table)
+        public static Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, DbContainer container, out ITable table)
         {
-            TransformVisitor visitor = new TransformVisitor(dbContainer.TypeConverter);
+            TransformVisitor visitor = new TransformVisitor(container.TypeConverter);
             visitor.SetParameters(commandTree.Parameters.ToArray());
-            visitor.TableProvider = dbContainer;
+            visitor.TableProvider = container;
 
             // Get the source expression
             ConstantExpression source = visitor.Visit(commandTree.Target.Expression) as ConstantExpression;
@@ -153,9 +152,5 @@ namespace Effort.Internal.CommandActions
 
             return entityReturningValues;
         }
-
-        
     }
-
-
 }

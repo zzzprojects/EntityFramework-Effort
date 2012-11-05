@@ -55,6 +55,7 @@ namespace Effort.Test
 
             // The csv file contains 4 records
             Assert.AreEqual(8, composerMock.CommitCount);
+
             // Records has 4 fields
             Assert.AreEqual(8 * 4, composerMock.SetValueCount);
         }

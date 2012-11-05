@@ -31,17 +31,17 @@ namespace Effort.Internal.CommandActions
 
     internal sealed class ActionContext
     {
-        private DbContainer dbContainer;
+        private DbContainer container;
 
-        public ActionContext(DbContainer dbContainer)
+        public ActionContext(DbContainer container)
         {
-            this.dbContainer = dbContainer;
+            this.container = container;
             this.Parameters = new List<CommandActionParameter>();
         }
 
         public DbContainer DbContainer
         {
-            get { return this.dbContainer; }
+            get { return this.container; }
         }
 
         public CommandBehavior CommandBehavior { get; set; }

@@ -31,21 +31,21 @@ namespace Effort.Internal.Common
 
     internal static class CommandTreeBuilder
     {
-        public static DbCommandTree CreateSelectAll( MetadataWorkspace workspace, EntitySet entitySet )
+        public static DbCommandTree CreateSelectAll(MetadataWorkspace workspace, EntitySet entitySet)
         {
-            ConstructorInfo treeConstructor = 
-                typeof( DbQueryCommandTree )
+            ConstructorInfo treeConstructor =
+                typeof(DbQueryCommandTree)
                 .GetConstructor(
                     BindingFlags.NonPublic | BindingFlags.Instance,
                     null,
                     new Type[] { typeof(MetadataWorkspace), typeof(DataSpace), typeof(DbExpression) },
-                    null );
+                    null);
 
             Type expressionBuilder = typeof(DbExpression).Assembly.GetType("System.Data.Common.CommandTrees.ExpressionBuilder.DbExpressionBuilder");
 
-            object dbExpression = expressionBuilder.GetMethod("Scan").Invoke(null, new object[] {entitySet});
+            object scanExpression = expressionBuilder.GetMethod("Scan").Invoke(null, new object[] { entitySet });
 
-            object tree = treeConstructor.Invoke(new object[] {workspace, DataSpace.SSpace, dbExpression});
+            object tree = treeConstructor.Invoke(new object[] { workspace, DataSpace.SSpace, scanExpression });
             return tree as DbCommandTree;
         }
     }

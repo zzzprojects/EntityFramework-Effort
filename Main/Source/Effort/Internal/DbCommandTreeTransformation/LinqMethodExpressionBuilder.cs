@@ -44,7 +44,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         public Expression Select(Expression source, LambdaExpression selector)
         {
-            Type  sourceType = TypeHelper.GetElementType(source.Type);
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.Select;
             MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
@@ -102,14 +102,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return Expression.Call(method, source, Expression.Quote(selector));
         }
 
-        public Expression OrderByDescending( Expression source, LambdaExpression selector )
+        public Expression OrderByDescending(Expression source, LambdaExpression selector)
         {
-            Type sourceType = TypeHelper.GetElementType( source.Type );
+            Type sourceType = TypeHelper.GetElementType(source.Type);
 
             MethodInfo genericMethod = this.queryMethods.OrderByDescending;
-            MethodInfo method = genericMethod.MakeGenericMethod( sourceType, selector.Body.Type );
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
 
-            return Expression.Call( method, source, Expression.Quote( selector ) );
+            return Expression.Call(method, source, Expression.Quote(selector));
         }
 
         public Expression ThenBy(Expression source, LambdaExpression selector)
@@ -218,9 +218,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             MethodInfo genericMethod = this.queryMethods.Concat;
             MethodInfo method = genericMethod.MakeGenericMethod(firstType);
-            
-            return Expression.Call(method, first, second);
 
+            return Expression.Call(method, first, second);
         }
 
         #region Aggregation
@@ -255,18 +254,18 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return this.Aggregate(source, selector, "Sum");
         }
 
-        private static Type[] aggregateNativeTypes = new Type[] { typeof(int), typeof(long), typeof(double), typeof(float), typeof(decimal) };
-
         private Expression Aggregate(Expression source, LambdaExpression selector, string name)
         {
+            Type[] aggregateNativeTypes = new Type[] { typeof(int), typeof(long), typeof(double), typeof(float), typeof(decimal) };
+
             Type sourceType = TypeHelper.GetElementType(source.Type);
             Type selectorType = selector.Body.Type;
 
-            //Check if the type is "native"
+            // Native means, that Enumerable contains aggregate method for a specific type
             bool isNative = false;
 
-            //Nullable types need special consideration
-            if(TypeHelper.IsNullable(selectorType))
+            // Nullable types need special consideration
+            if (TypeHelper.IsNullable(selectorType))
             {
                 isNative = aggregateNativeTypes.Contains(selectorType.GetGenericArguments()[0]);
             }
@@ -277,8 +276,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             MethodInfo method = null;
 
-
-            if(isNative)
+            if (isNative)
             {
                 // Aggregator methods does not have generic definitions, so we have to search for each type
 
@@ -286,22 +284,24 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 MethodInfo genericMethod = typeof(Enumerable)
                     .GetMethods()
                     .Where(mi =>
-                            // The method name
+
+                        // The method name
                         mi.Name == name &&
-                            // The method has single generic argument
-                            // <TSource>
+
+                        // The method has single generic argument
+                        // <TSource>
                         mi.GetGenericArguments().Length == 1 &&
-                            // Two parameters
-                            // (source, selectorType)
+
+                        // Two parameters
+                        // (source, selectorType)
                         mi.GetParameters().Length == 2 &&
-                            // The type of the second parameter has two generic arguments
-                            // Func<TSource, selectorType>
-                        mi.GetParameters()[1]
-                        .ParameterType.GetGenericArguments().Length == 2 &&
-                            //selectorType match
-                        mi
-                        .GetParameters()[1]
-                        .ParameterType.GetGenericArguments()[1] == selectorType)
+
+                        // The type of the second parameter has two generic arguments
+                        // Func<TSource, selectorType>
+                        mi.GetParameters()[1].ParameterType.GetGenericArguments().Length == 2 &&
+
+                        // selectorType match
+                        mi.GetParameters()[1].ParameterType.GetGenericArguments()[1] == selectorType)
                     .Single();
 
                 method = genericMethod.MakeGenericMethod(sourceType);
@@ -310,8 +310,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
             {
                 // Search for "TResult Enumerable.'name'<TSource, TResult>(IEnumerable<TSource>, Func<TSource, TResult>)"
                 MethodInfo genericMethod = typeof(Enumerable).GetMethods()
-                    .Where(mi => 
-                        mi.Name == name && 
+                    .Where(mi =>
+                        mi.Name == name &&
                         mi.GetGenericArguments().Length == 2)
                     .Single();
                 method = genericMethod.MakeGenericMethod(sourceType, selectorType);
@@ -327,7 +327,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             Type firstType = TypeHelper.GetElementType(first.Type);
             Type secondType = TypeHelper.GetElementType(second.Type);
 
-            Dictionary<string, Type> resultTypeProps = 
+            Dictionary<string, Type> resultTypeProps =
                 new Dictionary<string, Type>
                 {
                     { name1, firstType },
@@ -339,10 +339,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
             MethodInfo genericMethod = this.queryMethods.SelectManyWithResultSelector;
             MethodInfo method = genericMethod.MakeGenericMethod(firstType, secondType, anonymType);
 
-            Expression collectionSelector = 
+            Expression collectionSelector =
                 Expression.Lambda(
                     Expression.Convert(
-                        second, 
+                        second,
                         typeof(IEnumerable<>).MakeGenericType(secondType)),
                 Expression.Parameter(firstType));
 
@@ -352,17 +352,24 @@ namespace Effort.Internal.DbCommandTreeTransformation
             Expression constructor = Expression.New(anonymType.GetConstructors().First(), p1, p2);
             Expression resultSelector = Expression.Lambda(constructor, p1, p2);
 
-            Expression result = Expression.Call(null, 
-                method, 
+            Expression result = Expression.Call(
+                null,
+                method,
                 first,
                 Expression.Quote(collectionSelector),
                 Expression.Quote(resultSelector));
 
             return result;
-
         }
 
-        public Expression Join(Expression left, Expression right, string name1, string name2, LambdaExpression leftKeySelector, LambdaExpression rightKeySelector, DbExpressionKind joinType)
+        public Expression Join(
+            Expression left, 
+            Expression right, 
+            string name1, 
+            string name2, 
+            LambdaExpression leftKeySelector, 
+            LambdaExpression rightKeySelector, 
+            DbExpressionKind joinType)
         {
             Type rightType = TypeHelper.GetElementType(right.Type);
             Type leftType = TypeHelper.GetElementType(left.Type);
@@ -372,19 +379,19 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 { 
                     { name1, leftType },
                     { name2, rightType }
-                }; 
-            
+                };
+
             Type anonymType = AnonymousTypeFactory.Create(resultTypeProps);
 
             MethodInfo genericJoin = null;
 
-            switch(joinType)
+            switch (joinType)
             {
                 case DbExpressionKind.InnerJoin:
                     genericJoin = this.queryMethods.Join;
                     break;
                 case DbExpressionKind.LeftOuterJoin:
-                    genericJoin = this.queryMethods.LeftOuterJoin; //todo leave NMemory out
+                    genericJoin = this.queryMethods.LeftOuterJoin;
                     break;
                 case DbExpressionKind.FullOuterJoin:
                     throw new NotImplementedException();
@@ -398,20 +405,23 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 leftKeySelector.ReturnType,
                 anonymType);
 
-
             ParameterExpression p1 = Expression.Parameter(leftType);
             ParameterExpression p2 = Expression.Parameter(rightType);
 
             Expression constructor = Expression.New(anonymType.GetConstructors().First(), p1, p2);
             Expression resultSelector = Expression.Lambda(constructor, p1, p2);
 
-            Expression result = Expression.Call(null, joinMethod, left, right,
-                Expression.Quote(leftKeySelector),
-                Expression.Quote(rightKeySelector),
-                Expression.Quote(resultSelector));
+            Expression result = 
+                Expression.Call(
+                    null, 
+                    joinMethod, 
+                    left, 
+                    right,
+                    Expression.Quote(leftKeySelector),
+                    Expression.Quote(rightKeySelector),
+                    Expression.Quote(resultSelector));
+
             return result;
         }
-
-
     }
 }

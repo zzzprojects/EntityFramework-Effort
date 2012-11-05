@@ -38,96 +38,168 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Dictionary<string, Func<EdmFunction, Expression[], MethodCallExpression>> mappings;
         private EdmTypeConverter converter;
 
-        /// <summary>
-        /// Still missing:
-        /// 3 System.Decimal. functions
-        /// System.TimeSpan
-        /// System.DateTimeOffset
-        /// Math.Round with digits
-        /// </summary>
-        /// <param name="converter"></param>
         public CanonicalFunctionMapper(ITypeConverter converter)
         {
+            //// Still missing:
+            //// 3 System.Decimal. functions
+            //// System.TimeSpan
+            //// System.DateTimeOffset
+            //// Math.Round with digits
+
             this.converter = new EdmTypeConverter(converter);
             this.mappings = new Dictionary<string, Func<EdmFunction, Expression[], MethodCallExpression>>();
 
-            // Mappingek leirasa: http://msdn.microsoft.com/en-us/library/bb738681.aspx
+            //// Description of canonical functions: http://msdn.microsoft.com/en-us/library/bb738681.aspx
 
-            //String
+            //// String
+            this.mappings["Edm.Concat"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(typeof(string), "Concat", typeof(string), typeof(string)), 
+                    args[0],
+                    args[1]);
 
-            this.mappings["Edm.Concat"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(string), "Concat", typeof(string), typeof(string)), args[0], args[1]);
+            this.mappings["Edm.ToUpper"] = (f, args) => 
+                Expression.Call(
+                    args[0],
+                    FindMethod(typeof(string), "ToUpper"));
 
-            this.mappings["Edm.ToUpper"] = (f, args) => Expression.Call(args[0],
-                FindMethod(typeof(string), "ToUpper"));
-            this.mappings["Edm.ToLower"] = (f, args) => Expression.Call(args[0],
-                FindMethod(typeof(string), "ToLower"));
+            this.mappings["Edm.ToLower"] = (f, args) => 
+                Expression.Call(
+                    args[0],
+                    FindMethod(typeof(string), "ToLower"));
 
-            this.mappings["Edm.IndexOf"] = (f, args) => Expression.Call(null,
-                 FindMethod(typeof(DbFunctions), "IndexOf", typeof(string), typeof(string)), args[1], args[0]);
+            this.mappings["Edm.IndexOf"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(typeof(DbFunctions), "IndexOf", typeof(string), typeof(string)), 
+                    args[1], 
+                    args[0]);
 
-            this.mappings["Edm.Trim"] = (f, args) => Expression.Call(args[0],
-                FindMethod(typeof(string), "Trim"));
+            this.mappings["Edm.Trim"] = (f, args) => 
+                Expression.Call(
+                    args[0],
+                    FindMethod(typeof(string), "Trim"));
 
-            this.mappings["Edm.RTrim"] = (f, args) => Expression.Call(args[0],
-                FindMethod(typeof(string), "TrimEnd",typeof(Char[])),Expression.Constant(new Char[0]));
+            this.mappings["Edm.RTrim"] = (f, args) => 
+                Expression.Call(
+                    args[0],
+                    FindMethod(typeof(string), "TrimEnd", typeof(char[])), 
+                    Expression.Constant(new char[0]));
 
-            this.mappings["Edm.LTrim"] = (f, args) => Expression.Call(args[0],
-                FindMethod(typeof(string), "TrimStart", typeof(Char[])), Expression.Constant(new Char[0]));
+            this.mappings["Edm.LTrim"] = (f, args) => 
+                Expression.Call(
+                    args[0],
+                    FindMethod(typeof(string), "TrimStart", typeof(char[])), 
+                    Expression.Constant(new char[0]));
 
-            this.mappings["Edm.Length"] = (f, args) => Expression.Call(args[0],typeof(string).GetProperties().Where(x => x.Name == "Length").First().GetGetMethod());
+            this.mappings["Edm.Length"] = (f, args) => 
+                Expression.Call(
+                    args[0], 
+                    typeof(string).GetProperties().Where(x => x.Name == "Length").First().GetGetMethod());
 
-            this.mappings["Edm.Reverse"] = (f, args) => Expression.Call(null,
-                 FindMethod(typeof(DbFunctions), "ReverseString", typeof(string)), args[0]);
+            this.mappings["Edm.Reverse"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(typeof(DbFunctions), "ReverseString", typeof(string)), 
+                    args[0]);
 
-            this.mappings["Edm.Substring"] = (f, args) => Expression.Call(null,
-                 FindMethod(typeof(DbFunctions), "Substring", typeof(string), typeof(int?), typeof(int?)), args[0], args[1], args[2]);
+            this.mappings["Edm.Substring"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(typeof(DbFunctions), "Substring", typeof(string), typeof(int?), typeof(int?)), 
+                    args[0], 
+                    args[1], 
+                    args[2]);
 
-            this.mappings["Edm.Replace"] = (f, args) => Expression.Call(args[0],
-                FindMethod(typeof(string), "Replace", typeof(string), typeof(string)),args[1],args[2]);
-            
-            //DateTime  Function Mapping
+            this.mappings["Edm.Replace"] = (f, args) => 
+                Expression.Call(
+                    args[0],
+                    FindMethod(typeof(string), "Replace", typeof(string), typeof(string)), 
+                    args[1], 
+                    args[2]);
 
-            this.mappings["Edm.CurrentDateTime"] = (f, args) => Expression.Call(null, typeof(DateTime).GetProperties().Where(x => x.Name == "Now").First().GetGetMethod());
+            //// DateTime
+            this.mappings["Edm.CurrentDateTime"] = (f, args) => 
+                Expression.Call(
+                    null, 
+                    typeof(DateTime).GetProperties().Where(x => x.Name == "Now").First().GetGetMethod());
 
-            this.mappings["Edm.CurrentUtcDateTime"] = (f, args) => Expression.Call(null, typeof(DateTime).GetProperties().Where(x => x.Name == "UtcNow").First().GetGetMethod());
+            this.mappings["Edm.CurrentUtcDateTime"] = (f, args) => 
+                Expression.Call(
+                    null, 
+                    typeof(DateTime).GetProperties().Where(x => x.Name == "UtcNow").First().GetGetMethod());
 
-            this.mappings["Edm.Day"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), (args[0].Type == typeof(DateTime?) ? (typeof(DateTime)) : (typeof(DateTimeOffset))).GetProperties().Where(x => x.Name == "Day").First().GetGetMethod());
-            this.mappings["Edm.Hour"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), (args[0].Type == typeof(DateTime?) ? (typeof(DateTime)) : (typeof(DateTimeOffset))).GetProperties().Where(x => x.Name == "Hour").First().GetGetMethod());
-            this.mappings["Edm.Millisecond"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), (args[0].Type == typeof(DateTime?) ? (typeof(DateTime)) : (typeof(DateTimeOffset))).GetProperties().Where(x => x.Name == "Millisecond").First().GetGetMethod());
-            this.mappings["Edm.Minute"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), (args[0].Type == typeof(DateTime?) ? (typeof(DateTime)) : (typeof(DateTimeOffset))).GetProperties().Where(x => x.Name == "Minute").First().GetGetMethod());
-            this.mappings["Edm.Month"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), (args[0].Type == typeof(DateTime?) ? (typeof(DateTime)) : (typeof(DateTimeOffset))).GetProperties().Where(x => x.Name == "Month").First().GetGetMethod());
-            this.mappings["Edm.Second"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), (args[0].Type == typeof(DateTime?) ? (typeof(DateTime)) : (typeof(DateTimeOffset))).GetProperties().Where(x => x.Name == "Second").First().GetGetMethod());
-            this.mappings["Edm.Year"] = (f, args) => Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), (args[0].Type == typeof(DateTime?) ? (typeof(DateTime)) : (typeof(DateTimeOffset))).GetProperties().Where(x => x.Name == "Year").First().GetGetMethod());
+            this.mappings["Edm.CurrentDateTimeOffset"] = (f, args) => 
+                Expression.Call(
+                    null, 
+                    typeof(DateTimeOffset).GetProperties().Where(x => x.Name == "Now").First().GetGetMethod());
 
-            this.mappings["Edm.CurrentDateTimeOffset"] = (f, args) => Expression.Call(null, typeof(DateTimeOffset).GetProperties().Where(x => x.Name == "Now").First().GetGetMethod());
-             
-            //Mathematical Function Mapping
+            this.mappings["Edm.Year"] = (f, args) =>
+                CreateDateExpression(args, "Year");
 
-            this.mappings["Edm.Ceiling"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(Math), "Ceiling", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
-                ExpressionHelper.ConvertToNotNull(args[0]));
+            this.mappings["Edm.Month"] = (f, args) =>
+                CreateDateExpression(args, "Month");
 
-            this.mappings["Edm.Floor"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(Math), "Floor", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
-                ExpressionHelper.ConvertToNotNull(args[0]));
-            
-            this.mappings["Edm.Round"] = (f, args) => Expression.Call(null,
-               FindMethod(typeof(Math), "Round", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage),
-               args.Count() > 1 ? (this.converter.ConvertNotNull(f.Parameters[1].TypeUsage)) : (typeof(int))),
-               ExpressionHelper.ConvertToNotNull(args[0]), args.Count() > 1 ? (ExpressionHelper.ConvertToNotNull(args[1])) : (Expression.Constant(0)));
+            this.mappings["Edm.Day"] = (f, args) =>
+                CreateDateExpression(args, "Day");
 
-            this.mappings["Edm.Abs"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(Math), "Abs", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
-                ExpressionHelper.ConvertToNotNull(args[0]));
+            this.mappings["Edm.Hour"] = (f, args) =>
+                CreateDateExpression(args, "Hour");
 
-            this.mappings["Edm.Power"] = (f, args) => Expression.Call(null,
-                FindMethod(typeof(Math), "Pow", 
-                    this.converter.ConvertNotNull(f.Parameters[0].TypeUsage), 
-                    this.converter.ConvertNotNull(f.Parameters[1].TypeUsage)),
-                ExpressionHelper.ConvertToNotNull(args[0]), ExpressionHelper.ConvertToNotNull(args[1]));
-             
+            this.mappings["Edm.Minute"] = (f, args) =>
+                CreateDateExpression(args, "Minute");
 
+            this.mappings["Edm.Second"] = (f, args) =>
+                CreateDateExpression(args, "Second");
+
+            this.mappings["Edm.Millisecond"] = (f, args) =>
+                CreateDateExpression(args, "Millisecond");
+
+            //// Arithmetic
+            this.mappings["Edm.Ceiling"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(typeof(Math), "Ceiling", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+                    ExpressionHelper.ConvertToNotNull(args[0]));
+
+            this.mappings["Edm.Floor"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(typeof(Math), "Floor", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+                    ExpressionHelper.ConvertToNotNull(args[0]));
+
+            this.mappings["Edm.Round"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(
+                        typeof(Math), 
+                        "Round", 
+                        this.converter.ConvertNotNull(f.Parameters[0].TypeUsage),
+                        args.Count() > 1 ? 
+                            this.converter.ConvertNotNull(f.Parameters[1].TypeUsage) : 
+                            typeof(int)),
+                    ExpressionHelper.ConvertToNotNull(args[0]), 
+                        args.Count() > 1 ? 
+                            ExpressionHelper.ConvertToNotNull(args[1]) : 
+                            Expression.Constant(0));
+
+            this.mappings["Edm.Abs"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(typeof(Math), "Abs", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
+                    ExpressionHelper.ConvertToNotNull(args[0]));
+
+            this.mappings["Edm.Power"] = (f, args) => 
+                Expression.Call(
+                    null,
+                    FindMethod(
+                        typeof(Math), 
+                        "Pow",
+                        this.converter.ConvertNotNull(f.Parameters[0].TypeUsage),
+                        this.converter.ConvertNotNull(f.Parameters[1].TypeUsage)),
+                    ExpressionHelper.ConvertToNotNull(args[0]), 
+                    ExpressionHelper.ConvertToNotNull(args[1]));
         }
 
         public MethodCallExpression CreateMethodCall(EdmFunction function, Expression[] arguments)
@@ -138,17 +210,28 @@ namespace Effort.Internal.DbCommandTreeTransformation
             }
             catch (KeyNotFoundException exp)
             {
-                throw new InvalidOperationException("There is no matching CLR function in MMDB for function " + function.FullName + '.', exp);
+                throw new InvalidOperationException("Missing function mapping for " + function.FullName + '.', exp);
             }
         }
-        private MethodInfo FindMethod(Type type, string methodName, params Type[] parameterTypes)
+
+        private static MethodCallExpression CreateDateExpression(Expression[] args, string propertyName)
         {
-            return type.GetMethods().Where(mi => mi.Name == methodName
-                && mi.GetParameters().Count() == parameterTypes.Length
-                && mi.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameterTypes)
-                ).Single();
+            Expression source = ExpressionHelper.ConvertToNotNull(args[0]);
+            Type sourceType = source.Type;
+
+            PropertyInfo property = sourceType.GetProperty(propertyName);
+
+            return Expression.Call(source, property.GetGetMethod());
         }
 
-
+        private static MethodInfo FindMethod(Type type, string methodName, params Type[] parameterTypes)
+        {
+            return type
+                .GetMethods()
+                .Single(mi =>
+                    mi.Name == methodName &&
+                    mi.GetParameters().Count() == parameterTypes.Length &&
+                    mi.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameterTypes));
+        }
     }
 }

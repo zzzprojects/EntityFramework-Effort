@@ -51,7 +51,7 @@ namespace Effort.DataLoaders
 
             TableDescription tableDescription = new TableDescription(tableName, columns);
 
-            ITableDataLoader loader = loaderFactory.CreateTableDataSource(tableDescription);
+            ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
             
             Delegate initializer = LambdaExpressionHelper.CreateInitializerExpression(entityType, properties).Compile();
 
@@ -74,8 +74,6 @@ namespace Effort.DataLoaders
 
                 yield return entity;
             }
-
-
         }
     }
 }

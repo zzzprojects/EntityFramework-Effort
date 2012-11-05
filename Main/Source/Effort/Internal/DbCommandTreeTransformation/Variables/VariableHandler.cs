@@ -46,7 +46,7 @@ namespace Effort.Internal.DbCommandTreeTransformation.Variables
 
         public void Dispose()
         {
-            this.collection.Delete(variable);
+            this.collection.Delete(this.variable);
         }
     }
 }

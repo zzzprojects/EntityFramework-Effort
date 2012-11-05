@@ -26,16 +26,36 @@ namespace Effort.DataLoaders
 {
     using System;
 
+    /// <summary>
+    /// Stores the metadata of a table column.
+    /// </summary>
     public sealed class ColumnDescription
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColumnDescription" /> class.
+        /// </summary>
+        /// <param name="name">The name of the column.</param>
+        /// <param name="type">The type of the column.</param>
         internal ColumnDescription(string name, Type type)
         {
             this.Name = name;
             this.Type = type;
         }
 
+        /// <summary>
+        /// Gets the name of the column.
+        /// </summary>
+        /// <value>
+        /// The name of the column.
+        /// </value>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Gets the type of the column.
+        /// </summary>
+        /// <value>
+        /// The type of the colum.
+        /// </value>
         public Type Type { get; private set; }
     }
 }

@@ -43,8 +43,8 @@ namespace Effort.Internal.Common
     internal static class DatabaseReflectionHelper
     {
         public static ITable CreateTable(
-            Database database, 
-            Type entityType, 
+            Database database,
+            Type entityType,
             IKeyInfo primaryKeyInfo,
             PropertyInfo identityField,
             object[] constraints,
@@ -57,13 +57,13 @@ namespace Effort.Internal.Common
                 ParameterExpression p = Expression.Parameter(entityType, "x");
 
                 identity = Expression.Lambda(
-                    Expression.Convert(         
+                    Expression.Convert(
                         Expression.Property(p, identityField.Name),
                         typeof(long)),
                     p);
             }
 
-            object table = 
+            object table =
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("CreateTable")
                 .MakeGenericMethod(entityType, primaryKeyInfo.KeyType)
@@ -102,7 +102,6 @@ namespace Effort.Internal.Common
 
         public static IQueryable CreateTableQuery(Expression query, Database database)
         {
-
             if (query.Type.GetGenericTypeDefinition() != typeof(IQueryable<>))
             {
                 throw new ArgumentException("query is not IQueryable<>");
@@ -151,20 +150,6 @@ namespace Effort.Internal.Common
             return procedure;
         }
 
-
-        private static ITable GetTable(Database database, RelationshipEndMember rel)
-        {
-            if (rel.TypeUsage.EdmType.BuiltInTypeKind != BuiltInTypeKind.RefType)
-            {
-                return null;
-            }
-
-            RefType refType = rel.TypeUsage.EdmType as RefType;
-
-            return database.GetTable(refType.ElementType.Name);
-        }
-
-
         public static void CreateAssociation(Database database, DbRelationInformation relation)
         {
             // Get the referenced tables
@@ -177,12 +162,14 @@ namespace Effort.Internal.Common
 
             // Check for existing indexes on the primary table. 
             // The identification of primary index is made by comparing the primaryproperties of relation with the entitykeymembers of the index
-            string[] primarymembers = relation.PrimaryProperties.Select(x => x.Name).OrderBy(x=>x).ToArray();
+            string[] primarymembers = relation.PrimaryProperties.Select(x => x.Name).OrderBy(x => x).ToArray();
             foreach (IIndex existingPrimaryTableIndex in primaryTable.Indexes)
             {
                 // Check if not unique index
                 if (!(existingPrimaryTableIndex is IUniqueIndex))
+                {
                     continue;
+                }
 
                 string[] indexMembers = existingPrimaryTableIndex.KeyInfo.EntityKeyMembers.Select(x => x.Name).OrderBy(x => x).ToArray();
 
@@ -203,11 +190,10 @@ namespace Effort.Internal.Common
 
             // Check for existing indexes on the foreign table
             // The identification of foreign index is made by comparing the foreignproperties of relation with the entitykeymembers of the index
-            string[] foreignmembers = relation.ForeignProperties.Select(x => x.Name).OrderBy(x=>x).ToArray();
+            string[] foreignmembers = relation.ForeignProperties.Select(x => x.Name).OrderBy(x => x).ToArray();
             foreach (IIndex existingForeignTableIndex in foreignTable.Indexes)
             {
                 string[] indexMembers = existingForeignTableIndex.KeyInfo.EntityKeyMembers.Select(x => x.Name).OrderBy(x => x).ToArray();
-
 
                 if (foreignmembers.SequenceEqual(indexMembers))
                 {
@@ -221,18 +207,28 @@ namespace Effort.Internal.Common
                 // Build foreign key index (with the keyinfo from the relation)
                 foreignKeyIndex = typeof(DatabaseReflectionHelper.WrapperMethods)
                     .GetMethod("CreateForeignKeyIndex")
-                    .MakeGenericMethod(toTableGenericsArgs[0], toTableGenericsArgs[1], ((IKeyInfo)relation.ForeignKeyInfo).KeyType )
+                    .MakeGenericMethod(toTableGenericsArgs[0], toTableGenericsArgs[1], ((IKeyInfo)relation.ForeignKeyInfo).KeyType)
                     .Invoke(null, new object[] { foreignTable, relation.ForeignKeyInfo }) as IIndex;
             }
 
-            //Create the relation
+            // Create the relation
             typeof(DatabaseReflectionHelper.WrapperMethods)
-                .GetMethod("CreateRelationWithComplexTypes")
+                .GetMethod("CreateRelation")
                 .MakeGenericMethod(primaryTable.EntityType, primaryIndex.KeyInfo.KeyType, foreignTable.EntityType, foreignKeyIndex.KeyInfo.KeyType)
-                .Invoke(null, new object[] { database, primaryIndex, foreignKeyIndex,relation.ForeignToPrimaryConverter,relation.PrimaryToForeignConverter });
-
+                .Invoke(null, new object[] { database, primaryIndex, foreignKeyIndex, relation.ForeignToPrimaryConverter, relation.PrimaryToForeignConverter });
         }
 
+        private static ITable GetTable(Database database, RelationshipEndMember rel)
+        {
+            if (rel.TypeUsage.EdmType.BuiltInTypeKind != BuiltInTypeKind.RefType)
+            {
+                return null;
+            }
+
+            RefType refType = rel.TypeUsage.EdmType as RefType;
+
+            return database.GetTable(refType.ElementType.Name);
+        }
 
         private static class WrapperMethods
         {
@@ -250,10 +246,11 @@ namespace Effort.Internal.Common
             }
 
             public static Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
-                Database database,  
+                Database database,
                 IKeyInfo<TEntity, TPrimaryKey> primaryKeyInfo,
                 Expression<Func<TEntity, long>> identity,
-                IEnumerable<object> initialEntities, object[] constraints)
+                IEnumerable<object> initialEntities, 
+                object[] constraints)
 
                 where TEntity : class
             {
@@ -302,7 +299,6 @@ namespace Effort.Internal.Common
                 {
                     return NMemory.Linq.QueryableEx.Update(query, updater);
                 }
-                
             }
 
             public static int DeleteEntities<TEntity>(IQueryable<TEntity> query, Transaction transaction)
@@ -318,11 +314,9 @@ namespace Effort.Internal.Common
                 }
             }
 
-
-
-            public static void CreateRelationWithComplexTypes<TPrimary, TPrimaryKey, TForeign, TForeignKey>(
-                Database database, 
-                UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, 
+            public static void CreateRelation<TPrimary, TPrimaryKey, TForeign, TForeignKey>(
+                Database database,
+                UniqueIndex<TPrimary, TPrimaryKey> primaryIndex,
                 IIndex<TForeign, TForeignKey> foreignIndex,
                 Func<TForeignKey, TPrimaryKey> foreignToPrimary,
                 Func<TPrimaryKey, TForeignKey> primaryToForeign)
@@ -332,31 +326,6 @@ namespace Effort.Internal.Common
             {
                 database.Tables.CreateRelation(primaryIndex, foreignIndex, foreignToPrimary, primaryToForeign);
             }
-
-            public static void CreateRelationWithSameKeyType<TPrimary, TPrimaryKey, TForeign>(
-                Database database, 
-                UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, 
-                IIndex<TForeign, TPrimaryKey> foreignIndex)
-
-                where TPrimary : class
-                where TForeign : class
-            {
-                database.Tables.CreateRelation(primaryIndex, foreignIndex, x => x, x => x);
-            }
-
-            public static void CreateRelationWithSameKeyTypeNullable<TPrimary, TPrimaryKey, TForeign>(
-                Database database, 
-                UniqueIndex<TPrimary, TPrimaryKey> primaryIndex, 
-                IIndex<TForeign, Nullable<TPrimaryKey>> foreignIndex)
-
-                where TPrimary : class
-                where TForeign : class
-                where TPrimaryKey : struct
-            {
-                database.Tables.CreateRelation(primaryIndex, foreignIndex, x => x.Value, x => x);
-            }
         }
-
-
     }
 }

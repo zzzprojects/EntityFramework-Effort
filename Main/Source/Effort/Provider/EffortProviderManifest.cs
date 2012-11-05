@@ -24,50 +24,83 @@
 
 namespace Effort.Provider
 {
-    using System.Data;
+    using System;
     using System.Data.Common;
     using System.Data.Metadata.Edm;
     using System.IO;
     using System.Reflection;
     using System.Xml;
 
+    /// <summary>
+    /// Metadata interface for all CLR types types.
+    /// </summary>
     public class EffortProviderManifest : DbXmlEnabledProviderManifest
     {
+        private const string metadataResource = "Effort.Provider.EffortProviderManifest.xml";
         private EffortVersion version;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortProviderManifest" /> class.
+        /// </summary>
+        /// <param name="version">The version of manifest metadata.</param>
         public EffortProviderManifest(EffortVersion version) : base(GetProviderManifest())
         {
             this.version = version;
         }
 
-        private static XmlReader GetProviderManifest()
-        {
-            Assembly effortAssembly = typeof(EffortProviderManifest).Assembly;
-            Stream stream = effortAssembly.GetManifestResourceStream("Effort.Provider.EffortProviderManifest.xml");
-
-            return XmlReader.Create(stream);
-        }
-
-        protected override XmlReader GetDbInformation(string informationType)
-        {
-            throw new ProviderIncompatibleException();
-        }
-
+        /// <summary>
+        /// When overridden in a derived class, this method maps the specified storage type 
+        /// and a set of facets for that type to an EDM type.
+        /// </summary>
+        /// <param name="storeType">The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance 
+        /// that describes a storage type and a set of facets for that type to be mapped to the 
+        /// EDM type.</param>
+        /// <returns>
+        /// The <see cref"T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes an EDM type and a set 
+        /// of facets for that type.
+        /// </returns>
         public override TypeUsage GetEdmType(TypeUsage storeType)
         {
             string name = storeType.EdmType.Name.ToLowerInvariant();
 
-            PrimitiveType typeKind = base.StoreTypeNameToEdmPrimitiveType[name];
+            PrimitiveType typeKind = this.StoreTypeNameToEdmPrimitiveType[name];
             return TypeUsage.CreateDefaultTypeUsage(typeKind);
         }
 
+        /// <summary>
+        /// When overridden in a derived class, this method maps the specified EDM type and a set of facets for that type to a storage type.
+        /// </summary>
+        /// <param name="edmType">The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes the EDM type and a set of facets for that type to be mapped to a storage type.</param>
+        /// <returns>
+        /// The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes a storage type and a set of facets for that type.
+        /// </returns>
         public override TypeUsage GetStoreType(TypeUsage edmType)
         {
             string name = edmType.EdmType.Name.ToLowerInvariant();
 
-            PrimitiveType typeKind = base.StoreTypeNameToStorePrimitiveType[name];
+            PrimitiveType typeKind = this.StoreTypeNameToStorePrimitiveType[name];
             
             return TypeUsage.CreateDefaultTypeUsage(typeKind);
+        }
+
+        /// <summary>
+        /// When overridden in a derived class, this method returns provider-specific information. This method should never return null.
+        /// </summary>
+        /// <param name="informationType">The type of the information to return.</param>
+        /// <returns>
+        /// The <see cref="T:System.Xml.XmlReader"/> object that contains the requested information.
+        /// </returns>
+        protected override XmlReader GetDbInformation(string informationType)
+        {
+            throw new NotSupportedException();
+        }
+
+        private static XmlReader GetProviderManifest()
+        {
+            Assembly effortAssembly = typeof(EffortProviderManifest).Assembly;
+            Stream stream = effortAssembly.GetManifestResourceStream(metadataResource);
+
+            return XmlReader.Create(stream);
         }
     }
 }

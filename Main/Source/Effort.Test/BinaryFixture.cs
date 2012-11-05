@@ -49,10 +49,8 @@ namespace Effort.Test
                 context =>
                     from employee in context.Employees
                     where employee.EmployeeID == 1
-                    select employee.Photo
-
-                    , expected
-                );
+                    select employee.Photo, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -66,10 +64,12 @@ namespace Effort.Test
                 context =>
                     from employee in context.Employees
                     where employee.EmployeeID == 1
-                    select new { Photo = employee.Photo, Dummy = new byte[] { 1, 2, 3 } }
-
-                    , expected
-                );
+                    select new 
+                    { 
+                        Photo = employee.Photo, 
+                        Dummy = new byte[] { 1, 2, 3 } 
+                    },                   
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -85,10 +85,12 @@ namespace Effort.Test
                 context =>
                     from employee in context.Employees
                     where employee.EmployeeID == 1
-                    select new { Photo = employee.Photo, Dummy = binary }
-
-                    , expected
-                );
+                    select new 
+                    { 
+                        Photo = employee.Photo, 
+                        Dummy = binary 
+                    },   
+                expected);
 
             Assert.IsTrue(result.Check());
         }

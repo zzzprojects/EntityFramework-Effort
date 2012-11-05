@@ -26,10 +26,18 @@ namespace Effort.Internal.DbManagement
 {
     using System;
     using System.Reflection;
+    using NMemory.Indexes;
 
     internal class DbTableInformation
     {
-        public DbTableInformation(string tableName, Type entityType, PropertyInfo[] primaryKeys, PropertyInfo identityField, PropertyInfo[] properties, object[] constraints, object primaryKeyInfo)
+        public DbTableInformation(
+            string tableName, 
+            Type entityType, 
+            PropertyInfo[] primaryKeys, 
+            PropertyInfo identityField, 
+            PropertyInfo[] properties,
+            object[] constraints, 
+            IKeyInfo primaryKeyInfo)
         {
             this.TableName = tableName;
             this.EntityType = entityType;
@@ -50,10 +58,9 @@ namespace Effort.Internal.DbManagement
 
         public PropertyInfo[] Properties { get; private set; }
 
-        //NMemory.Constraints.IConstraint<TEntity> array
+        // NMemory.Constraints.IConstraint<TEntity> array
         public object[] Constraints { get; private set; }
 
-        public object PrimaryKeyInfo { get; private set; }
-
+        public IKeyInfo PrimaryKeyInfo { get; private set; }
     }
 }

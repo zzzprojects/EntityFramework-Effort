@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="EntityDataLoaderFactory.cs" company="Effort Team">
+// <copyright file="EntityTableDataLoaderFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,17 +27,33 @@ namespace Effort.DataLoaders
     using System;
     using System.Data.EntityClient;
 
-    public class EntityDataLoaderFactory : ITableDataLoaderFactory
+    /// <summary>
+    /// Represents a table data loader factory that creates <see cref="EntityTableDataLoader" />
+    /// instances for tables.
+    /// </summary>
+    public class EntityTableDataLoaderFactory : ITableDataLoaderFactory
     {
         private Func<EntityConnection> connectionFactory;
         private EntityConnection connection;
 
-        public EntityDataLoaderFactory(Func<EntityConnection> connectionFactory)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityTableDataLoaderFactory" /> class.
+        /// </summary>
+        /// <param name="connectionFactory">A delegate that creates a connection towards the appropriate database.</param>
+        public EntityTableDataLoaderFactory(Func<EntityConnection> connectionFactory)
         {
             this.connectionFactory = connectionFactory;
         }
 
-        public ITableDataLoader CreateTableDataSource(TableDescription table)
+        /// <summary>
+        /// Ensures that a connection is established towards to appropriate database and 
+        /// creates a <see cref="EntityTableDataLoader" /> instance for the specified table.
+        /// </summary>
+        /// <param name="table">The metadata of the table.</param>
+        /// <returns>
+        /// The <see cref="EntityTableDataLoader" /> instance for the table.
+        /// </returns>
+        public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
             if (this.connection == null)
             {
@@ -48,9 +64,12 @@ namespace Effort.DataLoaders
             return new EntityTableDataLoader(this.connection, table);
         }
 
+        /// <summary>
+        /// Disposes the connection established towards the database.
+        /// </summary>
         public void Dispose()
         {
-            if (connection != null)
+            if (this.connection != null)
             {
                 this.connection.Close();
                 this.connection.Dispose();

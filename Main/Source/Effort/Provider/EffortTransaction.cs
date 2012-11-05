@@ -27,7 +27,10 @@ namespace Effort.Provider
     using System;
     using System.Data.Common;
 
-    public class EffortTransaction : DbTransaction
+    /// <summary>
+    /// Represents an Effort transaction. This class cannot be inherited.
+    /// </summary>
+    public sealed class EffortTransaction : DbTransaction
     {
         private EffortConnection connection;
         private System.Data.IsolationLevel isolationLevel;
@@ -35,11 +38,17 @@ namespace Effort.Provider
         private System.Transactions.CommittableTransaction systemTransaction;
         private NMemory.Transactions.Transaction transaction;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortTransaction" /> class.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <exception cref="System.InvalidOperationException">Ambient transaction is already set.</exception>
         public EffortTransaction(EffortConnection connection, System.Data.IsolationLevel isolationLevel) 
         {
             if (System.Transactions.Transaction.Current != null)
             {
-                throw new InvalidOperationException("Ambient transaction is already set");
+                throw new InvalidOperationException("Ambient transaction is already set.");
             }
 
             this.connection = connection;
@@ -55,19 +64,18 @@ namespace Effort.Provider
             this.transaction = NMemory.Transactions.Transaction.Create(systemTransaction);
         }
 
+        /// <summary>
+        /// Commits the database transaction.
+        /// </summary>
         public override void Commit()
         {
             systemTransaction.Commit();
         }
 
-        protected override DbConnection DbConnection
-        {
-            get 
-            { 
-                return this.connection; 
-            }
-        }
-
+        /// <summary>
+        /// Specifies the <see cref="T:System.Data.IsolationLevel" /> for this transaction.
+        /// </summary>
+        /// <returns>The <see cref="T:System.Data.IsolationLevel" /> for this transaction.</returns>
         public override System.Data.IsolationLevel IsolationLevel
         {
             get 
@@ -76,6 +84,12 @@ namespace Effort.Provider
             }
         }
 
+        /// <summary>
+        /// Gets the internal NMemory transaction object.
+        /// </summary>
+        /// <value>
+        /// The NMemory transaction object.
+        /// </value>
         public NMemory.Transactions.Transaction InternalTransaction
         {
             get
@@ -84,11 +98,30 @@ namespace Effort.Provider
             }
         }
 
+        /// <summary>
+        /// Rolls back a transaction from a pending state.
+        /// </summary>
         public override void Rollback()
         {
             systemTransaction.Rollback();
         }
 
+        /// <summary>
+        /// Gets the <see cref="T:EffortConnection" /> object associated with the transaction.
+        /// </summary>
+        /// <returns>The <see cref="T:EffortConnection" /> object associated with the transaction.</returns>
+        protected override DbConnection DbConnection
+        {
+            get
+            {
+                return this.connection;
+            }
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="T:EffortTransaction" /> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">If true, this method releases all resources held by any managed objects that this <see cref="T:EffortTransaction" /> references.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)

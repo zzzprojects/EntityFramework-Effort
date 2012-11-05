@@ -49,10 +49,8 @@ namespace Effort.Test
                 context =>
                     from product in context.Products
                     where product.ProductID + 3 == 4
-                    select product
-
-                    , expected
-                );
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -64,12 +62,10 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                     from product in context.Products
-                     where product.ProductID - 3 == 4
-                     select product
-
-                    , expected
-                );
+                    from product in context.Products
+                    where product.ProductID - 3 == 4
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -83,10 +79,8 @@ namespace Effort.Test
                 context =>
                     from product in context.Products
                     where - (product.ProductID - 5) == 2
-                    select product
-
-                    , expected
-                );
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -100,10 +94,8 @@ namespace Effort.Test
                 context =>
                     from product in context.Products
                     where product.ProductID * 2 == 4
-                    select product
-
-                    , expected
-                );
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -117,10 +109,8 @@ namespace Effort.Test
                 context =>
                    from product in context.Products
                    where product.ProductID / 2 == 2
-                   select product
-
-                   , expected
-                );
+                   select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
        }
@@ -134,10 +124,8 @@ namespace Effort.Test
                 context =>
                     from product in context.Products
                     where -(product.ProductID * 3) / 2 + 5 == 1
-                    select product
-
-                    , expected
-                );
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -151,10 +139,8 @@ namespace Effort.Test
                 context =>
                      from product in context.Products
                      where product.ProductID == 4
-                     select product
-
-                    , expected
-                );
+                     select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -168,10 +154,8 @@ namespace Effort.Test
                 context =>
                     from product in context.Products
                     where product.ProductID > 4
-                    select product
-
-                    , expected
-                );
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -183,12 +167,10 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                     from product in context.Products
-                     where product.ProductID >= 4
-                     select product
-
-                    , expected
-                );
+                    from product in context.Products
+                    where product.ProductID >= 4
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -200,12 +182,10 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                     from product in context.Products
-                     where product.ProductID < 4
-                     select product
-
-                    , expected
-                );
+                    from product in context.Products
+                    where product.ProductID < 4
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -217,12 +197,10 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                     from product in context.Products
-                     where product.ProductID <= 4
-                     select product
-
-                    , expected
-                );
+                    from product in context.Products
+                    where product.ProductID <= 4
+                    select product, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }

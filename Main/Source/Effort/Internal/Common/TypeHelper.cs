@@ -77,6 +77,7 @@ namespace Effort.Internal.Common
                 return type;
             }
         }
+
         public static Type MakeNotNullable(Type type)
         {
             if (!IsNullable(type))
@@ -100,11 +101,9 @@ namespace Effort.Internal.Common
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .Where(m =>
                     m.ReturnType == to &&
-                    m.Name == "op_Implicit" ||
-                    m.Name == "op_Explicit");
+                    (m.Name == "op_Implicit" || m.Name == "op_Explicit"));
 
             return methods.Count() > 0;
         }
-
     }
 }

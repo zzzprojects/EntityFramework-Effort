@@ -46,7 +46,6 @@ namespace Effort.Test
             Assert.AreEqual(csb.DataLoaderArgument, path);
         }
 
-
         [TestMethod]
         public void A()
         {
@@ -57,6 +56,5 @@ namespace Effort.Test
                 context.People.ToList();
             }
         }
-
     }
 }

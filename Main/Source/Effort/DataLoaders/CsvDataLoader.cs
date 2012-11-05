@@ -24,23 +24,46 @@
 
 namespace Effort.DataLoaders
 {
+    /// <summary>
+    /// Represents a data loader that reads data from CSV files.
+    /// </summary>
     public class CsvDataLoader : IDataLoader
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CsvDataLoader" /> class.
+        /// </summary>
         public CsvDataLoader()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CsvDataLoader" /> class.
+        /// </summary>
+        /// <param name="path">The path of the folder that contains the CSV files.</param>
         public CsvDataLoader(string path)
         {
             this.Argument = path;
         }
 
+        /// <summary>
+        /// Gets or sets the argument that contains the path of the folder where the CSV
+        /// files are located.
+        /// </summary>
+        /// <value>
+        /// The argument.
+        /// </value>
         public string Argument
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Creates a <see cref="CsvTableDataLoaderFactory" /> instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="CsvTableDataLoaderFactory" /> instance.
+        /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
             return new CsvTableDataLoaderFactory(this.Argument);

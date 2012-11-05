@@ -28,15 +28,40 @@ namespace Effort.DataLoaders
     using System.Collections.Generic;
     using System.Data;
 
+    /// <summary>
+    /// Provides an abstract base class for <see cref="System.Data.IDataReader" /> based table data
+    /// loaders.
+    /// </summary>
     public abstract class TableDataLoaderBase : ITableDataLoader
     {
         private TableDescription table;
-       
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TableDataLoaderBase" /> class.
+        /// </summary>
+        /// <param name="table">The metadata of the table.</param>
         public TableDataLoaderBase(TableDescription table)
         {
             this.table = table;
         }
 
+        /// <summary>
+        /// Gets the metadata of the table.
+        /// </summary>
+        /// <value>
+        /// The metadata of the table.
+        /// </value>
+        protected TableDescription Table
+        {
+            get { return this.table; }
+        }
+
+        /// <summary>
+        /// Creates initial data for the table.
+        /// </summary>
+        /// <returns>
+        /// The data created for the table.
+        /// </returns>
         public virtual IEnumerable<object[]> GetData()
         {
             int columnCount = this.table.Columns.Count;
@@ -57,6 +82,7 @@ namespace Effort.DataLoaders
                         }
                     }
                 }
+
                 while (reader.Read())
                 {
                     object[] propertyValues = new object[columnCount];
@@ -81,18 +107,21 @@ namespace Effort.DataLoaders
             }
         }
 
-        protected TableDescription Table
-        {
-            get { return this.table; }
-        }
-
+        /// <summary>
+        /// Creates a data reader that retrieves the initial data.
+        /// </summary>
+        /// <returns>The data reader.</returns>
         protected abstract IDataReader CreateDataReader();
 
+        /// <summary>
+        /// Converts the value to comply with the expected type.
+        /// </summary>
+        /// <param name="value">The current value.</param>
+        /// <param name="type">The expected type.</param>
+        /// <returns>The expected value.</returns>
         protected virtual object ConvertValue(object value, Type type)
         {
             return value;
         }
-
-
     }
 }

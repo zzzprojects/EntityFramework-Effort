@@ -51,10 +51,8 @@ namespace Effort.Test
                     from order in context.Orders
                         .Include(o => o.Customer)
                     where order.OrderID == 10248
-                    select order
-
-                    , expected
-                );
+                    select order, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -71,10 +69,8 @@ namespace Effort.Test
                         .Include(o => o.Employee)
                         .Include(o => o.Shipper)
                     where order.OrderID == 10248
-                    select order
-
-                    , expected
-                );
+                    select order, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -89,10 +85,8 @@ namespace Effort.Test
                     from customer in context.Customers
                         .Include(o => o.Orders)
                     where customer.CustomerID == "ALFKI"
-                    select customer
-
-                    , expected
-                );
+                    select customer, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -107,10 +101,8 @@ namespace Effort.Test
                     from emp in context.Employees
                         .Include(e => e.Territories)
                     where emp.EmployeeID == 1
-                    select emp
-
-                    , expected
-                );
+                    select emp, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -125,10 +117,8 @@ namespace Effort.Test
                     from orderDetail in context.OrderDetails
                         .Include(o => o.Order.Customer)
                     where orderDetail.OrderID == 10248
-                    select orderDetail
-
-                    , expected
-                );
+                    select orderDetail, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -144,10 +134,8 @@ namespace Effort.Test
                         .Include(o => o.Order)
                         .Include(o => o.Order.Customer)
                     where orderDetail.OrderID == 10248
-                    select orderDetail
-
-                    , expected
-                );
+                    select orderDetail, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -162,10 +150,8 @@ namespace Effort.Test
                     from cus in context.Customers
                         .Include(c => c.Orders.Select(o => o.OrderDetails))
                     where cus.CustomerID == "ALFKI"
-                    select cus
-
-                    , expected
-                );
+                    select cus, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -182,10 +168,8 @@ namespace Effort.Test
                         .Include(c => c.Orders)
                         .Include(c => c.CustomerDemographics)
                     where cus.CustomerID == "ALFKI"
-                    select cus
-
-                    , expected
-                );
+                    select cus, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -200,16 +184,13 @@ namespace Effort.Test
                     from
                         cus in context.Customers
                     where cus.CustomerID == "ALFKI"
-                    select
-                        new
-                        {
-                            Customer = cus,
-                            Orders = cus.Orders,
-                            Demographics = cus.CustomerDemographics
-                        }
-
-                    , expected
-                );
+                    select new
+                    {
+                        Customer = cus,
+                        Orders = cus.Orders,
+                        Demographics = cus.CustomerDemographics
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }

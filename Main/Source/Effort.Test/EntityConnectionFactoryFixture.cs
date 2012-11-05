@@ -54,7 +54,7 @@ namespace Effort.Test
         [TestMethod]
         public void EntityConnectionFactory_CreatePersistentEntityConnection()
         {
-            // TODO: Use unique connection string
+            //// TODO: Use unique connection string
 
             EntityConnection connection = EntityConnectionFactory.CreatePersistent(NorthwindObjectContext.DefaultConnectionString);
         }

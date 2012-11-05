@@ -30,11 +30,11 @@ namespace Effort.Internal.StorageSchema
 
     internal class UniversalStorageSchemaModifier
     {
+        public static readonly UniversalStorageSchemaModifier Instance = new UniversalStorageSchemaModifier();
+
         private IElementModifier schemaV1Modifier;
         private IElementModifier schemaV2Modifier;
         private IElementModifier schemaV3Modifier;
-
-        public static readonly UniversalStorageSchemaModifier Instance = new UniversalStorageSchemaModifier();
 
         public void Modify(XElement ssdl, IProviderInformation newProvider)
         {

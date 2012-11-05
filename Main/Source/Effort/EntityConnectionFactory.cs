@@ -84,7 +84,7 @@ namespace Effort
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
             EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder(effortConnectionString);
-            
+
             if (persistent)
             {
                 ecsb.InstanceId = entityConnectionString;
@@ -98,12 +98,11 @@ namespace Effort
 
             if (!persistent)
             {
-                connection.MarkAsTransient();
+                connection.MarkAsPrimaryTransient();
             }
 
             return CreateEntityConnection(metadata, connection);
         }
-
 
         private static string GetFullEntityConnectionString(string entityConnectionString)
         {
@@ -150,8 +149,8 @@ namespace Effort
             EntityConnectionStringBuilder ecsb = new EntityConnectionStringBuilder(entityConnectionString);
 
             return MetadataWorkspaceStore.GetMetadataWorkspace(
-                ecsb.Metadata, 
-                x=>MetadataWorkspaceHelper.Rewrite(x, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1));
+                ecsb.Metadata,
+                x => MetadataWorkspaceHelper.Rewrite(x, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1));
         }
     }
 }

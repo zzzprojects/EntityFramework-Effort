@@ -28,20 +28,41 @@ namespace Effort.Provider
     using System.Data;
     using System.Data.Common;
 
+    /// <summary>
+    /// Represents a set of methods for creating instances of the <see cref="N:Effort.Provider"/> 
+    /// provider's implementation of the data source classes.
+    /// </summary>
     public class EffortProviderFactory : DbProviderFactory, IServiceProvider
     {
         public static readonly EffortProviderFactory Instance = new EffortProviderFactory();
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="EffortProviderFactory" /> class from being created.
+        /// </summary>
         private EffortProviderFactory()
         {
 
         }
 
+        /// <summary>
+        /// Returns a new instance of the <see cref="T:EffortConnection" /> class.
+        /// </summary>
+        /// <returns>
+        /// A new instance of <see cref="T:EffortConnection" />.
+        /// </returns>
         public override DbConnection CreateConnection()
         {
             return new EffortConnection();
         }
 
+        /// <summary>
+        /// Gets the service object of the specified type.
+        /// </summary>
+        /// <param name="serviceType">An object that specifies the type of service object to get.</param>
+        /// <returns>
+        /// A service object of type <paramref name="serviceType" />.-or- null if there is no service object 
+        /// of type <paramref name="serviceType" />.
+        /// </returns>
         public object GetService(Type serviceType)
         {
             if (serviceType == typeof(DbProviderServices))
@@ -49,7 +70,7 @@ namespace Effort.Provider
                 return new EffortProviderServices();
             }
 
-            throw new ProviderIncompatibleException();
+            return null;
         }
     }
 }

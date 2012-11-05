@@ -32,36 +32,67 @@ namespace Effort.DataLoaders
     using Effort.Internal.Common;
     using LumenWorks.Framework.IO.Csv;
 
+    /// <summary>
+    /// Represent a table data loader that retrieves data from a CSV file.
+    /// </summary>
     public class CsvTableDataLoader : TableDataLoaderBase
     {
         private FileInfo file;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CsvTableDataLoader" /> class.
+        /// </summary>
+        /// <param name="path">The path of the CSV file.</param>
+        /// <param name="table">The metadata of the requested table.</param>
         public CsvTableDataLoader(string path, TableDescription table) : base(table)
         {
             this.file = new FileInfo(path);
         }
 
+        /// <summary>
+        /// Creates initial data for the table.
+        /// </summary>
+        /// <returns>
+        /// The data created for the table.
+        /// </returns>
         public override IEnumerable<object[]> GetData()
         {
-            if (!file.Exists)
+            if (!this.file.Exists)
             {
                 yield break;
             }
 
             using (new CultureScope(CultureInfo.InvariantCulture))
             {
-                foreach (var item in base.GetData())
+                foreach (object[] record in base.GetData())
                 {
-                    yield return item;
+                    yield return record;
                 }
             }
         }
 
+        /// <summary>
+        /// Creates a CSV data reader that retrieves the initial data from the appropriate CSV file.
+        /// </summary>
+        /// <returns>
+        /// The CSV data reader.
+        /// </returns>
         protected override IDataReader CreateDataReader()
         {
-            return new CsvReader(new StreamReader(file.OpenRead()), true);
+            return new CsvReader(new StreamReader(this.file.OpenRead()), true);
         }
 
+        /// <summary>
+        /// Converts the string value to the appropriate type.
+        /// </summary>
+        /// <param name="value">The current string value.</param>
+        /// <param name="type">The expected type.</param>
+        /// <returns>
+        /// The expected value.
+        /// </returns>
+        /// <exception cref="System.FormatException">
+        /// The string value is in wrong format.
+        /// </exception>
         protected override object ConvertValue(object value, Type type)
         {
             string val = value as string;
@@ -84,8 +115,8 @@ namespace Effort.DataLoaders
                 }
 
                 value = ResolveEscapeCharacters(val.Substring(1));
-
             }
+
             if (type == typeof(byte[]) || type == typeof(NMemory.Data.Binary) || type == typeof(NMemory.Data.Timestamp))
             {
                 value = Convert.FromBase64String(val);

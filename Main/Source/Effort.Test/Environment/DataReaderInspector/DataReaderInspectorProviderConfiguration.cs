@@ -54,6 +54,5 @@ namespace Effort.Test.Environment.DataReaderInspector
                 }
             }
         }
-
     }
 }

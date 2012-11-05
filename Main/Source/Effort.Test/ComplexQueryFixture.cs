@@ -49,10 +49,8 @@ namespace Effort.Test
                 context =>
                     from p in context.Products
                     where p.UnitPrice > context.Products.Average(x => x.UnitPrice)
-                    select p
-
-                    , expected
-                );
+                    select p, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -64,24 +62,19 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                     (
-                     from cus in context.Customers
+                     (from cus in context.Customers
                      orderby cus
                          .Orders
                          .SelectMany(o => o.OrderDetails)
                          .Sum(od => od.UnitPrice * od.Quantity)
                          descending
                      select
-                         cus
-
-                    )
+                         cus)
                     .Take(10)
                     .OrderByDescending(c => c.Orders.Count)
                     .Select(c => c.ContactName)
-                    .FirstOrDefault()
-
-                    , expected
-                );
+                    .FirstOrDefault(), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -93,22 +86,17 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                     (
-                     from cus in context.Customers
+                     (from cus in context.Customers
                      orderby cus
                          .Orders
                          .SelectMany(o => o.OrderDetails)
                          .Sum(od => od.UnitPrice * od.Quantity)
                          descending
                      select
-                         cus
-
-                    )
+                         cus)
                     .Select(c => c.Orders.Max(o => o.OrderDate))
-                    .FirstOrDefault()
-
-                    , expected
-                );
+                    .FirstOrDefault(), 
+                expected);
 
             Assert.IsTrue(result.Check());
         }

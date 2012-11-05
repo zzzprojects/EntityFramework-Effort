@@ -34,10 +34,6 @@ namespace Effort.Internal.Caching
     {
         private string description;
 
-        private DbSchemaKey()
-        {
-        }
-
         public DbSchemaKey(StoreItemCollection storeItemCollection)
         {
             // Find container
@@ -76,6 +72,18 @@ namespace Effort.Internal.Caching
             this.description = builder.ToString();
         }
 
+        private DbSchemaKey()
+        {
+        }
+
+        public static DbSchemaKey FromString(string key)
+        {
+            DbSchemaKey result = new DbSchemaKey();
+            result.description = key;
+
+            return result;
+        }
+
         public bool Equals(DbSchemaKey other)
         {
             if (other == null)
@@ -98,15 +106,7 @@ namespace Effort.Internal.Caching
 
         public override string ToString()
         {
-            return description;
-        }
-
-        public static DbSchemaKey FromString(string key)
-        {
-            DbSchemaKey result = new DbSchemaKey();
-            result.description = key;
-
-            return result;
+            return this.description;
         }
     }
 }

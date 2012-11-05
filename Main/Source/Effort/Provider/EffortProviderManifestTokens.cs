@@ -26,10 +26,23 @@ namespace Effort.Provider
 {
     using System;
 
+    /// <summary>
+    /// Provides the supported Effort provider manifest token values.
+    /// </summary>
     public static class EffortProviderManifestTokens
     {
+        /// <summary>
+        /// The Version1 provider manifest token.
+        /// </summary>
         public const string Version1 = "1";
 
+        /// <summary>
+        /// Gets the <see cref="EffortVersion"/> enumeration value that represents the provided
+        /// manifest token value.
+        /// </summary>
+        /// <param name="manifestToken">The value of the manifest token.</param>
+        /// <returns>The <see cref="EffortVersion"/> value.</returns>
+        /// <exception cref="System.NotSupportedException">The manifest token is not supported</exception>
         public static EffortVersion GetVersion(string manifestToken)
         {
             switch (manifestToken)

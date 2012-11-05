@@ -34,26 +34,20 @@ namespace Effort.Internal.DbManagement
         private Dictionary<string, DbTableInformation> tables;
         private List<DbRelationInformation> relations;
 
-
         public DbSchema()
         {
             this.tables = new Dictionary<string, DbTableInformation>();
             this.relations = new List<DbRelationInformation>();
         }
 
-        public void RegisterTable(string tableName, Type entityType, PropertyInfo[] primaryKeyFields, PropertyInfo identityField,
-            PropertyInfo[] properties,List<object> constraints,object primaryKeyInfo)
+        public void RegisterTable(DbTableInformation tableInformation)
         {
-            DbTableInformation table = new DbTableInformation(tableName, entityType, primaryKeyFields, identityField, properties, constraints.ToArray(),primaryKeyInfo);
-            
-            this.tables.Add(tableName, table);
+            this.tables.Add(tableInformation.TableName, tableInformation);
         }
 
-        public void RegisterRelation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties, object primaryKeyInfo, object foreignKeyInfo, object primaryToForeignConverter, object foreignToPrimaryConverter)
+        public void RegisterRelation(DbRelationInformation relationInformation)
         {
-            DbRelationInformation relation = new DbRelationInformation(fromTable, fromProperties, toTable, toProperties, primaryKeyInfo, foreignKeyInfo, primaryToForeignConverter, foreignToPrimaryConverter);
-
-            this.relations.Add(relation);
+            this.relations.Add(relationInformation);
         }
 
         public DbTableInformation GetTable(string tableName)

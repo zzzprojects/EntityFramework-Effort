@@ -31,7 +31,6 @@ namespace Effort.Test.Environment.Queries
         public NorthwindQueryTester() 
             : base(NorthwindObjectContext.DefaultConnectionString, new NorthwindLocalDataLoader())
         {
-                
         }
     }
 }

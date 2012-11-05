@@ -64,7 +64,6 @@ namespace Effort.Internal.TypeConversion
             return obj;
         }
 
-
         public bool TryConvertEdmType(PrimitiveType primitiveType, TypeFacets facets, out Type result)
         {
             result = null;

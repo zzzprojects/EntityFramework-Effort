@@ -37,10 +37,11 @@ namespace Effort.Internal.Common
         {
             object selectorExpression = null;
 
-            // Single field primary key:
-            // Expression:  x => x.Field
             if (selectorFields.Length == 1)
             {
+                // Single field primary key:
+                //// Expression:  x => x.Field
+
                 Type resultType = selectorFields[0].PropertyType;
 
                 selectorExpression =
@@ -49,10 +50,10 @@ namespace Effort.Internal.Common
                     .MakeGenericMethod(sourceType, resultType)
                     .Invoke(null, new object[] { selectorFields[0].Name });
             }
-            // Multiple field primary key:
-            // Expression: x => new { x.Field1, x.Field2 }
             else
             {
+                // Multiple field primary key:
+                //// Expression: x => new { x.Field1, x.Field2 }
 
                 // Build anonymous type
                 Type resultType =
@@ -61,7 +62,7 @@ namespace Effort.Internal.Common
                             pi => pi.Name,
                             pi => pi.PropertyType));
 
-                ////resultType =
+                ////Type resultType =
                 ////    TupleTypeFactory.Create(
                 ////        selectorFields.Select(pi => pi.PropertyType).ToArray());
 
@@ -112,11 +113,8 @@ namespace Effort.Internal.Common
                         Expression.New(
                             typeof(TResult).GetConstructors().Single(),
                             fields.Select(f => Expression.Property(expressionParameter, f)),
-                            fields.Select(f => typeof(TResult).GetProperty(f))
-                        )
-                        ,
-                        expressionParameter
-                    );
+                            fields.Select(f => typeof(TResult).GetProperty(f))),
+                        expressionParameter);
             }
         }
     }

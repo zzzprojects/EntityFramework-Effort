@@ -58,7 +58,7 @@ namespace Effort.Internal.CommandActions
             Type type = TypeHelper.GetElementType(table.GetType());
 
             // Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(commandTree.SetClauses);
+            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(this.commandTree.SetClauses);
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
@@ -67,7 +67,7 @@ namespace Effort.Internal.CommandActions
 
             // Setup context for the predicate
             ParameterExpression param = Expression.Parameter(type, "context");
-            using (transform.CreateVariable(param, commandTree.Target.VariableName))
+            using (transform.CreateVariable(param, this.commandTree.Target.VariableName))
             {
                 // Initialize member bindings
                 foreach (PropertyInfo property in type.GetProperties())
@@ -112,24 +112,24 @@ namespace Effort.Internal.CommandActions
         {
             ITable table = null;
 
-            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(commandTree.Predicate, commandTree, context.DbContainer, out table);
+            Expression expr = DbCommandActionHelper.GetEnumeratorExpression(this.commandTree.Predicate, this.commandTree, context.DbContainer, out table);
             IQueryable entitiesToUpdate = DatabaseReflectionHelper.CreateTableQuery(expr, context.DbContainer.Internal);
 
             Type type = TypeHelper.GetElementType(table.GetType());
 
-            //Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(commandTree.SetClauses);
+            // Collect the SetClause DbExpressions into a dictionary
+            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(this.commandTree.SetClauses);
 
-            //Collection for collection member bindings
+            // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
 
             TransformVisitor transform = new TransformVisitor(context.DbContainer.TypeConverter);
 
             // Setup context for the predicate
             ParameterExpression param = Expression.Parameter(type, "context");
-            using (transform.CreateVariable(param, commandTree.Target.VariableName))
+            using (transform.CreateVariable(param, this.commandTree.Target.VariableName))
             {
-                //Initialize member bindings
+                // Initialize member bindings
                 foreach (PropertyInfo property in type.GetProperties())
                 {
                     Expression setter = null;
@@ -163,7 +163,5 @@ namespace Effort.Internal.CommandActions
         {
             throw new NotSupportedException();
         }
-
-
     }
 }

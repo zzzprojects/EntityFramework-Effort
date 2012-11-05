@@ -26,8 +26,16 @@ namespace Effort.DataLoaders
 {
     using System;
 
+    /// <summary>
+    /// Defines functionality for creating data loaders for tables.
+    /// </summary>
     public interface ITableDataLoaderFactory : IDisposable
     {
-        ITableDataLoader CreateTableDataSource(TableDescription table);
+        /// <summary>
+        /// Creates a data loader for the specified table.
+        /// </summary>
+        /// <param name="table">The metadata of the table.</param>
+        /// <returns>The data loader for the table.</returns>
+        ITableDataLoader CreateTableDataLoader(TableDescription table);
     }
 }

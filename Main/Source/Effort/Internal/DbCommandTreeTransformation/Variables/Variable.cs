@@ -28,8 +28,8 @@ namespace Effort.Internal.DbCommandTreeTransformation.Variables
 
     internal class Variable
     {
-        public Expression Expression { set; get; }
+        public Expression Expression { get; set; }
 
-        public string Name { set; get; }
+        public string Name { get; set; }
     }
 }

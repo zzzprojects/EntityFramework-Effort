@@ -47,25 +47,21 @@ namespace Effort.Test
 
             ICorrectness result = this.tester.TestQuery(
                 context =>
-                    from employee1 in context.Employees
-
-                    from employee2 in context.Employees
-
+                    from 
+                        employee1 in context.Employees
+                    from 
+                        employee2 in context.Employees
                     where
                       employee1.EmployeeID < employee2.EmployeeID
-
                     select new
                     {
                         E1 = employee1.LastName,
                         E2 = employee2.LastName
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
-
 
         [TestMethod]
         public void OuterJoin()
@@ -84,10 +80,8 @@ namespace Effort.Test
                     {
                         Name = employee.LastName,
                         PrincipalName = principal.LastName
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
@@ -104,14 +98,11 @@ namespace Effort.Test
                     {
                         Name = emp.LastName,
                         PrincipalName = emp.Principal.LastName
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }
-
 
         [TestMethod]
         public void InnerJoin()
@@ -122,17 +113,13 @@ namespace Effort.Test
                 context =>
                     from employee in context.Employees
                     join principal in context.Employees
-
                     on employee.ReportsTo equals principal.EmployeeID
-
                     select new
                     {
                         Name = employee.LastName,
                         PrincipalName = principal.LastName
-                    }
-
-                    , expected
-                );
+                    }, 
+                expected);
 
             Assert.IsTrue(result.Check());
         }

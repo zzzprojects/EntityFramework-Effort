@@ -63,6 +63,9 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Lazy<MethodInfo> union;
         private Lazy<MethodInfo> concat;
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="LinqMethodProvider" /> class from being created.
+        /// </summary>
         private LinqMethodProvider()
         {
             LazyThreadSafetyMode safety = LazyThreadSafetyMode.PublicationOnly;
@@ -93,7 +96,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.intersect = new Lazy<MethodInfo>(CreateIntersect, safety);
             this.union = new Lazy<MethodInfo>(CreateUnion, safety);
             this.concat = new Lazy<MethodInfo>(CreateConcat, safety);
-
         }
 
         #region MethodInfo provider properties
@@ -212,239 +214,217 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         #region MethodInfo factory methods
 
-        private MethodInfo GetMethod<T>(Expression<Func<IQueryable<object>, T>> function)
+        private static MethodInfo GetMethod<T>(Expression<Func<IQueryable<object>, T>> function)
         {
             MethodInfo result = ReflectionHelper.GetMethodInfo<IQueryable<object>, T>(function);
 
             return result.GetGenericMethodDefinition();
         }
 
-        private MethodInfo GetMethod2<T>(Expression<Func<IEnumerable<object>, T>> function)
-        {
-            MethodCallExpression methodCall = function.Body as MethodCallExpression;
-            MethodInfo result = methodCall.Method;
-
-            return result.GetGenericMethodDefinition();
-        }
-
-        private MethodInfo GetOrderedMethod<T>(Expression<Func<IOrderedQueryable<object>, T>> function)
+        private static MethodInfo GetOrderedMethod<T>(Expression<Func<IOrderedQueryable<object>, T>> function)
         {
             MethodInfo result = ReflectionHelper.GetMethodInfo<IOrderedQueryable<object>, T>(function);
 
             return result.GetGenericMethodDefinition();
         }
 
-        private MethodInfo CreateSelect()
+        private static MethodInfo CreateSelect()
         {
             return GetMethod(x => x.Select(e => e));
         }
 
-        private MethodInfo CreateSelectMany()
+        private static MethodInfo CreateSelectMany()
         {
             return GetMethod(x => x.SelectMany(e => Enumerable.Empty<object>()));
         }
 
-        private MethodInfo CreateSelectManyWithResultSelector()
+        private static MethodInfo CreateSelectManyWithResultSelector()
         {
-            return GetMethod(x => x.SelectMany(e => 
-                Enumerable.Empty<object>(), 
-                (e, r) => new object()));
+            return GetMethod(x => 
+                x.SelectMany(
+                    e => Enumerable.Empty<object>(), 
+                    (e, r) => new object()));
         }
 
-        private MethodInfo CreateJoin()
+        private static MethodInfo CreateJoin()
         {
-            return GetMethod(x => x.Join(
-                Enumerable.Empty<object>(), 
-                l => new object(), 
-                r => new object(), 
-                (l, r) => new object()));
+            return GetMethod(x => 
+                x.Join(
+                    Enumerable.Empty<object>(), 
+                    l => new object(), 
+                    r => new object(), 
+                    (l, r) => new object()));
         }
 
-        private MethodInfo CreateLeftOuterJoin()
+        private static MethodInfo CreateLeftOuterJoin()
         {
-    //        var qry = Foo.GroupJoin(
-    //      Bar,
-    //      foo => foo.Foo_Id,
-    //      bar => bar.Foo_Id,
-    //      (x, y) => new { Foo = x, Bars = y })
-    //.SelectMany(
-    //      x => x.Bars.DefaultIfEmpty(),
-    //      (x, y) => new { Foo = x.Foo, Bar = y });
-
-
-
-            //return GetMethod(x=>x.GroupJoin(
-            //    Enumerable.Empty<object>(),                
-            //    l => new object(), 
-            //    r => new object(), 
-            //    (l, r) => new { a = l, b = r })
-            //    .SelectMany(
-            //       y=>y.b.DefaultIfEmpty(),
-            //       (y,z) => new {a = y.a,b = z})
-            //    );
-
-            return GetMethod(x => LolClass.LeftOuterJoin(
-                x,
-                Enumerable.Empty<object>(),
-                l => new object(),
-                r => new object(),
-                (l, r) => new object()));
-
-            
+            return GetMethod(x => 
+                LeftOuterJoinContainer.LeftOuterJoin(
+                    x,
+                    Enumerable.Empty<object>(),
+                    l => new object(),
+                    r => new object(),
+                    (l, r) => new object()));
         }
 
-        private MethodInfo CreateCount()
+        private static MethodInfo CreateCount()
         {
             // This needs Enumerable method, because of IGrouping
             return GetMethod(q => Enumerable.Count(q));
         }
 
-        private MethodInfo CreateWhere()
+        private static MethodInfo CreateWhere()
         {
             return GetMethod(x => x.Where(e => true));
         }
 
-        private MethodInfo CreateTake()
+        private static MethodInfo CreateTake()
         {
             return GetMethod(x => x.Take(0));
         }
 
-        private MethodInfo CreateSkip()
+        private static MethodInfo CreateSkip()
         {
             return GetMethod(x => x.Skip(0));
         }
 
-        private MethodInfo CreateGroupBy()
+        private static MethodInfo CreateGroupBy()
         {
             return GetMethod(x => x.GroupBy(e => e));
         }
 
-        private MethodInfo CreateOrderBy()
+        private static MethodInfo CreateOrderBy()
         { 
             return GetMethod(x => x.OrderBy(e => e));
         }
 
-        private MethodInfo CreateOrderByDescending()
+        private static MethodInfo CreateOrderByDescending()
         {
             return GetMethod(x => x.OrderByDescending(e => e));
         }
 
-        private MethodInfo CreateThenBy()
+        private static MethodInfo CreateThenBy()
         {
             return GetOrderedMethod(x => x.ThenBy(e => e));
         }
 
-        private MethodInfo CreateThenByDescending()
+        private static MethodInfo CreateThenByDescending()
         {
             return GetOrderedMethod(x => x.ThenByDescending(e => e));
         }
 
-        private MethodInfo CreateFirst()
+        private static MethodInfo CreateFirst()
         {
             return GetMethod(x => x.First());
         }
 
-        private MethodInfo CreateFirstOrDefault()
+        private static MethodInfo CreateFirstOrDefault()
         {
             return GetMethod(x => x.FirstOrDefault());
         }
 
-        private MethodInfo CreateAny()
+        private static MethodInfo CreateAny()
         {
             return GetMethod(x => x.Any());
         }
 
-        private MethodInfo CreateDistinct()
+        private static MethodInfo CreateDistinct()
         {
             return GetMethod(x => x.Distinct());
         }
 
-        private MethodInfo CreateExcept()
+        private static MethodInfo CreateExcept()
         {
             return GetMethod(x => x.Except(Enumerable.Empty<object>()));
         }
 
-        private MethodInfo CreateConcat()
+        private static MethodInfo CreateConcat()
         {
             return GetMethod(x => x.Concat(Enumerable.Empty<object>()));
         }
 
-        private MethodInfo CreateUnion()
+        private static MethodInfo CreateUnion()
         {
             return GetMethod(x => x.Union(Enumerable.Empty<object>()));
         }
 
-        private MethodInfo CreateIntersect()
+        private static MethodInfo CreateIntersect()
         {
             return GetMethod(x => x.Intersect(Enumerable.Empty<object>()));
         }
 
         #endregion
 
-    }
-
-    public static class LolClass
-    {
-        public static IQueryable<TResult> LeftOuterJoin<TOuter, TInner, TKey, TResult>(
-        this IQueryable<TOuter> outer,
-        IEnumerable<TInner> inner,
-        Expression<Func<TOuter, TKey>> outerKeySelector,
-        Expression<Func<TInner, TKey>> innerKeySelector,
-        Expression<Func<TOuter, TInner, TResult>> resultSelector)
+        private static class LeftOuterJoinContainer
         {
-            var joined = outer.GroupJoin(inner, outerKeySelector, innerKeySelector,
-                                          (o, i) => new Tuple<TOuter, IEnumerable<TInner>>(o, i));
-
-            Type tupleType = joined.GetType().GetGenericArguments().First();
-
-            ReplaceVisitor rv;
-
-            ParameterExpression oldResultParam1 = resultSelector.Parameters[0];
-            ParameterExpression oldResultParam2 = resultSelector.Parameters[1];
-
-            Expression newResultSelectorBody = resultSelector.Body;
-
-            ParameterExpression anonParam = Expression.Parameter(tupleType);
-            ParameterExpression innerParam = Expression.Parameter(typeof(TInner));
-
-            Expression oSelector = Expression.Property(anonParam, tupleType.GetProperty("Item1"));
-
-            rv = new ReplaceVisitor(exp => exp == oldResultParam1, exp => oSelector);
-            newResultSelectorBody = rv.Visit(newResultSelectorBody);
-            rv = new ReplaceVisitor(exp => exp == oldResultParam2, exp => innerParam);
-            newResultSelectorBody = rv.Visit(newResultSelectorBody);
-
-            LambdaExpression newResultSelector = Expression.Lambda(newResultSelectorBody, anonParam, innerParam);
-
-            var res = joined.SelectMany(o => o.Item2.DefaultIfEmpty(), (newResultSelector as Expression<Func<Tuple<TOuter, IEnumerable<TInner>>, TInner, TResult>>));
-            
-            return res;
-        }
-
-
-        internal class ReplaceVisitor : ExpressionVisitor
-        {
-            public Func<Expression, bool> Condition { get; set; }
-            public Func<Expression, Expression> NewExpression { get; set; }
-
-            public ReplaceVisitor(Func<Expression, bool> condition, Func<Expression, Expression> newExpression)
+            public static IQueryable<TResult> LeftOuterJoin<TOuter, TInner, TKey, TResult>(
+                IQueryable<TOuter> outer,
+                IEnumerable<TInner> inner,
+                Expression<Func<TOuter, TKey>> outerKeySelector,
+                Expression<Func<TInner, TKey>> innerKeySelector,
+                Expression<Func<TOuter, TInner, TResult>> resultSelector)
             {
-                this.Condition = condition;
-                this.NewExpression = newExpression;
+                var joined = 
+                    outer.GroupJoin(
+                        inner, 
+                        outerKeySelector, 
+                        innerKeySelector,
+                        (o, i) => new Tuple<TOuter, IEnumerable<TInner>>(o, i));
+
+                Type tupleType = joined.GetType().GetGenericArguments().First();
+
+                ReplaceVisitor rv;
+
+                ParameterExpression oldResultParam1 = resultSelector.Parameters[0];
+                ParameterExpression oldResultParam2 = resultSelector.Parameters[1];
+
+                Expression newResultSelectorBody = resultSelector.Body;
+
+                ParameterExpression anonParam = Expression.Parameter(tupleType);
+                ParameterExpression innerParam = Expression.Parameter(typeof(TInner));
+
+                Expression selector = Expression.Property(anonParam, tupleType.GetProperty("Item1"));
+
+                rv = new ReplaceVisitor(exp => exp == oldResultParam1, exp => selector);
+                newResultSelectorBody = rv.Visit(newResultSelectorBody);
+
+                rv = new ReplaceVisitor(exp => exp == oldResultParam2, exp => innerParam);
+                newResultSelectorBody = rv.Visit(newResultSelectorBody);
+
+                LambdaExpression newResultSelector = Expression.Lambda(newResultSelectorBody, anonParam, innerParam);
+
+                var result = 
+                    joined.SelectMany(
+                        o => o.Item2.DefaultIfEmpty(), 
+                        newResultSelector as Expression<Func<Tuple<TOuter, IEnumerable<TInner>>, TInner, TResult>>);
+
+                return result;
             }
 
-            public override Expression Visit(Expression exp)
+            private class ReplaceVisitor : ExpressionVisitor
             {
-                if (Condition(exp))
+                public ReplaceVisitor(Func<Expression, bool> condition, Func<Expression, Expression> newExpression)
                 {
-                    return NewExpression(exp);
+                    this.Condition = condition;
+                    this.NewExpression = newExpression;
                 }
-                else
+
+                public Func<Expression, bool> Condition { get; private set; }
+
+                public Func<Expression, Expression> NewExpression { get; private set; }
+
+                public override Expression Visit(Expression exp)
                 {
-                    return base.Visit(exp);
+                    if (this.Condition(exp))
+                    {
+                        return this.NewExpression(exp);
+                    }
+                    else
+                    {
+                        return base.Visit(exp);
+                    }
                 }
             }
         }
-    
     }
 }

@@ -71,6 +71,7 @@ namespace Effort.Test
         }
 
         [TestMethod]
+        [Ignore]
         public void RewriteSsdlV3()
         {
             XElement ssdl = LoadXml("Effort.Test.Environment.Resources.StorageSchemas.SSDLv3.xml");

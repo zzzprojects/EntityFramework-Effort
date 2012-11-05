@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="ExcresentInitializationCleanser.cs" company="Effort Team">
+// <copyright file="ExcrescentInitializationCleanserVisitor.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,7 +39,6 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
                 {
                     return newExpression.Arguments[0];
                 }
-
             }
             
             return base.VisitMember(node);

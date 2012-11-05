@@ -29,7 +29,7 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
     using System.Linq.Expressions;
 
     /// <summary>
-    /// Transforms SingleResult<>(x).FirstOrDefault() to x
+    /// Transforms SingleResult&gt;&lt;(x).FirstOrDefault() to x
     /// </summary>
     internal class ExcrescentSingleResultCleanserVisitor : ExpressionVisitor, IExpressionModifier
     {

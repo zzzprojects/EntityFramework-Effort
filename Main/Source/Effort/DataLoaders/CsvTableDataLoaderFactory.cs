@@ -27,11 +27,20 @@ namespace Effort.DataLoaders
     using System;
     using System.IO;
 
+    /// <summary>
+    /// Represents a table data loader factory that creates <see cref="CsvTableDataLoader" />
+    /// instances for tables.
+    /// </summary>
     internal class CsvTableDataLoaderFactory : ITableDataLoaderFactory
     {
         private DirectoryInfo source;
 
-        public CsvTableDataLoaderFactory( string path)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CsvTableDataLoaderFactory" /> class.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <exception cref="System.ArgumentException">The path does not exists.</exception>
+        public CsvTableDataLoaderFactory(string path)
         {
             this.source = new DirectoryInfo(path);
 
@@ -41,13 +50,23 @@ namespace Effort.DataLoaders
             }
         }
 
-        public ITableDataLoader CreateTableDataSource(TableDescription table)
+        /// <summary>
+        /// Creates a <see cref="CsvTableDataLoader" /> instance for the specified table.
+        /// </summary>
+        /// <param name="table">The metadata of the table.</param>
+        /// <returns>
+        /// The <see cref="CsvTableDataLoader" /> instance for the table.
+        /// </returns>
+        public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
-            string csvPath = Path.Combine(source.FullName, string.Format("{0}.csv", table.Name));
+            string csvPath = Path.Combine(this.source.FullName, string.Format("{0}.csv", table.Name));
 
             return new CsvTableDataLoader(csvPath, table);
         }
 
+        /// <summary>
+        /// Does nothing.
+        /// </summary>
         public void Dispose()
         {
         }

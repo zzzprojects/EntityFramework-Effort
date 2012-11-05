@@ -61,13 +61,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         public override object Visit(DbScanExpression expression)
         {
-            this.OnVisit(expression);
+            this.OnVisited(expression);
             return null;
-        }
-
-        protected virtual void OnVisit(DbScanExpression expression)
-        {
- 
         }
 
         public override object Visit(DbRelationshipNavigationExpression expression)
@@ -324,6 +319,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public override object Visit(DbExpression expression)
         {
             return expression.Accept(this);
+        }
+
+        protected virtual void OnVisited(DbScanExpression expression)
+        {
         }
     }
 }

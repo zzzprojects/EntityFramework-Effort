@@ -48,13 +48,15 @@ namespace Effort.Test
         [TestMethod]
         public void StringConcat()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                QuantityPerUnit = "kg",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    QuantityPerUnit = "kg",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Select(x => String.Concat(x.ProductName,x.QuantityPerUnit));
@@ -66,13 +68,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringIsNullOrEmpty()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "",
-                UnitPrice = -250,
-                QuantityPerUnit = null
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "",
+                    UnitPrice = -250,
+                    QuantityPerUnit = null
 
-            });
+                });
             context.SaveChanges();
 
             var query = context.Products.Where(x => String.IsNullOrEmpty(x.ProductName) && String.IsNullOrEmpty(x.QuantityPerUnit));
@@ -87,12 +90,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringContains()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Contains("Sp"));
@@ -103,12 +108,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringEndsWith()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.EndsWith("ct"));
@@ -120,12 +127,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringStartsWith()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.StartsWith("Sp"));
@@ -137,10 +146,12 @@ namespace Effort.Test
         [TestMethod]
         public void StringLength()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-            });
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Length == 15);
@@ -153,12 +164,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringIndexOf()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.IndexOf("pe") == 1);
@@ -170,12 +183,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringInsert()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Insert(1, "data") == "Sdatapecial product");
@@ -187,12 +202,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringRemove1()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Remove(3) == "Spe");
@@ -204,12 +221,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringRemove2()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Remove(1, 2) == "Scial product");
@@ -221,12 +240,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringReplace()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product of product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product of product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Replace("product", "item") == "Special item of item");
@@ -238,12 +259,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringSubstring1()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Substring(3) == "cial product");
@@ -255,12 +278,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringSubstring2()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Substring(2,2) == "ec");
@@ -272,12 +297,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringToLower()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.ToLower() == "special product");
@@ -289,12 +316,14 @@ namespace Effort.Test
         [TestMethod]
         public void StringToUpper()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.ToUpper() == "SPECIAL PRODUCT");
@@ -306,13 +335,15 @@ namespace Effort.Test
         [TestMethod]
         public void Trim()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "   One Product ",
-                UnitPrice = -250,
-                QuantityPerUnit = null
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "   One Product ",
+                    UnitPrice = -250,
+                    QuantityPerUnit = null
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.Trim() == "One Product");
@@ -323,12 +354,14 @@ namespace Effort.Test
         [TestMethod]
         public void TrimEnd()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "  One Product ",
-                UnitPrice = -250,
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "  One Product ",
+                    UnitPrice = -250,
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.TrimEnd() == "  One Product");
@@ -340,12 +373,14 @@ namespace Effort.Test
         [TestMethod]
         public void TrimStart()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "  One Product ",
-                UnitPrice = -250,
+            context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "  One Product ",
+                    UnitPrice = -250,
 
-            });
+                });
+
             context.SaveChanges();
 
             var query = context.Products.Where(x => x.ProductName.TrimStart() == "One Product ");
@@ -389,13 +424,16 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDay()
         {
-            context.Orders.AddObject(new Order
-            {
-                OrderDate = new DateTime(2012,1,2,3,4,5,100),
-                ShipName = "SuperShip"                
+            context.Orders.AddObject(
+                new Order
+                {
+                    OrderDate = new DateTime(2012,1,2,3,4,5,100),
+                    ShipName = "SuperShip"                
 
-            });
+                });
+
             context.SaveChanges();
+
             var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Day == 2);
             var orders = query.ToList();
             orders.FirstOrDefault(x=>x.ShipName == "SuperShip").ShouldNotBeNull();
@@ -503,14 +541,18 @@ namespace Effort.Test
         public void DateTimeOffsetDay()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+                });
+
             context.SaveChanges();
+
             var query = context.PrimaryEntities.Where(x=>x.Offset.HasValue && x.Offset.Value.Day == 2);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
@@ -520,14 +562,18 @@ namespace Effort.Test
         public void DateTimeOffsetDayHour()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+                });
+
             context.SaveChanges();
+
             var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Hour == 3);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
@@ -536,30 +582,42 @@ namespace Effort.Test
         public void DateTimeOffsetDayMillisecond()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+                });
+
             context.SaveChanges();
-            var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Millisecond == 100);
+
+            var query = context.PrimaryEntities.Where(x =>
+                x.Offset.HasValue && 
+                x.Offset.Value.Millisecond == 100);
+
             var orders = query.ToList();
+
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
         }
         [TestMethod]
         public void DateTimeOffsetDayMinute()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+                });
+
             context.SaveChanges();
+
             var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Minute == 4);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
@@ -568,14 +626,18 @@ namespace Effort.Test
         public void DateTimeOffsetDayMonth()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+                });
+
             context.SaveChanges();
+
             var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Month == 1);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
@@ -584,14 +646,18 @@ namespace Effort.Test
         public void DateTimeOffsetDaySecond()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+                });
+
             context.SaveChanges();
+
             var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Second == 5);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
@@ -600,14 +666,18 @@ namespace Effort.Test
         public void DateTimeOffsetDayYear()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan())
+                });
+
             context.SaveChanges();
+
             var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Year == 2012);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
@@ -623,14 +693,18 @@ namespace Effort.Test
         public void DateTimeOffsetCurrentDateTimeOffset()
         {
             FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(new PrimaryEntity
-            {
-                ID1 = 1,
-                ID2 = 1,
-                PrimaryData = "MyData",
-                Offset = DateTimeOffset.Now
-            });
+
+            context.PrimaryEntities.AddObject(
+                new PrimaryEntity
+                {
+                    ID1 = 1,
+                    ID2 = 1,
+                    PrimaryData = "MyData",
+                    Offset = DateTimeOffset.Now
+                });
+
             context.SaveChanges();
+
             var query = context.PrimaryEntities.Where(x => x.Offset.HasValue && x.Offset.Value.Year == DateTimeOffset.Now.Year);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.PrimaryData == "MyData").ShouldNotBeNull();
@@ -643,13 +717,16 @@ namespace Effort.Test
         [TestMethod]
         public void DecimalCeiling()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 0.3f,
-                Quantity = -123
-            });
-            context.SaveChanges();
+            this.context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 0.3f,
+                    Quantity = -123
+                });
+
+            this.context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Decimal.Ceiling(0.3m) == 1);
 
@@ -660,13 +737,16 @@ namespace Effort.Test
         [TestMethod]
         public void DecimalFloor()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 0.3f,
-                Quantity = -123
-            });
-            context.SaveChanges();
+            this.context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 0.3f,
+                    Quantity = -123
+                });
+
+            this.context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Decimal.Floor(0.3m) == 0);
 
@@ -677,13 +757,16 @@ namespace Effort.Test
         [TestMethod]
         public void DecimalRound()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 0.3f,
-                Quantity = -123
-            });
-            context.SaveChanges();
+            this.context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 0.3f,
+                    Quantity = -123
+                });
+
+            this.context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Decimal.Round(0.3m) == 0);
 
@@ -695,13 +778,16 @@ namespace Effort.Test
         [TestMethod]
         public void MathCeiling()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 0.3f,
-                Quantity = -123
-            });
-            context.SaveChanges();
+            this.context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 0.3f,
+                    Quantity = -123
+                });
+
+            this.context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Math.Ceiling(x.Discount) == 1);
 
@@ -712,13 +798,16 @@ namespace Effort.Test
         [TestMethod]
         public void MathFloor()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 0.3f,
-                Quantity = -123
-            });
-            context.SaveChanges();
+            this.context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 0.3f,
+                    Quantity = -123
+                });
+
+            this.context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Math.Floor(x.Discount) == 0);
 
@@ -729,13 +818,15 @@ namespace Effort.Test
         [TestMethod]
         public void MathRound()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 0.3f,
-                Quantity = -123
-            });
-            context.SaveChanges();
+            this.context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 0.3f,
+                    Quantity = -123
+                });
+            this.context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Math.Round(x.Discount) == 0);
 
@@ -746,12 +837,15 @@ namespace Effort.Test
         [TestMethod]
         public void MathRoundWithDigits()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 123.396f,
-                Quantity = -123
-            });
+            context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 123.396f,
+                    Quantity = -123
+                });
+
             context.SaveChanges();
 
             var query = context.OrderDetails.Where(x => Math.Round(x.Discount,2) == 123.40);
@@ -763,13 +857,15 @@ namespace Effort.Test
         [TestMethod]
         public void MathAbs()
         {
-            context.Products.AddObject(new Product
-            {
-                ProductName = "Special product",
-                UnitPrice = -250
+            this.context.Products.AddObject(
+                new Product
+                {
+                    ProductName = "Special product",
+                    UnitPrice = -250
 
-            });
-            context.SaveChanges();
+                });
+
+            this.context.SaveChanges();
 
             var query = context.Products.Where(x => Math.Abs(x.UnitPrice.Value) == 250);
 
@@ -780,13 +876,16 @@ namespace Effort.Test
         [TestMethod]
         public void MathPower()
         {
-            context.OrderDetails.AddObject(new OrderDetail
-            {
-                OrderID = 1,
-                Discount = 10.3f,
-                Quantity = -123
-            });
-            context.SaveChanges();
+            this.context.OrderDetails.AddObject(
+                new OrderDetail
+                {
+                    OrderID = 10248,
+                    ProductID = 1,
+                    Discount = 10.3f,
+                    Quantity = -123
+                });
+
+            this.context.SaveChanges();
 
             var query = context.OrderDetails.Where(x=> Math.Pow(x.Quantity,2) == 123*123);
 

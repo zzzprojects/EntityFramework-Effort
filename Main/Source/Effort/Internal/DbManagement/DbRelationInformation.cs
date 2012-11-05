@@ -24,12 +24,21 @@
 
 namespace Effort.Internal.DbManagement
 {
+    using System;
     using System.Reflection;
-    using System.Linq.Expressions;
+    using NMemory.Indexes;
 
-    public class DbRelationInformation
+    internal class DbRelationInformation
     {
-        public DbRelationInformation(string fromTable, PropertyInfo[] fromProperties, string toTable, PropertyInfo[] toProperties, object primaryKeyInfo, object foreignKeyInfo, object primaryToForeignConverter, object foreignToPrimaryConverter)
+        public DbRelationInformation(
+            string fromTable, 
+            PropertyInfo[] fromProperties, 
+            string toTable,
+            PropertyInfo[] toProperties, 
+            IKeyInfo primaryKeyInfo,
+            IKeyInfo foreignKeyInfo, 
+            Delegate primaryToForeignConverter,
+            Delegate foreignToPrimaryConverter)
         {
             this.PrimaryTable = fromTable;
             this.ForeignTable = toTable;
@@ -49,14 +58,15 @@ namespace Effort.Internal.DbManagement
 
         public PropertyInfo[] ForeignProperties { get; private set; }
 
-        //NMemory.IndexesAnonymousTypeKeyInfo<TEntity, TKey> Create<TEntity, TKey>
-        public object PrimaryKeyInfo { get; private set; }
-        public object ForeignKeyInfo { get; private set; }
+        // NMemory.IndexesAnonymousTypeKeyInfo<TEntity, TKey> Create<TEntity, TKey>
+        public IKeyInfo PrimaryKeyInfo { get; private set; }
 
-        //Func<TPrimaryKey, TForeignKey>
-        public object PrimaryToForeignConverter { get; private set; }
+        public IKeyInfo ForeignKeyInfo { get; private set; }
 
-        //Func<TForeignKey, TPrimaryKey>
-        public object ForeignToPrimaryConverter { get; private set; }
+        // Func<TPrimaryKey, TForeignKey>
+        public Delegate PrimaryToForeignConverter { get; private set; }
+
+        // Func<TForeignKey, TPrimaryKey>
+        public Delegate ForeignToPrimaryConverter { get; private set; }
     }
 }

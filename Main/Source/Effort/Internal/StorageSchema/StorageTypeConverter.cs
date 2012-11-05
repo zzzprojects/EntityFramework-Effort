@@ -62,8 +62,6 @@ namespace Effort.Internal.StorageSchema
                 else
                 {
                     TypeUsage edmType = this.oldProvider.Manifest.GetEdmType(oldStorageTypeUsage);
-
-                  
                     TypeUsage newStorageType = this.newProvider.Manifest.GetStoreType(edmType);
 
                     result = newStorageType.EdmType.Name;

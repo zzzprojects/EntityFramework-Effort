@@ -59,7 +59,7 @@ namespace Effort
             string instanceId = Guid.NewGuid().ToString();
 
             EffortConnection connection = Create(instanceId, dataLoader);
-            connection.MarkAsTransient();
+            connection.MarkAsPrimaryTransient();
 
             return connection;
         }

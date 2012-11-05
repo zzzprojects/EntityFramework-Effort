@@ -48,7 +48,7 @@ namespace Effort.Internal.Common
         {
             MethodCallExpression methodCall = expr.Body as MethodCallExpression;
 
-            if( expr.Body is UnaryExpression )
+            if (expr.Body is UnaryExpression)
             {
                 methodCall = (expr.Body as UnaryExpression).Operand as MethodCallExpression;
             }

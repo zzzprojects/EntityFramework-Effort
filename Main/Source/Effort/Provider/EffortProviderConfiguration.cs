@@ -29,6 +29,9 @@ namespace Effort.Provider
     using System.Data;
     using System.Threading;
 
+    /// <summary>
+    /// Configuration module for the Effort provider.
+    /// </summary>
     public static class EffortProviderConfiguration
     {
         public static readonly string ProviderInvariantName = "EffortProvider";
@@ -36,6 +39,9 @@ namespace Effort.Provider
         private static bool registered = false;
         private static object sync = new object();
 
+        /// <summary>
+        /// Registers the provider factory.
+        /// </summary>
         public static void RegisterProvider()
         {
             if (!registered)
@@ -74,6 +80,5 @@ namespace Effort.Provider
             var providerFactories = data.Tables["DbProviderFactories"];
             providerFactories.Rows.Add(name, name, invariantName, factoryType.AssemblyQualifiedName);
         }
-        
     }
 }

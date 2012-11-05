@@ -188,6 +188,5 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
 
             return result;
         }
-
     }
 }

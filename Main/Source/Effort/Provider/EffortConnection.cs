@@ -35,48 +35,103 @@ namespace Effort.Provider
     {
         private Guid identifier;
         private ConnectionState state;
-        private DbContainer dbContainer;
-        private bool iamtransient;
+        private DbContainer container;
+        private bool isPrimaryTransient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortConnection" /> class.
+        /// </summary>
         public EffortConnection()
         {
             this.identifier = Guid.NewGuid();
             this.state = ConnectionState.Closed;
         }
 
+        /// <summary>
+        /// Gets or sets the string used to open the connection.
+        /// </summary>
+        /// <returns>The connection string used to establish the initial connection. The exact contents of the connection string depend on the specific data source for this connection. The default value is an empty string.</returns>
         public override string ConnectionString
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets the name of the database server to which to connect.
+        /// </summary>
+        /// <returns>The name of the database server to which to connect. The default value is an empty string.</returns>
+        public override string DataSource
+        {
+            get
+            {
+                return "in-process";
+            }
+        }
+
+        /// <summary>
+        /// Gets a string that represents the version of the server to which the object is connected.
+        /// </summary>
+        /// <returns>The version of the database. The format of the string returned depends on the specific type of connection you are using.</returns>
+        public override string ServerVersion
+        {
+            get
+            {
+                return typeof(NMemory.Database).Assembly.GetName().Version.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets a string that describes the state of the connection.
+        /// </summary>
+        /// <returns>The state of the connection. The format of the string returned depends on the specific type of connection you are using.</returns>
+        public override ConnectionState State
+        {
+            get
+            {
+                return this.state;
+            }
+        }
+
+        /// <summary>
+        /// Gets the internal <see cref="DbContainer" /> instance.
+        /// </summary>
+        /// <value>
+        /// The internal <see cref="DbContainer" /> instance.
+        /// </value>
         internal DbContainer DbContainer
         {
             get
             {
-                return this.dbContainer;
+                return this.container;
             }
         }
 
+        /// <summary>
+        /// Gets the <see cref="T:System.Data.Common.DbProviderFactory" /> for this <see cref="T:System.Data.Common.DbConnection" />.
+        /// </summary>
+        /// <returns>A <see cref="T:System.Data.Common.DbProviderFactory" />.</returns>
+        protected override DbProviderFactory DbProviderFactory
+        {
+            get
+            {
+                return EffortProviderFactory.Instance;
+            }
+        }
 
+        /// <summary>
+        /// Changes the current database for an open connection.
+        /// </summary>
+        /// <param name="databaseName">Specifies the name of the database for the connection to use.</param>
         public override void ChangeDatabase(string databaseName)
         {
-            
+            throw new NotSupportedException();
         }
 
-        protected override DbCommand CreateDbCommand()
-        {
-            return new EffortCommand() { Connection = this };
-        }
-
-        public override string DataSource
-        {
-            get 
-            {
-                return "in-process"; 
-            }
-        }
-
+        /// <summary>
+        /// Gets the name of the current database after a connection is opened, or the database name specified in the connection string before the connection is opened.
+        /// </summary>
+        /// <returns>The name of the current database or the name of the database to be used after a connection is opened. The default value is an empty string.</returns>
         public override string Database
         {
             get 
@@ -87,13 +142,82 @@ namespace Effort.Provider
             }
         }
 
+        /// <summary>
+        /// Opens a database connection with the settings specified by the <see cref="P:System.Data.Common.DbConnection.ConnectionString" />.
+        /// </summary>
         public override void Open()
         {
             EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
 
-            this.dbContainer = DbContainerStore.GetDbContainer(connectionString.InstanceId, CreateDbContainer);
+            this.container = 
+                DbContainerStore.GetDbContainer(
+                    connectionString.InstanceId, 
+                    this.CreateDbContainer);
             
             this.state = ConnectionState.Open;
+        }
+
+        /// <summary>
+        /// Closes the connection to the database. This is the preferred method of closing any open connection.
+        /// </summary>
+        public override void Close()
+        {
+            this.state = ConnectionState.Closed;
+        }
+
+        /// <summary>
+        /// Marks the connection object as transient, so the 
+        /// </summary>
+        internal void MarkAsPrimaryTransient()
+        {
+            this.isPrimaryTransient = true;
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="T:System.Data.Common.DbCommand" /> object associated with the current connection.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Data.Common.DbCommand" /> object.
+        /// </returns>
+        protected override DbCommand CreateDbCommand()
+        {
+            return new EffortCommand() { Connection = this };
+        }
+
+        /// <summary>
+        /// Starts a database transaction.
+        /// </summary>
+        /// <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+        /// <returns>
+        /// An object representing the new transaction.
+        /// </returns>
+        protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
+        {
+            return new EffortTransaction(this, isolationLevel);
+        }
+
+        /// <summary>
+        /// Enlists in the specified transaction.
+        /// </summary>
+        /// <param name="transaction">A reference to an existing <see cref="T:System.Transactions.Transaction" /> in which to enlist.</param>
+        public override void EnlistTransaction(System.Transactions.Transaction transaction)
+        {
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="T:System.ComponentModel.Component" /> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (this.isPrimaryTransient)
+            {
+                EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
+
+                DbContainerStore.DeleteDbContainer(connectionString.InstanceId);
+            }
+
+            base.Dispose(disposing);
         }
 
         private DbContainer CreateDbContainer()
@@ -104,7 +228,7 @@ namespace Effort.Provider
 
             if (connectionString.DataLoaderType != null)
             {
-                // TODO: check parameterless constructor
+                //// TODO: check parameterless constructor
 
                 dataLoader = Activator.CreateInstance(connectionString.DataLoaderType) as IDataLoader;
                 dataLoader.Argument = connectionString.DataLoaderArgument;
@@ -113,64 +237,9 @@ namespace Effort.Provider
             }
 
             parameters.IsDataLoaderCached = connectionString.DataLoaderCached;
-
-            parameters.IsTransient = iamtransient;
+            parameters.IsTransient = this.isPrimaryTransient;
 
             return new DbContainer(parameters);
-        }
-
-        public override void Close()
-        {
-            this.state = ConnectionState.Closed;
-        }
-
-        public override string ServerVersion
-        {
-            get 
-            {
-                return typeof(NMemory.Database).Assembly.GetName().Version.ToString(); 
-            }
-        }
-
-        public override ConnectionState State
-        {
-            get 
-            { 
-                return this.state; 
-            }
-        }
-
-        internal void MarkAsTransient()
-        {
-            iamtransient = true;
-        }
-
-        protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
-        {
-            return new EffortTransaction(this, isolationLevel);
-        }
-
-        protected override DbProviderFactory DbProviderFactory
-        {
-            get 
-            { 
-                return EffortProviderFactory.Instance; 
-            }
-        }
-
-        public override void EnlistTransaction(System.Transactions.Transaction transaction)
-        {
-            
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-
-            if (iamtransient)
-            {
-                DbContainerStore.DeleteDbContainer(new EffortConnectionStringBuilder(this.ConnectionString).InstanceId);
-            }
-            base.Dispose(disposing);
         }
     }
 }

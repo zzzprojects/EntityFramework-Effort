@@ -159,7 +159,6 @@ namespace Effort
 
         #endregion
 
-
         private static Type CreateType<T>(string entityConnectionString, bool persistent, IDataLoader dataLoader) where T : ObjectContext
         {
             EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder();
@@ -172,7 +171,11 @@ namespace Effort
 
             string effortConnectionString = ecsb.ConnectionString;
 
-            return ObjectContextTypeStore.GetObjectContextType(entityConnectionString, effortConnectionString, typeof(T), () =>
+            return ObjectContextTypeStore.GetObjectContextType(
+                entityConnectionString, 
+                effortConnectionString, 
+                typeof(T), 
+                () =>
                 {
                     if (string.IsNullOrEmpty(entityConnectionString))
                     {
@@ -182,7 +185,6 @@ namespace Effort
                     return CreateType<T>(entityConnectionString, effortConnectionString, persistent);
                 });
         }
-
 
         private static string GetDefaultConnectionString<T>() where T : ObjectContext
         {
@@ -228,9 +230,7 @@ namespace Effort
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                 null,
                 new Type[] { typeof(EntityConnection) },
-                null
-                );
-
+                null);
 
             ILGenerator gen = ctor.GetILGenerator();
             // Writing body
@@ -249,7 +249,6 @@ namespace Effort
             gen.Emit(OpCodes.Nop);
             gen.Emit(OpCodes.Nop);
             gen.Emit(OpCodes.Ret);
-
 
             // protected void Dispose(bool disposing)
             MethodInfo baseDispose = typeof(T).GetMethod(

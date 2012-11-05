@@ -51,11 +51,11 @@ namespace Effort.Internal.CommandActions
         public DbDataReader ExecuteDataReader(ActionContext context)
         {
             TransformVisitor visitor = new TransformVisitor(context.DbContainer.TypeConverter);
-            visitor.SetParameters(commandTree.Parameters.ToArray());
+            visitor.SetParameters(this.commandTree.Parameters.ToArray());
             visitor.TableProvider = context.DbContainer;
 
             // Transform command tree
-            Expression expr = visitor.Visit(commandTree.Query);
+            Expression expr = visitor.Visit(this.commandTree.Query);
 
             // Execute expression post processing
             foreach (IExpressionModifier modifier in DbCommandTreeTransformation.PostProcessing.Modifiers.GetModifiers())
@@ -96,7 +96,7 @@ namespace Effort.Internal.CommandActions
                 result = procedure.Execute(context.DbContainer.Internal, parameters);
             }
 
-            List<FieldDescription> fields = GetReturningFields(commandTree);
+            List<FieldDescription> fields = GetReturningFields(this.commandTree);
 
             return new EffortDataReader(result, fields.ToArray(), context.DbContainer);
         }
@@ -123,8 +123,8 @@ namespace Effort.Internal.CommandActions
                 PrimitiveType memberType = member.TypeUsage.EdmType as PrimitiveType;
                 fields.Add(new FieldDescription(member.Name, memberType.ClrEquivalentType));
             }
+
             return fields;
         }
-
     }
 }

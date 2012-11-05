@@ -33,7 +33,7 @@ namespace Effort.Internal.DbCommandTreeTransformation.Variables
 
         public VariableCollection()
         {
-            this.variables = new Dictionary<string,Variable>();
+            this.variables = new Dictionary<string, Variable>();
         }
 
         public void Add(Variable context)
@@ -57,7 +57,6 @@ namespace Effort.Internal.DbCommandTreeTransformation.Variables
 
             return context;
         }
-
 
         public void Delete(Variable context)
         {

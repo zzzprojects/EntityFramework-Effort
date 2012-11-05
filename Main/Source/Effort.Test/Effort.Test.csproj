@@ -114,7 +114,7 @@
     <Compile Include="JoinFixture.cs" />
     <Compile Include="ManipulationFixture.cs" />
     <Compile Include="StorageSchemaModifierFixture.cs" />
-    <Compile Include="MultiFieldAssociationFixture.cs" />
+    <Compile Include="AssociationFixture.cs" />
     <Compile Include="ObjectContextFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicFixture.cs" />

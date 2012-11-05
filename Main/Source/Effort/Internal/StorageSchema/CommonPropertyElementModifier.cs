@@ -45,6 +45,28 @@ namespace Effort.Internal.StorageSchema
             this.nameProvider = nameProvider;
         }
 
+        private IEnumerable<XName> CommonPropertyAttributeNames
+        {
+            get
+            {
+                yield return this.nameProvider.MaxLengthAttribute;
+
+                yield return this.nameProvider.FixedLengthAttribute;
+
+                yield return this.nameProvider.PrecisionAttribute;
+
+                yield return this.nameProvider.ScaleAttribute;
+
+                yield return this.nameProvider.UnicodeAttribute;
+
+                yield return this.nameProvider.CollationAttribute;
+
+                yield return this.nameProvider.NullableAttribute;
+
+                yield return this.nameProvider.DefaultValueAttribute;
+            }
+        }
+
         public void Modify(XElement element, IModificationContext context)
         {
             if (element == null)
@@ -90,28 +112,6 @@ namespace Effort.Internal.StorageSchema
                         element.Add(new XAttribute(commonAttributeName, facet.Value));
                     }
                 }
-            }
-        }
-
-        private IEnumerable<XName> CommonPropertyAttributeNames
-        {
-            get
-            {
-                yield return this.nameProvider.MaxLengthAttribute;
-
-                yield return this.nameProvider.FixedLengthAttribute;
-
-                yield return this.nameProvider.PrecisionAttribute;
-
-                yield return this.nameProvider.ScaleAttribute;
-
-                yield return this.nameProvider.UnicodeAttribute;
-
-                yield return this.nameProvider.CollationAttribute;
-
-                yield return this.nameProvider.NullableAttribute;
-
-                yield return this.nameProvider.DefaultValueAttribute;
             }
         }
     }

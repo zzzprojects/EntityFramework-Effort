@@ -26,11 +26,17 @@ namespace Effort.Provider
 {
     using System.Data.Common;
 
+    /// <summary>
+    /// Defines a cacheable command plan.
+    /// </summary>
     public class EffortCommandDefinition : DbCommandDefinition
     {
-        public EffortCommandDefinition(DbCommand prototype) : base(prototype)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EffortCommandDefinition" /> class using the supplied <see cref="EffortCommandBase" />.
+        /// </summary>
+        /// <param name="prototype">The supplied <see cref="EffortCommandDefinition" />.</param>
+        public EffortCommandDefinition(EffortCommandBase prototype) : base(prototype)
         {
-
         }
     }
 }

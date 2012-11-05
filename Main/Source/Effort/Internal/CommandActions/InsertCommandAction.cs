@@ -55,7 +55,7 @@ namespace Effort.Internal.CommandActions
             ITable table = DbCommandActionHelper.GetTable(this.commandTree, context.DbContainer);
 
             // Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(commandTree.SetClauses);
+            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(this.commandTree.SetClauses);
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
@@ -70,13 +70,14 @@ namespace Effort.Internal.CommandActions
                 if (setClauses.ContainsKey(property.Name))
                 {
                     setter = transform.Visit(setClauses[property.Name]);
-
                 }
+
                 // If setter was found, insert it
                 if (setter != null)
                 {
                     // Type correction
                     setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
+
                     // Register binding
                     memberBindings.Add(Expression.Bind(property, setter));
                 }
@@ -93,10 +94,10 @@ namespace Effort.Internal.CommandActions
         public int ExecuteNonQuery(ActionContext context)
         {
             // Get the source table
-            ITable table = DbCommandActionHelper.GetTable(commandTree, context.DbContainer);
+            ITable table = DbCommandActionHelper.GetTable(this.commandTree, context.DbContainer);
 
             // Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(commandTree.SetClauses);
+            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(this.commandTree.SetClauses);
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();
@@ -118,6 +119,7 @@ namespace Effort.Internal.CommandActions
                 {
                     // Type correction
                     setter = ExpressionHelper.CorrectType(setter, property.PropertyType);
+
                     // Register binding
                     memberBindings.Add(Expression.Bind(property, setter));
                 }
@@ -149,6 +151,5 @@ namespace Effort.Internal.CommandActions
 
             return newEntity;
         }
-
     }
 }

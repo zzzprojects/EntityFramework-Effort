@@ -31,6 +31,11 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
 
     internal class SumTransformerVisitor : ExpressionVisitor, IExpressionModifier
     {
+        public Expression ModifyExpression(Expression expression)
+        {
+            return this.Visit(expression);
+        }
+
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             Type returnType = node.Method.ReturnType;
@@ -52,15 +57,9 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
                     .Single()
                     .MakeGenericMethod(sourceType),
                     node.Arguments);
-                
             }
             
             return base.VisitMethodCall(node);
-        }
-
-        public Expression ModifyExpression(Expression expression)
-        {
-            return this.Visit(expression);
         }
     }
 }

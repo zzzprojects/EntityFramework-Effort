@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortProviderConfiguration.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -50,7 +50,10 @@ namespace Effort.Provider
                 {
                     if (!registered)
                     {
-                        RegisterProvider("Effort Provider", ProviderInvariantName, typeof(EffortProviderFactory));
+                        RegisterProvider(
+                            "Effort Provider", 
+                            ProviderInvariantName, 
+                            typeof(EffortProviderFactory));
 
                         Thread.MemoryBarrier();
                         registered = true;
@@ -59,7 +62,10 @@ namespace Effort.Provider
             }
         }
 
-        private static void RegisterProvider(string name, string invariantName, Type factoryType)
+        private static void RegisterProvider(
+            string name, 
+            string invariantName, 
+            Type factoryType)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -76,9 +82,12 @@ namespace Effort.Provider
                 throw new ArgumentNullException("factoryType");
             }
 
-            var data = (DataSet)ConfigurationManager.GetSection("system.data");
-            var providerFactories = data.Tables["DbProviderFactories"];
-            providerFactories.Rows.Add(name, name, invariantName, factoryType.AssemblyQualifiedName);
+            string assemblyName = factoryType.AssemblyQualifiedName;
+
+            DataSet data = (DataSet)ConfigurationManager.GetSection("system.data");
+            DataTable providerFactories = data.Tables["DbProviderFactories"];
+
+            providerFactories.Rows.Add(name, name, invariantName, assemblyName);
         }
     }
 }

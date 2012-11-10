@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortCommand.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -39,7 +39,9 @@ namespace Effort.Provider
         /// <summary>
         /// Executes the command text against the connection.
         /// </summary>
-        /// <param name="behavior">An instance of <see cref="T:System.Data.CommandBehavior" />.</param>
+        /// <param name="behavior">
+        /// An instance of <see cref="T:System.Data.CommandBehavior" />.
+        /// </param>
         /// <returns>
         /// A <see cref="T:System.Data.Common.DbDataReader" />.
         /// </returns>
@@ -81,7 +83,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.
+        /// Executes the query and returns the first column of the first row in the result set 
+        /// returned by the query. All other columns and rows are ignored.
         /// </summary>
         /// <returns>
         /// The first column of the first row in the result set.

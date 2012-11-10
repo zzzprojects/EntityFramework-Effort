@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortProviderManifest.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -36,7 +36,7 @@ namespace Effort.Provider
     /// </summary>
     public class EffortProviderManifest : DbXmlEnabledProviderManifest
     {
-        private const string metadataResource = "Effort.Provider.EffortProviderManifest.xml";
+        private const string MetadataResource = "Effort.Provider.EffortProviderManifest.xml";
         private EffortVersion version;
 
         /// <summary>
@@ -49,15 +49,16 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// When overridden in a derived class, this method maps the specified storage type 
-        /// and a set of facets for that type to an EDM type.
+        /// When overridden in a derived class, this method maps the specified storage type and
+        /// a set of facets for that type to an EDM type.
         /// </summary>
-        /// <param name="storeType">The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance 
-        /// that describes a storage type and a set of facets for that type to be mapped to the 
-        /// EDM type.</param>
+        /// <param name="storeType">
+        /// The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes a
+        /// storage type and a set of facets for that type to be mapped to the EDM type.
+        /// </param>
         /// <returns>
-        /// The <see cref"T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes an EDM type and a set 
-        /// of facets for that type.
+        /// The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes an
+        /// EDM type and a set of facets for that type.
         /// </returns>
         public override TypeUsage GetEdmType(TypeUsage storeType)
         {
@@ -68,11 +69,16 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// When overridden in a derived class, this method maps the specified EDM type and a set of facets for that type to a storage type.
+        /// When overridden in a derived class, this method maps the specified EDM type and a
+        /// set of facets for that type to a storage type.
         /// </summary>
-        /// <param name="edmType">The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes the EDM type and a set of facets for that type to be mapped to a storage type.</param>
+        /// <param name="edmType">
+        /// The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes the
+        /// EDM type and a set of facets for that type to be mapped to a storage type.
+        /// </param>
         /// <returns>
-        /// The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes a storage type and a set of facets for that type.
+        /// The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes a
+        /// storage type and a set of facets for that type.
         /// </returns>
         public override TypeUsage GetStoreType(TypeUsage edmType)
         {
@@ -84,11 +90,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// When overridden in a derived class, this method returns provider-specific information. This method should never return null.
+        /// When overridden in a derived class, this method returns provider-specific 
+        /// information. This method should never return null.
         /// </summary>
         /// <param name="informationType">The type of the information to return.</param>
         /// <returns>
-        /// The <see cref="T:System.Xml.XmlReader"/> object that contains the requested information.
+        /// The <see cref="T:System.Xml.XmlReader"/> object that contains the requested 
+        /// information.
         /// </returns>
         protected override XmlReader GetDbInformation(string informationType)
         {
@@ -98,7 +106,7 @@ namespace Effort.Provider
         private static XmlReader GetProviderManifest()
         {
             Assembly effortAssembly = typeof(EffortProviderManifest).Assembly;
-            Stream stream = effortAssembly.GetManifestResourceStream(metadataResource);
+            Stream stream = effortAssembly.GetManifestResourceStream(MetadataResource);
 
             return XmlReader.Create(stream);
         }

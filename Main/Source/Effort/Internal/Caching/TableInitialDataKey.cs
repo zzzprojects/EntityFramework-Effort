@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="TableInitialDataKey.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -43,7 +43,10 @@ namespace Effort.Internal.Caching
         {
             return
                 this.loaderType.Equals(other.loaderType) &&
-                string.Equals(this.loaderArg, other.loaderArg, StringComparison.InvariantCultureIgnoreCase) &&
+                string.Equals(
+                    this.loaderArg, 
+                    other.loaderArg, 
+                    StringComparison.InvariantCultureIgnoreCase) &&
                 this.entityType.Equals(other.entityType);
         }
 
@@ -61,7 +64,10 @@ namespace Effort.Internal.Caching
 
         public override int GetHashCode()
         {
-            return this.loaderType.GetHashCode() % this.loaderArg.GetHashCode() % this.entityType.GetHashCode();
+            return 
+                this.loaderType.GetHashCode() % 
+                this.loaderArg.GetHashCode() % 
+                this.entityType.GetHashCode();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbSchemaKey.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -37,7 +37,8 @@ namespace Effort.Internal.Caching
         public DbSchemaKey(StoreItemCollection storeItemCollection)
         {
             // Find container
-            EntityContainer entityContainer = storeItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+            EntityContainer entityContainer = 
+                storeItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
             StringBuilder builder = new StringBuilder();
 
@@ -45,14 +46,16 @@ namespace Effort.Internal.Caching
             builder.Append("(");
 
             // Find entity sets
-            IEnumerable<EntitySet> sets = entityContainer.BaseEntitySets.OfType<EntitySet>().OrderBy(s => s.Name);
+            IEnumerable<EntitySet> sets = 
+                entityContainer.BaseEntitySets.OfType<EntitySet>().OrderBy(s => s.Name);
 
             foreach (EntitySet set in sets)
             {
                 builder.Append(set.Name);
                 builder.Append("(");
 
-                IEnumerable<EdmProperty> properties = set.ElementType.Properties.OrderBy(p => p.Name);
+                IEnumerable<EdmProperty> properties = 
+                    set.ElementType.Properties.OrderBy(p => p.Name);
 
                 foreach (EdmProperty property in properties)
                 {

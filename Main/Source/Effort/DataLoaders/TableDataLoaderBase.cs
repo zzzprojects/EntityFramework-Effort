@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="TableDataLoaderBase.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.DataLoaders
 {
@@ -29,8 +29,8 @@ namespace Effort.DataLoaders
     using System.Data;
 
     /// <summary>
-    /// Provides an abstract base class for <see cref="System.Data.IDataReader" /> based table data
-    /// loaders.
+    /// Provides an abstract base class for <see cref="System.Data.IDataReader" /> based table
+    /// data loaders.
     /// </summary>
     public abstract class TableDataLoaderBase : ITableDataLoader
     {
@@ -75,7 +75,10 @@ namespace Effort.DataLoaders
                     // Find the index of the field in the datareader
                     for (int j = 0; j < reader.FieldCount; j++)
                     {
-                        if (string.Equals(this.Table.Columns[i].Name, reader.GetName(j), StringComparison.InvariantCultureIgnoreCase))
+                        if (string.Equals(
+                                this.Table.Columns[i].Name, 
+                                reader.GetName(j), 
+                                StringComparison.InvariantCultureIgnoreCase))
                         {
                             mapper[i] = j;
                             break;
@@ -98,8 +101,9 @@ namespace Effort.DataLoaders
                         }
 
                         object fieldValue = reader.GetValue(fieldIndex.Value);
+                        Type fieldType = this.Table.Columns[i].Type;
 
-                        propertyValues[i] = this.ConvertValue(fieldValue, this.Table.Columns[i].Type);
+                        propertyValues[i] = this.ConvertValue(fieldValue, fieldType);
                     }
 
                     yield return propertyValues;

@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortCommandDefinition.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -32,9 +32,12 @@ namespace Effort.Provider
     public class EffortCommandDefinition : DbCommandDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortCommandDefinition" /> class using the supplied <see cref="EffortCommandBase" />.
+        /// Initializes a new instance of the <see cref="EffortCommandDefinition" /> class 
+        /// using the supplied <see cref="EffortCommandBase" />.
         /// </summary>
-        /// <param name="prototype">The supplied <see cref="EffortCommandDefinition" />.</param>
+        /// <param name="prototype">
+        /// The supplied <see cref="EffortCommandDefinition" />.
+        /// </param>
         public EffortCommandDefinition(EffortCommandBase prototype) : base(prototype)
         {
         }

@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EntityConnectionFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort
 {
@@ -36,8 +36,18 @@ namespace Effort
     using Effort.Internal.Common;
     using Effort.Provider;
 
-    public static class EntityConnectionFactory
+    /// <summary>
+    /// Provides factory methods that are able to create <see cref="T:EntityConnection"/>
+    /// objects that rely on in-process and in-memory databases. All of the data operations 
+    /// initiated from these connection objects are executed by the appropriate in-memory 
+    /// database, so using these connection objects does not require any external dependency 
+    /// outside of the scope of the application.
+    /// </summary>
+    public static sealed class EntityConnectionFactory
     {
+        /// <summary>
+        /// Initializes static members of the <see cref="EntityConnectionFactory" /> class.
+        /// </summary>
         static EntityConnectionFactory()
         {
             EffortProviderConfiguration.RegisterProvider();
@@ -45,7 +55,26 @@ namespace Effort
 
         #region Persistent
 
-        public static EntityConnection CreatePersistent(string entityConnectionString, IDataLoader dataLoader)
+        /// <summary>
+        /// Creates a <see cref="T:EntityConnection"/> object that rely on an in-memory 
+        /// database instance that lives during the complete application lifecycle. If the 
+        /// database is accessed the first time, then it will be constructed based on the 
+        /// metadata referenced by the provided entity connection string and its state is 
+        /// initialized by the provided
+        /// <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the
+        /// state of the in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:EntityConnection"/> object.</returns>
+        public static EntityConnection CreatePersistent(
+            string entityConnectionString, 
+            IDataLoader dataLoader)
         {
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
@@ -54,7 +83,19 @@ namespace Effort
             return CreateEntityConnection(metadata, connection);
         }
 
-        public static EntityConnection CreatePersistent(string entityConnectionString)
+        /// <summary>
+        /// Creates a <see cref="T:EntityConnection"/> object that rely on an in-memory 
+        /// database instance that lives during the complete application lifecycle. If the 
+        /// database is accessed the first time, then it will be constructed based on the 
+        /// metadata referenced by the provided entity connection string.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <returns>The <see cref="T:SEntityConnection"/> object.</returns>
+        public static EntityConnection CreatePersistent(
+            string entityConnectionString)
         {
             return CreatePersistent(entityConnectionString, null);
         }
@@ -63,7 +104,26 @@ namespace Effort
 
         #region Transient
 
-        public static EntityConnection CreateTransient(string entityConnectionString, IDataLoader dataLoader)
+        /// <summary>
+        /// Creates a <see cref="T:EntityConnection"/> object that rely on an in-memory
+        /// database instance that lives during the connection object lifecycle. If the 
+        /// connection object is disposed or garbage collected, then underlying database will 
+        /// be garbage collected too. The database is constructed based on the metadata 
+        /// referenced by the provided entity connection string and its state is initialized by
+        /// the provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that references the metadata that is required for 
+        /// constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:EntityConnection"/> object.</returns>
+        public static EntityConnection CreateTransient(
+            string entityConnectionString, 
+            IDataLoader dataLoader)
         {
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
@@ -72,6 +132,18 @@ namespace Effort
             return CreateEntityConnection(metadata, connection);
         }
 
+        /// <summary>
+        /// Creates a <see cref="T:EntityConnection"/> object that rely on an in-memory 
+        /// database instance that lives during the connection object lifecycle. If the 
+        /// connection object is disposed or garbage collected, then underlying database will 
+        /// be garbage collected too. The database is constructed based on the metadata 
+        /// referenced by the provided entity connection string.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that references the metadata that is required for 
+        /// constructing the schema.
+        /// </param>
+        /// <returns>The <see cref="T:DbConnection"/> object.</returns>
         public static EntityConnection CreateTransient(string entityConnectionString)
         {
             return CreateTransient(entityConnectionString, null);
@@ -79,11 +151,33 @@ namespace Effort
 
         #endregion
 
-        public static EntityConnection Create(string entityConnectionString, string effortConnectionString, bool persistent)
+        /// <summary>
+        /// Creates a new EntityConnection instance that wraps an EffortConnection object with 
+        /// the specified connection string.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that references the metadata and identifies the 
+        /// persistent database.
+        /// </param>
+        /// <param name="effortConnectionString">
+        /// The effort connection string that is passed to the EffortConnection object.
+        /// </param>
+        /// <param name="persistent">
+        /// if set to <c>true</c> the ObjectContext uses a persistent database, otherwise 
+        /// transient.
+        /// </param>
+        /// <returns>
+        /// The EntityConnection object.
+        /// </returns>
+        internal static EntityConnection Create(
+            string entityConnectionString, 
+            string effortConnectionString, 
+            bool persistent)
         {
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
-            EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder(effortConnectionString);
+            EffortConnectionStringBuilder ecsb = 
+                new EffortConnectionStringBuilder(effortConnectionString);
 
             if (persistent)
             {
@@ -94,7 +188,8 @@ namespace Effort
                 ecsb.InstanceId = Guid.NewGuid().ToString();
             }
 
-            EffortConnection connection = new EffortConnection() { ConnectionString = ecsb.ConnectionString };
+            EffortConnection connection = 
+                new EffortConnection() { ConnectionString = ecsb.ConnectionString };
 
             if (!persistent)
             {
@@ -104,19 +199,30 @@ namespace Effort
             return CreateEntityConnection(metadata, connection);
         }
 
-        private static string GetFullEntityConnectionString(string entityConnectionString)
+        /// <summary>
+        /// Returns the full entity connection string if it formed as 
+        /// "name=connectionStringName".
+        /// </summary>
+        /// <param name="entityConnectionString">The entity connection string.</param>
+        /// <returns>The full entity connection string.</returns>
+        private static string GetFullEntityConnectionString(
+            string entityConnectionString)
         {
-            EntityConnectionStringBuilder builder = new EntityConnectionStringBuilder(entityConnectionString);
+            EntityConnectionStringBuilder builder = 
+                new EntityConnectionStringBuilder(entityConnectionString);
 
             if (!string.IsNullOrWhiteSpace(builder.Name))
             {
                 string connectionStringName = builder.Name;
 
-                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings[connectionStringName];
+                ConnectionStringSettings setting = 
+                    ConfigurationManager.ConnectionStrings[connectionStringName];
 
                 if (setting == null)
                 {
-                    throw new ArgumentException("Connectionstring was not found", "entityConnectionString");
+                    throw new ArgumentException(
+                        "Connectionstring was not found", 
+                        "entityConnectionString");
                 }
 
                 entityConnectionString = setting.ConnectionString;
@@ -125,11 +231,24 @@ namespace Effort
             return entityConnectionString;
         }
 
-        private static EntityConnection CreateEntityConnection(MetadataWorkspace metadata, DbConnection connection)
+        /// <summary>
+        /// Creates a new EntityConnection object and initializes its underlying database.
+        /// </summary>
+        /// <param name="metadata">The metadata of the database.</param>
+        /// <param name="connection">The wrapped connection object.</param>
+        /// <returns>The EntityConnection object.</returns>
+        private static EntityConnection CreateEntityConnection(
+            MetadataWorkspace metadata, 
+            DbConnection connection)
         {
             EntityConnection entityConnection = new EntityConnection(metadata, connection);
 
-            FieldInfo owned = typeof(EntityConnection).GetField("_userOwnsStoreConnection", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo owned = 
+                typeof(EntityConnection)
+                .GetField(
+                    "_userOwnsStoreConnection", 
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+
             owned.SetValue(entityConnection, false);
 
             using (ObjectContext objectContext = new ObjectContext(entityConnection))
@@ -143,14 +262,28 @@ namespace Effort
             return entityConnection;
         }
 
-        private static MetadataWorkspace GetMetadataWorkspace(ref string entityConnectionString)
+        /// <summary>
+        /// Returns a metadata workspace that is rewritten in order to be compatible the Effort 
+        /// provider.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that references the original metadata.
+        /// </param>
+        /// <returns>The rewritten metadata.</returns>
+        private static MetadataWorkspace GetMetadataWorkspace(
+            ref string entityConnectionString)
         {
             entityConnectionString = GetFullEntityConnectionString(entityConnectionString);
-            EntityConnectionStringBuilder ecsb = new EntityConnectionStringBuilder(entityConnectionString);
+
+            EntityConnectionStringBuilder connectionStringBuilder = 
+                new EntityConnectionStringBuilder(entityConnectionString);
 
             return MetadataWorkspaceStore.GetMetadataWorkspace(
-                ecsb.Metadata,
-                x => MetadataWorkspaceHelper.Rewrite(x, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1));
+                connectionStringBuilder.Metadata,
+                metadata => MetadataWorkspaceHelper.Rewrite(
+                    metadata, 
+                    EffortProviderConfiguration.ProviderInvariantName, 
+                    EffortProviderManifestTokens.Version1));
         }
     }
 }

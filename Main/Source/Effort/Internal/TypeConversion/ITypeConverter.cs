@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ITypeConverter.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,13 +20,13 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
-
-using System;
-using System.Data.Metadata.Edm;
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.TypeConversion
 {
+    using System;
+    using System.Data.Metadata.Edm;
+
     internal interface ITypeConverter
     {
         object ConvertClrObject(object obj, Type type);

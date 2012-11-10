@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ProviderHelper.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Common
 {
@@ -30,16 +30,20 @@ namespace Effort.Internal.Common
 
     internal class ProviderHelper
     {
-        public static DbProviderManifest GetProviderManifest(string providerInvariantName, string providerManifestToken)
+        public static DbProviderManifest GetProviderManifest(
+            string providerInvariantName, 
+            string providerManifestToken)
         {
-            IServiceProvider serviceProvider = DbProviderFactories.GetFactory(providerInvariantName) as IServiceProvider;
+            IServiceProvider serviceProvider = 
+                DbProviderFactories.GetFactory(providerInvariantName) as IServiceProvider;
 
             if (serviceProvider == null)
             {
                 throw new ProviderIncompatibleException();
             }
 
-            DbProviderServices providerServices = serviceProvider.GetService(typeof(DbProviderServices)) as DbProviderServices;
+            DbProviderServices providerServices = 
+                serviceProvider.GetService(typeof(DbProviderServices)) as DbProviderServices;
 
             if (providerServices == null)
             {

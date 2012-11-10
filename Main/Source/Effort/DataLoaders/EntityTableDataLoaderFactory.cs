@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EntityTableDataLoaderFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.DataLoaders
 {
@@ -28,8 +28,8 @@ namespace Effort.DataLoaders
     using System.Data.EntityClient;
 
     /// <summary>
-    /// Represents a table data loader factory that creates <see cref="EntityTableDataLoader" />
-    /// instances for tables.
+    /// Represents a table data loader factory that creates 
+    /// <see cref="EntityTableDataLoader" /> instances for tables.
     /// </summary>
     public class EntityTableDataLoaderFactory : ITableDataLoaderFactory
     {
@@ -37,9 +37,12 @@ namespace Effort.DataLoaders
         private EntityConnection connection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EntityTableDataLoaderFactory" /> class.
+        /// Initializes a new instance of the <see cref="EntityTableDataLoaderFactory" /> 
+        /// class.
         /// </summary>
-        /// <param name="connectionFactory">A delegate that creates a connection towards the appropriate database.</param>
+        /// <param name="connectionFactory">
+        /// A delegate that creates a connection towards the appropriate database.
+        /// </param>
         public EntityTableDataLoaderFactory(Func<EntityConnection> connectionFactory)
         {
             this.connectionFactory = connectionFactory;

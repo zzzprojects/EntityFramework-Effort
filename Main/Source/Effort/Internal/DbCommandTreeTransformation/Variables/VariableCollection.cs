@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="VariableCollection.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.DbCommandTreeTransformation.Variables
 {
@@ -60,7 +60,7 @@ namespace Effort.Internal.DbCommandTreeTransformation.Variables
 
         public void Delete(Variable context)
         {
-            if (!variables.Remove(context.Name))
+            if (!this.variables.Remove(context.Name))
             {
                 throw new InvalidOperationException();
             }

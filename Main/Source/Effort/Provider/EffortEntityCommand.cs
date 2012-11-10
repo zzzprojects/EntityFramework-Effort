@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortEntityCommand.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -33,15 +33,16 @@ namespace Effort.Provider
     using Effort.Internal.CommandActions;
 
     /// <summary>
-    /// Represent an Effort command that realizes Entity Framework command tree representations.
+    /// Represent an Effort command that realizes Entity Framework command tree 
+    /// representations.
     /// </summary>
     public sealed class EffortEntityCommand : EffortCommandBase, ICloneable
     {
         private ICommandAction commandAction;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortEntityCommand" /> class based on a
-        /// provided command tree.
+        /// Initializes a new instance of the <see cref="EffortEntityCommand" /> class based on
+        /// a provided command tree.
         /// </summary>
         /// <param name="commandtree">The command tree that describes the operation.</param>
         public EffortEntityCommand(DbCommandTree commandtree)
@@ -50,22 +51,24 @@ namespace Effort.Provider
 
             foreach (KeyValuePair<string, TypeUsage> param in commandtree.Parameters)
             {
-                this.Parameters.Insert(0, new EffortParameter() { ParameterName = param.Key });
+                this.AddParameter(param.Key);
             }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortEntityCommand" /> class based on a 
-        /// prototype instance.
+        /// Initializes a new instance of the <see cref="EffortEntityCommand" /> class based on 
+        /// a prototype instance.
         /// </summary>
-        /// <param name="prototype">The prototype <see cref="EffortEntityCommand" /> object.</param>
+        /// <param name="prototype">
+        /// The prototype <see cref="EffortEntityCommand" /> object.
+        /// </param>
         private EffortEntityCommand(EffortEntityCommand prototype)
         {
             this.commandAction = prototype.commandAction;
 
             foreach (EffortParameter parameter in prototype.Parameters)
             {
-                this.Parameters.Insert(0, new EffortParameter() { ParameterName = parameter.ParameterName });
+                this.AddParameter(parameter.ParameterName);
             }
         }
 
@@ -83,7 +86,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.
+        /// Executes the query and returns the first column of the first row in the result set
+        /// returned by the query. All other columns and rows are ignored.
         /// </summary>
         /// <returns>
         /// The first column of the first row in the result set.
@@ -109,7 +113,9 @@ namespace Effort.Provider
         /// <summary>
         /// Executes the command text against the connection.
         /// </summary>
-        /// <param name="behavior">An instance of <see cref="T:System.Data.CommandBehavior" />.</param>
+        /// <param name="behavior">
+        /// An instance of <see cref="T:System.Data.CommandBehavior" />.
+        /// </param>
         /// <returns>
         /// A <see cref="EffortDataReader" />.
         /// </returns>
@@ -128,7 +134,10 @@ namespace Effort.Provider
             // Store parameters in the context
             foreach (DbParameter parameter in this.Parameters)
             {
-                context.Parameters.Add(new CommandActionParameter(parameter.ParameterName, parameter.Value));
+                CommandActionParameter commandActionParameter =
+                    new CommandActionParameter(parameter.ParameterName, parameter.Value);
+
+                context.Parameters.Add(commandActionParameter);
             }
 
             if (this.EffortTransaction != null)

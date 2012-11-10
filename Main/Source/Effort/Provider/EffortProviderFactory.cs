@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortProviderFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -29,19 +29,19 @@ namespace Effort.Provider
     using System.Data.Common;
 
     /// <summary>
-    /// Represents a set of methods for creating instances of the <see cref="N:Effort.Provider"/> 
-    /// provider's implementation of the data source classes.
+    /// Represents a set of methods for creating instances of the 
+    /// <see cref="N:Effort.Provider"/> provider's implementation of the data source classes.
     /// </summary>
     public class EffortProviderFactory : DbProviderFactory, IServiceProvider
     {
         public static readonly EffortProviderFactory Instance = new EffortProviderFactory();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="EffortProviderFactory" /> class from being created.
+        /// Prevents a default instance of the <see cref="EffortProviderFactory" /> class from
+        /// being created.
         /// </summary>
         private EffortProviderFactory()
         {
-
         }
 
         /// <summary>
@@ -58,10 +58,12 @@ namespace Effort.Provider
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>
-        /// <param name="serviceType">An object that specifies the type of service object to get.</param>
+        /// <param name="serviceType">
+        /// An object that specifies the type of service object to get.
+        /// </param>
         /// <returns>
-        /// A service object of type <paramref name="serviceType" />.-or- null if there is no service object 
-        /// of type <paramref name="serviceType" />.
+        /// A service object of type <paramref name="serviceType" />.-or- null if there is no 
+        /// service object of type <paramref name="serviceType" />.
         /// </returns>
         public object GetService(Type serviceType)
         {

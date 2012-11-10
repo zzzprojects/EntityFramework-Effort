@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="TraversalVisitor.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
@@ -210,7 +210,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public override object Visit(DbFunctionExpression expression)
         {
             foreach (var arg in expression.Arguments)
+            {
                 this.Visit(arg);
+            }
+
             return null;
         }
 

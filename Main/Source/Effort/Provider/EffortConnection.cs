@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortConnection.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -50,7 +50,11 @@ namespace Effort.Provider
         /// <summary>
         /// Gets or sets the string used to open the connection.
         /// </summary>
-        /// <returns>The connection string used to establish the initial connection. The exact contents of the connection string depend on the specific data source for this connection. The default value is an empty string.</returns>
+        /// <returns>
+        /// The connection string used to establish the initial connection. The exact contents 
+        /// of the connection string depend on the specific data source for this connection. 
+        /// The default value is an empty string.
+        /// </returns>
         public override string ConnectionString
         {
             get;
@@ -60,7 +64,10 @@ namespace Effort.Provider
         /// <summary>
         /// Gets the name of the database server to which to connect.
         /// </summary>
-        /// <returns>The name of the database server to which to connect. The default value is an empty string.</returns>
+        /// <returns>
+        /// The name of the database server to which to connect. The default value is an empty 
+        /// string.
+        /// </returns>
         public override string DataSource
         {
             get
@@ -70,9 +77,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets a string that represents the version of the server to which the object is connected.
+        /// Gets a string that represents the version of the server to which the object is 
+        /// connected.
         /// </summary>
-        /// <returns>The version of the database. The format of the string returned depends on the specific type of connection you are using.</returns>
+        /// <returns>
+        /// The version of the database. The format of the string returned depends on the 
+        /// specific type of connection you are using.
+        /// </returns>
         public override string ServerVersion
         {
             get
@@ -84,7 +95,10 @@ namespace Effort.Provider
         /// <summary>
         /// Gets a string that describes the state of the connection.
         /// </summary>
-        /// <returns>The state of the connection. The format of the string returned depends on the specific type of connection you are using.</returns>
+        /// <returns>
+        /// The state of the connection. The format of the string returned depends on the 
+        /// specific type of connection you are using.
+        /// </returns>
         public override ConnectionState State
         {
             get
@@ -108,7 +122,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the <see cref="T:System.Data.Common.DbProviderFactory" /> for this <see cref="T:System.Data.Common.DbConnection" />.
+        /// Gets the <see cref="T:System.Data.Common.DbProviderFactory" /> for this 
+        /// <see cref="T:System.Data.Common.DbConnection" />.
         /// </summary>
         /// <returns>A <see cref="T:System.Data.Common.DbProviderFactory" />.</returns>
         protected override DbProviderFactory DbProviderFactory
@@ -122,32 +137,41 @@ namespace Effort.Provider
         /// <summary>
         /// Changes the current database for an open connection.
         /// </summary>
-        /// <param name="databaseName">Specifies the name of the database for the connection to use.</param>
+        /// <param name="databaseName">
+        /// Specifies the name of the database for the connection to use.
+        /// </param>
         public override void ChangeDatabase(string databaseName)
         {
             throw new NotSupportedException();
         }
 
         /// <summary>
-        /// Gets the name of the current database after a connection is opened, or the database name specified in the connection string before the connection is opened.
+        /// Gets the name of the current database after a connection is opened, or the database
+        /// name specified in the connection string before the connection is opened.
         /// </summary>
-        /// <returns>The name of the current database or the name of the database to be used after a connection is opened. The default value is an empty string.</returns>
+        /// <returns>
+        /// The name of the current database or the name of the database to be used after a 
+        /// connection is opened. The default value is an empty string.
+        /// </returns>
         public override string Database
         {
             get 
             {
-                EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
+                EffortConnectionStringBuilder connectionString = 
+                    new EffortConnectionStringBuilder(this.ConnectionString);
 
                 return connectionString.InstanceId;
             }
         }
 
         /// <summary>
-        /// Opens a database connection with the settings specified by the <see cref="P:System.Data.Common.DbConnection.ConnectionString" />.
+        /// Opens a database connection with the settings specified by the 
+        /// <see cref="P:System.Data.Common.DbConnection.ConnectionString" />.
         /// </summary>
         public override void Open()
         {
-            EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
+            EffortConnectionStringBuilder connectionString = 
+                new EffortConnectionStringBuilder(this.ConnectionString);
 
             this.container = 
                 DbContainerStore.GetDbContainer(
@@ -158,7 +182,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Closes the connection to the database. This is the preferred method of closing any open connection.
+        /// Closes the connection to the database. This is the preferred method of closing any 
+        /// open connection.
         /// </summary>
         public override void Close()
         {
@@ -174,7 +199,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="T:System.Data.Common.DbCommand" /> object associated with the current connection.
+        /// Creates and returns a <see cref="T:System.Data.Common.DbCommand" /> object 
+        /// associated with the current connection.
         /// </summary>
         /// <returns>
         /// A <see cref="T:System.Data.Common.DbCommand" /> object.
@@ -187,7 +213,9 @@ namespace Effort.Provider
         /// <summary>
         /// Starts a database transaction.
         /// </summary>
-        /// <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+        /// <param name="isolationLevel">
+        /// Specifies the isolation level for the transaction.
+        /// </param>
         /// <returns>
         /// An object representing the new transaction.
         /// </returns>
@@ -199,20 +227,29 @@ namespace Effort.Provider
         /// <summary>
         /// Enlists in the specified transaction.
         /// </summary>
-        /// <param name="transaction">A reference to an existing <see cref="T:System.Transactions.Transaction" /> in which to enlist.</param>
+        /// <param name="transaction">
+        /// A reference to an existing <see cref="T:System.Transactions.Transaction" /> in
+        /// which to enlist.
+        /// </param>
         public override void EnlistTransaction(System.Transactions.Transaction transaction)
         {
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="T:System.ComponentModel.Component" /> and optionally releases the managed resources.
+        /// Releases the unmanaged resources used by the 
+        /// <see cref="T:System.ComponentModel.Component" /> and optionally releases the 
+        /// managed resources.
         /// </summary>
-        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        /// <param name="disposing">
+        /// true to release both managed and unmanaged resources; false to release only 
+        /// unmanaged resources.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (this.isPrimaryTransient)
             {
-                EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
+                EffortConnectionStringBuilder connectionString = 
+                    new EffortConnectionStringBuilder(this.ConnectionString);
 
                 DbContainerStore.DeleteDbContainer(connectionString.InstanceId);
             }
@@ -222,15 +259,18 @@ namespace Effort.Provider
 
         private DbContainer CreateDbContainer()
         {
-            EffortConnectionStringBuilder connectionString = new EffortConnectionStringBuilder(this.ConnectionString);
+            EffortConnectionStringBuilder connectionString =
+                new EffortConnectionStringBuilder(this.ConnectionString);
+
             IDataLoader dataLoader = null;
             DbContainerParameters parameters = new DbContainerParameters();
+            Type dataLoaderType = connectionString.DataLoaderType;
 
-            if (connectionString.DataLoaderType != null)
+            if (dataLoaderType != null)
             {
                 //// TODO: check parameterless constructor
 
-                dataLoader = Activator.CreateInstance(connectionString.DataLoaderType) as IDataLoader;
+                dataLoader = Activator.CreateInstance(dataLoaderType) as IDataLoader;
                 dataLoader.Argument = connectionString.DataLoaderArgument;
 
                 parameters.DataLoader = dataLoader;

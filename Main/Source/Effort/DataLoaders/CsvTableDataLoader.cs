@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="CsvTableDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.DataLoaders
 {
@@ -72,7 +72,8 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Creates a CSV data reader that retrieves the initial data from the appropriate CSV file.
+        /// Creates a CSV data reader that retrieves the initial data from the appropriate CSV 
+        /// file.
         /// </summary>
         /// <returns>
         /// The CSV data reader.
@@ -111,13 +112,19 @@ namespace Effort.DataLoaders
             {
                 if (!val.StartsWith("'", StringComparison.InvariantCulture))
                 {
-                    throw new FormatException(string.Format("\"{0}\" is an invalid string, strings fields must start with \"'\"", val));
+                    throw new FormatException(
+                        string.Format(
+                            "\"{0}\" is an invalid string, " +
+                            "strings fields must start with \"'\"", 
+                            val));
                 }
 
                 value = ResolveEscapeCharacters(val.Substring(1));
             }
 
-            if (type == typeof(byte[]) || type == typeof(NMemory.Data.Binary) || type == typeof(NMemory.Data.Timestamp))
+            if (type == typeof(byte[]) || 
+                type == typeof(NMemory.Data.Binary) || 
+                type == typeof(NMemory.Data.Timestamp))
             {
                 value = Convert.FromBase64String(val);
             }
@@ -156,7 +163,11 @@ namespace Effort.DataLoaders
                             writer.Write('\r');
                             break;
                         default:
-                            throw new FormatException(string.Format("\"{0}\" is an invalid string, it contains an invalid escaped character", value));
+                            throw new FormatException(
+                                string.Format(
+                                    "\"{0}\" is an invalid string, " + 
+                                    "it contains an invalid escaped character", 
+                                    value));
                     }
                 }
                 else if (c == '\\')
@@ -171,7 +182,11 @@ namespace Effort.DataLoaders
 
             if (escaped)
             {
-                throw new FormatException(string.Format("\"{0}\" is an invalid string, it contains an invalid escaped character", value));
+                throw new FormatException(
+                    string.Format(
+                        "\"{0}\" is an invalid string, " +
+                        "it contains an invalid escaped character", 
+                        value));
             }
 
             return writer.ToString();

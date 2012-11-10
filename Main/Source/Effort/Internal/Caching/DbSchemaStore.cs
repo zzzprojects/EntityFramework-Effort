@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbSchemaStore.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -37,7 +37,9 @@ namespace Effort.Internal.Caching
             store = new ConcurrentCache<DbSchemaKey, DbSchema>();
         }
 
-        public static DbSchema GetDbSchema(StoreItemCollection metadata, Func<StoreItemCollection, DbSchema> schemaFactoryMethod)
+        public static DbSchema GetDbSchema(
+            StoreItemCollection metadata, 
+            Func<StoreItemCollection, DbSchema> schemaFactoryMethod)
         {
             return store.Get(new DbSchemaKey(metadata), () => schemaFactoryMethod(metadata));
         }

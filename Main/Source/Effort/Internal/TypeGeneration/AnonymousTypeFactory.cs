@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="AnonymousTypeFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.TypeGeneration
 {
@@ -61,7 +61,8 @@ namespace Effort.Internal.TypeGeneration
 
                 for (int i = 0; i < this.propertyNames.Length; i++)
                 {
-                    int hash = this. propertyNames[i].GetHashCode();
+                    int hash = this.propertyNames[i].GetHashCode();
+
                     // Rotate and mod2 addition
                     result = result ^ ((hash << i) | (hash >> (32 - i)));
                 }
@@ -78,7 +79,7 @@ namespace Effort.Internal.TypeGeneration
                     return false;
                 }
 
-                return Equals(key);
+                return this.Equals(key);
             }
 
             public bool Equals(TypeCacheEntryKey other)
@@ -175,7 +176,6 @@ namespace Effort.Internal.TypeGeneration
                     type;
 
             return q.FirstOrDefault();
-
         }
 
         private static bool IdenticalOrder(PropertyInfo[] properties, Type[] genericArguments, string[] propertyNames)
@@ -257,14 +257,14 @@ namespace Effort.Internal.TypeGeneration
                 fields[i] = typeBuilder.DefineField("_" + propertyNames[i], genericTypes[i], FieldAttributes.Private);
 
                 //Do not show the private field in the debugger
-                ConstructorInfo DebuggerBrowsableAttributeConstructor =
+                ConstructorInfo debuggerBrowsableAttributeConstructor =
                     typeof(DebuggerBrowsableAttribute).GetConstructor(
                         BindingFlags.Public | BindingFlags.Instance,
                         null,
                         new Type[] { typeof(DebuggerBrowsableState) },
                         null);
 
-                fields[i].SetCustomAttribute(new CustomAttributeBuilder(DebuggerBrowsableAttributeConstructor, new object[] { DebuggerBrowsableState.Never }));
+                fields[i].SetCustomAttribute(new CustomAttributeBuilder(debuggerBrowsableAttributeConstructor, new object[] { DebuggerBrowsableState.Never }));
 
                 PropertyBuilder propertyBuilder =
                     typeBuilder.DefineProperty(
@@ -275,19 +275,18 @@ namespace Effort.Internal.TypeGeneration
 
                 MethodAttributes getSetAttr = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
 
-                MethodBuilder mbGetAccessor = typeBuilder.DefineMethod(
+                MethodBuilder propertyGetAccessor = typeBuilder.DefineMethod(
                     "get_" + propertyNames[i],
                     getSetAttr,
                     genericTypes[i],
                     Type.EmptyTypes);
 
-                ILGenerator numberGetIL = mbGetAccessor.GetILGenerator();
+                ILGenerator numberGetIL = propertyGetAccessor.GetILGenerator();
                 numberGetIL.Emit(OpCodes.Ldarg_0);
                 numberGetIL.Emit(OpCodes.Ldfld, fields[i]);
                 numberGetIL.Emit(OpCodes.Ret);
 
-                propertyBuilder.SetGetMethod(mbGetAccessor);
-
+                propertyBuilder.SetGetMethod(propertyGetAccessor);
             }
 
             #endregion
@@ -434,7 +433,6 @@ namespace Effort.Internal.TypeGeneration
                 gen.Emit(OpCodes.Ldfld, fields[i]);
                 gen.Emit(OpCodes.Callvirt, getHashCodeMethod);
                 gen.Emit(OpCodes.Add);
-
             }
 
             gen.Emit(OpCodes.Stloc_0);
@@ -444,7 +442,6 @@ namespace Effort.Internal.TypeGeneration
             gen.MarkLabel(label);
             gen.Emit(OpCodes.Ldloc_1);
             gen.Emit(OpCodes.Ret);
-
         }
 
         private static void GenerateToStringIL(ILGenerator gen, FieldBuilder[] fields)
@@ -506,6 +503,7 @@ namespace Effort.Internal.TypeGeneration
                 gen.Emit(OpCodes.Ldloc_0);
                 gen.Emit(OpCodes.Ldarg_0);
                 gen.Emit(OpCodes.Ldfld, fields[i]);
+
                 // TODO: do not box any value
                 gen.Emit(OpCodes.Box, fields[i].FieldType);
                 gen.Emit(OpCodes.Callvirt, stringBuilderAppend2);
@@ -523,7 +521,6 @@ namespace Effort.Internal.TypeGeneration
             gen.MarkLabel(label);
             gen.Emit(OpCodes.Ldloc_1);
             gen.Emit(OpCodes.Ret);
-
         }
 
         private static void GenerateEqualsIL(ILGenerator gen, FieldBuilder[] fields, TypeBuilder typeBuilder)

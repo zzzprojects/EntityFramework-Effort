@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="CsvTableDataLoaderFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.DataLoaders
 {
@@ -59,7 +59,8 @@ namespace Effort.DataLoaders
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
-            string csvPath = Path.Combine(this.source.FullName, string.Format("{0}.csv", table.Name));
+            string fileName = string.Format("{0}.csv", table.Name);
+            string csvPath = Path.Combine(this.source.FullName, fileName);
 
             return new CsvTableDataLoader(csvPath, table);
         }

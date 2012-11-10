@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ObjectContextFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort
 {
@@ -37,11 +37,28 @@ namespace Effort
     using Effort.Internal.Common;
     using Effort.Provider;
 
-    public static class ObjectContextFactory
+    /// <summary>
+    /// Provides factory methods that are able to create <see cref="T:ObjectContext"/> objects 
+    /// that rely on in-process and in-memory databases. All of the data operations initiated
+    /// from these context objects are executed by the appropriate in-memory database, so using 
+    /// these context objects does not require any external dependency outside of the scope of 
+    /// the application.
+    /// </summary>
+    public static sealed class ObjectContextFactory
     {
+        /// <summary>
+        /// The dynamic CLI module that contains the dynamically created ObjectContext classes.
+        /// </summary>
         private static ModuleBuilder objectContextContainer;
-        private static int objectContextCounter;
 
+        /// <summary>
+        /// The count of the dynamically created ObjectContext classes.
+        /// </summary>
+        private static int objectContextCount;
+
+        /// <summary>
+        /// Initializes static members of the <see cref="ObjectContextFactory" /> class.
+        /// </summary>
         static ObjectContextFactory()
         {
             EffortProviderConfiguration.RegisterProvider();
@@ -54,54 +71,192 @@ namespace Effort
 
             // Module for the entity types
             objectContextContainer = assembly.DefineDynamicModule("ObjectContexts");
-            objectContextCounter = 0;
+            objectContextCount = 0;
         }
 
         #region Persistent
 
-        public static Type CreatePersistentType<T>(string entityConnectionString, IDataLoader dataLoader) 
+        /// <summary>
+        /// Returns a new type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on an 
+        /// in-memory database instance that lives during the complete application lifecycle. 
+        /// If the database is accessed the first time, then it will be constructed based on 
+        /// the metadata referenced by the provided entity connection string and its state is 
+        /// initialized by the provided
+        /// <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references 
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
+        public static Type CreatePersistentType<T>(
+            string entityConnectionString, 
+            IDataLoader dataLoader) 
             where T : ObjectContext
         {
             return CreateType<T>(entityConnectionString, true, dataLoader);
         }
 
-        public static Type CreatePersistentType<T>(string entityConnectionString) 
+        /// <summary>
+        /// Returns a new type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on 
+        /// an in-memory database instance that lives during the complete application 
+        /// lifecycle. If the database is accessed the first time, then it will be constructed 
+        /// based on the metadata referenced by the provided entity connection string.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references 
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
+        public static Type CreatePersistentType<T>(
+            string entityConnectionString) 
             where T : ObjectContext
         {
             return CreateType<T>(entityConnectionString, true, null);
         }
 
+        /// <summary>
+        /// Returns a new type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on an
+        /// in-memory database instance that lives during the complete application lifecycle. 
+        /// If the database is accessed the first time, then it will be constructed based on 
+        /// the metadata referenced by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
         public static Type CreatePersistentType<T>() 
             where T : ObjectContext
         {
             return CreateType<T>(null, true, null);
         }
 
+        /// <summary>
+        /// Returns a new type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on an
+        /// in-memory database instance that lives during the complete application lifecycle. 
+        /// If the database is accessed the first time, then it will be constructed based on 
+        /// the metadata referenced by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type and its state is initialized by the provided 
+        /// <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
         public static Type CreatePersistentType<T>(IDataLoader dataLoader)
             where T : ObjectContext
         {
             return CreateType<T>(null, true, dataLoader);
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the complete application lifecycle. If the 
+        /// database is accessed the first time, then it will be constructed based on the 
+        /// metadata referenced by the provided entity connection string.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
         public static T CreatePersistent<T>(string entityConnectionString) 
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreatePersistentType<T>(entityConnectionString)) as T;
+            return Activator.CreateInstance(
+                CreatePersistentType<T>(entityConnectionString)) as T;
         }
 
-        public static T CreatePersistent<T>(string entityConnectionString, IDataLoader dataLoader) 
+        /// <summary>
+        /// Creates a new instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the complete application lifecycle. If the 
+        /// database is accessed the first time, then it will be constructed based on the 
+        /// metadata referenced by the provided entity connection string and its state is 
+        /// initialized by the provided
+        /// <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references 
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
+        public static T CreatePersistent<T>(
+            string entityConnectionString, 
+            IDataLoader dataLoader) 
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreatePersistentType<T>(entityConnectionString, dataLoader)) as T;
+            return Activator.CreateInstance(
+                CreatePersistentType<T>(entityConnectionString, dataLoader)) as T;
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the complete application lifecycle. If the 
+        /// database is accessed the first time, then it will be constructed based on the 
+        /// metadata referenced by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
         public static T CreatePersistent<T>() 
             where T : ObjectContext
         {
             return Activator.CreateInstance(CreatePersistentType<T>()) as T;
         }
 
-        public static T CreatePersistent<T>(IDataLoader dataLoader) 
+        /// <summary>
+        /// Creates a instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the complete application lifecycle. If the 
+        /// database is accessed the first time, then it will be constructed based on the 
+        /// metadata referenced by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type and its state is initialized by the provided 
+        /// <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
+        public static T CreatePersistent<T>(
+            IDataLoader dataLoader) 
             where T : ObjectContext
         {
             return Activator.CreateInstance(CreatePersistentType<T>(dataLoader)) as T;
@@ -111,55 +266,228 @@ namespace Effort
 
         #region Transient
 
-        public static Type CreateTransientType<T>(string entityConnectionString, IDataLoader dataLoader)
+        /// <summary>
+        /// Returns a type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on an
+        /// in-memory database instance that lives during the context object lifecycle. 
+        /// If the object context instance is disposed or garbage collected, then underlying 
+        /// database will be garbage collected too. The database is constructed based on the 
+        /// metadata referenced by the provided entity connection string and its state is 
+        /// initialized by the provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references 
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
+        public static Type CreateTransientType<T>(
+            string entityConnectionString, 
+            IDataLoader dataLoader)
             where T : ObjectContext
         {
             return CreateType<T>(entityConnectionString, false, dataLoader);
         }
 
-        public static Type CreateTransientType<T>(string entityConnectionString) where T : ObjectContext
+        /// <summary>
+        /// Returns a type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on an
+        /// in-memory database instance that lives during the context object lifecycle. If the 
+        /// object context instance is disposed or garbage collected, then underlying database
+        /// will be garbage collected too. The database is constructed based on the metadata 
+        /// referenced by the provided entity connection string.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references 
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
+        public static Type CreateTransientType<T>(
+            string entityConnectionString) 
+            where T : ObjectContext
         {
             return CreateType<T>(entityConnectionString, false, null);
         }
 
+        /// <summary>
+        /// Returns a type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on an
+        /// in-memory database instance that lives during the context object lifecycle. If the 
+        /// object context instance is disposed or garbage collected, then underlying database
+        /// will be garbage collected too. The database is constructed based on the metadata 
+        /// referenced by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
         public static Type CreateTransientType<T>() where T : ObjectContext
         {
             return CreateType<T>(null, false, null);
         }
 
-        public static Type CreateTransientType<T>(IDataLoader dataLoader)
+        /// <summary>
+        /// Returns a type that derives from the <see cref="T:ObjectContext"/> based class 
+        /// specified by the <typeparamref name="T"/> generic argument. This class relies on an
+        /// in-memory database instance that lives during the context object lifecycle. If the
+        /// object context object is disposed or garbage collected, then underlying database 
+        /// will be garbage collected too. The database is constructed based on the metadata 
+        /// referenced by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type and its state is initialized by the provided 
+        /// <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:Type"/> object.</returns>
+        public static Type CreateTransientType<T>(
+            IDataLoader dataLoader)
             where T : ObjectContext
         {
             return CreateType<T>(null, false, dataLoader);
         }
 
-        public static T CreateTransient<T>(string entityConnectionString, IDataLoader dataLoader)
+        /// <summary>
+        /// Creates a new instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the context object lifecycle. If the object 
+        /// context instance is disposed or garbage collected, then underlying database will 
+        /// be garbage collected too. The database is constructed based on the metadata 
+        /// referenced by the provided entity connection string and its state is initialized by
+        /// the provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references 
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
+        public static T CreateTransient<T>(
+            string entityConnectionString, 
+            IDataLoader dataLoader)
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreateTransientType<T>(entityConnectionString, dataLoader)) as T;
+            return Activator.CreateInstance(
+                CreateTransientType<T>(entityConnectionString, dataLoader)) as T;
         }
 
-        public static T CreateTransient<T>(string entityConnectionString)
+        /// <summary>
+        /// Creates a new instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the context object lifecycle. If the object 
+        /// context instance is disposed or garbage collected, then underlying database will be
+        /// garbage collected too. The database is constructed based on the metadata referenced
+        /// by the provided entity connection string.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the in-memory database and references
+        /// the metadata that is required for constructing the schema.
+        /// </param>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
+        public static T CreateTransient<T>(
+            string entityConnectionString)
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreateTransientType<T>(entityConnectionString)) as T;
+            return Activator.CreateInstance(
+                CreateTransientType<T>(entityConnectionString)) as T;
         }
 
-        public static T CreateTransient<T>(IDataLoader dataLoader)
+        /// <summary>
+        /// Creates a new instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the context object lifecycle. If the object 
+        /// context instane is disposed or garbage collected, then underlying database will be
+        /// garbage collected too. The database is constructed based on the metadata referenced
+        /// by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type and its state is initialized by the provided
+        /// <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// /// <param name="dataLoader">
+        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        /// in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
+        public static T CreateTransient<T>(
+            IDataLoader dataLoader)
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreateTransientType<T>(dataLoader)) as T;
+            return Activator.CreateInstance(
+                CreateTransientType<T>(dataLoader)) as T;
         }
 
+        /// <summary>
+        /// Creates of new instance of the <see cref="T:ObjectContext"/> based class specified 
+        /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
+        /// database instance that lives during the context object lifecycle. If the object 
+        /// context object is disposed or garbage collected, then underlying database will be
+        /// garbage collected too. The database is constructed based on the metadata referenced
+        /// by the default entity connection string of the provided 
+        /// <see cref="T:ObjectContext"/> type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
         public static T CreateTransient<T>()
             where T : ObjectContext
         {
-             return Activator.CreateInstance(CreateTransientType<T>()) as T;
+             return Activator.CreateInstance(
+                 CreateTransientType<T>()) as T;
         }
 
         #endregion
 
-        private static Type CreateType<T>(string entityConnectionString, bool persistent, IDataLoader dataLoader) where T : ObjectContext
+        /// <summary>
+        /// Returns the appropriate dynamic ObjectContext type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The ObjectContext type that the result type should derive from.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that references the metadata and identifies the 
+        /// persistent database.
+        /// </param>
+        /// <param name="persistent">
+        /// if set to <c>true</c> the ObjectContext uses a persistent database, otherwise 
+        /// transient.
+        /// </param>
+        /// <param name="dataLoader">
+        /// The data loader that initializes the state of the database.
+        /// </param>
+        /// <returns>
+        /// The ObjectContext type.
+        /// </returns>
+        private static Type CreateType<T>(
+            string entityConnectionString, 
+            bool persistent, 
+            IDataLoader dataLoader) 
+            where T : ObjectContext
         {
             EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder();
 
@@ -182,60 +510,88 @@ namespace Effort
                         entityConnectionString = GetDefaultConnectionString<T>();
                     }
 
-                    return CreateType<T>(entityConnectionString, effortConnectionString, persistent);
+                    return CreateType<T>(
+                        entityConnectionString, 
+                        effortConnectionString, 
+                        persistent);
                 });
         }
 
+        /// <summary>
+        /// Returns the default entity connection string of the specified ObjectContext type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the ObjectContext.
+        /// </typeparam>
+        /// <returns>
+        /// The entity connection string.
+        /// </returns>
         private static string GetDefaultConnectionString<T>() where T : ObjectContext
         {
-            bool hasDefaultCtor = typeof(T).GetConstructor(new Type[] { }) != null;
+            bool hasDefaultConstructor = 
+                typeof(T).GetConstructor(new Type[] { }) != null;
 
-            if (hasDefaultCtor)
+            if (hasDefaultConstructor)
             {
                 return Activator.CreateInstance<T>().Connection.ConnectionString;
             }
             else
             {
-                string requestedName = typeof(T).Name;
-
-                foreach (ConnectionStringSettings connectionString in ConfigurationManager.ConnectionStrings)
-                {
-                    if (string.Equals(connectionString.ProviderName, "System.Data.EntityClient", StringComparison.InvariantCulture) &&
-                        string.Equals(connectionString.Name, requestedName, StringComparison.InvariantCulture))
-                    {
-                        return connectionString.ConnectionString;
-                    }
-                }
-
-                throw new InvalidOperationException("ObjectContext/DbContext does not have a default connection string");
+                return FindDefaultConnectionStringByConvention<T>();
             }
         }
 
-        private static Type CreateType<T>(string entityConnectionString, string effortConnectionString, bool persistent)
+        /// <summary>
+        /// Creates a ObjectContext type during dynamically.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the ObjectContext.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that references the metadata and identifies the 
+        /// persistent database.
+        /// </param>
+        /// <param name="effortConnectionString">
+        /// The effort connection string that is passed to the EffortConnection object.
+        /// </param>
+        /// <param name="persistent">
+        /// if set to <c>true</c> the ObjectContext uses a persistent database, otherwise 
+        /// transient.
+        /// </param>
+        /// <returns>The ObjectContext type.</returns>
+        private static Type CreateType<T>(
+            string entityConnectionString, 
+            string effortConnectionString, 
+            bool persistent)
         {
             TypeBuilder builder = null;
 
             lock (objectContextContainer)
             {
-                objectContextCounter++;
+                objectContextCount++;
                 builder = objectContextContainer.DefineType(
-                    string.Format("DynamicObjectContext{0}", objectContextCounter),
+                    string.Format("DynamicObjectContext{0}", objectContextCount),
                     TypeAttributes.Public,
                     typeof(T));
             }
 
-            ConstructorBuilder ctor = builder.DefineConstructor(MethodAttributes.Public | MethodAttributes.HideBySig, CallingConventions.Standard, new Type[] { });
+            //// public DynamicObjectContext() : base(EntityConnectionFactory.Create(...))
+            ConstructorBuilder ctor = 
+                builder.DefineConstructor(
+                    MethodAttributes.Public | MethodAttributes.HideBySig, 
+                    CallingConventions.Standard, 
+                    new Type[] { });
 
-            ConstructorInfo baseCtor = typeof(T).GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                null,
-                new Type[] { typeof(EntityConnection) },
-                null);
+            ConstructorInfo baseCtor = 
+                typeof(T).GetConstructor(
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                    null,
+                    new Type[] { typeof(EntityConnection) },
+                    null);
 
             ILGenerator gen = ctor.GetILGenerator();
-            // Writing body
-            gen.Emit(OpCodes.Ldarg_0);
 
+            gen.Emit(OpCodes.Ldarg_0);
             gen.Emit(OpCodes.Ldstr, entityConnectionString);
             gen.Emit(OpCodes.Ldstr, effortConnectionString);
             gen.Emit(persistent ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
@@ -250,7 +606,7 @@ namespace Effort
             gen.Emit(OpCodes.Nop);
             gen.Emit(OpCodes.Ret);
 
-            // protected void Dispose(bool disposing)
+            //// protected void Dispose(bool disposing)
             MethodInfo baseDispose = typeof(T).GetMethod(
                 "Dispose",
                 BindingFlags.Instance | BindingFlags.NonPublic,
@@ -258,7 +614,7 @@ namespace Effort
                 new Type[] { typeof(bool) },
                 null);
 
-            // public void Dispose()
+            //// public void Dispose()
             MethodInfo connectionDispose = typeof(Component).GetMethod(
                 "Dispose",
                 BindingFlags.Instance | BindingFlags.Public,
@@ -268,14 +624,16 @@ namespace Effort
 
             MethodInfo connectionGetter = typeof(T).GetProperty("Connection").GetGetMethod();
 
-            MethodBuilder overridedDispose = builder.DefineMethod(
-                "Dispose",
-                MethodAttributes.Family | 
-                MethodAttributes.Virtual | 
-                MethodAttributes.HideBySig | 
-                MethodAttributes.ReuseSlot);
+            MethodBuilder overridedDispose = 
+                builder.DefineMethod(
+                    "Dispose",
+                    MethodAttributes.Family | 
+                    MethodAttributes.Virtual | 
+                    MethodAttributes.HideBySig | 
+                    MethodAttributes.ReuseSlot);
 
             overridedDispose.SetReturnType(typeof(void));
+
             // Adding parameters
             overridedDispose.SetParameters(typeof(bool));
 
@@ -308,6 +666,38 @@ namespace Effort
             gen.Emit(OpCodes.Ret);
 
             return builder.CreateType();
+        }
+
+        /// <summary>
+        /// Returns the default connection string by convention.
+        /// </summary>
+        /// <typeparam name="T">The type of the ObjectContext.</typeparam>
+        /// <returns>
+        /// The default connection string based on the name of the ObjectContext
+        /// </returns>
+        private static string FindDefaultConnectionStringByConvention<T>() 
+            where T : ObjectContext
+        {
+            string requestedName = typeof(T).Name;
+
+            foreach (ConnectionStringSettings connectionString in 
+                ConfigurationManager.ConnectionStrings)
+            {
+                if (string.Equals(
+                        connectionString.ProviderName, 
+                        "System.Data.EntityClient", 
+                        StringComparison.InvariantCulture) &&
+                    string.Equals(
+                        connectionString.Name, 
+                        requestedName, 
+                        StringComparison.InvariantCulture))
+                {
+                    return connectionString.ConnectionString;
+                }
+            }
+
+            throw new InvalidOperationException(
+                "ObjectContext/DbContext does not have a default connection string");
         }
     }
 }

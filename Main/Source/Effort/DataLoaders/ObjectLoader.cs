@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ObjectLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,18 +20,22 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.DataLoaders
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Reflection;
     using Effort.Internal.Common;
 
     internal static class ObjectLoader
     {
-        public static IEnumerable<object> Load(ITableDataLoaderFactory loaderFactory, string tableName, Type entityType)
+        public static IEnumerable<object> Load(
+            ITableDataLoaderFactory loaderFactory, 
+            string tableName, 
+            Type entityType)
         {
             List<ColumnDescription> columns = new List<ColumnDescription>();
             PropertyInfo[] properties = entityType.GetProperties();
@@ -41,7 +45,8 @@ namespace Effort.DataLoaders
                 Type type = property.PropertyType;
 
                 // TODO: external 
-                if (type == typeof(NMemory.Data.Timestamp) || type == typeof(NMemory.Data.Binary))
+                if (type == typeof(NMemory.Data.Timestamp) || 
+                    type == typeof(NMemory.Data.Binary))
                 {
                     type = typeof(byte[]);
                 }
@@ -52,8 +57,12 @@ namespace Effort.DataLoaders
             TableDescription tableDescription = new TableDescription(tableName, columns);
 
             ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
-            
-            Delegate initializer = LambdaExpressionHelper.CreateInitializerExpression(entityType, properties).Compile();
+
+            LambdaExpression initializerExpression =
+                LambdaExpressionHelper.CreateInitializerExpression(entityType, properties);
+           
+            Delegate initializer = initializerExpression.Compile();
+          
 
             foreach (object[] data in loader.GetData())
             {

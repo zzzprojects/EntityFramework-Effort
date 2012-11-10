@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ObjectContextTypeKey.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -32,7 +32,10 @@ namespace Effort.Internal.Caching
         private string effortConnectionString;
         private string objectContextType;
 
-        public ObjectContextTypeKey(string entityConnectionString, string effortConnectionString, Type objectContextType)
+        public ObjectContextTypeKey(
+            string entityConnectionString, 
+            string effortConnectionString, 
+            Type objectContextType)
         {
             this.entityConnectionString = entityConnectionString ?? string.Empty;
             this.effortConnectionString = effortConnectionString ?? string.Empty;
@@ -47,9 +50,15 @@ namespace Effort.Internal.Caching
             }
 
             return 
-                this.entityConnectionString.Equals(other.entityConnectionString, StringComparison.InvariantCultureIgnoreCase) &&
-                this.effortConnectionString.Equals(other.effortConnectionString, StringComparison.InvariantCultureIgnoreCase) &&
-                this.objectContextType.Equals(other.objectContextType, StringComparison.InvariantCultureIgnoreCase);
+                this.entityConnectionString.Equals(
+                    other.entityConnectionString, 
+                    StringComparison.InvariantCultureIgnoreCase) &&
+                this.effortConnectionString.Equals(
+                    other.effortConnectionString, 
+                    StringComparison.InvariantCultureIgnoreCase) &&
+                this.objectContextType.Equals(
+                    other.objectContextType, 
+                    StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override int GetHashCode()

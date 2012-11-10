@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ObjectContextTypeStore.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -35,9 +35,19 @@ namespace Effort.Internal.Caching
             store = new ConcurrentCache<ObjectContextTypeKey, Type>();
         }
 
-        public static Type GetObjectContextType(string entityConnectionString, string effortConnectionString, Type objectContextType, Func<Type> objectContextTypeFactoryMethod)
+        public static Type GetObjectContextType(
+            string entityConnectionString, 
+            string effortConnectionString, 
+            Type objectContextType, 
+            Func<Type> objectContextTypeFactoryMethod)
         {
-            return store.Get(new ObjectContextTypeKey(entityConnectionString, effortConnectionString, objectContextType), objectContextTypeFactoryMethod);
+            ObjectContextTypeKey key =
+                new ObjectContextTypeKey(
+                    entityConnectionString,
+                    effortConnectionString,
+                    objectContextType); 
+
+            return store.Get(key, objectContextTypeFactoryMethod);
         }
     }
 }

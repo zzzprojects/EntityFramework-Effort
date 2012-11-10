@@ -153,16 +153,15 @@ namespace Effort.Test
             Assert.IsTrue(result.Check());
         }
 
-
         [TestMethod]
         public void NestedSum()
         {
             string expected = "[{\"CustomerID\":\"ALFKI\",\"C2\":225.58},{\"CustomerID\":\"ANATR\",\"C2\":97.42},{\"CustomerID\":\"ANTON\",\"C2\":268.52},{\"CustomerID\":\"AROUT\",\"C2\":471.95},{\"CustomerID\":\"BERGS\",\"C2\":1559.52},{\"CustomerID\":\"BLAUS\",\"C2\":168.26},{\"CustomerID\":\"BLONP\",\"C2\":623.66},{\"CustomerID\":\"BOLID\",\"C2\":191.17},{\"CustomerID\":\"BONAP\",\"C2\":1357.87},{\"CustomerID\":\"BOTTM\",\"C2\":793.95},{\"CustomerID\":\"BSBEV\",\"C2\":281.31},{\"CustomerID\":\"CACTU\",\"C2\":72.76},{\"CustomerID\":\"CENTC\",\"C2\":3.25},{\"CustomerID\":\"CHOPS\",\"C2\":367.24},{\"CustomerID\":\"COMMI\",\"C2\":187.82},{\"CustomerID\":\"CONSH\",\"C2\":53.62},{\"CustomerID\":\"DRACD\",\"C2\":306.04},{\"CustomerID\":\"DUMON\",\"C2\":63.7},{\"CustomerID\":\"EASTC\",\"C2\":832.34},{\"CustomerID\":\"ERNSH\",\"C2\":6205.39},{\"CustomerID\":\"FAMIA\",\"C2\":232.75},{\"CustomerID\":\"FISSA\",\"C2\":null},{\"CustomerID\":\"FOLIG\",\"C2\":637.94},{\"CustomerID\":\"FOLKO\",\"C2\":1678.08},{\"CustomerID\":\"FRANK\",\"C2\":1403.44},{\"CustomerID\":\"FRANR\",\"C2\":171.42},{\"CustomerID\":\"FRANS\",\"C2\":75.13},{\"CustomerID\":\"FURIB\",\"C2\":278.67},{\"CustomerID\":\"GALED\",\"C2\":37.98},{\"CustomerID\":\"GODOS\",\"C2\":568.27},{\"CustomerID\":\"GOURL\",\"C2\":322.38},{\"CustomerID\":\"GREAL\",\"C2\":1087.61},{\"CustomerID\":\"GROSR\",\"C2\":67.8},{\"CustomerID\":\"HANAR\",\"C2\":724.77},{\"CustomerID\":\"HILAA\",\"C2\":1259.16},{\"CustomerID\":\"HUNGC\",\"C2\":207.08},{\"CustomerID\":\"HUNGO\",\"C2\":2755.24},{\"CustomerID\":\"ISLAT\",\"C2\":363.65},{\"CustomerID\":\"KOENE\",\"C2\":813.68},{\"CustomerID\":\"LACOR\",\"C2\":87.49},{\"CustomerID\":\"LAMAI\",\"C2\":635.82},{\"CustomerID\":\"LAUGB\",\"C2\":9.92},{\"CustomerID\":\"LAZYK\",\"C2\":19.4},{\"CustomerID\":\"LEHMS\",\"C2\":1017.03},{\"CustomerID\":\"LETSS\",\"C2\":202.11},{\"CustomerID\":\"LILAS\",\"C2\":734.41},{\"CustomerID\":\"LINOD\",\"C2\":673.81},{\"CustomerID\":\"LONEP\",\"C2\":79.86},{\"CustomerID\":\"MAGAA\",\"C2\":469.75},{\"CustomerID\":\"MAISD\",\"C2\":458.91},{\"CustomerID\":\"MEREP\",\"C2\":1394.22},{\"CustomerID\":\"MORGK\",\"C2\":322.04},{\"CustomerID\":\"NORTS\",\"C2\":37.59},{\"CustomerID\":\"OCEAN\",\"C2\":306.64},{\"CustomerID\":\"OLDWO\",\"C2\":983.53},{\"CustomerID\":\"OTTIK\",\"C2\":862.74},{\"CustomerID\":\"PARIS\",\"C2\":null},{\"CustomerID\":\"PERIC\",\"C2\":277.96},{\"CustomerID\":\"PICCO\",\"C2\":1186.11},{\"CustomerID\":\"PRINI\",\"C2\":364.86},{\"CustomerID\":\"QUEDE\",\"C2\":327.55},{\"CustomerID\":\"QUEEN\",\"C2\":1982.7},{\"CustomerID\":\"QUICK\",\"C2\":5605.63},{\"CustomerID\":\"RANCH\",\"C2\":219.18},{\"CustomerID\":\"RATTC\",\"C2\":2134.21},{\"CustomerID\":\"REGGC\",\"C2\":319.56},{\"CustomerID\":\"RICAR\",\"C2\":632.95},{\"CustomerID\":\"RICSU\",\"C2\":1001.29},{\"CustomerID\":\"ROMEY\",\"C2\":64.47},{\"CustomerID\":\"SANTG\",\"C2\":275.5},{\"CustomerID\":\"SAVEA\",\"C2\":6683.7},{\"CustomerID\":\"SEVES\",\"C2\":913.81},{\"CustomerID\":\"SIMOB\",\"C2\":448.85},{\"CustomerID\":\"SPECD\",\"C2\":108.28},{\"CustomerID\":\"SPLIR\",\"C2\":558.67},{\"CustomerID\":\"SUPRD\",\"C2\":821.23},{\"CustomerID\":\"THEBI\",\"C2\":262.09},{\"CustomerID\":\"THECR\",\"C2\":129.96},{\"CustomerID\":\"TOMSP\",\"C2\":125.97},{\"CustomerID\":\"TORTU\",\"C2\":475.63},{\"CustomerID\":\"TRADH\",\"C2\":274.56},{\"CustomerID\":\"TRAIH\",\"C2\":70.01},{\"CustomerID\":\"VAFFE\",\"C2\":947.34},{\"CustomerID\":\"VICTE\",\"C2\":493.25},{\"CustomerID\":\"VINET\",\"C2\":58.41},{\"CustomerID\":\"WANDK\",\"C2\":432.87},{\"CustomerID\":\"WARTH\",\"C2\":822.48},{\"CustomerID\":\"WELLI\",\"C2\":194.71},{\"CustomerID\":\"WHITC\",\"C2\":1353.06},{\"CustomerID\":\"WILMK\",\"C2\":88.41},{\"CustomerID\":\"WOLZA\",\"C2\":175.74}]";
-
+            
+            // SQL Provider returns sum = NULL, if the underlying collection is empty
             ICorrectness result = this.tester.TestQuery(
                 context =>
                     from customer in context.Customers
-                    //SQL Provider returns sum = NULL, if the underlying collection is empty
                     select new 
                     { 
                         CustomerId = customer.CustomerID, 
@@ -200,7 +199,6 @@ namespace Effort.Test
 
             Assert.IsTrue(result.Check());
         }
-
 
         [TestMethod]
         public void NestedMax()
@@ -251,7 +249,6 @@ namespace Effort.Test
 
             Assert.IsTrue(result.Check());
         }
-
 
         [TestMethod]
         public void NestedMin()

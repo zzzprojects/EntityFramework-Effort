@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EdmTypeConverter.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.TypeConversion
 {
@@ -49,8 +49,8 @@ namespace Effort.Internal.TypeConversion
             TypeFacets facets = new TypeFacets();
 
             return this.ConvertWithFacets(type, facets);
-
         }
+
         public Type GetElementType(TypeUsage type)
         {
             CollectionType collectionType = type.EdmType as CollectionType;
@@ -76,7 +76,9 @@ namespace Effort.Internal.TypeConversion
             if (type.Facets.TryGetValue("FixedLength", false, out facet))
             {
                 if (((bool?)facet.Value).HasValue)
+                {
                     facets.FixedLength = (bool)facet.Value == true;
+                }
             }
 
             if (type.Facets.TryGetValue("StoreGeneratedPattern", false, out facet))
@@ -154,9 +156,9 @@ namespace Effort.Internal.TypeConversion
             return result;
         }
 
-        private Type CreateCollectionType(CollectionType cType, TypeFacets facets)
+        private Type CreateCollectionType(CollectionType collectionType, TypeFacets facets)
         {
-            Type elementType = this.ConvertWithFacets(cType.TypeUsage, facets);
+            Type elementType = this.ConvertWithFacets(collectionType.TypeUsage, facets);
 
             return elementType.MakeArrayType();
         }

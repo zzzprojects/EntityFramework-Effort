@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="MetadataWorkspaceStore.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -41,7 +41,9 @@ namespace Effort.Internal.Caching
             return store.Get(metadata);
         }
 
-        public static MetadataWorkspace GetMetadataWorkspace(string metadata, Func<string, MetadataWorkspace> workspaceFactoryMethod)
+        public static MetadataWorkspace GetMetadataWorkspace(
+            string metadata, 
+            Func<string, MetadataWorkspace> workspaceFactoryMethod)
         {
             return store.Get(metadata, () => workspaceFactoryMethod(metadata));
         }

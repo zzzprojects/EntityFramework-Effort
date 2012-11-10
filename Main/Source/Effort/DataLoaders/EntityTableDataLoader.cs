@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EntityTableDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.DataLoaders
 {
@@ -52,7 +52,9 @@ namespace Effort.DataLoaders
         {
             this.connection = connection;
             this.workspace = connection.GetMetadataWorkspace();
-            this.entitySet = MetadataWorkspaceHelper.GetEntityContainer(this.workspace).GetEntitySetByName(table.Name, true);
+            this.entitySet = MetadataWorkspaceHelper
+                .GetEntityContainer(this.workspace)
+                .GetEntitySetByName(table.Name, true);
         }
 
         /// <summary>
@@ -64,19 +66,24 @@ namespace Effort.DataLoaders
         protected override IDataReader CreateDataReader()
         {
             // Build a command tree, which queries all records
-            DbCommandTree commandTree = CommandTreeBuilder.CreateSelectAll(this.workspace, this.entitySet);
+            DbCommandTree commandTree = 
+                CommandTreeBuilder.CreateSelectAll(this.workspace, this.entitySet);
             
             // Get the provider services of the wrapped connection
-            DbProviderServices providerServices = DbProviderServices.GetProviderServices(this.connection.StoreConnection);
+            DbProviderServices providerServices = 
+                DbProviderServices.GetProviderServices(this.connection.StoreConnection);
             
             // Get current manifest token
-            string manifestToken = providerServices.GetProviderManifestToken(this.connection.StoreConnection);
+            string manifestToken = 
+                providerServices.GetProviderManifestToken(this.connection.StoreConnection);
             
             // Get provider manifest
-            DbProviderManifest providerManifest = providerServices.GetProviderManifest(manifestToken);
+            DbProviderManifest providerManifest = 
+                providerServices.GetProviderManifest(manifestToken);
 
             // Create a command definition from the command tree
-            DbCommandDefinition commandDefinition = providerServices.CreateCommandDefinition(providerManifest, commandTree);
+            DbCommandDefinition commandDefinition = 
+                providerServices.CreateCommandDefinition(providerManifest, commandTree);
             
             // Compile command 
             DbCommand command = commandDefinition.CreateCommand();

@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbContainerStore.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -36,7 +36,9 @@ namespace Effort.Internal.Caching
             store = new ConcurrentCache<string, DbContainer>();
         }
 
-        public static DbContainer GetDbContainer(string instanceId, Func<DbContainer> databaseFactoryMethod)
+        public static DbContainer GetDbContainer(
+            string instanceId, 
+            Func<DbContainer> databaseFactoryMethod)
         {
             return store.Get(instanceId, databaseFactoryMethod);
         }

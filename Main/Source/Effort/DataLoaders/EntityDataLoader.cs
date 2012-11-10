@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EntityDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,15 +20,15 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.DataLoaders
 {
     using System.Data.EntityClient;
 
     /// <summary>
-    /// Represents a data loader that loads data from a database that has an
-    /// Entity Framework provider registered.
+    /// Represents a data loader that loads data from a database that has an Entity Framework 
+    /// provider registered.
     /// </summary>
     public class EntityDataLoader : IDataLoader
     {
@@ -49,7 +49,7 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Gets or sets the argument that contains the entity connection string that
+        /// Gets or sets the argument that contains the entity connection string that 
         /// references to the source database.
         /// </summary>
         /// <value>
@@ -69,7 +69,8 @@ namespace Effort.DataLoaders
         /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
-            return new EntityTableDataLoaderFactory(() => new EntityConnection(this.Argument));
+            return new EntityTableDataLoaderFactory(
+                () => new EntityConnection(this.Argument));
         }
     }
 }

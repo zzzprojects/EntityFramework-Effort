@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="TableInitialDataStore.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.Caching
 {
@@ -37,9 +37,15 @@ namespace Effort.Internal.Caching
             store = new ConcurrentCache<TableInitialDataKey, DbTableInitialData>();
         }
 
-        public static DbTableInitialData GetDbInitialData(IDataLoader loader, Type entityType, Func<DbTableInitialData> tableInitialDataFactoryMethod)
+        public static DbTableInitialData GetDbInitialData(
+            IDataLoader loader, 
+            Type entityType, 
+            Func<DbTableInitialData> tableInitialDataFactoryMethod)
         {
-            return store.Get(new TableInitialDataKey(loader.GetType(), loader.Argument, entityType), tableInitialDataFactoryMethod);
+            TableInitialDataKey key =
+                new TableInitialDataKey(loader.GetType(), loader.Argument, entityType);
+
+            return store.Get(key, tableInitialDataFactoryMethod);
         }
     }
 }

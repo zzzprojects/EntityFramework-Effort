@@ -22,7 +22,8 @@
      THE SOFTWARE.
  </copyright>
 -->
-<ProviderManifest Namespace="Effort" xmlns="http://schemas.microsoft.com/ado/2006/04/edm/providermanifest">
+<ProviderManifest xmlns="http://schemas.microsoft.com/ado/2006/04/edm/providermanifest"
+  Namespace="Effort">
   <Types>
     <Type Name="boolean" PrimitiveTypeKind="Boolean"/>
     <Type Name="byte" PrimitiveTypeKind="Byte"/>
@@ -39,7 +40,8 @@
     </Type>
     <Type Name="binary" PrimitiveTypeKind="Binary">
       <FacetDescriptions>
-        <MaxLength DefaultValue="2147483647" Constant="false" Minimum="0" Maximum="2147483647" />
+        <MaxLength DefaultValue="2147483647" Constant="false" 
+                   Minimum="0" Maximum="2147483647" />
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
     </Type>
@@ -60,7 +62,8 @@
     </Type>
     <Type Name="string" PrimitiveTypeKind="String">
       <FacetDescriptions>
-        <MaxLength DefaultValue="1073741823" Constant="false" Minimum="0" Maximum="1073741823" />
+        <MaxLength DefaultValue="1073741823" Constant="false" 
+                   Minimum="0" Maximum="1073741823" />
         <Unicode DefaultValue="true" Constant="false" />
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
@@ -68,7 +71,8 @@
     <Type Name="guid" PrimitiveTypeKind="Guid" />
     <Type Name="rowversion" PrimitiveTypeKind="Binary">
       <FacetDescriptions>
-        <MaxLength DefaultValue="8" Constant="false" Minimum="0" Maximum="1000" />
+        <MaxLength DefaultValue="8" Constant="false" 
+                   Minimum="0" Maximum="1000" />
         <FixedLength DefaultValue="true" Constant="false" />
       </FacetDescriptions>
     </Type>

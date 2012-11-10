@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortParameter.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -33,7 +33,10 @@ namespace Effort.Provider
         /// <summary>
         /// Gets or sets the <see cref="T:System.Data.DbType" /> of the parameter.
         /// </summary>
-        /// <returns>One of the <see cref="T:System.Data.DbType" /> values. The default is <see cref="F:System.Data.DbType.String" />.</returns>
+        /// <returns>
+        /// One of the <see cref="T:System.Data.DbType" /> values. The default is 
+        /// <see cref="F:System.Data.DbType.String" />.
+        /// </returns>
         public override DbType DbType
         {
             get;
@@ -41,9 +44,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets a value that indicates whether the parameter is input-only, output-only, bidirectional, or a stored procedure return value parameter.
+        /// Gets or sets a value that indicates whether the parameter is input-only, 
+        /// output-only, bidirectional, or a stored procedure return value parameter.
         /// </summary>
-        /// <returns>One of the <see cref="T:System.Data.ParameterDirection" /> values. The default is Input.</returns>
+        /// <returns>
+        /// One of the <see cref="T:System.Data.ParameterDirection" /> values. The default is 
+        /// Input.
+        /// </returns>
         public override ParameterDirection Direction
         {
             get;
@@ -53,7 +60,9 @@ namespace Effort.Provider
         /// <summary>
         /// Gets or sets a value that indicates whether the parameter accepts null values.
         /// </summary>
-        /// <returns>true if null values are accepted; otherwise false. The default is false.</returns>
+        /// <returns>
+        /// true if null values are accepted; otherwise false. The default is false.
+        /// </returns>
         public override bool IsNullable
         {
             get;
@@ -63,7 +72,8 @@ namespace Effort.Provider
         /// <summary>
         /// Gets or sets the name of the <see cref="T:System.Data.Common.DbParameter" />.
         /// </summary>
-        /// <returns>The name of the <see cref="T:System.Data.Common.DbParameter" />. The default is an empty string ("").</returns>
+        /// <returns>The name of the <see cref="T:System.Data.Common.DbParameter" />. The 
+        /// default is an empty string ("").</returns>
         public override string ParameterName
         {
             get;
@@ -81,7 +91,10 @@ namespace Effort.Provider
         /// <summary>
         /// Gets or sets the maximum size, in bytes, of the data within the column.
         /// </summary>
-        /// <returns>The maximum size, in bytes, of the data within the column. The default value is inferred from the parameter value.</returns>
+        /// <returns>
+        /// The maximum size, in bytes, of the data within the column. The default value is 
+        /// inferred from the parameter value.
+        /// </returns>
         public override int Size
         {
             get;
@@ -89,9 +102,14 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the name of the source column mapped to the <see cref="T:System.Data.DataSet" /> and used for loading or returning the <see cref="P:System.Data.Common.DbParameter.Value" />.
+        /// Gets or sets the name of the source column mapped to the 
+        /// <see cref="T:System.Data.DataSet" /> and used for loading or returning the 
+        /// <see cref="P:System.Data.Common.DbParameter.Value" />.
         /// </summary>
-        /// <returns>The name of the source column mapped to the <see cref="T:System.Data.DataSet" />. The default is an empty string.</returns>
+        /// <returns>
+        /// The name of the source column mapped to the <see cref="T:System.Data.DataSet" />. 
+        /// The default is an empty string.
+        /// </returns>
         public override string SourceColumn
         {
             get;
@@ -99,9 +117,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Sets or gets a value which indicates whether the source column can be null. This allows <see cref="T:System.Data.Common.DbCommandBuilder" /> to correctly generate Update statements for nullable columns.
+        /// Sets or gets a value which indicates whether the source column can be null. This 
+        /// allows <see cref="T:System.Data.Common.DbCommandBuilder" /> to correctly generate
+        /// Update statements for nullable columns.
         /// </summary>
-        /// <returns>true if the source column can be null; false if it is not.</returns>
+        /// <returns>
+        /// true if the source column can be null; false if it is not.
+        /// </returns>
         public override bool SourceColumnNullMapping
         {
             get;
@@ -109,9 +131,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="T:System.Data.DataRowVersion" /> to use when you load <see cref="P:System.Data.Common.DbParameter.Value" />.
+        /// Gets or sets the <see cref="T:System.Data.DataRowVersion" /> to use when you load
+        /// <see cref="P:System.Data.Common.DbParameter.Value" />.
         /// </summary>
-        /// <returns>One of the <see cref="T:System.Data.DataRowVersion" /> values. The default is Current.</returns>
+        /// <returns>
+        /// One of the <see cref="T:System.Data.DataRowVersion" /> values. The default is 
+        /// Current.
+        /// </returns>
         public override DataRowVersion SourceVersion
         {
             get;
@@ -121,7 +147,10 @@ namespace Effort.Provider
         /// <summary>
         /// Gets or sets the value of the parameter.
         /// </summary>
-        /// <returns>An <see cref="T:System.Object" /> that is the value of the parameter. The default value is null.</returns>
+        /// <returns>
+        /// An <see cref="T:System.Object" /> that is the value of the parameter. The default 
+        /// value is null.
+        /// </returns>
         public override object Value
         {
             get;

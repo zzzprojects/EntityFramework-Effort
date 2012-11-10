@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortTransaction.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -43,8 +43,12 @@ namespace Effort.Provider
         /// </summary>
         /// <param name="connection">The connection.</param>
         /// <param name="isolationLevel">The isolation level.</param>
-        /// <exception cref="System.InvalidOperationException">Ambient transaction is already set.</exception>
-        public EffortTransaction(EffortConnection connection, System.Data.IsolationLevel isolationLevel) 
+        /// <exception cref="System.InvalidOperationException">
+        /// Ambient transaction is already set.
+        /// </exception>
+        public EffortTransaction(
+            EffortConnection connection, 
+            System.Data.IsolationLevel isolationLevel) 
         {
             if (System.Transactions.Transaction.Current != null)
             {
@@ -55,13 +59,15 @@ namespace Effort.Provider
             this.isolationLevel = isolationLevel;
 
             // Initialize new ambient transaction
-            System.Transactions.TransactionOptions options = new System.Transactions.TransactionOptions();
+            System.Transactions.TransactionOptions options = 
+                new System.Transactions.TransactionOptions();
+
             options.IsolationLevel = TranslateIsolationLevel(isolationLevel);
             options.Timeout = new TimeSpan(0, 0, connection.ConnectionTimeout);
 
             this.systemTransaction = new System.Transactions.CommittableTransaction(options);
 
-            this.transaction = NMemory.Transactions.Transaction.Create(systemTransaction);
+            this.transaction = NMemory.Transactions.Transaction.Create(this.systemTransaction);
         }
 
         /// <summary>
@@ -69,13 +75,15 @@ namespace Effort.Provider
         /// </summary>
         public override void Commit()
         {
-            systemTransaction.Commit();
+            this.systemTransaction.Commit();
         }
 
         /// <summary>
         /// Specifies the <see cref="T:System.Data.IsolationLevel" /> for this transaction.
         /// </summary>
-        /// <returns>The <see cref="T:System.Data.IsolationLevel" /> for this transaction.</returns>
+        /// <returns>
+        /// The <see cref="T:System.Data.IsolationLevel" /> for this transaction.
+        /// </returns>
         public override System.Data.IsolationLevel IsolationLevel
         {
             get 
@@ -103,13 +111,15 @@ namespace Effort.Provider
         /// </summary>
         public override void Rollback()
         {
-            systemTransaction.Rollback();
+            this.systemTransaction.Rollback();
         }
 
         /// <summary>
         /// Gets the <see cref="T:EffortConnection" /> object associated with the transaction.
         /// </summary>
-        /// <returns>The <see cref="T:EffortConnection" /> object associated with the transaction.</returns>
+        /// <returns>
+        /// The <see cref="T:EffortConnection" /> object associated with the transaction.
+        /// </returns>
         protected override DbConnection DbConnection
         {
             get
@@ -119,9 +129,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="T:EffortTransaction" /> and optionally releases the managed resources.
+        /// Releases the unmanaged resources used by the <see cref="T:EffortTransaction" /> and
+        /// optionally releases the managed resources.
         /// </summary>
-        /// <param name="disposing">If true, this method releases all resources held by any managed objects that this <see cref="T:EffortTransaction" /> references.</param>
+        /// <param name="disposing">
+        /// If true, this method releases all resources held by any managed objects that this
+        /// <see cref="T:EffortTransaction" /> references.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -132,7 +146,8 @@ namespace Effort.Provider
             base.Dispose(disposing);
         }
 
-        private System.Transactions.IsolationLevel TranslateIsolationLevel(System.Data.IsolationLevel isolationLevel)
+        private static System.Transactions.IsolationLevel TranslateIsolationLevel(
+            System.Data.IsolationLevel isolationLevel)
         {
             switch (isolationLevel)
             {

@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortConnectionStringBuilder.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -40,18 +40,21 @@ namespace Effort.Provider
         private static readonly string DataLoaderCachedKey = "DataLoaderCached";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> class.
+        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
+        /// class.
         /// </summary>
         public EffortConnectionStringBuilder()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> class.
-        /// The provided connection string provides the data for the internal connection information
-        /// of the instance.
+        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
+        /// class. The provided connection string provides the data for the internal connection
+        /// information of the instance.
         /// </summary>
-        /// <param name="connectionString">The basis for the object's internal connection information.</param>
+        /// <param name="connectionString">
+        /// The basis for the object's internal connection information.
+        /// </param>
         public EffortConnectionStringBuilder(string connectionString)
         {
             this.ConnectionString = connectionString;
@@ -82,13 +85,16 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the type of the data loader that is used to initialize the state of the database
-        /// instance. It has to implement the <see cref="Effort.DataLoaders.IDataLoader"/> interface.
+        /// Gets or sets the type of the data loader that is used to initialize the state of 
+        /// the database instance. It has to implement the 
+        /// <see cref="Effort.DataLoaders.IDataLoader"/> interface.
         /// </summary>
         /// <value>
         /// The type of the data loader. 
         /// </value>
-        /// <exception cref="System.InvalidOperationException">Cannot set data loader.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Cannot set data loader.
+        /// </exception>
         public Type DataLoaderType
         {
             get
@@ -152,10 +158,12 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the data retrieved by the data loader should be cached.
+        /// Gets or sets a value indicating whether the data retrieved by the data loader 
+        /// should be cached.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if the records loaded by the loader should be cached; otherwise, <c>false</c>.
+        ///   <c>true</c> if the records loaded by the loader should be cached; otherwise, 
+        ///   <c>false</c>.
         /// </value>
         public bool DataLoaderCached
         {

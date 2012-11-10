@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortDataReader.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -44,14 +44,17 @@ namespace Effort.Provider
         private FieldDescription[] fields;
         private object[] currentValues;
 
-        private DbContainer dbContainer;
+        private DbContainer container;
 
-        internal EffortDataReader(IEnumerable result, FieldDescription[] fields, DbContainer dbContainer)
+        internal EffortDataReader(
+            IEnumerable result, 
+            FieldDescription[] fields, 
+            DbContainer container)
         {
             this.fields = fields;
             this.enumerator = result.GetEnumerator();
 
-            this.dbContainer = dbContainer;
+            this.container = container;
         }
 
         /// <summary>
@@ -65,7 +68,9 @@ namespace Effort.Provider
         /// <summary>
         /// Gets the number of rows changed, inserted, or deleted by execution of the command.
         /// </summary>
-        /// <returns>The number of rows changed, inserted, or deleted. -1 for SELECT statements; 0 if no rows were affected or the statement failed.</returns>
+        /// <returns>
+        /// The number of rows changed, inserted, or deleted. -1 for SELECT statements; 0 if no
+        /// rows were affected or the statement failed.</returns>
         public override int RecordsAffected
         {
             get { throw new NotImplementedException(); }
@@ -115,17 +120,34 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Reads a stream of bytes from the specified column, starting at location indicated by <paramref name="dataOffset" />, into the buffer, starting at the location indicated by <paramref name="bufferOffset" />.
+        /// Reads a stream of bytes from the specified column, starting at location indicated 
+        /// by <paramref name="dataOffset" />, into the buffer, starting at the location 
+        /// indicated by <paramref name="bufferOffset" />.
         /// </summary>
-        /// <param name="ordinal">The zero-based column ordinal.</param>
-        /// <param name="dataOffset">The index within the row from which to begin the read operation.</param>
-        /// <param name="buffer">The buffer into which to copy the data.</param>
-        /// <param name="bufferOffset">The index with the buffer to which the data will be copied.</param>
-        /// <param name="length">The maximum number of characters to read.</param>
+        /// <param name="ordinal">
+        /// The zero-based column ordinal.
+        /// </param>
+        /// <param name="dataOffset">
+        /// The index within the row from which to begin the read operation.
+        /// </param>
+        /// <param name="buffer">
+        /// The buffer into which to copy the data.
+        /// </param>
+        /// <param name="bufferOffset">
+        /// The index with the buffer to which the data will be copied.
+        /// </param>
+        /// <param name="length">
+        /// The maximum number of characters to read.
+        /// </param>
         /// <returns>
         /// The actual number of bytes read.
         /// </returns>
-        public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
+        public override long GetBytes(
+            int ordinal, 
+            long dataOffset, 
+            byte[] buffer, 
+            int bufferOffset, 
+            int length)
         {
             throw new NotImplementedException();
         }
@@ -143,17 +165,34 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Reads a stream of characters from the specified column, starting at location indicated by <paramref name="dataIndex" />, into the buffer, starting at the location indicated by <paramref name="bufferIndex" />.
+        /// Reads a stream of characters from the specified column, starting at location 
+        /// indicated by <paramref name="dataIndex" />, into the buffer, starting at the 
+        /// location indicated by <paramref name="bufferIndex" />.
         /// </summary>
-        /// <param name="ordinal">The zero-based column ordinal.</param>
-        /// <param name="dataOffset">The index within the row from which to begin the read operation.</param>
-        /// <param name="buffer">The buffer into which to copy the data.</param>
-        /// <param name="bufferOffset">The index with the buffer to which the data will be copied.</param>
-        /// <param name="length">The maximum number of characters to read.</param>
+        /// <param name="ordinal">
+        /// The zero-based column ordinal.
+        /// </param>
+        /// <param name="dataOffset">
+        /// The index within the row from which to begin the read operation.
+        /// </param>
+        /// <param name="buffer">
+        /// The buffer into which to copy the data.
+        /// </param>
+        /// <param name="bufferOffset">
+        /// The index with the buffer to which the data will be copied.
+        /// </param>
+        /// <param name="length">
+        /// The maximum number of characters to read.
+        /// </param>
         /// <returns>
         /// The actual number of characters read.
         /// </returns>
-        public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
+        public override long GetChars(
+            int ordinal, 
+            long dataOffset, 
+            char[] buffer, 
+            int bufferOffset, 
+            int length)
         {
             throw new NotImplementedException();
         }
@@ -171,7 +210,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a <see cref="T:System.DateTime" /> object.
+        /// Gets the value of the specified column as a <see cref="T:System.DateTime" /> 
+        /// object.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>
@@ -301,10 +341,12 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Returns an <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.
+        /// Returns an <see cref="T:System.Collections.IEnumerator" /> that can be used to 
+        /// iterate through the rows in the data reader.
         /// </summary>
         /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.
+        /// An <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate 
+        /// through the rows in the data reader.
         /// </returns>
         public override IEnumerator GetEnumerator()
         {
@@ -312,7 +354,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.Data.DataTable" /> that describes the column metadata of the <see cref="T:System.Data.Common.DbDataReader" />.
+        /// Returns a <see cref="T:System.Data.DataTable" /> that describes the column metadata
+        /// of the <see cref="T:System.Data.Common.DbDataReader" />.
         /// </summary>
         /// <returns>
         /// A <see cref="T:System.Data.DataTable" /> that describes the column metadata.
@@ -323,7 +366,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the value of the specified column as an instance of <see cref="T:System.String" />.
+        /// Gets the value of the specified column as an instance of 
+        /// <see cref="T:System.String" />.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>
@@ -335,7 +379,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the value of the specified column as an instance of <see cref="T:System.Object" />.
+        /// Gets the value of the specified column as an instance of 
+        /// <see cref="T:System.Object" />.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>
@@ -344,8 +389,9 @@ namespace Effort.Provider
         public override object GetValue(int ordinal)
         {
             object result = this.currentValues[ordinal];
+            Type resultType = this.fields[ordinal].Type;
 
-            result = this.dbContainer.TypeConverter.ConvertClrObject(result, this.fields[ordinal].Type);
+            result = this.container.TypeConverter.ConvertClrObject(result, resultType);
 
             if (result == null)
             {
@@ -358,7 +404,8 @@ namespace Effort.Provider
         /// <summary>
         /// Populates an array of objects with the column values of the current row.
         /// </summary>
-        /// <param name="values">An array of <see cref="T:System.Object" /> into which to copy the attribute columns.</param>
+        /// <param name="values">An array of <see cref="T:System.Object" /> into which to copy
+        /// the attribute columns.</param>
         /// <returns>
         /// The number of instances of <see cref="T:System.Object" /> in the array.
         /// </returns>
@@ -368,18 +415,26 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets a value that indicates whether this <see cref="T:System.Data.Common.DbDataReader" /> contains one or more rows.
+        /// Gets a value that indicates whether this 
+        /// <see cref="T:System.Data.Common.DbDataReader" /> contains one or more rows.
         /// </summary>
-        /// <returns>true if the <see cref="T:System.Data.Common.DbDataReader" /> contains one or more rows; otherwise false.</returns>
+        /// <returns>
+        /// true if the <see cref="T:System.Data.Common.DbDataReader" /> contains one or more 
+        /// rows; otherwise false.
+        /// </returns>
         public override bool HasRows
         {
             get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="T:System.Data.Common.DbDataReader" /> is closed.
+        /// Gets a value indicating whether the 
+        /// <see cref="T:System.Data.Common.DbDataReader" /> is closed.
         /// </summary>
-        /// <returns>true if the <see cref="T:System.Data.Common.DbDataReader" /> is closed; otherwise false.</returns>
+        /// <returns>
+        /// true if the <see cref="T:System.Data.Common.DbDataReader" /> is closed; otherwise 
+        /// false.
+        /// </returns>
         public override bool IsClosed
         {
             get
@@ -389,11 +444,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets a value that indicates whether the column contains nonexistent or missing values.
+        /// Gets a value that indicates whether the column contains nonexistent or missing 
+        /// values.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>
-        /// true if the specified column is equivalent to <see cref="T:System.DBNull" />; otherwise false.
+        /// true if the specified column is equivalent to <see cref="T:System.DBNull" />; 
+        /// otherwise false.
         /// </returns>
         public override bool IsDBNull(int ordinal)
         {
@@ -401,7 +458,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Advances the reader to the next result when reading the results of a batch of statements.
+        /// Advances the reader to the next result when reading the results of a batch of 
+        /// statements.
         /// </summary>
         /// <returns>
         /// true if there are more result sets; otherwise false.
@@ -445,7 +503,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the value of the specified column as an instance of <see cref="T:System.Object" />.
+        /// Gets the value of the specified column as an instance of 
+        /// <see cref="T:System.Object" />.
         /// </summary>
         /// <param name="name">The name of the column.</param>
         /// <returns>The value of the specified column.</returns>
@@ -458,7 +517,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the value of the specified column as an instance of <see cref="T:System.Object" />.
+        /// Gets the value of the specified column as an instance of 
+        /// <see cref="T:System.Object" />.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
@@ -471,9 +531,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Releases the managed resources used by the <see cref="EffortDataReader" /> and optionally releases the unmanaged resources.
+        /// Releases the managed resources used by the <see cref="EffortDataReader" /> and 
+        /// optionally releases the unmanaged resources.
         /// </summary>
-        /// <param name="disposing">true to release managed and unmanaged resources; false to release only unmanaged resources.</param>
+        /// <param name="disposing">
+        /// true to release managed and unmanaged resources; false to release only unmanaged 
+        /// resources.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             // The Dispose method of the base class invokes Close method
@@ -499,13 +563,19 @@ namespace Effort.Provider
             }
             else
             {
-                PropertyInfo[] props = current.GetType().GetProperties().OrderBy(x => names.IndexOf(x.Name)).ToArray();
+                PropertyInfo[] props = current
+                    .GetType()
+                    .GetProperties()
+                    .OrderBy(x => names.IndexOf(x.Name))
+                    .ToArray();
 
                 this.currentValues = new object[names.Count];
 
                 for (int i = 0; i < names.Count; i++)
                 {
-                    this.currentValues[i] = props[props.Length - names.Count + i].GetValue(current, null);
+                    PropertyInfo property = props[props.Length - names.Count + i];
+
+                    this.currentValues[i] = property.GetValue(current, null);
                 }
             }
         }

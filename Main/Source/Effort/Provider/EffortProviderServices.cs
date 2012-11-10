@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortProviderServices.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -51,17 +51,21 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Creates a command definition object for the specified provider manifest and command tree.
+        /// Creates a command definition object for the specified provider manifest and command
+        /// tree.
         /// </summary>
         /// <param name="providerManifest">
-        /// Provider manifest previously retrieved from the 
-        /// store provider.
+        /// Provider manifest previously retrieved from the store provider.
         /// </param>
-        /// <param name="commandTree">Command tree for the statement.</param>
+        /// <param name="commandTree">
+        /// Command tree for the statement.
+        /// </param>
         /// <returns>
         /// An executable command definition object.
         /// </returns>
-        protected override DbCommandDefinition CreateDbCommandDefinition(DbProviderManifest providerManifest, DbCommandTree commandTree)
+        protected override DbCommandDefinition CreateDbCommandDefinition(
+            DbProviderManifest providerManifest, 
+            DbCommandTree commandTree)
         {
             EffortEntityCommand command = new EffortEntityCommand(commandTree);
 
@@ -69,10 +73,12 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// When overridden in a derived class, returns an instance of a class that derives from 
-        /// the <see cref="T:System.Data.Common.DbProviderManifest" />.
+        /// When overridden in a derived class, returns an instance of a class that derives 
+        /// from the <see cref="T:System.Data.Common.DbProviderManifest" />.
         /// </summary>
-        /// <param name="manifestToken">The token information associated with the provider manifest.</param>
+        /// <param name="manifestToken">
+        /// The token information associated with the provider manifest.
+        /// </param>
         /// <returns>
         /// A <see cref="T:System.Data.Common.DbProviderManifest" /> object that represents the 
         /// provider manifest.
@@ -97,24 +103,28 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Returns a value indicating whether a given database exists on the server and whether 
-        /// schema objects contained in the storeItemCollection have been created.
+        /// Returns a value indicating whether a given database exists on the server and 
+        /// whether schema objects contained in the storeItemCollection have been created.
         /// </summary>
         /// <param name="connection">
         /// Connection to a database whose existence is verified by this 
         /// method.
         /// </param>
         /// <param name="commandTimeout">
-        /// Execution timeout for any commands needed to determine the existence of the database.
+        /// Execution timeout for any commands needed to determine the existence of the 
+        /// database.
         /// </param>
         /// <param name="storeItemCollection">
         /// The structure of the database whose existence is determined by this method.
         /// </param>
         /// <returns>
-        /// true if the database indicated by the connection and the <paramref name="storeItemCollection" /> 
-        /// parameter exists.
+        /// true if the database indicated by the connection and the 
+        /// <paramref name="storeItemCollection" /> parameter exists.
         /// </returns>
-        protected override bool DbDatabaseExists(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
+        protected override bool DbDatabaseExists(
+            DbConnection connection, 
+            int? commandTimeout, 
+            StoreItemCollection storeItemCollection)
         {
             DbContainer container = GetDbContainer(connection);
 
@@ -122,12 +132,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Creates a database indicated by connection and creates schema objects (tables, primary keys, 
-        /// foreign keys) based on the contents of a <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" />.
+        /// Creates a database indicated by connection and creates schema objects (tables, 
+        /// primary keys, foreign keys) based on the contents of a 
+        /// <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" />.
         /// </summary>
         /// <param name="connection">
-        /// Connection to a non-existent database that needs to be created and 
-        /// populated with the store objects indicated with the storeItemCollection parameter.
+        /// Connection to a non-existent database that needs to be created and populated with 
+        /// the store objects indicated with the storeItemCollection parameter.
         /// </param>
         /// <param name="commandTimeout">
         /// Execution timeout for any commands needed to create the database.
@@ -135,7 +146,10 @@ namespace Effort.Provider
         /// <param name="storeItemCollection">
         /// The collection of all store items based on which the script should be created.
         /// </param>
-        protected override void DbCreateDatabase(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
+        protected override void DbCreateDatabase(
+            DbConnection connection, 
+            int? commandTimeout, 
+            StoreItemCollection storeItemCollection)
         {
             DbContainer container = GetDbContainer(connection);
 
@@ -143,12 +157,11 @@ namespace Effort.Provider
             {
                 container.Initialize(storeItemCollection);
             }
-         
         }
 
         /// <summary>
-        /// Deletes all store objects specified in the store item collection from the database and the 
-        /// database itself.
+        /// Deletes all store objects specified in the store item collection from the database
+        /// and the database itself.
         /// </summary>
         /// <param name="connection">
         /// Connection to an existing database that needs to be deleted.
@@ -159,19 +172,24 @@ namespace Effort.Provider
         /// <param name="storeItemCollection">
         /// The structure of the database to be deleted.
         /// </param>
-        protected override void DbDeleteDatabase(DbConnection connection, int? commandTimeout, StoreItemCollection storeItemCollection)
+        protected override void DbDeleteDatabase(
+            DbConnection connection, 
+            int? commandTimeout, 
+            StoreItemCollection storeItemCollection)
         {
             DbContainer container = GetDbContainer(connection);
 
-            // TODO: Delete database
+            //// TODO: Delete database
 
             base.DbDeleteDatabase(connection, commandTimeout, storeItemCollection);
         }
 
         /// <summary>
-        /// Generates a data definition language (DDL0 script that creates schema objects (tables, 
-        /// primary keys, foreign keys) based on the contents of the <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" /> 
-        /// parameter and targeted for the version of the database corresponding to the provider manifest token.
+        /// Generates a data definition language (DDL0 script that creates schema objects 
+        /// (tables, primary keys, foreign keys) based on the contents of the 
+        /// <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" /> parameter and 
+        /// targeted for the version of the database corresponding to the provider manifest 
+        /// token.
         /// </summary>
         /// <param name="providerManifestToken">
         /// The provider manifest token identifying the target version.
@@ -181,10 +199,13 @@ namespace Effort.Provider
         /// </param>
         /// <returns>
         /// A DDL script that creates schema objects based on the contents of the 
-        /// <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" /> parameter and targeted for 
-        /// the version of the database corresponding to the provider manifest token.
+        /// <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" /> parameter and 
+        /// targeted for the version of the database corresponding to the provider manifest 
+        /// token.
         /// </returns>
-        protected override string DbCreateDatabaseScript(string providerManifestToken, StoreItemCollection storeItemCollection)
+        protected override string DbCreateDatabaseScript(
+            string providerManifestToken, 
+            StoreItemCollection storeItemCollection)
         {
             DbSchemaKey key = new DbSchemaKey(storeItemCollection);
 

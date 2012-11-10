@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortProviderManifestTokens.cs" company="Effort Team">
 //     Copyright (C) 2012 by Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Provider
 {
@@ -40,9 +40,15 @@ namespace Effort.Provider
         /// Gets the <see cref="EffortVersion"/> enumeration value that represents the provided
         /// manifest token value.
         /// </summary>
-        /// <param name="manifestToken">The value of the manifest token.</param>
-        /// <returns>The <see cref="EffortVersion"/> value.</returns>
-        /// <exception cref="System.NotSupportedException">The manifest token is not supported</exception>
+        /// <param name="manifestToken">
+        /// The value of the manifest token.
+        /// </param>
+        /// <returns>
+        /// The <see cref="EffortVersion"/> value.
+        /// </returns>
+        /// <exception cref="System.NotSupportedException">
+        /// The manifest token is not supported
+        /// </exception>
         public static EffortVersion GetVersion(string manifestToken)
         {
             switch (manifestToken)

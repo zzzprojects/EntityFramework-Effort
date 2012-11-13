@@ -193,8 +193,18 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     null,
                     typeof(DateTimeOffset).GetProperties().Where(x => x.Name == "Now").First().GetGetMethod());
 
+            this.mappings["Edm.AddYears"] = (f, args) =>
+                Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), FindMethod(typeof(DateTime), "AddYears",
+                        typeof(Int32)),
+                         ExpressionHelper.ConvertToNotNull(Expression.Convert(args[1], typeof(Int32))));
+
             this.mappings["Edm.Year"] = (f, args) =>
                 CreateDateExpression(args, "Year");
+
+            this.mappings["Edm.AddMonths"] = (f, args) =>
+                Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), FindMethod(typeof(DateTime), "AddMonths",
+                        typeof(Int32)),
+                         ExpressionHelper.ConvertToNotNull(Expression.Convert(args[1], typeof(Int32))));
 
             this.mappings["Edm.Month"] = (f, args) =>
                 CreateDateExpression(args, "Month");
@@ -223,8 +233,18 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.mappings["Edm.Minute"] = (f, args) =>
                 CreateDateExpression(args, "Minute");
 
+            this.mappings["Edm.AddSeconds"] = (f, args) =>
+                Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), FindMethod(typeof(DateTime), "AddSeconds",
+                        typeof(double)),
+                        ExpressionHelper.ConvertToNotNull(Expression.Convert(args[1], typeof(double))));
+
             this.mappings["Edm.Second"] = (f, args) =>
                 CreateDateExpression(args, "Second");
+
+            this.mappings["Edm.AddMilliseconds"] = (f, args) =>
+                Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), FindMethod(typeof(DateTime), "AddMilliseconds",
+                        typeof(double)),
+                        ExpressionHelper.ConvertToNotNull(Expression.Convert(args[1], typeof(double))));
 
             this.mappings["Edm.Millisecond"] = (f, args) =>
                 CreateDateExpression(args, "Millisecond");

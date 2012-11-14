@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EntityConnectionFactory.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ namespace Effort
     /// database, so using these connection objects does not require any external dependency 
     /// outside of the scope of the application.
     /// </summary>
-    public static sealed class EntityConnectionFactory
+    public static class EntityConnectionFactory
     {
         /// <summary>
         /// Initializes static members of the <see cref="EntityConnectionFactory" /> class.
@@ -78,7 +78,8 @@ namespace Effort
         {
             MetadataWorkspace metadata = GetMetadataWorkspace(ref entityConnectionString);
 
-            DbConnection connection = DbConnectionFactory.CreatePersistent(entityConnectionString, dataLoader);
+            DbConnection connection = 
+                DbConnectionFactory.CreatePersistent(entityConnectionString, dataLoader);
 
             return CreateEntityConnection(metadata, connection);
         }
@@ -169,7 +170,7 @@ namespace Effort
         /// <returns>
         /// The EntityConnection object.
         /// </returns>
-        internal static EntityConnection Create(
+        public static EntityConnection Create(
             string entityConnectionString, 
             string effortConnectionString, 
             bool persistent)

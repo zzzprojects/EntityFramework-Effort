@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="CommandTreeBuilder.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,26 @@ namespace Effort.Internal.Common
     using System.Data.Metadata.Edm;
     using System.Reflection;
 
+    /// <summary>
+    /// Create DbCommandTree objects.
+    /// </summary>
     internal static class CommandTreeBuilder
     {
-        public static DbCommandTree CreateSelectAll(MetadataWorkspace workspace, EntitySet entitySet)
+        /// <summary>
+        /// Creates the full database scan expression.
+        /// </summary>
+        /// <param name="workspace">
+        /// The workspace that contains the metadata of the database
+        /// </param>
+        /// <param name="entitySet">
+        /// The entity set that is being scanned.
+        /// </param>
+        /// <returns>
+        /// The DbCommandTree object.
+        /// </returns>
+        public static DbCommandTree CreateSelectAll(
+            MetadataWorkspace workspace, 
+            EntitySet entitySet)
         {
             ConstructorInfo treeConstructor =
                 typeof(DbQueryCommandTree)
@@ -41,11 +58,18 @@ namespace Effort.Internal.Common
                     new Type[] { typeof(MetadataWorkspace), typeof(DataSpace), typeof(DbExpression) },
                     null);
 
-            Type expressionBuilder = typeof(DbExpression).Assembly.GetType("System.Data.Common.CommandTrees.ExpressionBuilder.DbExpressionBuilder");
+            Type expressionBuilder = 
+                typeof(DbExpression).Assembly.GetType(
+                    "System.Data.Common.CommandTrees.ExpressionBuilder.DbExpressionBuilder");
 
-            object scanExpression = expressionBuilder.GetMethod("Scan").Invoke(null, new object[] { entitySet });
+            object scanExpression = expressionBuilder
+                .GetMethod("Scan")
+                .Invoke(null, new object[] { entitySet });
 
-            object tree = treeConstructor.Invoke(new object[] { workspace, DataSpace.SSpace, scanExpression });
+            object tree = 
+                treeConstructor.Invoke(
+                    new object[] { workspace, DataSpace.SSpace, scanExpression });
+
             return tree as DbCommandTree;
         }
     }

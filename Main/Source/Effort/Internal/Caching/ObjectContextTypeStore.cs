@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ObjectContextTypeStore.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -26,15 +26,42 @@ namespace Effort.Internal.Caching
 {
     using System;
 
+    /// <summary>
+    /// Represents a cache that stores <see cref="Type"/> objects that serves as Effort-ready 
+    /// ObjectContext.
+    /// </summary>
     internal class ObjectContextTypeStore
     {
+        /// <summary>
+        /// Internal collection.
+        /// </summary>
         private static ConcurrentCache<ObjectContextTypeKey, Type> store;
 
+        /// <summary>
+        /// Initializes static members of the <see cref="ObjectContextTypeStore" /> class.
+        /// </summary>
         static ObjectContextTypeStore()
         {
             store = new ConcurrentCache<ObjectContextTypeKey, Type>();
         }
 
+        /// <summary>
+        /// Returns a ObjectContext type the satisfies the provided requirements. If no such
+        /// element exists the provided factory method is used to create one.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        /// The entity connection string that identifies the database instance.
+        /// </param>
+        /// <param name="effortConnectionString">
+        /// The effort connection string that containes the database configuration.
+        /// </param>
+        /// <param name="objectContextType">
+        /// The base type that result type is derived from.
+        /// </param>
+        /// <param name="objectContextTypeFactoryMethod">
+        /// The factory method that instatiates the desired ObjectContext type.
+        /// </param>
+        /// <returns></returns>
         public static Type GetObjectContextType(
             string entityConnectionString, 
             string effortConnectionString, 

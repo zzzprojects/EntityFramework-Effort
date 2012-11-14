@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortParameter.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -119,7 +119,7 @@ namespace Effort.Provider
         /// <summary>
         /// Sets or gets a value which indicates whether the source column can be null. This 
         /// allows <see cref="T:System.Data.Common.DbCommandBuilder" /> to correctly generate
-        /// Update statements for nullable columns.
+        /// Update statements for columns that can be null.
         /// </summary>
         /// <returns>
         /// true if the source column can be null; false if it is not.

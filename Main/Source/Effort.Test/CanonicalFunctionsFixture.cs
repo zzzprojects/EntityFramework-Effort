@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------------
 // <copyright file="CanonicalFunctionsFixture.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringConcat()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -57,7 +57,7 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
             var query = context.Products.Select(x => String.Concat(x.ProductName,x.QuantityPerUnit));
 
@@ -68,7 +68,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringIsNullOrEmpty()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "",
@@ -76,9 +76,9 @@ namespace Effort.Test
                     QuantityPerUnit = null
 
                 });
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => String.IsNullOrEmpty(x.ProductName) && String.IsNullOrEmpty(x.QuantityPerUnit));
+            var query = this.context.Products.Where(x => String.IsNullOrEmpty(x.ProductName) && String.IsNullOrEmpty(x.QuantityPerUnit));
             var products = query.ToList();
             products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
         }
@@ -90,7 +90,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringContains()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -98,9 +98,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Contains("Sp"));
+            var query = this.context.Products.Where(x => x.ProductName.Contains("Sp"));
             var products = query.ToList();
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
         }
@@ -108,7 +108,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringEndsWith()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -116,9 +116,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.EndsWith("ct"));
+            var query = this.context.Products.Where(x => x.ProductName.EndsWith("ct"));
             var products = query.ToList();
             products.Count.ShouldBeLessThan(20);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -127,7 +127,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringStartsWith()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -135,9 +135,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.StartsWith("Sp"));
+            var query = this.context.Products.Where(x => x.ProductName.StartsWith("Sp"));
             var products = query.ToList();
             products.Count.ShouldEqual(2);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -146,15 +146,15 @@ namespace Effort.Test
         [TestMethod]
         public void StringLength()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Length == 15);
+            var query = this.context.Products.Where(x => x.ProductName.Length == 15);
 
             var products = query.ToList();
             products.Count.ShouldBeLessThan(20);
@@ -164,7 +164,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringIndexOf()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -172,9 +172,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.IndexOf("pe") == 1);
+            var query = this.context.Products.Where(x => x.ProductName.IndexOf("pe") == 1);
             var products = query.ToList();
             products.Count.ShouldBeLessThan(20);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -183,7 +183,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringInsert()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -191,9 +191,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Insert(1, "data") == "Sdatapecial product");
+            var query = this.context.Products.Where(x => x.ProductName.Insert(1, "data") == "Sdatapecial product");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -202,7 +202,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringRemove1()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -210,9 +210,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Remove(3) == "Spe");
+            var query = this.context.Products.Where(x => x.ProductName.Remove(3) == "Spe");
             var products = query.ToList();
             products.Count.ShouldBeLessThan(20);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -221,7 +221,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringRemove2()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -229,9 +229,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Remove(1, 2) == "Scial product");
+            var query = this.context.Products.Where(x => x.ProductName.Remove(1, 2) == "Scial product");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -240,7 +240,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringReplace()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product of product",
@@ -248,9 +248,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Replace("product", "item") == "Special item of item");
+            var query = this.context.Products.Where(x => x.ProductName.Replace("product", "item") == "Special item of item");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
             products.FirstOrDefault(x => x.ProductName == "Special product of product").ShouldNotBeNull();
@@ -259,7 +259,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringSubstring1()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -267,9 +267,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Substring(3) == "cial product");
+            var query = this.context.Products.Where(x => x.ProductName.Substring(3) == "cial product");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -278,7 +278,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringSubstring2()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -286,9 +286,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Substring(2,2) == "ec");
+            var query = this.context.Products.Where(x => x.ProductName.Substring(2,2) == "ec");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -297,7 +297,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringToLower()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -305,9 +305,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.ToLower() == "special product");
+            var query = this.context.Products.Where(x => x.ProductName.ToLower() == "special product");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -316,7 +316,7 @@ namespace Effort.Test
         [TestMethod]
         public void StringToUpper()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "Special product",
@@ -324,9 +324,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.ToUpper() == "SPECIAL PRODUCT");
+            var query = this.context.Products.Where(x => x.ProductName.ToUpper() == "SPECIAL PRODUCT");
             var products = query.ToList();
             products.Count.ShouldEqual(1);
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
@@ -335,7 +335,7 @@ namespace Effort.Test
         [TestMethod]
         public void Trim()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "   One Product ",
@@ -344,9 +344,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.Trim() == "One Product");
+            var query = this.context.Products.Where(x => x.ProductName.Trim() == "One Product");
             var products = query.ToList();
             products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
         }
@@ -354,7 +354,7 @@ namespace Effort.Test
         [TestMethod]
         public void TrimEnd()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "  One Product ",
@@ -362,9 +362,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.TrimEnd() == "  One Product");
+            var query = this.context.Products.Where(x => x.ProductName.TrimEnd() == "  One Product");
             var products = query.ToList();
 
             products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
@@ -373,7 +373,7 @@ namespace Effort.Test
         [TestMethod]
         public void TrimStart()
         {
-            context.Products.AddObject(
+            this.context.Products.AddObject(
                 new Product
                 {
                     ProductName = "  One Product ",
@@ -381,9 +381,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Products.Where(x => x.ProductName.TrimStart() == "One Product ");
+            var query = this.context.Products.Where(x => x.ProductName.TrimStart() == "One Product ");
             var products = query.ToList();
             products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
         }
@@ -396,11 +396,11 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeNow()
         {
-            var query = context.Orders.Where(x => x.OrderDate > DateTime.Now);
+            var query = this.context.Orders.Where(x => x.OrderDate > DateTime.Now);
             var orders = query.ToList();
             orders.Count.ShouldEqual(0);
 
-            query = context.Orders.Where(x => x.OrderDate < DateTime.Now);
+            query = this.context.Orders.Where(x => x.OrderDate < DateTime.Now);
             orders = query.ToList();
             orders.Count.ShouldEqual(830);
         }
@@ -408,11 +408,11 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeUtcNow()
         {
-            var query = context.Orders.Where(x => x.OrderDate > DateTime.UtcNow);
+            var query = this.context.Orders.Where(x => x.OrderDate > DateTime.UtcNow);
             var orders = query.ToList();
             orders.Count.ShouldEqual(0);
 
-            query = context.Orders.Where(x => x.OrderDate < DateTime.UtcNow);
+            query = this.context.Orders.Where(x => x.OrderDate < DateTime.UtcNow);
             orders = query.ToList();
             orders.Count.ShouldEqual(830);
         }
@@ -424,7 +424,7 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDay()
         {
-            context.Orders.AddObject(
+            this.context.Orders.AddObject(
                 new Order
                 {
                     OrderDate = new DateTime(2012,1,2,3,4,5,100),
@@ -432,9 +432,9 @@ namespace Effort.Test
 
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Day == 2);
+            var query = this.context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Day == 2);
             var orders = query.ToList();
             orders.FirstOrDefault(x=>x.ShipName == "SuperShip").ShouldNotBeNull();
 
@@ -443,14 +443,14 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDayHour()
         {
-            context.Orders.AddObject(new Order
+            this.context.Orders.AddObject(new Order
             {
                 OrderDate = new DateTime(2012, 1, 2, 3, 4, 5,100),
                 ShipName = "SuperShip"
 
             });
-            context.SaveChanges();
-            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Hour == 3);
+            this.context.SaveChanges();
+            var query = this.context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Hour == 3);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
@@ -458,14 +458,14 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDayMillisecond()
         {
-            context.Orders.AddObject(new Order
+            this.context.Orders.AddObject(new Order
             {
                 OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
                 ShipName = "SuperShip"
 
             });
-            context.SaveChanges();
-            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Millisecond == 100);
+            this.context.SaveChanges();
+            var query = this.context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Millisecond == 100);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
@@ -473,14 +473,14 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDayMinute()
         {
-            context.Orders.AddObject(new Order
+            this.context.Orders.AddObject(new Order
             {
                 OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
                 ShipName = "SuperShip"
 
             });
-            context.SaveChanges();
-            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Minute == 4);
+            this.context.SaveChanges();
+            var query = this.context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Minute == 4);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
@@ -488,14 +488,14 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDayMonth()
         {
-            context.Orders.AddObject(new Order
+            this.context.Orders.AddObject(new Order
             {
                 OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
                 ShipName = "SuperShip"
 
             });
-            context.SaveChanges();
-            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Month == 1);
+            this.context.SaveChanges();
+            var query = this.context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Month == 1);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
@@ -503,14 +503,14 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDaySecond()
         {
-            context.Orders.AddObject(new Order
+            this.context.Orders.AddObject(new Order
             {
                 OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
                 ShipName = "SuperShip"
 
             });
-            context.SaveChanges();
-            var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Second == 5);
+            this.context.SaveChanges();
+            var query = this.context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Second == 5);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
@@ -518,13 +518,13 @@ namespace Effort.Test
         [TestMethod]
         public void DateTimeDayYear()
         {
-            context.Orders.AddObject(new Order
+            this.context.Orders.AddObject(new Order
             {
                 OrderDate = new DateTime(2012, 1, 2, 3, 4, 5, 100),
                 ShipName = "SuperShip"
 
             });
-            context.SaveChanges();
+            this.context.SaveChanges();
             var query = context.Orders.Where(x => x.OrderDate.HasValue && x.OrderDate.Value.Year == 2012);
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
@@ -837,7 +837,7 @@ namespace Effort.Test
         [TestMethod]
         public void MathRoundWithDigits()
         {
-            context.OrderDetails.AddObject(
+            this.context.OrderDetails.AddObject(
                 new OrderDetail
                 {
                     OrderID = 10248,
@@ -846,9 +846,9 @@ namespace Effort.Test
                     Quantity = -123
                 });
 
-            context.SaveChanges();
+            this.context.SaveChanges();
 
-            var query = context.OrderDetails.Where(x => Math.Round(x.Discount,2) == 123.40);
+            var query = this.context.OrderDetails.Where(x => Math.Round(x.Discount,2) == 123.40);
 
             var orderdetails = query.ToList();
             orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
@@ -867,7 +867,7 @@ namespace Effort.Test
 
             this.context.SaveChanges();
 
-            var query = context.Products.Where(x => Math.Abs(x.UnitPrice.Value) == 250);
+            var query = this.context.Products.Where(x => Math.Abs(x.UnitPrice.Value) == 250);
 
             var products = query.ToList();
             products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();

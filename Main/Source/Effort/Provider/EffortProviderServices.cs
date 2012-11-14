@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortProviderServices.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -215,6 +215,11 @@ namespace Effort.Provider
             return string.Format("CREATE SCHEMA ({0})", key);
         }
 
+        /// <summary>
+        /// Returns the underlying DbContainer object of the specified DbConnection object. 
+        /// </summary>
+        /// <param name="connection">The connection object.</param>
+        /// <returns>The DbContainer object.</returns>
         private static DbContainer GetDbContainer(DbConnection connection)
         {
             EffortConnection effortConnection = connection as EffortConnection;

@@ -1,6 +1,7 @@
-ï»¿// --------------------------------------------------------------------------------------------
-// <copyright file="TypeFacets.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+// --------------------------------------------------------------------------------------------
+// <copyright file="CsvReader.DataReaderValidations.cs" company="Effort Team">
+//     Copyright (C) 2012 Effort Team
+//     Copyright (C) 2006 Sébastien Lorion
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +23,32 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.Csv
 {
-    internal struct TypeFacets
+    using System;
+
+    internal partial class CsvReader
     {
-        public bool Nullable { get; set; }
+        /// <summary>
+        /// Defines the data reader validations.
+        /// </summary>
+        [Flags]
+        private enum DataReaderValidations
+        {
+            /// <summary>
+            /// No validation.
+            /// </summary>
+            None = 0,
 
-        public bool Identity { get; set; }
+            /// <summary>
+            /// Validate that the data reader is initialized.
+            /// </summary>
+            IsInitialized = 1,
 
-        public bool Computed { get; set; }
-
-        public bool HasMaxLenght { get; set; }
-
-        public int MaxLenght { get; set; }
-
-        public bool FixedLength { get; set; }
+            /// <summary>
+            /// Validate that the data reader is not closed.
+            /// </summary>
+            IsNotClosed = 2
+        }
     }
 }

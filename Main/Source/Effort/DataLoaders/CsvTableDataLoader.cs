@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="CsvTableDataLoader.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ namespace Effort.DataLoaders
     using System.Globalization;
     using System.IO;
     using Effort.Internal.Common;
-    using LumenWorks.Framework.IO.Csv;
+    using Effort.Internal.Csv;
 
     /// <summary>
     /// Represent a table data loader that retrieves data from a CSV file.

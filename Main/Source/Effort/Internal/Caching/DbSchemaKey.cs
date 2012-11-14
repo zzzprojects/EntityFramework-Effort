@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbSchemaKey.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,23 @@ namespace Effort.Internal.Caching
     using System.Linq;
     using System.Text;
 
+    /// <summary>
+    /// Represents a key that identifies <see cref="DbSchema"/> objects.
+    /// </summary>
     internal class DbSchemaKey : IEquatable<DbSchemaKey>
     {
-        private string description;
+        /// <summary>
+        /// Serialized form the StoreItemCollection, used as the key.
+        /// </summary>
+        private string innerKey;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DbSchemaKey" /> class.
+        /// </summary>
+        /// <param name="storeItemCollection">
+        /// The store item collection that the corresponding <see cref="DbSchema"/> is based
+        /// on.
+        /// </param>
         public DbSchemaKey(StoreItemCollection storeItemCollection)
         {
             // Find container
@@ -72,21 +85,41 @@ namespace Effort.Internal.Caching
 
             builder.Append(")");
 
-            this.description = builder.ToString();
+            this.innerKey = builder.ToString();
         }
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="DbSchemaKey" /> class from being
+        /// created.
+        /// </summary>
         private DbSchemaKey()
         {
         }
 
-        public static DbSchemaKey FromString(string key)
+        /// <summary>
+        /// Instantiates a <see cref="DbSchema"/> based on the specified string.
+        /// </summary>
+        /// <param name="value">The string.</param>
+        /// <returns>The <see cref="DbSchema"/> object.</returns>
+        public static DbSchemaKey FromString(string value)
         {
             DbSchemaKey result = new DbSchemaKey();
-            result.description = key;
+            result.innerKey = value;
 
             return result;
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="DbSchemaKey" /> is equal to this 
+        /// instance.
+        /// </summary>
+        /// <param name="other">
+        /// The <see cref="DbSchemaKey" /> to compare with this instance.
+        /// </param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
+        ///   instance; otherwise, <c>false</c>.
+        /// </returns>
         public bool Equals(DbSchemaKey other)
         {
             if (other == null)
@@ -94,22 +127,46 @@ namespace Effort.Internal.Caching
                 return false;
             }
 
-            return other.description == this.description;
+            return other.innerKey == this.innerKey;
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" /> is equal to this 
+        /// instance.
+        /// </summary>
+        /// <param name="obj">
+        /// The <see cref="System.Object" /> to compare with this instance.
+        /// </param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
+        ///   instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             return this.Equals(obj as DbSchemaKey);
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data 
+        /// structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
         {
-            return this.description.GetHashCode();
+            return this.innerKey.GetHashCode();
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
-            return this.description;
+            return this.innerKey;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ActionContext.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -29,25 +29,70 @@ namespace Effort.Internal.CommandActions
     using Effort.Internal.DbManagement;
     using NMemory.Transactions;
 
+    /// <summary>
+    /// Containes information about a command execution environment.
+    /// </summary>
     internal sealed class ActionContext
     {
+        /// <summary>
+        /// The database container that the command is executed on.
+        /// </summary>
         private DbContainer container;
 
+        /// <summary>
+        /// The parameters of the command action.
+        /// </summary>
+        private IList<CommandActionParameter> parameters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActionContext" /> class.
+        /// </summary>
+        /// <param name="container">The container.</param>
         public ActionContext(DbContainer container)
         {
             this.container = container;
-            this.Parameters = new List<CommandActionParameter>();
+            this.parameters = new List<CommandActionParameter>();
         }
 
+        /// <summary>
+        /// Gets the database container that the command should be executed on.
+        /// </summary>
+        /// <value>
+        /// The db container.
+        /// </value>
         public DbContainer DbContainer
         {
-            get { return this.container; }
+            get 
+            { 
+                return this.container; 
+            }
         }
 
-        public CommandBehavior CommandBehavior { get; set; }
+        /// <summary>
+        /// Gets the collection of the parameters of the command action.
+        /// </summary>
+        /// <value>
+        /// The collection of the command action parameters.
+        /// </value>
+        public IList<CommandActionParameter> Parameters
+        {
+            get
+            {
+                return this.parameters;
+            }
+        }
 
-        public IList<CommandActionParameter> Parameters { get; private set; }
-
-        public Transaction Transaction { get; set; }
+        /// <summary>
+        /// Gets or sets the transaction that the command action is executed within.
+        /// </summary>
+        /// <value>
+        /// The transaction.
+        /// </value>
+        public Transaction Transaction 
+        { 
+            get; 
+            
+            set;
+        }
     }
 }

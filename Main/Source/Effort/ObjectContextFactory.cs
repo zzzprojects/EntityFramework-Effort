@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="ObjectContextFactory.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ namespace Effort
     /// these context objects does not require any external dependency outside of the scope of 
     /// the application.
     /// </summary>
-    public static sealed class ObjectContextFactory
+    public static class ObjectContextFactory
     {
         /// <summary>
         /// The dynamic CLI module that contains the dynamically created ObjectContext classes.
@@ -419,7 +419,7 @@ namespace Effort
         /// Creates a new instance of the <see cref="T:ObjectContext"/> based class specified 
         /// by the <typeparamref name="T"/> generic argument. This class relies on an in-memory
         /// database instance that lives during the context object lifecycle. If the object 
-        /// context instane is disposed or garbage collected, then underlying database will be
+        /// context instance is disposed or garbage collected, then underlying database will be
         /// garbage collected too. The database is constructed based on the metadata referenced
         /// by the default entity connection string of the provided 
         /// <see cref="T:ObjectContext"/> type and its state is initialized by the provided

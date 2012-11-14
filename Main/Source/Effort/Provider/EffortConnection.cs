@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortConnection.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -251,7 +251,7 @@ namespace Effort.Provider
                 EffortConnectionStringBuilder connectionString = 
                     new EffortConnectionStringBuilder(this.ConnectionString);
 
-                DbContainerStore.DeleteDbContainer(connectionString.InstanceId);
+                DbContainerStore.RemoveDbContainer(connectionString.InstanceId);
             }
 
             base.Dispose(disposing);

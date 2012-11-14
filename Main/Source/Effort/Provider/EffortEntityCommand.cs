@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EffortEntityCommand.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -122,7 +122,6 @@ namespace Effort.Provider
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             ActionContext context = this.CreateActionContext();
-            context.CommandBehavior = behavior;
 
             return this.commandAction.ExecuteDataReader(context);
         }

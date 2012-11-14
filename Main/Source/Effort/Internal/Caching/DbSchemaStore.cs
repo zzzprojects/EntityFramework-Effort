@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbSchemaStore.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +28,56 @@ namespace Effort.Internal.Caching
     using System.Data.Metadata.Edm;
     using Effort.Internal.DbManagement;
 
+    /// <summary>
+    /// Represents a cache that stores <see cref="DbSchema"/> objects.
+    /// </summary>
     internal static class DbSchemaStore
     {
+        /// <summary>
+        /// Internal collection.
+        /// </summary>
         private static ConcurrentCache<DbSchemaKey, DbSchema> store;
 
+        /// <summary>
+        /// Initializes static members of the <see cref="DbSchemaStore" /> class.
+        /// </summary>
         static DbSchemaStore()
         {
             store = new ConcurrentCache<DbSchemaKey, DbSchema>();
         }
 
+        /// <summary>
+        /// Returns a <see cref="DbSchema"/> object that is associated to the specified
+        /// DbSchemaKey.
+        /// </summary>
+        /// <param name="schemaKey">The DbSchemaKey object.</param>
+        /// <returns>The DbSchema object.</returns>
+        public static DbSchema GetDbSchema(DbSchemaKey schemaKey)
+        {
+            return store.Get(schemaKey);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="DbSchema"/> object that represents the metadata contained by
+        /// the specified StoreItemCollection. If no such element exist, the specified factory 
+        /// method is used to create one.
+        /// </summary>
+        /// <param name="metadata">
+        /// The StoreItemCollection object that contains the metadata.
+        /// </param>
+        /// <param name="schemaFactoryMethod">
+        /// The factory method that instantiates the desired element.
+        /// </param>
+        /// <returns>
+        /// The DbSchema object.
+        /// </returns>
         public static DbSchema GetDbSchema(
             StoreItemCollection metadata, 
             Func<StoreItemCollection, DbSchema> schemaFactoryMethod)
         {
-            return store.Get(new DbSchemaKey(metadata), () => schemaFactoryMethod(metadata));
-        }
-
-        public static DbSchema GetDbSchema(DbSchemaKey schemaKey)
-        {
-            return store.Get(schemaKey);
+            return store.Get(
+                new DbSchemaKey(metadata), 
+                () => schemaFactoryMethod(metadata));
         }
     }
 }

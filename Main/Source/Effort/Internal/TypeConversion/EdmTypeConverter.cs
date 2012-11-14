@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="EdmTypeConverter.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -40,13 +40,13 @@ namespace Effort.Internal.TypeConversion
 
         public Type Convert(TypeUsage type)
         {
-            TypeFacets facets = this.GetTypeFacets(type);
+            FacetInformation facets = this.GetTypeFacets(type);
             return this.ConvertWithFacets(type, facets);
         }
 
         public Type ConvertNotNull(TypeUsage type)
         {
-            TypeFacets facets = new TypeFacets();
+            FacetInformation facets = new FacetInformation();
 
             return this.ConvertWithFacets(type, facets);
         }
@@ -63,9 +63,9 @@ namespace Effort.Internal.TypeConversion
             return this.Convert(collectionType.TypeUsage);
         }
 
-        public TypeFacets GetTypeFacets(TypeUsage type)
+        public FacetInformation GetTypeFacets(TypeUsage type)
         {
-            TypeFacets facets = new TypeFacets();
+            FacetInformation facets = new FacetInformation();
             Facet facet = null;
             
             if (type.Facets.TryGetValue("Nullable", false, out facet))
@@ -99,14 +99,14 @@ namespace Effort.Internal.TypeConversion
                 if (((int?)facet.Value).HasValue)
                 {
                     facets.MaxLenght = (int)facet.Value;
-                    facets.HasMaxLenght = true;
+                    facets.LimitedLength = true;
                 }
             }
 
             return facets;
         }
 
-        private Type ConvertWithFacets(TypeUsage type, TypeFacets facets)
+        private Type ConvertWithFacets(TypeUsage type, FacetInformation facets)
         {
             if (type.EdmType.BuiltInTypeKind == BuiltInTypeKind.PrimitiveType)
             {
@@ -124,7 +124,7 @@ namespace Effort.Internal.TypeConversion
             throw new NotSupportedException();
         }
 
-        private Type CreatePrimitiveType(PrimitiveType primitiveType, TypeFacets facets)
+        private Type CreatePrimitiveType(PrimitiveType primitiveType, FacetInformation facets)
         {
             Type result = null;
             if (this.converter.TryConvertEdmType(primitiveType, facets, out result))
@@ -142,7 +142,7 @@ namespace Effort.Internal.TypeConversion
             return result;
         }
 
-        private Type CreateRowType(RowType rowType, TypeFacets facets)
+        private Type CreateRowType(RowType rowType, FacetInformation facets)
         {
             Dictionary<string, Type> members = new Dictionary<string, Type>();
 
@@ -156,7 +156,7 @@ namespace Effort.Internal.TypeConversion
             return result;
         }
 
-        private Type CreateCollectionType(CollectionType collectionType, TypeFacets facets)
+        private Type CreateCollectionType(CollectionType collectionType, FacetInformation facets)
         {
             Type elementType = this.ConvertWithFacets(collectionType.TypeUsage, facets);
 

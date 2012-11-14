@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbContainerStore.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,32 @@ namespace Effort.Internal.Caching
     using System;
     using Effort.Internal.DbManagement;
 
+    /// <summary>
+    /// Represents a cache that stores <see cref="DbContainer"/> objects.
+    /// </summary>
     internal class DbContainerStore
     {
+        /// <summary>
+        /// Internal collection.
+        /// </summary>
         private static ConcurrentCache<string, DbContainer> store;
 
+        /// <summary>
+        /// Initializes static members of the <see cref="DbContainerStore" /> class.
+        /// </summary>
         static DbContainerStore()
         {
             store = new ConcurrentCache<string, DbContainer>();
         }
 
+        /// <summary>
+        /// Returns a <see cref="DbContainer"/> object identified by the specified instance
+        /// identifier. If no such element exist, the specified factory method is used to
+        /// create one.
+        /// </summary>
+        /// <param name="instanceId">The instance id.</param>
+        /// <param name="databaseFactoryMethod">The database factory method.</param>
+        /// <returns>The  <see cref="DbContainer"/> object.</returns>
         public static DbContainer GetDbContainer(
             string instanceId, 
             Func<DbContainer> databaseFactoryMethod)
@@ -43,7 +60,11 @@ namespace Effort.Internal.Caching
             return store.Get(instanceId, databaseFactoryMethod);
         }
 
-        public static void DeleteDbContainer(string instanceId)
+        /// <summary>
+        /// Removes the DbContainer associated to the specified identifier from the cache.
+        /// </summary>
+        /// <param name="instanceId">The instance identifier.</param>
+        public static void RemoveDbContainer(string instanceId)
         {
             store.Remove(instanceId);
         }

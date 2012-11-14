@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbConnectionFactory.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ namespace Effort
     /// using these connection objects does not require any external dependency outside of the 
     /// scope of the application.
     /// </summary>
-    public static sealed class DbConnectionFactory
+    public static class DbConnectionFactory
     {
         /// <summary>
         /// Initializes static members of the <see cref="DbConnectionFactory" /> class.

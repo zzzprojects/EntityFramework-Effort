@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="TableInitialDataStore.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -28,15 +28,39 @@ namespace Effort.Internal.Caching
     using Effort.DataLoaders;
     using Effort.Internal.DbManagement;
 
+    /// <summary>
+    /// Represents a cache that stores <see cref="TableInitialData"/> objects.
+    /// </summary>
     internal static class TableInitialDataStore
     {
+        /// <summary>
+        /// Internal collection.
+        /// </summary>
         private static ConcurrentCache<TableInitialDataKey, DbTableInitialData> store;
 
+        /// <summary>
+        /// Initializes static members of the the <see cref="TableInitialDataStore" /> class.
+        /// </summary>
         static TableInitialDataStore()
         {
             store = new ConcurrentCache<TableInitialDataKey, DbTableInitialData>();
         }
 
+        /// <summary>
+        /// Returns a <see cref="DbTableInitialData"/> object that satisfies the specified 
+        /// arguments. If no such element exists the provided factory method is used to create 
+        /// one.
+        /// </summary>
+        /// <param name="loader">
+        /// The data loader that fetches the data.
+        /// </param>
+        /// <param name="entityType">
+        /// Type of the entities.
+        /// </param>
+        /// <param name="tableInitialDataFactoryMethod">
+        /// The factory method that instatiates the desired DbTableInitialData object.
+        /// </param>
+        /// <returns></returns>
         public static DbTableInitialData GetDbInitialData(
             IDataLoader loader, 
             Type entityType, 

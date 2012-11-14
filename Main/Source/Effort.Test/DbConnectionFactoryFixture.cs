@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------------
 // <copyright file="DbConnectionFactoryFixture.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -44,17 +44,6 @@ namespace Effort.Test
 
             Assert.AreEqual(csb.DataLoaderType, typeof(CsvDataLoader));
             Assert.AreEqual(csb.DataLoaderArgument, path);
-        }
-
-        [TestMethod]
-        public void A()
-        {
-            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
-
-            using (StaffDbContext context = new StaffDbContext(connection))
-            {
-                context.People.ToList();
-            }
         }
     }
 }

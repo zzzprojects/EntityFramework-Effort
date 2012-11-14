@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="MetadataWorkspaceStore.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +27,38 @@ namespace Effort.Internal.Caching
     using System;
     using System.Data.Metadata.Edm;
 
+    /// <summary>
+    /// Represents a cache that stores <see cref="MetadataWorkspace"/> object.
+    /// </summary>
     internal class MetadataWorkspaceStore
     {
+        /// <summary>
+        /// Internal collection.
+        /// </summary>
         private static ConcurrentCache<string, MetadataWorkspace> store;
 
+        /// <summary>
+        /// Initializes static members the <see cref="MetadataWorkspaceStore" /> class.
+        /// </summary>
         static MetadataWorkspaceStore()
         {
             store = new ConcurrentCache<string, MetadataWorkspace>();
         }
 
-        public static MetadataWorkspace GetMetadataWorkspace(string metadata)
-        {
-            return store.Get(metadata);
-        }
-
+        /// <summary>
+        /// Returns a <see cref="MetadataWorkspace"/> object that derived from the specified
+        /// metadata in order to be compatible with the Effort provider. If no such element 
+        /// exist, the specified factory method is used to create one.
+        /// </summary>
+        /// <param name="metadata">
+        /// References the metadata resource.
+        /// </param>
+        /// <param name="workspaceFactoryMethod">
+        /// The factory method that instantiates the desired element.
+        /// </param>
+        /// <returns>
+        /// The MetadataWorkspace object.
+        /// </returns>
         public static MetadataWorkspace GetMetadataWorkspace(
             string metadata, 
             Func<string, MetadataWorkspace> workspaceFactoryMethod)

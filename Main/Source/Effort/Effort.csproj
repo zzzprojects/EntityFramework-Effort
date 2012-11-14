@@ -108,9 +108,6 @@
     <CodeAnalysisRuleDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LumenWorks.Framework.IO">
-      <HintPath>..\Imports\LumenWorks.Framework.IO.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NMemory">
       <HintPath>..\Imports\NMemory.dll</HintPath>
@@ -156,6 +153,20 @@
     <Compile Include="Internal\CommandActions\ICommandAction.cs" />
     <Compile Include="Internal\CommandActions\ActionContext.cs" />
     <Compile Include="Internal\CommandActions\CommandActionParameter.cs" />
+    <Compile Include="Internal\Csv\CsvReader.cs" />
+    <Compile Include="Internal\Csv\CsvReader.DataReaderValidations.cs" />
+    <Compile Include="Internal\Csv\CsvReader.RecordEnumerator.cs" />
+    <Compile Include="Internal\Csv\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Internal\Csv\ParseErrorEventArgs.cs" />
+    <Compile Include="Internal\Csv\MalformedCsvException.cs" />
+    <Compile Include="Internal\Csv\MissingFieldCsvException.cs" />
+    <Compile Include="Internal\Csv\MissingFieldAction.cs" />
+    <Compile Include="Internal\Csv\ParseErrorAction.cs" />
+    <Compile Include="Internal\Csv\ValueTrimmingOptions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\DbFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Null.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Apply.cs" />
@@ -234,7 +245,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\ITableProvider.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\LinqMethodProvider.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\SingleResult.cs" />
-    <Compile Include="Internal\Caching\ConcurrentCache.cs" />
+    <Compile Include="Internal\Caching\ConcurrentCache`2.cs" />
     <Compile Include="Internal\DbManagement\TransientDatabaseComponentFactory.cs" />
     <Compile Include="Internal\Diagnostics\ILogger.cs" />
     <Compile Include="Internal\Common\CultureScope.cs" />
@@ -279,7 +290,7 @@
     <Compile Include="Internal\TypeConversion\DefaultTypeConverter.cs" />
     <Compile Include="Internal\TypeConversion\EdmTypeConverter.cs" />
     <Compile Include="Internal\TypeConversion\ITypeConverter.cs" />
-    <Compile Include="Internal\TypeConversion\TypeFacets.cs" />
+    <Compile Include="Internal\TypeConversion\FacetInformation.cs" />
     <Compile Include="ObjectContextFactory.cs" />
     <Compile Include="Internal\TypeGeneration\AnonymousTypeFactory.cs" />
     <Compile Include="Internal\Common\EmitHelper.cs" />
@@ -314,6 +325,10 @@
     <Compile Include="Provider\EffortProviderManifestTokens.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Internal\Csv\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Provider\EffortProviderManifest.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

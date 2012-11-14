@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DbSchemaFactory.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -74,7 +74,7 @@ namespace Effort.Internal.DbManagement
                 // Add properties as entity fields
                 foreach (EdmProperty field in type.Properties)
                 {
-                    TypeFacets facets = typeConverter.GetTypeFacets(field.TypeUsage);
+                    FacetInformation facets = typeConverter.GetTypeFacets(field.TypeUsage);
                     Type fieldClrType = typeConverter.Convert(field.TypeUsage);
                     PropertyBuilder propBuilder = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
 
@@ -97,13 +97,13 @@ namespace Effort.Internal.DbManagement
                     }
 
                     // Register nchar(x)
-                    if (facets.HasMaxLenght && field.TypeUsage.EdmType.Name == "string" && facets.FixedLength)
+                    if (facets.LimitedLength && field.TypeUsage.EdmType.Name == "string" && facets.FixedLength)
                     {
                         maxLenghtNCharFields.Add(propBuilder.Name, facets.MaxLenght);
                     }
 
                     // Register nvarchar(x) 
-                    if (facets.HasMaxLenght && field.TypeUsage.EdmType.Name == "string")
+                    if (facets.LimitedLength && field.TypeUsage.EdmType.Name == "string")
                     {
                         maxLenghtNVarcharFields.Add(propBuilder.Name, facets.MaxLenght);
                     }

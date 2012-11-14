@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ConcurrentCache.cs" company="Effort Team">
-//     Copyright (C) 2012 by Effort Team
+// <copyright file="ConcurrentCache`2.cs" company="Effort Team">
+//     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal
@@ -27,35 +27,44 @@ namespace Effort.Internal.Caching
     using System;
     using System.Collections.Concurrent;
 
+    /// <summary>
+    /// Represents a thread-safe generic dictionary-like cache.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TElement">The type of the elements.</typeparam>
     internal class ConcurrentCache<TKey, TElement> 
     {
-        private Func<TKey, TElement> defaultFactory;
-
+        /// <summary>
+        /// The internal store.
+        /// </summary>
         private ConcurrentDictionary<TKey, Lazy<TElement>> store;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConcurrentCache{TKey,TElement}" /> 
+        /// class.
+        /// </summary>
         public ConcurrentCache() 
-            : this(null)
-        {
-        }
-
-        public ConcurrentCache(Func<TKey, TElement> defaultFactory)
         {
             this.store = new ConcurrentDictionary<TKey, Lazy<TElement>>();
-
-            this.defaultFactory = defaultFactory;
         }
 
+        /// <summary>
+        /// Gets the element associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The queried element.</returns>
         public TElement Get(TKey key)
         {
             return this.Get(key, () => { throw new InvalidOperationException(); });
         }
 
-        public void Remove(TKey key)
-        {
-            Lazy<TElement> value;
-            this.store.TryRemove(key, out value);
-        }
-        
+        /// <summary>
+        /// Gets the element associated with the specified key. If no such element exists, it
+        /// is initialized by the supplied factory method.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="factory">The element factory method.</param>
+        /// <returns>The queried element</returns>
         public TElement Get(TKey key, Func<TElement> factory)
         {
             Lazy<TElement> element = 
@@ -65,6 +74,16 @@ namespace Effort.Internal.Caching
 
             // Evaluate the value (maybe it will initialize now)
             return element.Value;
+        }
+
+        /// <summary>
+        /// Removes the element associate to the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        public void Remove(TKey key)
+        {
+            Lazy<TElement> value;
+            this.store.TryRemove(key, out value);
         }
     }
 }

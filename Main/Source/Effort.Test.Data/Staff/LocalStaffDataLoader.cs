@@ -1,5 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TransformVisitor.Scan.cs" company="Effort Team">
+﻿// ----------------------------------------------------------------------------------
+// <copyright file="LocalStaffDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,31 +20,26 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation
+namespace Effort.Test.Data.Staff
 {
     using System;
-    using Effort.Internal.Common;
-    using System.Data.Common.CommandTrees;
-    using System.Linq.Expressions;
-    using NMemory.Tables;
+    using System.IO;
+    using Effort.DataLoaders;
 
-    internal partial class TransformVisitor
+    public class LocalStaffDataLoader : CsvDataLoader
     {
-        public override Expression Visit(DbScanExpression expression)
+        public LocalStaffDataLoader()
+            : base(FindStaffContent())
         {
-            if (tableProvider == null)
-            {
-                throw new InvalidOperationException("TableProvider is not set");
-            }
+        }
 
-            // TODO: make this database independent
-
-            string tableName = expression.Target.GetTableName();
-            object table = this.tableProvider.GetTable(tableName);
-
-            return Expression.Constant(table);
+        private static string FindStaffContent()
+        {
+            return Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                ".\\..\\..\\..\\Effort.Test.Data\\Staff\\Content");
         }
     }
 }

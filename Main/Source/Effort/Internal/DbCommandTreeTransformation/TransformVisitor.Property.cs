@@ -32,7 +32,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
     {
         public override Expression Visit(DbPropertyExpression expression)
         {
-            string propertyName = expression.Property.Name;
+            string propertyName = expression.Property.GetColumnName();
 
             Expression sourceExpression = this.Visit(expression.Instance);
             Expression result = Expression.Property(sourceExpression, propertyName);

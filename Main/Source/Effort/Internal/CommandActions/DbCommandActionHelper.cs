@@ -54,7 +54,10 @@ namespace Effort.Internal.CommandActions
             {
                 PrimitiveType propertyType = propertyExpression.ResultType.EdmType as PrimitiveType;
 
-                result.Add(new FieldDescription(propertyExpression.Property.Name, propertyType.ClrEquivalentType));
+                string name = propertyExpression.Property.GetColumnName();
+                Type type = propertyType.ClrEquivalentType;
+
+                result.Add(new FieldDescription(name, type));
             }
 
             return result.ToArray();
@@ -69,7 +72,7 @@ namespace Effort.Internal.CommandActions
                 throw new NotSupportedException("The type of the Target property is not DbScanExpression");
             }
 
-            return container.Internal.GetTable(source.Target.Name);
+            return container.Internal.GetTable(source.Target.GetTableName());
         }
 
         public static IDictionary<string, DbExpression> GetSetClauseExpressions(IList<DbModificationClause> clauses)
@@ -85,7 +88,7 @@ namespace Effort.Internal.CommandActions
                     throw new NotSupportedException(setClause.Property.ExpressionKind.ToString() + " is not supported");
                 }
 
-                result.Add(property.Property.Name, setClause.Value);
+                result.Add(property.Property.GetColumnName(), setClause.Value);
             }
 
             return result;

@@ -59,7 +59,8 @@ namespace Effort.Internal.DbManagement
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
                 EntityType type = entitySet.ElementType;
-                TypeBuilder entityTypeBuilder = entityModule.DefineType(entitySet.Name, TypeAttributes.Public);
+                string name = entitySet.GetTableName();
+                TypeBuilder entityTypeBuilder = entityModule.DefineType(name, TypeAttributes.Public);
 
                 List<PropertyInfo> primaryKeyFields = new List<PropertyInfo>();
                 List<PropertyInfo> identityFields = new List<PropertyInfo>();
@@ -75,8 +76,11 @@ namespace Effort.Internal.DbManagement
                 foreach (EdmProperty field in type.Properties)
                 {
                     FacetInformation facets = typeConverter.GetTypeFacets(field.TypeUsage);
-                    Type fieldClrType = typeConverter.Convert(field.TypeUsage);
-                    PropertyBuilder propBuilder = EmitHelper.AddProperty(entityTypeBuilder, field.Name, fieldClrType);
+                    string fieldName = field.GetColumnName();
+                    Type fieldType = typeConverter.Convert(field.TypeUsage);
+
+                    PropertyBuilder propBuilder =
+                        EmitHelper.AddProperty(entityTypeBuilder, fieldName, fieldType);
 
                     // Register primary key field
                     if (type.KeyMembers.Contains(field))
@@ -275,7 +279,10 @@ namespace Effort.Internal.DbManagement
 
         private static PropertyInfo[] GetRelationProperties(ReadOnlyMetadataCollection<EdmProperty> properties, DbTableInformation table)
         {
-            return properties.Select(edmp => table.Properties.Single(clrp => clrp.Name == edmp.Name)).ToArray();
+            return properties.Select(edmp => table
+                .Properties
+                .Single(clrp => clrp.Name == edmp.GetColumnName()))
+                .ToArray();
         }
     }
 }

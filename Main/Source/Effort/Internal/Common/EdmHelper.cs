@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TransformVisitor.Scan.cs" company="Effort Team">
+// <copyright file="EdmHelper.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,29 +22,43 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation
+namespace Effort.Internal.Common
 {
-    using System;
-    using Effort.Internal.Common;
-    using System.Data.Common.CommandTrees;
-    using System.Linq.Expressions;
-    using NMemory.Tables;
+    using System.Data.Metadata.Edm;
+    using System.Linq;
 
-    internal partial class TransformVisitor
+    /// <summary>
+    /// Providers helper method for EDM types.
+    /// </summary>
+    internal static class EdmHelper
     {
-        public override Expression Visit(DbScanExpression expression)
+        /// <summary>
+        /// Returns the name of the table that is represented by the specified entity set.
+        /// </summary>
+        /// <param name="entitySet">The entity set.</param>
+        /// <returns>The name of the table represented by the entity set.</returns>
+        public static string GetTableName(this EntitySetBase entitySet)
         {
-            if (tableProvider == null)
+            MetadataProperty property = entitySet
+               .MetadataProperties
+               .FirstOrDefault(p => p.Name == "Table");
+
+            if (property == null)
             {
-                throw new InvalidOperationException("TableProvider is not set");
+                return entitySet.Name;
             }
 
-            // TODO: make this database independent
+            return property.Value as string ?? entitySet.Name;
+        }
 
-            string tableName = expression.Target.GetTableName();
-            object table = this.tableProvider.GetTable(tableName);
-
-            return Expression.Constant(table);
+        /// <summary>
+        /// Returns the name of the table column that is represented by the specified member.
+        /// </summary>
+        /// <param name="member">The member.</param>
+        /// <returns>The name of the table column represented by the member.</returns>
+        public static string GetColumnName(this EdmMember member)
+        {
+            return member.Name;
         }
     }
 }

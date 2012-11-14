@@ -27,6 +27,7 @@ namespace Effort.Internal.TypeConversion
     using System;
     using System.Collections.Generic;
     using System.Data.Metadata.Edm;
+    using Effort.Internal.Common;
     using Effort.Internal.TypeGeneration;
 
     internal class EdmTypeConverter
@@ -146,9 +147,9 @@ namespace Effort.Internal.TypeConversion
         {
             Dictionary<string, Type> members = new Dictionary<string, Type>();
 
-            foreach (var item in rowType.Members)
+            foreach (EdmMember member in rowType.Members)
             {
-                members.Add(item.Name, this.Convert(item.TypeUsage));
+                members.Add(member.GetColumnName(), this.Convert(member.TypeUsage));
             }
 
             Type result = AnonymousTypeFactory.Create(members);

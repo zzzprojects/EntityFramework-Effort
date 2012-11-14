@@ -140,6 +140,7 @@
     <Compile Include="Internal\Caching\TableInitialDataStore.cs" />
     <Compile Include="Internal\Caching\DbSchemaStore.cs" />
     <Compile Include="Internal\CommandActions\CommandActionFactory.cs" />
+    <Compile Include="Internal\Common\EdmHelper.cs" />
     <Compile Include="Internal\Common\FieldDescription.cs" />
     <Compile Include="Internal\Common\ProviderHelper.cs" />
     <Compile Include="Internal\Common\XmlProcessing\IElementVisitor`1.cs" />

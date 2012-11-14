@@ -73,7 +73,7 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        public void DbContext_Delete()
+        public void DbContext_Remove()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
             StaffDbContext context = new StaffDbContext(connection);
@@ -88,6 +88,25 @@ namespace Effort.Test
 
             Assert.AreEqual(1, count);
             Assert.AreEqual(0, context.People.Count());
+        }
+
+        /// <summary>
+        /// The default naming convention should make Effort to fetch the initial data from the
+        /// "People.csv" file.
+        /// </summary>
+        [TestMethod]
+        public void DbContext_TableNameConvention()
+        {
+            DbConnection connection = 
+                DbConnectionFactory.CreateTransient(
+                    new LocalStaffDataLoader());
+
+            StaffDbContext context = new StaffDbContext(connection);
+
+            var result = context.People.ToList();
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual("John", result[0].FirstName);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="NorthwindLocalDataLoader.cs" company="Effort Team">
+// <copyright file="LocalNorthwindDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy

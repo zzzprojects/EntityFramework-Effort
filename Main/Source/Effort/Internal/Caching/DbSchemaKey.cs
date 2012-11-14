@@ -29,6 +29,7 @@ namespace Effort.Internal.Caching
     using System.Data.Metadata.Edm;
     using System.Linq;
     using System.Text;
+    using Effort.Internal.Common;
 
     /// <summary>
     /// Represents a key that identifies <see cref="DbSchema"/> objects.
@@ -59,20 +60,22 @@ namespace Effort.Internal.Caching
             builder.Append("(");
 
             // Find entity sets
-            IEnumerable<EntitySet> sets = 
-                entityContainer.BaseEntitySets.OfType<EntitySet>().OrderBy(s => s.Name);
+            IEnumerable<EntitySet> sets = entityContainer
+                .BaseEntitySets
+                .OfType<EntitySet>()
+                .OrderBy(s => s.GetTableName());
 
             foreach (EntitySet set in sets)
             {
-                builder.Append(set.Name);
+                builder.Append(set.GetTableName());
                 builder.Append("(");
 
                 IEnumerable<EdmProperty> properties = 
-                    set.ElementType.Properties.OrderBy(p => p.Name);
+                    set.ElementType.Properties.OrderBy(p => p.GetColumnName());
 
                 foreach (EdmProperty property in properties)
                 {
-                    builder.Append(property.Name);
+                    builder.Append(property.GetColumnName());
                     builder.Append("(");
 
                     builder.Append(property.TypeUsage.EdmType.FullName);

@@ -110,7 +110,7 @@ namespace Effort.Internal.DbManagement
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
                 // TODO: Verify fields
-                if (!this.database.ContainsTable(entitySet.Name))
+                if (!this.database.ContainsTable(entitySet.GetTableName()))
                 {
                     return false;
                 }

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>CommunityEFProviderWrappers.EFProviderWrapperToolkit</id>
+    <version>1.0.0</version>
+    <title>Entity Framework Provider Wrapper Toolkit</title>
+    <authors>Jaroslaw Kowalski, Stephen Cleary</authors>
+    <owners>Jaroslaw Kowalski, Stephen Cleary</owners>
+    <licenseUrl>http://efwrappers.codeplex.com/license</licenseUrl>
+    <projectUrl>http://efwrappers.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A toolkit for writing Entity Framework provider wrappers.</description>
+    <summary>A toolkit for writing Entity Framework provider wrappers.</summary>
+    <tags>entity-framework ef entities linq database provider</tags>
+  </metadata>
+</package>

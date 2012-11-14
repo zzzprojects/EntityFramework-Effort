@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>VisualStudioTestingExtensions</id>
+    <version>1.2.0.0</version>
+    <authors>Jeremiah Clark</authors>
+    <owners>Jeremiah Clark</owners>
+    <licenseUrl>http://vstestingextensions.codeplex.com/license</licenseUrl>
+    <projectUrl>http://vstestingextensions.codeplex.com/</projectUrl>
+    <iconUrl>https://lh3.googleusercontent.com/-2yWWJWRLSPM/TzFRiV3EDmI/AAAAAAAAAZY/RPMJ0vy968s/s205/VisualStudioTestingExtensions_1_1_0_0.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Visual Studio Testing Extensions is a library that exposes a set of extension methods to provide a way to write more readable unit tests in the Visual Studio Unit Testing environment. It is developed in C# 4.0 and requires the .NET 4.0 runtime.</description>
+    <releaseNotes />
+    <copyright />
+    <tags>testing unittesting</tags>
+  </metadata>
+</package>

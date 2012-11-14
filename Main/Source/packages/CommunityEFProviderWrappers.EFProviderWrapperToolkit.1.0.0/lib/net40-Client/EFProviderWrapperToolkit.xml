@@ -1,0 +1,886 @@
+﻿<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>EFProviderWrapperToolkit</name>
+  </assembly>
+  <members>
+    <member name="T:EFProviderWrapperToolkit.EFProviderWrapperConnection">
+      <summary>
+        <see cref="T:System.Data.Common.DbConnection" /> implementation for EFProviderWrapper
+            </summary>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.DbConnectionWrapper">
+      <summary>
+            Wrapper for <see cref="T:System.Data.Common.DbConnection" /> objects.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.#ctor">
+      <summary>
+            Initializes a new instance of the DbConnectionWrapper class.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.EnlistTransaction(System.Transactions.Transaction)">
+      <summary>
+            Enlists in the specified transaction.
+            </summary>
+      <param name="transaction">A reference to an existing <see cref="T:System.Transactions.Transaction" /> in which to enlist.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.GetSchema(System.String)">
+      <summary>
+            Returns schema information for the data source of this <see cref="T:System.Data.Common.DbConnection" /> using the specified string for the schema name.
+            </summary>
+      <param name="collectionName">Specifies the name of the schema to return.</param>
+      <returns>
+            A <see cref="T:System.Data.DataTable" /> that contains schema information.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.GetSchema">
+      <summary>
+            Returns schema information for the data source of this <see cref="T:System.Data.Common.DbConnection" />.
+            </summary>
+      <returns>
+            A <see cref="T:System.Data.DataTable" /> that contains schema information.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.GetSchema(System.String,System.String[])">
+      <summary>
+            Returns schema information for the data source of this <see cref="T:System.Data.Common.DbConnection" /> using the specified string for the schema name and the specified string array for the restriction values.
+            </summary>
+      <param name="collectionName">Specifies the name of the schema to return.</param>
+      <param name="restrictionValues">Specifies a set of restriction values for the requested schema.</param>
+      <returns>
+            A <see cref="T:System.Data.DataTable" /> that contains schema information.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.Open">
+      <summary>
+            Opens a database connection with the settings specified by the <see cref="P:System.Data.Common.DbConnection.ConnectionString" />.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.ChangeDatabase(System.String)">
+      <summary>
+            Changes the current database for an open connection.
+            </summary>
+      <param name="databaseName">Specifies the name of the database for the connection to use.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.Close">
+      <summary>
+            Closes the connection to the database. This is the preferred method of closing any open connection.
+            </summary>
+      <exception cref="T:System.Data.Common.DbException">
+            The connection-level error that occurred while opening the connection.
+            </exception>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.WrapConnection(System.Data.Common.DbConnection,System.String[])">
+      <summary>
+            Wraps the connection.
+            </summary>
+      <param name="connection">The connection.</param>
+      <param name="wrapperProviderInvariantNames">The wrapper provider invariant names.</param>
+      <returns>Wrapped connection.</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.BeginDbTransaction(System.Data.IsolationLevel)">
+      <summary>
+            Starts a database transaction.
+            </summary>
+      <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+      <returns>
+            An object representing the new transaction.
+            </returns>
+      <ensures inheritedFrom="M:System.Data.Common.DbConnection.BeginDbTransaction(System.Data.IsolationLevel)" inheritedFromTypeName="DbConnection">Contract.Result&lt;DbTransaction&gt;() != null</ensures>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.Dispose(System.Boolean)">
+      <summary>
+            Releases the unmanaged resources used by the <see cref="T:System.ComponentModel.Component" /> and optionally releases the managed resources.
+            </summary>
+      <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.CreateDbCommand">
+      <summary>
+            Creates and returns a <see cref="T:System.Data.Common.DbCommand" /> object associated with the current connection.
+            </summary>
+      <returns>
+            A <see cref="T:System.Data.Common.DbCommand" /> object.
+            </returns>
+      <ensures inheritedFrom="M:System.Data.Common.DbConnection.CreateDbCommand" inheritedFromTypeName="DbConnection">Contract.Result&lt;DbCommand&gt;() != null</ensures>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbConnectionWrapper.CreateConnectionFromConnectionString(System.String)">
+      <summary>
+            Creates the connection from connection string.
+            </summary>
+      <param name="connectionString">The connection string.</param>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.ConnectionTimeout">
+      <summary>
+            Gets the time to wait while establishing a connection before terminating the attempt and generating an error.
+            </summary>
+      <value />
+      <returns>
+            The time (in seconds) to wait for a connection to open. The default value is determined by the specific type of connection that you are using.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.Database">
+      <summary>
+            Gets the name of the current database after a connection is opened, or the database name specified in the connection string before the connection is opened.
+            </summary>
+      <value />
+      <returns>
+            The name of the current database or the name of the database to be used after a connection is opened. The default value is an empty string.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.DataSource">
+      <summary>
+            Gets the name of the database server to which to connect.
+            </summary>
+      <value />
+      <returns>
+            The name of the database server to which to connect. The default value is an empty string.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.WrappedProviderInvariantName">
+      <summary>
+            Gets the invariant name of the wrapped provider.
+            </summary>
+      <value>The invariant name of the wrapped provider.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.WrappedConnection">
+      <summary>
+            Gets or sets the wrapped connection.
+            </summary>
+      <value>The wrapped connection.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.ConnectionString">
+      <summary>
+            Gets or sets the string used to open the connection.
+            </summary>
+      <value />
+      <returns>
+            The connection string used to establish the initial connection. The exact contents of the connection string depend on the specific data source for this connection. The default value is an empty string.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.ServerVersion">
+      <summary>
+            Gets a string that represents the version of the server to which the object is connected.
+            </summary>
+      <value />
+      <returns>
+            The version of the database. The format of the string returned depends on the specific type of connection you are using.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.Site">
+      <summary>
+            Gets or sets the <see cref="T:System.ComponentModel.ISite" /> of the <see cref="T:System.ComponentModel.Component" />.
+            </summary>
+      <value />
+      <returns>
+            The <see cref="T:System.ComponentModel.ISite" /> associated with the <see cref="T:System.ComponentModel.Component" />, or null if the <see cref="T:System.ComponentModel.Component" /> is not encapsulated in an <see cref="T:System.ComponentModel.IContainer" />, the <see cref="T:System.ComponentModel.Component" /> does not have an <see cref="T:System.ComponentModel.ISite" /> associated with it, or the <see cref="T:System.ComponentModel.Component" /> is removed from its <see cref="T:System.ComponentModel.IContainer" />.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.State">
+      <summary>
+            Gets a string that describes the state of the connection.
+            </summary>
+      <value />
+      <returns>
+            The state of the connection. The format of the string returned depends on the specific type of connection you are using.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbConnectionWrapper.DefaultWrappedProviderName">
+      <summary>
+            Gets the name of the default wrapped provider.
+            </summary>
+      <returns>Name of the default wrapped provider.</returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.EFProviderWrapperConnection.DbProviderFactory">
+      <summary>
+            Gets the <see cref="T:System.Data.Common.DbProviderFactory" /> for this <see cref="T:System.Data.Common.DbConnection" />.
+            </summary>
+      <value />
+      <returns>
+            A <see cref="T:System.Data.Common.DbProviderFactory" />.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.EFProviderWrapperConnection.DefaultWrappedProviderName">
+      <summary>
+            Gets the default wrapped provider.
+            </summary>
+      <returns>Name of the default wrapped provider.</returns>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.EFProviderWrapperServices">
+      <summary>
+        <see cref="T:System.Data.Common.DbProviderServices" /> implementation for EFProviderWrapper
+            </summary>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.DbProviderServicesBase">
+      <summary>
+            Common implementation of <see cref="T:System.Data.Common.DbProviderServices" /> methods.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.CreateCommandDefinitionWrapper(System.Data.Common.DbCommandDefinition,System.Data.Common.CommandTrees.DbCommandTree)">
+      <summary>
+            Creates the command definition wrapper.
+            </summary>
+      <param name="wrappedCommandDefinition">The wrapped command definition.</param>
+      <param name="commandTree">The command tree.</param>
+      <returns>
+        <see cref="T:EFProviderWrapperToolkit.DbCommandDefinitionWrapper" /> object.</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.CreateProviderManifest(System.String,System.Data.Common.DbProviderManifest)">
+      <summary>
+            Creates the provider manifest wrapper.
+            </summary>
+      <param name="providerInvariantName">Provider invariant name.</param>
+      <param name="providerManifest">The provider manifest to be wrapped.</param>
+      <returns>
+        <see cref="T:System.Data.Common.DbProviderManifest" /> wrapper for given provider invariant name wrapping given provider manifest.</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.GetDbProviderManifestToken(System.Data.Common.DbConnection)">
+      <summary>
+            Gets the provider manifest token.
+            </summary>
+      <param name="connection">The database connection.</param>
+      <returns>Provider Manfiest Token suitable for inclusion in SSDL file and connection string</returns>
+      <remarks>
+            The provider manifest token is created by concatenating wrapped provider invariant name and its 
+            token separated by semicolon, for example when wrapping SqlClient for SQL Server 2005 the provider 
+            manifest token will be "System.Data.SqlClient;2005"
+            </remarks>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.GetDbProviderManifest(System.String)">
+      <summary>
+            Gets the provider manifest for given provider manifest token.
+            </summary>
+      <param name="manifestToken">The provider manifest token.</param>
+      <returns>
+        <see cref="T:System.Data.Common.DbProviderManifest" /> for a given token.</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.CreateDbCommandDefinition(System.Data.Common.DbProviderManifest,System.Data.Common.CommandTrees.DbCommandTree)">
+      <summary>
+            Creates the command definition wrapper for a given provider manifest and command tree.
+            </summary>
+      <param name="providerManifest">The provider manifest.</param>
+      <param name="commandTree">The command tree.</param>
+      <returns>
+        <see cref="T:System.Data.Common.DbCommandDefinition" /> object.</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.DbCreateDatabase(System.Data.Common.DbConnection,System.Nullable{System.Int32},System.Data.Metadata.Edm.StoreItemCollection)">
+      <summary>
+            Creates a database indicated by connection and creates schema objects (tables, primary keys, foreign keys) based on the contents of a <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" />.
+            </summary>
+      <param name="connection">Connection to a non-existent database that needs to be created and populated with the store objects indicated with the storeItemCollection parameter.</param>
+      <param name="commandTimeout">Execution timeout for any commands needed to create the database.</param>
+      <param name="storeItemCollection">The collection of all store items based on which the script should be created.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.DbDatabaseExists(System.Data.Common.DbConnection,System.Nullable{System.Int32},System.Data.Metadata.Edm.StoreItemCollection)">
+      <summary>
+            Returns a value indicating whether a given database exists on the server and whether schema objects contained in the storeItemCollection have been created.
+            </summary>
+      <param name="connection">Connection to a database whose existence is verified by this method.</param>
+      <param name="commandTimeout">Execution timeout for any commands needed to determine the existence of the database.</param>
+      <param name="storeItemCollection">The structure of the database whose existence is determined by this method.</param>
+      <returns>
+            true if the database indicated by the connection and the <paramref name="storeItemCollection" /> parameter exists.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.DbDeleteDatabase(System.Data.Common.DbConnection,System.Nullable{System.Int32},System.Data.Metadata.Edm.StoreItemCollection)">
+      <summary>
+            Deletes all store objects specified in the store item collection from the database and the database itself.
+            </summary>
+      <param name="connection">Connection to an existing database that needs to be deleted.</param>
+      <param name="commandTimeout">Execution timeout for any commands needed to delete the database.</param>
+      <param name="storeItemCollection">The structure of the database to be deleted.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.DbCreateDatabaseScript(System.String,System.Data.Metadata.Edm.StoreItemCollection)">
+      <summary>
+            Generates a data definition langauge (DDL0 script that creates schema objects (tables, primary keys, foreign keys) based on the contents of the <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" /> parameter and targeted for the version of the database corresponding to the provider manifest token.
+            </summary>
+      <param name="providerManifestToken">The provider manifest token identifying the target version.</param>
+      <param name="storeItemCollection">The structure of the database.</param>
+      <returns>
+            A DDL script that creates schema objects based on the contents of the <see cref="T:System.Data.Metadata.Edm.StoreItemCollection" /> parameter and targeted for the version of the database corresponding to the provider manifest token.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderServicesBase.GetProviderServicesByName(System.String)">
+      <summary>
+            Gets provider services object given provider invariant name.
+            </summary>
+      <param name="providerInvariantName">Provider invariant name.</param>
+      <returns>
+        <see cref="T:System.Data.Common.DbProviderServices" /> object for a given invariant name.</returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbProviderServicesBase.ProviderInvariantName">
+      <summary>
+            Gets the provider invariant iname.
+            </summary>
+      <returns>Provider invariant name.</returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbProviderServicesBase.DefaultWrappedProviderName">
+      <summary>
+            Gets the default name of the wrapped provider.
+            </summary>
+      <returns>Default name of the wrapped provider (to be used when 
+            provider is not specified in the connction string)</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWrapperServices.#cctor">
+      <summary>
+            Initializes static members of the EFProviderWrapperServices class.
+            </summary>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.EFProviderWrapperServices.Instance">
+      <summary>
+            Gets the singleton instance of <see cref="T:EFProviderWrapperToolkit.EFProviderWrapperServices" />.
+            </summary>
+      <value>The singleton instance.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.EFProviderWrapperServices.DefaultWrappedProviderName">
+      <summary>
+            Gets the name default of the wrapped provider.
+            </summary>
+      <returns>Name of the default wrapped provider.</returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.EFProviderWrapperServices.ProviderInvariantName">
+      <summary>
+            Gets the provider invariant name.
+            </summary>
+      <returns>Provider invariant name: 'EFProviderWrapper'</returns>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.DbCommandDefinitionWrapper">
+      <summary>
+            Implementation of common methods of <see cref="T:System.Data.Common.DbCommandDefinition" /> class.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandDefinitionWrapper.#ctor(System.Data.Common.DbCommandDefinition,System.Data.Common.CommandTrees.DbCommandTree,System.Func{System.Data.Common.DbCommand,EFProviderWrapperToolkit.DbCommandDefinitionWrapper,System.Data.Common.DbCommand})">
+      <summary>
+            Initializes a new instance of the DbCommandDefinitionWrapper class.
+            </summary>
+      <param name="wrappedCommandDefinition">The wrapped command definition.</param>
+      <param name="commandTree">The command tree.</param>
+      <param name="commandCreator">The command creator delegate.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandDefinitionWrapper.CreateCommand">
+      <summary>
+            Creates and returns a <see cref="T:System.Data.Common.DbCommandDefinition" /> object associated with the current connection.
+            </summary>
+      <returns>
+            A <see cref="T:System.Data.Common.DbCommandDefinition" />.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandDefinitionWrapper.CommandTree">
+      <summary>
+            Gets the command tree.
+            </summary>
+      <value>The command tree.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandDefinitionWrapper.WrappedCommandDefinition">
+      <summary>
+            Gets the wrapped command definition.
+            </summary>
+      <value>The wrapped command definition.</value>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.DbProviderFactoryBase">
+      <summary>
+            Common implementation of the <see cref="T:System.Data.Common.DbProviderFactory" /> methods.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.#ctor(System.Data.Common.DbProviderServices)">
+      <summary>
+            Initializes a new instance of the DbProviderFactoryBase class.
+            </summary>
+      <param name="providerServices">The provider services.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.RegisterProvider(System.String,System.String,System.String,System.Type)">
+      <summary>
+            Registers the specified <see cref="T:System.Data.Common.DbProviderFactory" /> type, overwriting any existing registration.
+            </summary>
+      <param name="name">The friendly name of the provider factory.</param>
+      <param name="invariantName">The invariant name of the provider factory. This must be unique.</param>
+      <param name="description">The description of the provider factory.</param>
+      <param name="factoryType">The type of the provider factory. This must be derived from <see cref="T:System.Data.Common.DbProviderFactory" />.</param>
+      <returns>
+        <c>true</c> if the registration succeeded; <c>false</c> if the registration failed.</returns>
+      <requires>name != null</requires>
+      <requires>!string.IsNullOrEmpty(invariantName)</requires>
+      <requires>description != null</requires>
+      <requires>factoryType != null</requires>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.CreateCommandBuilder">
+      <summary>
+            Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbCommandBuilder" /> class.
+            </summary>
+      <returns>
+            A new instance of <see cref="T:System.Data.Common.DbCommandBuilder" />.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.CreateConnectionStringBuilder">
+      <summary>
+            Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> class.
+            </summary>
+      <returns>
+            A new instance of <see cref="T:System.Data.Common.DbConnectionStringBuilder" />.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.CreateDataAdapter">
+      <summary>
+            Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbDataAdapter" /> class.
+            </summary>
+      <returns>
+            A new instance of <see cref="T:System.Data.Common.DbDataAdapter" />.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.CreateDataSourceEnumerator">
+      <summary>
+            Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbDataSourceEnumerator" /> class.
+            </summary>
+      <returns>
+            A new instance of <see cref="T:System.Data.Common.DbDataSourceEnumerator" />.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.CreateParameter">
+      <summary>
+            Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbParameter" /> class.
+            </summary>
+      <returns>
+            A new instance of <see cref="T:System.Data.Common.DbParameter" />.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.CreateConnection">
+      <summary>
+            Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbConnection" /> class.
+            </summary>
+      <returns>
+            A new instance of <see cref="T:System.Data.Common.DbConnection" />.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderFactoryBase.GetService(System.Type)">
+      <summary>
+            Gets the service object of the specified type.
+            </summary>
+      <param name="serviceType">An object that specifies the type of service object to get.</param>
+      <returns>
+            A service object of type <paramref name="serviceType" />.
+            -or-
+            null if there is no service object of type <paramref name="serviceType" />.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbProviderFactoryBase.CanCreateDataSourceEnumerator">
+      <summary>
+            Specifies whether the specific <see cref="T:System.Data.Common.DbProviderFactory" /> supports the <see cref="T:System.Data.Common.DbDataSourceEnumerator" /> class.
+            </summary>
+      <value />
+      <returns>true if the instance of the <see cref="T:System.Data.Common.DbProviderFactory" /> supports the <see cref="T:System.Data.Common.DbDataSourceEnumerator" /> class; otherwise false.
+            </returns>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.DbCommandWrapper">
+      <summary>
+            DbCommand wrapper base class.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandWrapper.#ctor(System.Data.Common.DbCommand,EFProviderWrapperToolkit.DbCommandDefinitionWrapper)">
+      <summary>
+            Initializes a new instance of the <see cref="T:EFProviderWrapperToolkit.DbCommandWrapper" /> class.
+            </summary>
+      <param name="wrappedCommand">The wrapped command.</param>
+      <param name="definition">The definition.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandWrapper.Cancel">
+      <summary>
+            Attempts to cancels the execution of a <see cref="T:System.Data.Common.DbCommand" />.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandWrapper.ExecuteNonQuery">
+      <summary>
+            Executes a SQL statement against a connection object.
+            </summary>
+      <returns>The number of rows affected.</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandWrapper.ExecuteScalar">
+      <summary>
+            Executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.
+            </summary>
+      <returns>
+            The first column of the first row in the result set.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandWrapper.Prepare">
+      <summary>
+            Creates a prepared (or compiled) version of the command on the data source.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandWrapper.CreateDbParameter">
+      <summary>
+            Creates a new instance of a <see cref="T:System.Data.Common.DbParameter" /> object.
+            </summary>
+      <returns>
+            A <see cref="T:System.Data.Common.DbParameter" /> object.
+            </returns>
+      <ensures inheritedFrom="M:System.Data.Common.DbCommand.CreateDbParameter" inheritedFromTypeName="DbCommand">Contract.Result&lt;DbParameter&gt;() != null</ensures>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbCommandWrapper.ExecuteDbDataReader(System.Data.CommandBehavior)">
+      <summary>
+            Executes the command text against the connection.
+            </summary>
+      <param name="behavior">An instance of <see cref="T:System.Data.CommandBehavior" />.</param>
+      <returns>
+            A <see cref="T:System.Data.Common.DbDataReader" />.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.Definition">
+      <summary>
+            Gets the command definition.
+            </summary>
+      <value>The command definition.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.CommandText">
+      <summary>
+            Gets or sets the text command to run against the data source.
+            </summary>
+      <value />
+      <returns>
+            The text command to execute. The default value is an empty string ("").
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.CommandTimeout">
+      <summary>
+            Gets or sets the wait time before terminating the attempt to execute a command and generating an error.
+            </summary>
+      <value />
+      <returns>
+            The time in seconds to wait for the command to execute.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.CommandType">
+      <summary>
+            Indicates or specifies how the <see cref="P:System.Data.Common.DbCommand.CommandText" /> property is interpreted.
+            </summary>
+      <value />
+      <returns>
+            One of the <see cref="T:System.Data.CommandType" /> values. The default is Text.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.DesignTimeVisible">
+      <summary>
+            Gets or sets a value indicating whether the command object should be visible in a customized interface control.
+            </summary>
+      <value />
+      <returns>true, if the command object should be visible in a control; otherwise false. The default is true.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.UpdatedRowSource">
+      <summary>
+            Gets or sets how command results are applied to the <see cref="T:System.Data.DataRow" /> when used by the Update method of a <see cref="T:System.Data.Common.DbDataAdapter" />.
+            </summary>
+      <value />
+      <returns>
+            One of the <see cref="T:System.Data.UpdateRowSource" /> values. The default is Both unless the command is automatically generated. Then the default is None.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.WrappedCommand">
+      <summary>
+            Gets the wrapped command.
+            </summary>
+      <value>The wrapped command.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.DbConnection">
+      <summary>
+            Gets or sets the <see cref="T:System.Data.Common.DbConnection" /> used by this <see cref="T:System.Data.Common.DbCommand" />.
+            </summary>
+      <value />
+      <returns>
+            The connection to the data source.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.DbParameterCollection">
+      <summary>
+            Gets the collection of <see cref="T:System.Data.Common.DbParameter" /> objects.
+            </summary>
+      <value />
+      <returns>
+            The parameters of the SQL statement or stored procedure.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbCommandWrapper.DbTransaction">
+      <summary>
+            Gets or sets the <see cref="P:System.Data.Common.DbCommand.DbTransaction" /> within which this <see cref="T:System.Data.Common.DbCommand" /> object executes.
+            </summary>
+      <value />
+      <returns>
+            The transaction within which a Command object of a .NET Framework data provider executes. The default value is a null reference (Nothing in Visual Basic).
+            </returns>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.DbTransactionWrapper">
+      <summary>
+            Implementation of common methods for <see cref="T:System.Data.Common.DbTransaction" /> wrappers.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbTransactionWrapper.#ctor(System.Data.Common.DbTransaction,EFProviderWrapperToolkit.DbConnectionWrapper)">
+      <summary>
+            Initializes a new instance of the <see cref="T:EFProviderWrapperToolkit.DbTransactionWrapper" /> class.
+            </summary>
+      <param name="wrappedTransaction">The wrapped transaction.</param>
+      <param name="connection">The connection.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbTransactionWrapper.Commit">
+      <summary>
+            Commits the database transaction.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbTransactionWrapper.Rollback">
+      <summary>
+            Rolls back a transaction from a pending state.
+            </summary>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbTransactionWrapper.IsolationLevel">
+      <summary>
+            Specifies the <see cref="T:System.Data.IsolationLevel" /> for this transaction.
+            </summary>
+      <value />
+      <returns>
+            The <see cref="T:System.Data.IsolationLevel" /> for this transaction.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbTransactionWrapper.WrappedTransaction">
+      <summary>
+            Gets the wrapped transaction.
+            </summary>
+      <value>The wrapped transaction.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbTransactionWrapper.DbConnection">
+      <summary>
+            Specifies the <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction.
+            </summary>
+      <value />
+      <returns>
+            The <see cref="T:System.Data.Common.DbConnection" /> object associated with the transaction.
+            </returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbTransactionWrapper.ConnectionWrapper">
+      <summary>
+            Gets the connection wrapper.
+            </summary>
+      <value>The connection wrapper.</value>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.EFProviderWrapperFactory">
+      <summary>
+            Implementation of <see cref="T:System.Data.Common.DbProviderFactory" /> for EFProviderWrapper.
+            </summary>
+    </member>
+    <member name="F:EFProviderWrapperToolkit.EFProviderWrapperFactory.Instance">
+      <summary>
+            Gets the singleton instance of the EFProviderWrapper factory.
+            </summary>
+      <value>The singleton instance.</value>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWrapperFactory.#ctor">
+      <summary>
+            Prevents a default instance of the EFProviderWrapperFactory class from being created.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWrapperFactory.CreateConnection">
+      <summary>
+            Returns a new instance of the provider's class that implements the <see cref="T:System.Data.Common.DbConnection" /> class.
+            </summary>
+      <returns>
+            A new instance of <see cref="T:System.Data.Common.DbConnection" />.
+            </returns>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods">
+      <summary>
+            Extension methods for handing wrapped providers.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods.SelfAndWrappedConnections(System.Data.Common.DbConnection)">
+      <summary>
+            Returns the connection and its wrapped connections as an enumerable. This method is able to unwrap <see cref="T:System.Data.EntityClient.EntityConnection" /> and <see cref="T:EFProviderWrapperToolkit.DbConnectionWrapper" /> wrappers.
+            </summary>
+      <param name="connection">The connection to enumerate. May not be <c>null</c>.</param>
+      <returns>The connection and its wrapped connections as an enumerable.</returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods.GetStoreConnection(System.Data.Common.DbConnection)">
+      <summary>
+            Returns the underlying "store" connection (that is, a database connection that is not an <see cref="T:System.Data.EntityClient.EntityConnection" /> nor a <see cref="T:EFProviderWrapperToolkit.DbConnectionWrapper" />).
+            </summary>
+      <param name="connection">The connection to examine. May not be <c>null</c>.</param>
+      <returns>The store connection.</returns>
+      <requires>connection != null</requires>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods.GetStoreConnection(System.Data.Objects.ObjectContext)">
+      <summary>
+            Returns the underlying "store" connection (that is, a database connection that is not an <see cref="T:System.Data.EntityClient.EntityConnection" /> nor a <see cref="T:EFProviderWrapperToolkit.DbConnectionWrapper" />).
+            </summary>
+      <param name="context">The context whose connection is examined. May not be <c>null</c>.</param>
+      <returns>The store connection.</returns>
+      <requires>context != null</requires>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods.UnwrapConnection``1(System.Data.Common.DbConnection)">
+      <summary>
+            Gets the underlying wrapper connection from the <see cref="T:System.Data.Common.DbConnection" />.
+            </summary>
+      <typeparam name="TConnection">Connection type.</typeparam>
+      <param name="connection">The connection. May not be <c>null</c>.</param>
+      <returns>Wrapper connection of a given type.</returns>
+      <requires>connection != null</requires>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods.TryUnwrapConnection``1(System.Data.Common.DbConnection,``0@)">
+      <summary>
+            Tries to get the underlying wrapper connection from the <see cref="T:System.Data.Common.DbConnection" />.
+            </summary>
+      <typeparam name="TConnection">Connection type.</typeparam>
+      <param name="connection">The connection. May not be <c>null</c>.</param>
+      <param name="result">The result connection.</param>
+      <returns>A value of true if the given connection type was found in the provider chain, false otherwise.</returns>
+      <requires>connection != null</requires>
+      <ensures>!Contract.Result&lt;bool&gt;() || Contract.ValueAtReturn&lt;TConnection&gt;(out result) != null</ensures>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods.UnwrapConnection``1(System.Data.Objects.ObjectContext)">
+      <summary>
+            Gets the underlying wrapper connection from the <see cref="T:System.Data.Objects.ObjectContext" />.
+            </summary>
+      <typeparam name="TConnection">Connection type.</typeparam>
+      <param name="context">The object context. May not be <c>null</c>.</param>
+      <returns>Wrapper connection of a given type.</returns>
+      <requires>context != null</requires>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EFProviderWriterExtensionMethods.TryUnwrapConnection``1(System.Data.Objects.ObjectContext,``0@)">
+      <summary>
+            Tries to get the underlying wrapper connection from the <see cref="T:System.Data.Objects.ObjectContext" />.
+            </summary>
+      <typeparam name="TConnection">Connection type.</typeparam>
+      <param name="context">The object context. May not be <c>null</c>.</param>
+      <param name="result">The result connection.</param>
+      <returns>A value of true if the given connection type was found in the provider chain, false otherwise.</returns>
+      <requires>context != null</requires>
+      <ensures>!Contract.Result&lt;bool&gt;() || Contract.ValueAtReturn&lt;TConnection&gt;(out result) != null</ensures>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.EntityConnectionWrapperUtils">
+      <summary>
+            Utilities for creating <see cref="T:System.Data.EntityClient.EntityConnection" /> with wrapped providers.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.EntityConnectionWrapperUtils.CreateEntityConnectionWithWrappers(System.String,System.String[])">
+      <summary>
+            Creates the entity connection with wrappers.
+            </summary>
+      <param name="entityConnectionString">The original entity connection string. This may also be a single word, e.g., "MyEntities", in which case it is translated into "name=MyEntities" and looked up in the application configuration.</param>
+      <param name="wrapperProviders">List for wrapper providers.</param>
+      <returns>EntityConnection object which is based on a chain of providers.</returns>
+    </member>
+    <member name="T:EFProviderWrapperToolkit.DbProviderManifestWrapper">
+      <summary>
+            Wrapper for <see cref="T:System.Data.Common.DbProviderManifest" /> objects.
+            </summary>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.#ctor(System.String,System.String,System.Data.Common.DbProviderManifest)">
+      <summary>
+            Initializes a new instance of the DbProviderManifestWrapper class.
+            </summary>
+      <param name="wrapperProviderInvariantName">Wrapper provider invariant name.</param>
+      <param name="providerInvariantName">Provider invariant name.</param>
+      <param name="wrappedProviderManifest">The wrapped provider manifest.</param>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.GetEdmType(System.Data.Metadata.Edm.TypeUsage)">
+      <summary>
+            Returns the best mapped equivalent EDM type for a specified storage type.
+            </summary>
+      <param name="storeType">The instance of the <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> class that encapsulates both a storage type and a set of facets for that type.</param>
+      <returns>
+            The instance of that <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> encapsulates both an EDM type and a set of facets for that type.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.GetFacetDescriptions(System.Data.Metadata.Edm.EdmType)">
+      <summary>
+            Returns the list of facet descriptions for the specified Entity Data Model (EDM) type.
+            </summary>
+      <param name="edmType">An <see cref="T:System:Data.Metadata.Edm.EdmType" /> for which the facet descriptions are to be retrieved.</param>
+      <returns>
+            A collection of type <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> that contains the list of facet descriptions for the specified Entity Data Model (EDM) type.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.GetStoreFunctions">
+      <summary>
+            Returns the list of provider-specific functions.
+            </summary>
+      <returns>
+            A collection of type <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> that contains the list of provider-specific functions.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.GetStoreType(System.Data.Metadata.Edm.TypeUsage)">
+      <summary>
+            Returns the best mapped equivalent storage type for a specified Entity Data Model (EDM) type.
+            </summary>
+      <param name="edmType">The instance of the <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> class that encapsulates both an EDM type and a set of facets for that type.</param>
+      <returns>
+            The instance of the <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> class that encapsulates both a storage type and a set of facets for that type.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.GetStoreTypes">
+      <summary>
+            Returns the list of primitive types that are supported by the storage provider.
+            </summary>
+      <returns>
+            A collection of type <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> that contains the list of primitive types supported by the storage provider.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.ToString">
+      <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+      <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+      <ensures inheritedFrom="M:System.Object.ToString" inheritedFromTypeName="Object">Contract.Result&lt;string&gt;() != null</ensures>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.SupportsEscapingLikeArgument(System.Char@)">
+      <summary>
+            Indicates if the provider supports escaping strings to be used as patterns in a Like expression.
+            </summary>
+      <param name="escapeCharacter">If the provider supports escaping, the character that would be used as the escape character.</param>
+      <returns>
+            Returns true if this provider supports escaping strings to be used as patterns in a Like expression; otherwise, false. The default implementation returns false.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.EscapeLikeArgument(System.String)">
+      <summary>
+            Provider writers should override this method to return the argument with the wildcards and the escape  character escaped. This method is only used if <see cref="M:System.Data.Common.DbProviderManifest.SupportsEscapingLikeArgument(System.Char@)" /> returns true.
+            </summary>
+      <param name="argument">The argument to be escaped.</param>
+      <returns>
+            The argument with the wildcards and the escape character escaped.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.GetDbInformation(System.String)">
+      <summary>
+            Returns an XML reader that represents the storage provider-specific information.
+            </summary>
+      <param name="informationType">The name of the information to be retrieved. Providers are required to support the following values: <see cref="F:System.Data.Common.DbProviderManifest.StoreSchemaDefinition" /> or <see cref="F:System.Data.Common.DbProviderManifest.StoreSchemaMapping" />.</param>
+      <returns>
+            An <see cref="T:System.Xml.XMLReader" /> object that represents the storage provider-specific information.
+            </returns>
+    </member>
+    <member name="M:EFProviderWrapperToolkit.DbProviderManifestWrapper.InjectProviderNameIntoSsdl(System.Xml.XmlReader)">
+      <summary>
+            Injects the provider name into SSDL.
+            </summary>
+      <param name="originalReader">The original reader for the XML stream representing SSDL.</param>
+      <returns>XmlReader for the modified SSDL</returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbProviderManifestWrapper.NamespaceName">
+      <summary>
+            Gets the namespace name supported by this provider manifest.
+            </summary>
+      <value />
+      <returns>The namespace name supported by this provider manifest.</returns>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbProviderManifestWrapper.WrappedProviderManifest">
+      <summary>
+            Gets the wrapped provider manifest.
+            </summary>
+      <value>The wrapped provider manifest.</value>
+    </member>
+    <member name="P:EFProviderWrapperToolkit.DbProviderManifestWrapper.WrappedProviderManifestInvariantName">
+      <summary>
+            Gets the invariant name of the wrapped provider.
+            </summary>
+      <value>The invariant name of the wrapped provider.</value>
+    </member>
+  </members>
+</doc>

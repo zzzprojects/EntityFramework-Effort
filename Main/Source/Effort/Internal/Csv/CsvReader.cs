@@ -183,7 +183,7 @@ namespace Effort.Internal.Csv
         /// Contains the array of the field values for the current record.
         /// A null value indicates that the field have not been parsed.
         /// </summary>
-        private string[] fields;
+        private FieldValue[] fields;
 
         /// <summary>
         /// Contains the maximum number of fields to retrieve for each record.
@@ -975,7 +975,7 @@ namespace Effort.Internal.Csv
         {
             get
             {
-                return ReadField(field, false, false);
+                return ReadField(field, false, false).Value;
             }
         }
 
@@ -1388,7 +1388,7 @@ namespace Effort.Internal.Csv
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
         ///	    The instance has been disposed of.
         /// </exception>
-        private string ReadField(int field, bool initializing, bool discardValue)
+        private FieldValue ReadField(int field, bool initializing, bool discardValue)
         {
             if (!initializing)
             {
@@ -1409,13 +1409,13 @@ namespace Effort.Internal.Csv
                 }
 
                 // Directly return field if cached
-                if (this.fields[field] != null)
+                if (!this.fields[field].IsMissing)
                 {
-                    return this.fields[field];
+                    return this.fields[field].Value;
                 }
                 else if (this.missingFieldFlag)
                 {
-                    return HandleMissingField(null, field, ref this.nextFieldStart);
+                    return HandleMissingField(FieldValue.Missing, field, ref this.nextFieldStart);
                 }
             }
 
@@ -1436,7 +1436,7 @@ namespace Effort.Internal.Csv
                     ReadBuffer();
                 }
 
-                string value = null;
+                FieldValue value = FieldValue.Missing;
 
                 if (this.missingFieldFlag)
                 {
@@ -1452,7 +1452,7 @@ namespace Effort.Internal.Csv
                     {
                         if (!discardValue)
                         {
-                            value = string.Empty;
+                            value = null;
                             this.fields[index] = value;
                         }
 
@@ -1477,7 +1477,9 @@ namespace Effort.Internal.Csv
                         this.fields[field] = value;
 
                         if (field < this.fieldCount)
+                        {
                             this.missingFieldFlag = true;
+                        }
                     }
                     else if (this.buffer[this.nextFieldStart] != this.quote)
                     {
@@ -1506,7 +1508,9 @@ namespace Effort.Internal.Csv
                                     break;
                                 }
                                 else
+                                {
                                     pos++;
+                                }
                             }
 
                             if (pos < this.bufferLength)
@@ -1546,6 +1550,7 @@ namespace Effort.Internal.Csv
                                 {
                                     // Do the trimming
                                     pos--;
+
                                     while (pos > -1 && IsWhiteSpace(this.buffer[pos]))
                                     {
                                         pos--;
@@ -1559,27 +1564,35 @@ namespace Effort.Internal.Csv
                                     }
                                 }
                                 else
+                                {
                                     pos = -1;
+                                }
 
                                 // If pos <= 0, that means the trimming went past buffer start,
                                 // and the concatenated value needs to be trimmed too.
                                 if (pos <= 0)
                                 {
-                                    pos = (value == null ? -1 : value.Length - 1);
+                                    pos = (value.IsMissing ? -1 : value.Value.Length - 1);
 
                                     // Do the trimming
-                                    while (pos > -1 && IsWhiteSpace(value[pos]))
+                                    while (pos > -1 && IsWhiteSpace(value.Value[pos]))
+                                    {
                                         pos--;
+                                    }
 
                                     pos++;
 
-                                    if (pos > 0 && pos != value.Length)
-                                        value = value.Substring(0, pos);
+                                    if (pos > 0 && pos != value.Value.Length)
+                                    {
+                                        value = value.Value.Substring(0, pos);
+                                    }
                                 }
                             }
 
-                            if (value == null)
-                                value = string.Empty;
+                            if (value.IsMissing)
+                            {
+                                value = null;
+                            }
                         }
 
                         if (this.eol || this.eof)
@@ -1590,10 +1603,11 @@ namespace Effort.Internal.Csv
                             // or it is the last field
                             if (!initializing && index != this.fieldCount - 1)
                             {
-                                if (value != null && value.Length == 0)
+                                if (!value.IsMissing && 
+                                    (value.Value == null || value.Value.Length == 0))
                                 {
-                                    value = null;
-                                    }
+                                    value = FieldValue.Missing;
+                                }
 
                                 value = HandleMissingField(value, index, ref this.nextFieldStart);
                             }
@@ -1606,8 +1620,6 @@ namespace Effort.Internal.Csv
                     }
                     else
                     {
-                        // Quoted field
-
                         // Skip quote
                         int start = this.nextFieldStart + 1;
                         int pos = start;
@@ -1637,7 +1649,9 @@ namespace Effort.Internal.Csv
                                 else if (c == this.escape && (this.escape != this.quote || (pos + 1 < this.bufferLength && this.buffer[pos + 1] == this.quote) || (pos + 1 == this.bufferLength && this.reader.Peek() == this.quote)))
                                 {
                                     if (!discardValue)
+                                    {
                                         value += new string(this.buffer, start, pos - start);
+                                    }
 
                                     escaped = true;
                                 }
@@ -1677,19 +1691,24 @@ namespace Effort.Internal.Csv
                         {
                             // Append remaining parsed buffer content
                             if (!discardValue && pos > start)
-                                value += new string(this.buffer, start, pos - start);
-
-                            if (!discardValue && value != null && (this.trimmingOptions & ValueTrimmingOptions.QuotedOnly) != 0)
                             {
-                                int newLength = value.Length;
-                                while (newLength > 0 && IsWhiteSpace(value[newLength - 1]))
+                                value += new string(this.buffer, start, pos - start);
+                            }
+
+                            if (!discardValue && 
+                                !value.IsMissing && 
+                                (this.trimmingOptions & ValueTrimmingOptions.QuotedOnly) != 0)
+                            {
+                                int newLength = value.Value.Length;
+
+                                while (newLength > 0 && IsWhiteSpace(value.Value[newLength - 1]))
                                 {
                                     newLength--;
                                 }
 
-                                if (newLength < value.Length)
+                                if (newLength < value.Value.Length)
                                 {
-                                    value = value.Substring(0, newLength);
+                                    value = value.Value.Substring(0, newLength);
                                 }
                             }
 
@@ -1727,8 +1746,10 @@ namespace Effort.Internal.Csv
 
                         if (!discardValue)
                         {
-                            if (value == null)
+                            // Resolve missing value
+                            if (value.IsMissing)
                             {
+                                // Field is quoted, so it shoul be empty
                                 value = string.Empty;
                             }
 
@@ -1747,15 +1768,24 @@ namespace Effort.Internal.Csv
                     {
                         if (this.eol || this.eof)
                         {
-                            return null;
+                            return FieldValue.Missing;
                         }
                         else
                         {
-                            return string.IsNullOrEmpty(value) ? string.Empty : value;
+                            // Resolve missing value
+                            if (value.IsMissing)
+                            {
+                                // Indicate that its not missing
+                                value = null;
+                            }
+
+                            return value;
                         }
                     }
                     else
+                    {
                         return value;
+                    }
                 }
 
                 index++;
@@ -1763,7 +1793,7 @@ namespace Effort.Internal.Csv
 
             // Getting here is bad ...
             HandleParseError(new MalformedCsvException(GetCurrentRawData(), this.nextFieldStart, Math.Max(0, this.currentRecordIndex), index), ref this.nextFieldStart);
-            return null;
+            return FieldValue.Missing;
         }
 
         #endregion
@@ -1844,9 +1874,9 @@ namespace Effort.Internal.Csv
                 // and then resize it to its final correct size
 
                 this.fieldCount = 0;
-                this.fields = new string[16];
+                this.fields = new FieldValue[16];
 
-                while (ReadField(this.fieldCount, true, false) != null)
+                while (!ReadField(this.fieldCount, true, false).IsMissing)
                 {
                     if (this.parseErrorFlag)
                     {
@@ -1860,7 +1890,9 @@ namespace Effort.Internal.Csv
                         this.fieldCount++;
 
                         if (this.fieldCount == this.fields.Length)
-                            Array.Resize<string>(ref this.fields, (this.fieldCount + 1) * 2);
+                        {
+                            Array.Resize<FieldValue>(ref this.fields, (this.fieldCount + 1) * 2);
+                        }
                     }
                 }
 
@@ -1870,7 +1902,7 @@ namespace Effort.Internal.Csv
 
                 if (this.fields.Length != this.fieldCount)
                 {
-                    Array.Resize<string>(ref this.fields, this.fieldCount);
+                    Array.Resize<FieldValue>(ref this.fields, this.fieldCount);
                 }
 
                 this.initialized = true;
@@ -1888,9 +1920,11 @@ namespace Effort.Internal.Csv
 
                     for (int i = 0; i < this.fields.Length; i++)
                     {
-                        string headerName = this.fields[i];
+                        string headerName = this.fields[i].Value;
                         if (string.IsNullOrEmpty(headerName) || headerName.Trim().Length == 0)
+                        {
                             headerName = this.DefaultHeaderName + i.ToString();
+                        }
 
                         this.fieldHeaders[i] = headerName;
                         this.fieldHeaderIndexes.Add(headerName, i);
@@ -1949,7 +1983,7 @@ namespace Effort.Internal.Csv
                         else
                         {
                             // a dirty trick to handle the case where extra fields are present
-                            while (ReadField(this.nextFieldIndex, true, true) != null)
+                            while (!ReadField(this.nextFieldIndex, true, true).IsMissing)
                             {
                             }
                         }
@@ -2220,7 +2254,7 @@ namespace Effort.Internal.Csv
         /// then the parse error will be handled according to 
         /// <see cref="DefaultParseErrorAction"/>.
         /// </returns>
-        private string HandleMissingField(string value, int fieldIndex, ref int currentPosition)
+        private FieldValue HandleMissingField(FieldValue value, int fieldIndex, ref int currentPosition)
         {
             if (fieldIndex < 0 || fieldIndex >= this.fieldCount)
             {
@@ -2234,7 +2268,7 @@ namespace Effort.Internal.Csv
                 this.fields[i] = null;
             }
 
-            if (value != null)
+            if (!value.IsMissing)
             {
                 return value;
             }
@@ -2244,7 +2278,7 @@ namespace Effort.Internal.Csv
                 {
                     case MissingFieldAction.ParseError:
                         HandleParseError(new MissingFieldCsvException(GetCurrentRawData(), currentPosition, Math.Max(0, this.currentRecordIndex), fieldIndex), ref currentPosition);
-                        return value;
+                        return FieldValue.Missing;
 
                     case MissingFieldAction.ReplaceByEmpty:
                         return string.Empty;
@@ -2554,10 +2588,14 @@ namespace Effort.Internal.Csv
                 DataReaderValidations.IsInitialized | 
                 DataReaderValidations.IsNotClosed);
 
-            if (((IDataRecord) this).IsDBNull(i))
+            if (((IDataRecord)this).IsDBNull(i))
+            {
                 return DBNull.Value;
+            }
             else
+            {
                 return this[i];
+            }
         }
 
         bool IDataRecord.IsDBNull(int i)
@@ -2566,7 +2604,7 @@ namespace Effort.Internal.Csv
                 DataReaderValidations.IsInitialized |
                 DataReaderValidations.IsNotClosed);
 
-            return (string.IsNullOrEmpty(this[i]));
+            return (this[i] == null);
         }
 
         long IDataRecord.GetBytes(

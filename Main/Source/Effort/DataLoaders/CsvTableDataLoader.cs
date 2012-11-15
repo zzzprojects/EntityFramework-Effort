@@ -98,41 +98,43 @@ namespace Effort.DataLoaders
         {
             string val = value as string;
 
-            if (string.IsNullOrEmpty(val))
-            {
-                return null;
-            }
-
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                type = type.GetGenericArguments()[0];
-            }
-
             if (type == typeof(string))
             {
-                if (!val.StartsWith("'", StringComparison.InvariantCulture))
+                // String handles null values in a separate way
+                // null is null, empty is empty
+                if (val == null)
                 {
-                    throw new FormatException(
-                        string.Format(
-                            "\"{0}\" is an invalid string, " +
-                            "strings fields must start with \"'\"", 
-                            val));
+                    value = null;
                 }
-
-                value = ResolveEscapeCharacters(val.Substring(1));
+                else
+                {
+                    value = ResolveEscapeCharacters(val);
+                } 
             }
-
-            if (type == typeof(byte[]) || 
-                type == typeof(NMemory.Data.Binary) || 
+            else if (string.IsNullOrEmpty(val))
+            {
+                // Everything that is empty is null
+                value = null;
+            }
+            else if (
+                type == typeof(byte[]) ||
+                type == typeof(NMemory.Data.Binary) ||
                 type == typeof(NMemory.Data.Timestamp))
             {
                 value = Convert.FromBase64String(val);
             }
             else
             {
+                // Make the type not nullable
+                if (type.IsGenericType && 
+                    type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    type = type.GetGenericArguments()[0];
+                }
+
                 value = Convert.ChangeType(value, type);
             }
-
+            
             return base.ConvertValue(value, type);
         }
 

@@ -217,6 +217,7 @@ namespace Effort.CsvTool.ViewModels
 
                             string[] fieldNames = new string[fieldCount];
                             Func<object, string>[] serializers = new Func<object, string>[fieldCount];
+                            bool[] typeNeedQuote = new bool[fieldCount];
 
                             for (int i = 0; i < fieldCount; i++)
                             {
@@ -227,15 +228,18 @@ namespace Effort.CsvTool.ViewModels
                                 if (fieldType == typeof(Byte[]))
                                 {
                                     serializers[i] = BinarySerializer;
+                                    typeNeedQuote[i] = false;
                                 }
                                 else if (fieldType == typeof(string))
                                 {
-                                    serializers[i] = StringSerializer;
+                                    serializers[i] = DefaultSerializer;
+                                    typeNeedQuote[i] = true;
                                 }
                                 else
                                 {
                                     // Default serializer
                                     serializers[i] = DefaultSerializer;
+                                    typeNeedQuote[i] = false;
                                 }
 
                             }
@@ -244,6 +248,7 @@ namespace Effort.CsvTool.ViewModels
 
                             object[] values = new object[fieldCount];
                             string[] serializedValues = new string[fieldCount];
+                            bool[] addQuote = new bool[fieldCount];
 
                             while (reader.Read())
                             {
@@ -256,21 +261,28 @@ namespace Effort.CsvTool.ViewModels
                                     // Check if null
                                     if (value == null || value is DBNull)
                                     {
+                                        addQuote[i] = false;
                                         serializedValues[i] = "";
                                     }
                                     else
                                     {
+                                        addQuote[i] = typeNeedQuote[i];
                                         serializedValues[i] = serializers[i](value);
                                     }
                                 }
 
-                                for (int i = 0; i < fieldCount - 1; i++)
                                 {
-                                    sw.Write("\"{0}\"", ConvertToCsv(serializedValues[i]));
-                                    sw.Write(',');
-                                }
+                                    int i = 0;
+                                    for (; i < fieldCount - 1; i++)
+                                    {
+                                        AppendField(sw, serializedValues[i], addQuote[i]);
 
-                                sw.WriteLine("\"{0}\"", ConvertToCsv(serializedValues[fieldCount - 1]));
+                                        sw.Write(',');
+                                    }
+
+                                    AppendField(sw, serializedValues[i], addQuote[i]);
+                                    sw.WriteLine();
+                                }
 
                             }
                             // DataReader is finished
@@ -287,6 +299,20 @@ namespace Effort.CsvTool.ViewModels
             // Connection is closed
         }
 
+        private static void AppendField(StreamWriter sw, string value, bool addQuote)
+        {
+            string append = ConvertToCsv(value);
+
+            if (addQuote)
+            {
+                sw.Write("\"{0}\"", append);
+            }
+            else
+            {
+                sw.Write(append);
+            }
+        }
+
         private static string ConvertToCsv(string input)
         {
             return input
@@ -299,11 +325,6 @@ namespace Effort.CsvTool.ViewModels
         private static string DefaultSerializer(object input)
         {
             return input.ToString();
-        }
-
-        private static string StringSerializer(object input)
-        {
-            return "'" + input.ToString();
         }
 
         private static string BinarySerializer(object input)

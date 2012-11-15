@@ -162,6 +162,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Internal\Csv\FieldValue.cs" />
     <Compile Include="Internal\Csv\ParseErrorEventArgs.cs" />
     <Compile Include="Internal\Csv\MalformedCsvException.cs" />
     <Compile Include="Internal\Csv\MissingFieldCsvException.cs" />

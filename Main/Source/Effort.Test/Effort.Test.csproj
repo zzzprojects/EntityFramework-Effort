@@ -100,6 +100,8 @@
     <Compile Include="BinaryFixture.cs" />
     <Compile Include="CanonicalFunctionsFixture.cs" />
     <Compile Include="ConstraintFixture.cs" />
+    <Compile Include="Csv\CsvReaderFixture.cs" />
+    <Compile Include="Csv\FieldValueFixture.cs" />
     <Compile Include="DataReaderInspectorFixture.cs" />
     <Compile Include="DbConnectionFactoryFixture.cs" />
     <Compile Include="DbContextFixture.cs" />

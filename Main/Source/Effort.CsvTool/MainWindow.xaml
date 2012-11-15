@@ -26,13 +26,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Database Exporter" Height="407" Width="525"
         
-        xmlns:vm="clr-namespace:Effort.CsvTool.ViewModels" xmlns:my="clr-namespace:WPG;assembly=WPG">
+        xmlns:vm="clr-namespace:Effort.CsvTool.ViewModels" 
+        xmlns:xtk="http://schemas.xceed.com/wpf/xaml/toolkit">
     
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
    
-    
+
     <Grid>
         <Grid Margin="12,12,12,50" Name="grid1">
             <Grid.RowDefinitions>
@@ -57,7 +58,14 @@
             </ComboBox>
             <Label Content="Export path:" Grid.Row="5" Grid.Column="0" />
             <TextBox Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Text="{Binding Path=ExportPath}" />
-            <my:PropertyGrid Grid.Row="2" Categorized="True" Instance="{Binding ElementName=grid1, Path=DataContext.ConnectionStringBuilder}" Grid.ColumnSpan="3"  />
+            
+            <xtk:PropertyGrid 
+                Grid.Row="2"
+                Grid.ColumnSpan="3"
+                SelectedObject="{Binding 
+                    ElementName=grid1, 
+                    Path=DataContext.ConnectionStringBuilder}" 
+                IsCategorized="True" FlowDirection="LeftToRight" ShowTitle="False" />
         </Grid>
         <Button Content="Export" Margin="0,0,12,12" HorizontalAlignment="Right" Width="91" Height="31" VerticalAlignment="Bottom" Command="{Binding Path=ExportCommand}" />
         <ProgressBar Margin="13,0,109,16" Name="progressBar1" Height="23" VerticalAlignment="Bottom" Value="{Binding Path=ReportProgress}" />

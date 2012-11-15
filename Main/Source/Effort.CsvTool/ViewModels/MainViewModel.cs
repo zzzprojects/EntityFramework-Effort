@@ -34,12 +34,10 @@ namespace Effort.CsvTool.ViewModels
     using System.IO;
     using System.Linq;
     using System.Windows.Input;
-    using WPG.Data;
 
     public class MainViewModel : ViewModelBase
     {
         private ObservableCollection<ProviderViewModel> providers;
-        private ObservableCollection<Item> properties;
         private ICommand exportCommand;
 
         private ProviderViewModel selectedProvider;
@@ -51,7 +49,6 @@ namespace Effort.CsvTool.ViewModels
         public MainViewModel()
         {
             this.providers = new ObservableCollection<ProviderViewModel>();
-            this.properties = new ObservableCollection<Item>();
 
             foreach (DataRow item in DbProviderFactories.GetFactoryClasses().Rows)
             {
@@ -77,14 +74,6 @@ namespace Effort.CsvTool.ViewModels
             get 
             { 
                 return this.providers; 
-            }
-        }
-
-        public ObservableCollection<Item> Properties
-        {
-            get
-            {
-                return this.properties;
             }
         }
 

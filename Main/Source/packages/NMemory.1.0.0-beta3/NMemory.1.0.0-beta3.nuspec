@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>NMemory</id>
+    <version>1.0.0-beta3</version>
+    <title />
+    <authors>tamasflamich</authors>
+    <owners>tamasflamich</owners>
+    <licenseUrl>https://nmemory.codeplex.com/license</licenseUrl>
+    <projectUrl>http://nmemory.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>NMemory is a lightweight non-persistent in-memory relational database engine that is purely written in C# and can be hosted by .NET applications. It supports traditional database features like indexes, foreign key relations, transaction handling and isolation, stored procedures, query optimization.</description>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework="" />
+      <frameworkAssembly assemblyName="System.Transactions" targetFramework="" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

@@ -322,44 +322,29 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         #endregion
 
-        public Expression SelectMany(Expression first, Expression second, string name1, string name2)
+        public Expression SelectMany(
+            Expression first,
+            LambdaExpression collectionSelector,
+            LambdaExpression resultSelector)
         {
             Type firstType = TypeHelper.GetElementType(first.Type);
-            Type secondType = TypeHelper.GetElementType(second.Type);
 
-            Dictionary<string, Type> resultTypeProps =
-                new Dictionary<string, Type>
-                {
-                    { name1, firstType },
-                    { name2, secondType }
-                };
+            Type collectionType = TypeHelper.GetDelegateReturnType(collectionSelector.Type);
+            collectionType = TypeHelper.GetElementType(collectionType);
 
-            Type anonymType = AnonymousTypeFactory.Create(resultTypeProps);
+            Type resultType = TypeHelper.GetDelegateReturnType(resultSelector.Type);
 
             MethodInfo genericMethod = this.queryMethods.SelectManyWithResultSelector;
-            MethodInfo method = genericMethod.MakeGenericMethod(firstType, secondType, anonymType);
 
-            Expression collectionSelector =
-                Expression.Lambda(
-                    Expression.Convert(
-                        second,
-                        typeof(IEnumerable<>).MakeGenericType(secondType)),
-                Expression.Parameter(firstType));
+            MethodInfo method =
+                genericMethod.MakeGenericMethod(firstType, collectionType, resultType);
 
-            ParameterExpression p1 = Expression.Parameter(firstType);
-            ParameterExpression p2 = Expression.Parameter(secondType);
-
-            Expression constructor = Expression.New(anonymType.GetConstructors().First(), p1, p2);
-            Expression resultSelector = Expression.Lambda(constructor, p1, p2);
-
-            Expression result = Expression.Call(
+            return Expression.Call(
                 null,
                 method,
                 first,
                 Expression.Quote(collectionSelector),
                 Expression.Quote(resultSelector));
-
-            return result;
         }
 
         public Expression Join(

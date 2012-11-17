@@ -105,5 +105,15 @@ namespace Effort.Internal.Common
 
             return methods.Count() > 0;
         }
+
+        public static Type GetDelegateReturnType(Type type)
+        {
+            if (!typeof(Delegate).IsAssignableFrom(type))
+            {
+                return null;
+            }
+
+            return type.GetMethod("Invoke").ReturnType;
+        }
     }
 }

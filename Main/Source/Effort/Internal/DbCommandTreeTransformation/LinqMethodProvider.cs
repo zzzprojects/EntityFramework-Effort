@@ -240,10 +240,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         private static MethodInfo CreateSelectManyWithResultSelector()
         {
-            return GetMethod(x => 
-                x.SelectMany(
-                    e => Enumerable.Empty<object>(), 
-                    (e, r) => new object()));
+            return GetMethod(l => 
+                l.SelectMany(
+                    r => Enumerable.Empty<object>(), 
+                    (xl, xr) => new object()));
         }
 
         private static MethodInfo CreateJoin()

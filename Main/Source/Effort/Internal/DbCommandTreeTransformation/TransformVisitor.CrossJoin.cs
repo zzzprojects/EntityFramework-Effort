@@ -24,9 +24,13 @@
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
+    using System;
     using System.Collections.Generic;
     using System.Data.Common.CommandTrees;
     using System.Linq.Expressions;
+    using Effort.Internal.TypeGeneration;
+    using Effort.Internal.Common;
+    using System.Reflection;
 
     internal partial class TransformVisitor
     {
@@ -44,11 +48,59 @@ namespace Effort.Internal.DbCommandTreeTransformation
             // Always: at most 2
             for (int i = 1; i < inputExpressions.Count; i++)
             {
-                last = queryMethodExpressionBuilder.SelectMany(last, inputExpressions[i],
+                last = this.CreateCrossJoin(
+                    last, 
+                    inputExpressions[i],
                     expression.Inputs[i - 1].VariableName,
                     expression.Inputs[i].VariableName);
             }
+
             return last;
+        }
+
+        private Expression CreateCrossJoin(
+            Expression first, 
+            Expression second, 
+            string firstName, 
+            string secondName)
+        {
+            Type firstType = TypeHelper.GetElementType(first.Type);
+            Type secondType = TypeHelper.GetElementType(second.Type);
+
+            Dictionary<string, Type> resultTypeProps =
+                new Dictionary<string, Type>
+                {
+                    { firstName, firstType },
+                    { secondName, secondType }
+                };
+
+            // Create selector for the second collection
+            LambdaExpression collectionSelector =
+                Expression.Lambda(
+                    Expression.Convert(
+                        second,
+                        typeof(IEnumerable<>).MakeGenericType(secondType)),
+                Expression.Parameter(firstType));
+
+            // Create result selector
+            Type anonymType = AnonymousTypeFactory.Create(resultTypeProps);
+
+            ParameterExpression firstParam = Expression.Parameter(firstType);
+            ParameterExpression secondParam = Expression.Parameter(secondType);
+
+            LambdaExpression resultSelector = 
+                Expression.Lambda(
+                    Expression.New(
+                        anonymType.GetConstructors()[0], 
+                        firstParam, 
+                        secondParam),
+                    firstParam, 
+                    secondParam);
+
+            return queryMethodExpressionBuilder.SelectMany(
+                first,
+                collectionSelector,
+                resultSelector);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EnumerableNullableSum.cs" company="Effort Team">
+// <copyright file="NullableEnumerableExtensionMethods.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,12 +22,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
+namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
     using System.Collections.Generic;
 
-    internal static class EnumerableNullableSum
+    internal static class NullableEnumerableExtensionMethods
     {
         public static decimal? Sum<TSource>(IEnumerable<TSource> source, Func<TSource, decimal?> selector)
         {

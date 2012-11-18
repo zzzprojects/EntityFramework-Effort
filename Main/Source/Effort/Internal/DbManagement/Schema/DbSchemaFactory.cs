@@ -21,7 +21,8 @@
 //     THE SOFTWARE.
 // </copyright>
 // --------------------------------------------------------------------------------------------
-namespace Effort.Internal.DbManagement
+
+namespace Effort.Internal.DbManagement.Schema
 {
     using System;
     using System.Collections.Generic;

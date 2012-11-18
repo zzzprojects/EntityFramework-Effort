@@ -22,21 +22,23 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
+namespace Effort.Internal.DbManagement.Engine.Modifiers
 {
     using System;
     using System.Linq;
     using System.Linq.Expressions;
+    using NMemory.Execution.Optimization.Rewriters;
+    using Effort.Internal.DbCommandTreeTransformation;
 
     /// <summary>
     /// Transforms SingleResult&gt;&lt;(x).FirstOrDefault() to x
     /// </summary>
-    internal class ExcrescentSingleResultCleanserVisitor : ExpressionVisitor, IExpressionModifier
+    internal class ExcrescentSingleResultCleanserVisitor : ExpressionRewriterBase
     {
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             // Check if the method is Queryable.FirstOrDefault
-            if (node.Method.DeclaringType == typeof(Queryable) && node.Method.Name == "FirstOrDefault")
+            if (node.Method.DeclaringType == typeof(Enumerable) && node.Method.Name == "FirstOrDefault")
             {
                 Expression source = node.Arguments[0];
 
@@ -57,11 +59,6 @@ namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
             }
 
             return base.VisitMethodCall(node);
-        }
-
-        public Expression ModifyExpression(Expression expression)
-        {
-            return this.Visit(expression);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TransientDatabaseComponentFactory.cs" company="Effort Team">
+// <copyright file="VariableCollection.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,16 +22,48 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement
+namespace Effort.Internal.DbCommandTreeTransformation
 {
-    using NMemory.Execution;
-    using NMemory.Modularity;
+    using System;
+    using System.Collections.Generic;
 
-    internal class TransientDatabaseComponentFactory : DefaultDatabaseComponentFactory
+    internal class VariableCollection
     {
-        public override IConcurrencyManager CreateConcurrencyManager()
+        private Dictionary<string, Variable> variables;
+
+        public VariableCollection()
         {
-            return new ChaosConcurrencyManager();
+            this.variables = new Dictionary<string, Variable>();
+        }
+
+        public void Add(Variable context)
+        {
+            if (this.variables.ContainsKey(context.Name))
+            {
+                throw new InvalidOperationException();
+            }
+
+            this.variables.Add(context.Name, context);
+        }
+
+        public Variable GetVariable(string name)
+        {
+            Variable context = null;
+
+            if (!this.variables.TryGetValue(name, out context))
+            {
+                throw new InvalidOperationException();
+            }
+
+            return context;
+        }
+
+        public void Delete(Variable context)
+        {
+            if (!this.variables.Remove(context.Name))
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

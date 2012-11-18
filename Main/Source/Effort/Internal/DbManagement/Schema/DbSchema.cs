@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="IExpressionModifier.cs" company="Effort Team">
+// <copyright file="DbSchema.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,12 +22,52 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
+namespace Effort.Internal.DbManagement.Schema
 {
-    using System.Linq.Expressions;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
 
-    internal interface IExpressionModifier
+    internal class DbSchema
     {
-        Expression ModifyExpression(Expression expression);
+        private Dictionary<string, DbTableInformation> tables;
+        private List<DbRelationInformation> relations;
+
+        public DbSchema()
+        {
+            this.tables = new Dictionary<string, DbTableInformation>();
+            this.relations = new List<DbRelationInformation>();
+        }
+
+        public void RegisterTable(DbTableInformation tableInformation)
+        {
+            this.tables.Add(tableInformation.TableName, tableInformation);
+        }
+
+        public void RegisterRelation(DbRelationInformation relationInformation)
+        {
+            this.relations.Add(relationInformation);
+        }
+
+        public DbTableInformation GetTable(string tableName)
+        {
+            return this.tables[tableName];
+        }
+
+        public string[] GetTableNames()
+        {
+            return this.tables.Keys.ToArray();
+        }
+
+        public DbTableInformation[] Tables 
+        {
+            get { return this.tables.Values.ToArray(); }
+        }
+
+        public DbRelationInformation[] Relations
+        {
+            get { return this.relations.ToArray(); }
+        }
     }
 }

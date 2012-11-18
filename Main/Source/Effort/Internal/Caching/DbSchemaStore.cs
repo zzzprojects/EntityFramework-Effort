@@ -26,7 +26,7 @@ namespace Effort.Internal.Caching
 {
     using System;
     using System.Data.Metadata.Edm;
-    using Effort.Internal.DbManagement;
+    using Effort.Internal.DbManagement.Schema;
 
     /// <summary>
     /// Represents a cache that stores <see cref="DbSchema"/> objects.

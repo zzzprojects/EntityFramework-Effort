@@ -34,7 +34,6 @@ namespace Effort.Internal.CommandActions
     using System.Linq.Expressions;
     using Effort.Internal.Common;
     using Effort.Internal.DbCommandTreeTransformation;
-    using Effort.Internal.DbCommandTreeTransformation.PostProcessing;
     using Effort.Provider;
     using NMemory.Modularity;
     using NMemory.StoredProcedures;
@@ -56,12 +55,6 @@ namespace Effort.Internal.CommandActions
 
             // Transform command tree
             Expression expr = visitor.Visit(this.commandTree.Query);
-
-            // Execute expression post processing
-            foreach (IExpressionModifier modifier in DbCommandTreeTransformation.PostProcessing.Modifiers.GetModifiers())
-            {
-                expr = modifier.ModifyExpression(expr);
-            }
 
             LambdaExpression query = Expression.Lambda(expr, Expression.Parameter(typeof(IDatabase)));
 

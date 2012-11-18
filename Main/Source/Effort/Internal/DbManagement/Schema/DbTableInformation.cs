@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExcrescentInitializationCleanserVisitor.cs" company="Effort Team">
+// <copyright file="DbTableInformation.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,31 +22,45 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
+namespace Effort.Internal.DbManagement.Schema
 {
-    using System.Linq.Expressions;
+    using System;
+    using System.Reflection;
+    using NMemory.Indexes;
 
-    internal class ExcrescentInitializationCleanserVisitor : ExpressionVisitor, IExpressionModifier
+    internal class DbTableInformation
     {
-        protected override Expression VisitMember(MemberExpression node)
+        public DbTableInformation(
+            string tableName, 
+            Type entityType, 
+            PropertyInfo[] primaryKeys, 
+            PropertyInfo identityField, 
+            PropertyInfo[] properties,
+            object[] constraints, 
+            IKeyInfo primaryKeyInfo)
         {
-            // Check if the target expression is just an object initialization
-            if (node.Expression.NodeType == ExpressionType.New)
-            {
-                NewExpression newExpression = node.Expression as NewExpression;
-
-                if (newExpression.Members.Count == 1 && newExpression.Members[0] == node.Member)
-                {
-                    return newExpression.Arguments[0];
-                }
-            }
-            
-            return base.VisitMember(node);
+            this.TableName = tableName;
+            this.EntityType = entityType;
+            this.PrimaryKeyFields = primaryKeys;
+            this.IdentityField = identityField;
+            this.Properties = properties;
+            this.Constraints = constraints;
+            this.PrimaryKeyInfo = primaryKeyInfo;
         }
 
-        public Expression ModifyExpression(Expression expression)
-        {
-            return this.Visit(expression);
-        }
+        public string TableName { get; set; }
+
+        public Type EntityType { get; private set; }
+
+        public PropertyInfo[] PrimaryKeyFields { get; private set; }
+
+        public PropertyInfo IdentityField { get; private set; }
+
+        public PropertyInfo[] Properties { get; private set; }
+
+        // NMemory.Constraints.IConstraint<TEntity> array
+        public object[] Constraints { get; private set; }
+
+        public IKeyInfo PrimaryKeyInfo { get; private set; }
     }
 }

@@ -39,6 +39,7 @@ namespace Effort.Internal.Common
     using NMemory.StoredProcedures;
     using NMemory.Tables;
     using NMemory.Transactions;
+    using Effort.Internal.DbManagement.Schema;
 
     internal static class DatabaseReflectionHelper
     {

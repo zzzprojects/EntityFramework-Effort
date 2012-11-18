@@ -47,6 +47,8 @@ namespace Effort.Internal.DbManagement
     using NMemory.Modularity;
     using NMemory.StoredProcedures;
     using NMemory.Tables;
+    using Effort.Internal.DbManagement.Schema;
+    using Effort.Internal.DbManagement.Engine;
 
     internal class DbContainer : ITableProvider
     {
@@ -136,17 +138,7 @@ namespace Effort.Internal.DbManagement
             // TODO: locking
             Stopwatch databaseCreationMeasure = Stopwatch.StartNew();
 
-            if (this.database == null)
-            {
-                if (this.parameters.IsTransient)
-                {
-                    this.database = new Database(new TransientDatabaseComponentFactory());
-                }
-                else
-                {
-                    this.database = new Database();
-                }
-            }
+            this.EnsureInitializedDatabase();
 
             using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())
             {
@@ -180,6 +172,25 @@ namespace Effort.Internal.DbManagement
 
             databaseCreationMeasure.Stop();
             this.Logger.Write("Database buildup finished in {0:0.0} ms", databaseCreationMeasure.Elapsed.TotalMilliseconds);
+        }
+
+        private void EnsureInitializedDatabase()
+        {
+            if (this.database == null)
+            {
+                IDatabaseComponentFactory componentFactory = null;
+
+                if (this.parameters.IsTransient)
+                {
+                    componentFactory = new TransientDatabaseComponentFactory();
+                }
+                else
+                {
+                    componentFactory = new DatabaseComponentFactory();
+                }
+
+                this.database = new Database(componentFactory);
+            }
         }
 
         private IEnumerable<object> CreateInitialData(ITableDataLoaderFactory loaderFactory, DbTableInformation tableInfo)

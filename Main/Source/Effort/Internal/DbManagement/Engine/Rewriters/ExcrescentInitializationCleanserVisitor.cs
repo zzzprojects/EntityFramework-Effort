@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DbSchema.cs" company="Effort Team">
+// <copyright file="ExcrescentInitializationCleanserVisitor.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,52 +22,31 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement
+namespace Effort.Internal.DbManagement.Engine.Modifiers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    using System.Linq.Expressions;
+    using NMemory.Execution.Optimization.Rewriters;
+    using Effort.Internal.Common;
 
-    internal class DbSchema
+    internal class ExcrescentInitializationCleanserVisitor : ExpressionRewriterBase
     {
-        private Dictionary<string, DbTableInformation> tables;
-        private List<DbRelationInformation> relations;
-
-        public DbSchema()
+        protected override Expression VisitMember(MemberExpression node)
         {
-            this.tables = new Dictionary<string, DbTableInformation>();
-            this.relations = new List<DbRelationInformation>();
-        }
+            // Check if the target expression is just an object initialization
+            if (node.Expression.NodeType == ExpressionType.New)
+            {
+                NewExpression newExpression = node.Expression as NewExpression;
 
-        public void RegisterTable(DbTableInformation tableInformation)
-        {
-            this.tables.Add(tableInformation.TableName, tableInformation);
-        }
+                // TODO: Is Anonymous Type
 
-        public void RegisterRelation(DbRelationInformation relationInformation)
-        {
-            this.relations.Add(relationInformation);
-        }
-
-        public DbTableInformation GetTable(string tableName)
-        {
-            return this.tables[tableName];
-        }
-
-        public string[] GetTableNames()
-        {
-            return this.tables.Keys.ToArray();
-        }
-
-        public DbTableInformation[] Tables 
-        {
-            get { return this.tables.Values.ToArray(); }
-        }
-
-        public DbRelationInformation[] Relations
-        {
-            get { return this.relations.ToArray(); }
+                if (newExpression.Members.Count == 1 && 
+                    newExpression.Members[0] == node.Member)
+                {
+                    return newExpression.Arguments[0];
+                }
+            }
+            
+            return base.VisitMember(node);
         }
     }
 }

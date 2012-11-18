@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DbTableInformation.cs" company="Effort Team">
+// <copyright file="TransientDatabaseComponentFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,45 +22,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement
+namespace Effort.Internal.DbManagement.Engine
 {
-    using System;
-    using System.Reflection;
-    using NMemory.Indexes;
+    using NMemory.Execution;
+    using NMemory.Modularity;
 
-    internal class DbTableInformation
+    internal class TransientDatabaseComponentFactory : DatabaseComponentFactory
     {
-        public DbTableInformation(
-            string tableName, 
-            Type entityType, 
-            PropertyInfo[] primaryKeys, 
-            PropertyInfo identityField, 
-            PropertyInfo[] properties,
-            object[] constraints, 
-            IKeyInfo primaryKeyInfo)
+        public override IConcurrencyManager CreateConcurrencyManager()
         {
-            this.TableName = tableName;
-            this.EntityType = entityType;
-            this.PrimaryKeyFields = primaryKeys;
-            this.IdentityField = identityField;
-            this.Properties = properties;
-            this.Constraints = constraints;
-            this.PrimaryKeyInfo = primaryKeyInfo;
+            return new ChaosConcurrencyManager();
         }
-
-        public string TableName { get; set; }
-
-        public Type EntityType { get; private set; }
-
-        public PropertyInfo[] PrimaryKeyFields { get; private set; }
-
-        public PropertyInfo IdentityField { get; private set; }
-
-        public PropertyInfo[] Properties { get; private set; }
-
-        // NMemory.Constraints.IConstraint<TEntity> array
-        public object[] Constraints { get; private set; }
-
-        public IKeyInfo PrimaryKeyInfo { get; private set; }
     }
 }

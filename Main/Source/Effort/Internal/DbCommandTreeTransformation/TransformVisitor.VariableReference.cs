@@ -26,7 +26,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System.Data.Common.CommandTrees;
     using System.Linq.Expressions;
-    using Effort.Internal.DbCommandTreeTransformation.Variables;
 
     internal partial class TransformVisitor
     {

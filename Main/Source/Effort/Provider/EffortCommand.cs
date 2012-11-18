@@ -30,6 +30,7 @@ namespace Effort.Provider
     using System.Text.RegularExpressions;
     using Effort.Internal.Caching;
     using Effort.Internal.DbManagement;
+    using Effort.Internal.DbManagement.Schema;
 
     /// <summary>
     /// Represents an Effort command that realizes text representations.

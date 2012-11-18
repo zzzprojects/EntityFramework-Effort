@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="SumTransformerVisitor.cs" company="Effort Team">
+// <copyright file="Variable.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,44 +22,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
+namespace Effort.Internal.DbCommandTreeTransformation
 {
-    using System;
-    using System.Linq;
     using System.Linq.Expressions;
-    using Effort.Internal.Common;
 
-    internal class SumTransformerVisitor : ExpressionVisitor, IExpressionModifier
+    internal class Variable
     {
-        public Expression ModifyExpression(Expression expression)
-        {
-            return this.Visit(expression);
-        }
+        public Expression Expression { get; set; }
 
-        protected override Expression VisitMethodCall(MethodCallExpression node)
-        {
-            Type returnType = node.Method.ReturnType;
-            
-            // There is no scenario when Queryable.Sum is used
-            if (node.Method.DeclaringType == typeof(Enumerable) && 
-                node.Method.Name == "Sum" && 
-                TypeHelper.IsNullable(returnType))
-            {
-                Type type = TypeHelper.MakeNotNullable(returnType);
-                Type sourceType = node.Method.GetGenericArguments()[0];
-
-                return Expression.Call(
-                    typeof(EnumerableNullableSum)
-                    .GetMethods()
-                    .Where(mi =>
-                        mi.Name == "Sum" &&
-                        mi.ReturnType == returnType)
-                    .Single()
-                    .MakeGenericMethod(sourceType),
-                    node.Arguments);
-            }
-            
-            return base.VisitMethodCall(node);
-        }
+        public string Name { get; set; }
     }
 }

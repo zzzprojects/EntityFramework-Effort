@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="Modifiers.cs" company="Effort Team">
+// <copyright file="VariableHandler.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,31 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.PostProcessing
+namespace Effort.Internal.DbCommandTreeTransformation
 {
-    using System.Collections.Generic;
+    using System;
 
-    internal static class Modifiers
+    internal class VariableHandler : IDisposable
     {
-        public static IEnumerable<IExpressionModifier> GetModifiers()
+        private VariableCollection collection;
+        private Variable variable;
+
+        public VariableHandler(Variable variable, VariableCollection collection)
         {
-            yield return new ExcrescentInitializationCleanserVisitor();
+            this.variable = variable;
+            this.collection = collection;
 
-            yield return new ExcrescentSingleResultCleanserVisitor();
+            this.collection.Add(variable);
+        }
 
-            yield return new SumTransformerVisitor();
+        public Variable Context
+        {
+            get { return this.variable; }
+        }
+
+        public void Dispose()
+        {
+            this.collection.Delete(this.variable);
         }
     }
 }

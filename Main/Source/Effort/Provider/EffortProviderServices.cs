@@ -30,6 +30,7 @@ namespace Effort.Provider
     using System.Data.Metadata.Edm;
     using Effort.Internal.Caching;
     using Effort.Internal.DbManagement;
+    using Effort.Internal.DbManagement.Schema;
 
     public class EffortProviderServices : DbProviderServices
     {

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="VariableCollection.cs" company="Effort Team">
+// <copyright file="ExtendedQueryCompiler.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,48 +22,57 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.Variables
+namespace Effort.Internal.DbManagement.Engine
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using NMemory.Execution;
+    using System.Linq.Expressions;
+    using NMemory.Execution.Optimization;
+    using Effort.Internal.DbManagement.Engine.Modifiers;
 
-    internal class VariableCollection
+    internal class ExtendedQueryCompiler : QueryCompiler
     {
-        private Dictionary<string, Variable> variables;
-
-        public VariableCollection()
+        protected override Expression PostprocessExpression(
+            Expression expression, 
+            TransformationContext context)
         {
-            this.variables = new Dictionary<string, Variable>();
-        }
+            expression = base.PostprocessExpression(expression, context);
 
-        public void Add(Variable context)
-        {
-            if (this.variables.ContainsKey(context.Name))
+            IEnumerable<IExpressionRewriter> rewriters =
+                this.GetPostprocessingRewriters(expression, context);
+
+            foreach (IExpressionRewriter rewriter in rewriters)
             {
-                throw new InvalidOperationException();
+                expression = rewriter.Rewrite(expression);
             }
 
-            this.variables.Add(context.Name, context);
+            return expression;
         }
 
-        public Variable GetVariable(string name)
+        protected override IEnumerable<IExpressionRewriter> GetRewriters(
+            Expression expression, 
+            TransformationContext context)
         {
-            Variable context = null;
-
-            if (!this.variables.TryGetValue(name, out context))
+            foreach (IExpressionRewriter rewriter in base.GetRewriters(expression, context))
             {
-                throw new InvalidOperationException();
+                yield return rewriter;
             }
 
-            return context;
+            // Additional rewriters
         }
 
-        public void Delete(Variable context)
+        protected virtual IEnumerable<IExpressionRewriter> GetPostprocessingRewriters(
+             Expression expression, 
+             TransformationContext context)
         {
-            if (!this.variables.Remove(context.Name))
-            {
-                throw new InvalidOperationException();
-            }
+            yield return new SumTransformerVisitor();
+
+            yield return new ExcrescentInitializationCleanserVisitor();
+
+            yield return new ExcrescentSingleResultCleanserVisitor();
         }
     }
 }

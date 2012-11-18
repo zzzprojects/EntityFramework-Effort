@@ -31,7 +31,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Effort.Internal.DbCommandTreeTransformation.Variables;
     using Effort.Internal.TypeConversion;
 
     internal partial class TransformVisitor : DbExpressionVisitor<Expression>

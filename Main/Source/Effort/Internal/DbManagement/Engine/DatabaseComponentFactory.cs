@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="VariableHandler.cs" company="Effort Team">
+// <copyright file="DatabaseComponentFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,31 +22,19 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation.Variables
+namespace Effort.Internal.DbManagement.Engine
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using NMemory.Modularity;
 
-    internal class VariableHandler : IDisposable
+    internal class DatabaseComponentFactory : DefaultDatabaseComponentFactory
     {
-        private VariableCollection collection;
-        private Variable variable;
-
-        public VariableHandler(Variable variable, VariableCollection collection)
+        public override IQueryCompiler CreateQueryCompiler()
         {
-            this.variable = variable;
-            this.collection = collection;
-
-            this.collection.Add(variable);
-        }
-
-        public Variable Context
-        {
-            get { return this.variable; }
-        }
-
-        public void Dispose()
-        {
-            this.collection.Delete(this.variable);
+            return new ExtendedQueryCompiler();
         }
     }
 }

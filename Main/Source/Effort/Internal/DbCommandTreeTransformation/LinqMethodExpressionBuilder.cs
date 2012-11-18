@@ -192,6 +192,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return Expression.Call(method, source);
         }
 
+        public Expression AsQueryable(Expression source)
+        {
+            Type sourceType = TypeHelper.GetElementType(source.Type);
+            MethodInfo genericMethod = this.queryMethods.AsQueryable;
+
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
+
+            return Expression.Call(method, source);
+        }
+
         public Expression Except(Expression first, Expression second)
         {
             Type firstType = TypeHelper.GetElementType(first.Type);

@@ -55,6 +55,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Lazy<MethodInfo> first;
         private Lazy<MethodInfo> any;
         private Lazy<MethodInfo> defaultIfEmpty;
+        private Lazy<MethodInfo> asQueryable;
 
         private Lazy<MethodInfo> distinct;
         private Lazy<MethodInfo> except;
@@ -63,7 +64,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Lazy<MethodInfo> concat;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="LinqMethodProvider" /> class from being created.
+        /// Prevents a default instance of the <see cref="LinqMethodProvider" /> class from
+        /// being created.
         /// </summary>
         private LinqMethodProvider()
         {
@@ -71,7 +73,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             this.select = new Lazy<MethodInfo>(CreateSelect, safety);
             this.selectMany = new Lazy<MethodInfo>(CreateSelectMany, safety);
-            this.selectManyWithResultSelector = new Lazy<MethodInfo>(CreateSelectManyWithResultSelector, safety);
+            this.selectManyWithResultSelector = 
+                new Lazy<MethodInfo>(CreateSelectManyWithResultSelector, safety);
 
             this.count = new Lazy<MethodInfo>(CreateCount, safety);
             this.where = new Lazy<MethodInfo>(CreateWhere, safety);
@@ -88,6 +91,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.firstOrDefault = new Lazy<MethodInfo>(CreateFirstOrDefault, safety);
             this.any = new Lazy<MethodInfo>(CreateAny, safety);
             this.defaultIfEmpty = new Lazy<MethodInfo>(CreateDefaultIfEmpty, safety);
+            this.asQueryable = new Lazy<MethodInfo>(CreateAsQueryable, safety);
 
             this.distinct = new Lazy<MethodInfo>(CreateDistinct, safety);
             this.except = new Lazy<MethodInfo>(CreateExcept, safety);
@@ -171,6 +175,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public MethodInfo Any
         {
             get { return this.any.Value; }
+        }
+
+        public MethodInfo AsQueryable 
+        {
+            get { return this.asQueryable.Value; }
         }
 
         public MethodInfo DefaultIfEmpty
@@ -313,6 +322,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private static MethodInfo CreateDefaultIfEmpty()
         {
             return GetMethod(x => x.DefaultIfEmpty());
+        }
+
+        private static MethodInfo CreateAsQueryable()
+        {
+            return GetMethod(x => x.AsQueryable());
         }
 
         private static MethodInfo CreateDistinct()

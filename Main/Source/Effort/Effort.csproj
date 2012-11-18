@@ -232,13 +232,10 @@
     <Compile Include="DataLoaders\EmptyTableDataLoader.cs" />
     <Compile Include="DataLoaders\EmptyTableDataLoaderFactory.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\CanonicalFunctions.cs" />
-    <Compile Include="Internal\DbCommandTreeTransformation\Join\ParameterFinderVisitor.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Variables\VariableCollection.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Variables\VariableHandler.cs" />
-    <Compile Include="Internal\DbCommandTreeTransformation\Join\DbJoinConditionVisitor.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Variables\Variable.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\IDbMethodProvider.cs" />
-    <Compile Include="Internal\DbCommandTreeTransformation\Join\PropertyList.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\EnumerableNullableSum.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\ExcrescentInitializationCleanserVisitor.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\PostProcessing\ExcrescentSingleResultCleanserVisitor.cs" />

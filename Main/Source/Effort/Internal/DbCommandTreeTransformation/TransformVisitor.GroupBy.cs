@@ -71,16 +71,20 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     constructorArguments.Add(arg);
                 }
 
-                Expression singleResult =
+                Expression aggregationResults =
                     Expression.New(
                         resultType.GetConstructors().Single(),
                         constructorArguments.ToArray(),
                         resultType.GetProperties());
 
+                // Wrap by a SingleResult collection object
                 result =
                     Expression.New(
                         typeof(SingleResult<>).MakeGenericType(resultType).GetConstructors().Single(),
-                        singleResult);
+                        aggregationResults);
+
+                // Make it queryable
+                result = queryMethodExpressionBuilder.AsQueryable(result);
             }
             else
             {

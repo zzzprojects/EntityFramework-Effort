@@ -25,96 +25,67 @@
 namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Common.CommandTrees;
-    using System.Linq;
     using System.Linq.Expressions;
-    using System.Reflection;
-    using Effort.Internal.DbCommandTreeTransformation.Join;
+    using Effort.Internal.Common;
 
     internal partial class TransformVisitor
     {
         public override Expression Visit(DbJoinExpression expression)
         {
+            if (expression.ExpressionKind == DbExpressionKind.FullOuterJoin)
+            {
+                throw new NotSupportedException("Full outer join is not yet supported");
+            }
+
             Expression left = this.Visit(expression.Left.Expression);
             Expression right = this.Visit(expression.Right.Expression);
 
-            ParameterExpression leftParam = Expression.Parameter(left.Type.GetGenericArguments().First(), "p0");
-            ParameterExpression rightParam = Expression.Parameter(right.Type.GetGenericArguments().First(), "p1");
+            Type leftType = TypeHelper.GetElementType(left.Type);
+            Type rightType = TypeHelper.GetElementType(right.Type);
 
-            LambdaExpression firstKeySelector;
-            LambdaExpression secondKeySelector;
+            ParameterExpression leftParam =
+                Expression.Parameter(leftType, expression.Left.VariableName);
 
-            using (this.CreateVariable(leftParam, expression.Left.VariableName))
-            using (this.CreateVariable(rightParam, expression.Right.VariableName))
+            ParameterExpression rightParam = 
+                Expression.Parameter(rightType, expression.Right.VariableName);
+
+            using (this.CreateVariable(leftParam, leftParam.Name))
+            using (this.CreateVariable(rightParam, rightParam.Name))
             {
-                Expression joinCondition = this.Visit(expression.JoinCondition); //what is this used for here?
+                LambdaExpression joinCondition =
+                    Expression.Lambda(
+                        this.Visit(expression.JoinCondition),
+                        rightParam);
 
-                DbJoinConditionVisitor v = new DbJoinConditionVisitor();
+                // TODO: Try to build Join expression
 
-                v.Visit(expression.JoinCondition);
+                Expression innerExpression =
+                    this.queryMethodExpressionBuilder.Where(right, joinCondition);
 
-                var leftExpressions = v.LeftSide.Select(dbExp => this.Visit(dbExp)).ToList();
-                var rightExpressions = v.RightSide.Select(dbExp => this.Visit(dbExp)).ToList();
-
-                ParameterFinderVisitor pfv = new ParameterFinderVisitor();
-
-                foreach (var exp in leftExpressions)
+                if (expression.ExpressionKind == DbExpressionKind.LeftOuterJoin)
                 {
-                    pfv.Visit(exp);
+                    innerExpression =
+                        queryMethodExpressionBuilder.DefaultIfEmpty(innerExpression);
                 }
 
-                if (pfv.UsedParameters.Contains(rightParam))
-                {
-                    if (pfv.UsedParameters.Contains(leftParam))
-                    {
-                        throw new InvalidOperationException();
-                    }
-                    else
-                    {
-                        // THe join condition is reversed
+                // Collection expression for the SelectMany
+                LambdaExpression collectionSelector =
+                    Expression.Lambda(
+                        Expression.Convert(
+                            innerExpression,
+                            typeof(IEnumerable<>).MakeGenericType(rightType)),
+                    leftParam);
 
-                        var swap = leftExpressions;
-                        leftExpressions = rightExpressions;
-                        rightExpressions = swap;
-                    }
-                }
+                Expression result = this.CreateCrossJoin(
+                    left,
+                    collectionSelector,
+                    leftParam.Name,
+                    rightParam.Name);
 
-                Expression leftArrayInit = Expression.NewArrayInit(typeof(object),
-                    leftExpressions.Select(exp => Expression.Convert(exp, typeof(object))).ToArray());
-
-                Expression rightArrayInit = Expression.NewArrayInit(typeof(object),
-                    rightExpressions.Select(exp => Expression.Convert(exp, typeof(object))).ToArray());
-
-                ConstructorInfo propListConstructor = typeof(PropertyList).GetConstructors().First();
-
-                Expression leftNewPropertyList = Expression.New(propListConstructor, leftArrayInit);
-                Expression rightNewPropertyList = Expression.New(propListConstructor, rightArrayInit);
-
-                firstKeySelector = Expression.Lambda(leftNewPropertyList, leftParam);
-                secondKeySelector = Expression.Lambda(rightNewPropertyList, rightParam);
-
+                return result;
             }
-
-            //using (this.CreateContext(leftParam, expression.Left.VariableName))
-            //{
-            //    Expression leftSelectorBody = this.Visit((expression.JoinCondition as DbComparisonExpression).Left);
-            //    firstKeySelector = Expression.Lambda(leftSelectorBody, leftParam);
-
-            //}
-            //using (this.CreateContext(rightParam, expression.Right.VariableName))
-            //{
-            //    Expression rightSelectorBody = this.Visit((expression.JoinCondition as DbComparisonExpression).Right);
-            //    secondKeySelector = Expression.Lambda(rightSelectorBody, rightParam);
-            //}
-
-
-            Expression result = queryMethodExpressionBuilder.Join(
-                left, right,
-                expression.Left.VariableName, expression.Right.VariableName,
-                firstKeySelector, secondKeySelector,
-                expression.ExpressionKind);
-
-            return result;
         }
     }
 }

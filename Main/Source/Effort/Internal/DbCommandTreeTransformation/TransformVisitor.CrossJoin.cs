@@ -48,9 +48,20 @@ namespace Effort.Internal.DbCommandTreeTransformation
             // Always: at most 2
             for (int i = 1; i < inputExpressions.Count; i++)
             {
+                Type sourceType = TypeHelper.GetElementType(last.Type);
+                Type collectionType = TypeHelper.GetElementType(inputExpressions[i].Type);
+
+                // Create selector for the second collection
+                LambdaExpression collectionSelector =
+                    Expression.Lambda(
+                        Expression.Convert(
+                            inputExpressions[i],
+                            typeof(IEnumerable<>).MakeGenericType(collectionType)),
+                    Expression.Parameter(sourceType));
+
                 last = this.CreateCrossJoin(
-                    last, 
-                    inputExpressions[i],
+                    last,
+                    collectionSelector,
                     expression.Inputs[i - 1].VariableName,
                     expression.Inputs[i].VariableName);
             }
@@ -59,13 +70,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
         }
 
         private Expression CreateCrossJoin(
-            Expression first, 
-            Expression second, 
+            Expression first,
+            LambdaExpression collectionSelector, 
             string firstName, 
             string secondName)
         {
             Type firstType = TypeHelper.GetElementType(first.Type);
-            Type secondType = TypeHelper.GetElementType(second.Type);
+            Type secondType = TypeHelper.GetDelegateReturnType(collectionSelector.Type);
+            secondType = TypeHelper.GetElementType(secondType);
 
             Dictionary<string, Type> resultTypeProps =
                 new Dictionary<string, Type>
@@ -73,14 +85,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     { firstName, firstType },
                     { secondName, secondType }
                 };
-
-            // Create selector for the second collection
-            LambdaExpression collectionSelector =
-                Expression.Lambda(
-                    Expression.Convert(
-                        second,
-                        typeof(IEnumerable<>).MakeGenericType(secondType)),
-                Expression.Parameter(firstType));
 
             // Create result selector
             Type anonymType = AnonymousTypeFactory.Create(resultTypeProps);

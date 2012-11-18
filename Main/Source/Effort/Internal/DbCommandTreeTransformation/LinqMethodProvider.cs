@@ -39,8 +39,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Lazy<MethodInfo> select;
         private Lazy<MethodInfo> selectMany;
         private Lazy<MethodInfo> selectManyWithResultSelector;
-        private Lazy<MethodInfo> join;
-        private Lazy<MethodInfo> leftOuterJoin;
 
         private Lazy<MethodInfo> count;
         private Lazy<MethodInfo> where;
@@ -56,6 +54,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Lazy<MethodInfo> firstOrDefault;
         private Lazy<MethodInfo> first;
         private Lazy<MethodInfo> any;
+        private Lazy<MethodInfo> defaultIfEmpty;
 
         private Lazy<MethodInfo> distinct;
         private Lazy<MethodInfo> except;
@@ -73,8 +72,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.select = new Lazy<MethodInfo>(CreateSelect, safety);
             this.selectMany = new Lazy<MethodInfo>(CreateSelectMany, safety);
             this.selectManyWithResultSelector = new Lazy<MethodInfo>(CreateSelectManyWithResultSelector, safety);
-            this.join = new Lazy<MethodInfo>(CreateJoin, safety);
-            this.leftOuterJoin = new Lazy<MethodInfo>(CreateLeftOuterJoin, safety);
 
             this.count = new Lazy<MethodInfo>(CreateCount, safety);
             this.where = new Lazy<MethodInfo>(CreateWhere, safety);
@@ -90,6 +87,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.first = new Lazy<MethodInfo>(CreateFirst, safety);
             this.firstOrDefault = new Lazy<MethodInfo>(CreateFirstOrDefault, safety);
             this.any = new Lazy<MethodInfo>(CreateAny, safety);
+            this.defaultIfEmpty = new Lazy<MethodInfo>(CreateDefaultIfEmpty, safety);
 
             this.distinct = new Lazy<MethodInfo>(CreateDistinct, safety);
             this.except = new Lazy<MethodInfo>(CreateExcept, safety);
@@ -113,16 +111,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public MethodInfo SelectManyWithResultSelector
         {
             get { return this.selectManyWithResultSelector.Value; }
-        }
-
-        public MethodInfo Join
-        {
-            get { return this.join.Value; }
-        }
-
-        public MethodInfo LeftOuterJoin
-        {
-            get { return this.leftOuterJoin.Value; }
         }
 
         public MethodInfo Count
@@ -183,6 +171,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public MethodInfo Any
         {
             get { return this.any.Value; }
+        }
+
+        public MethodInfo DefaultIfEmpty
+        {
+            get { return this.defaultIfEmpty.Value; }
         }
 
         public MethodInfo Distinct
@@ -256,17 +249,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     (l, r) => new object()));
         }
 
-        private static MethodInfo CreateLeftOuterJoin()
-        {
-            return GetMethod(x => 
-                LeftOuterJoinContainer.LeftOuterJoin(
-                    x,
-                    Enumerable.Empty<object>(),
-                    l => new object(),
-                    r => new object(),
-                    (l, r) => new object()));
-        }
-
         private static MethodInfo CreateCount()
         {
             // This needs Enumerable method, because of IGrouping
@@ -328,6 +310,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return GetMethod(x => x.Any());
         }
 
+        private static MethodInfo CreateDefaultIfEmpty()
+        {
+            return GetMethod(x => x.DefaultIfEmpty());
+        }
+
         private static MethodInfo CreateDistinct()
         {
             return GetMethod(x => x.Distinct());
@@ -354,77 +341,5 @@ namespace Effort.Internal.DbCommandTreeTransformation
         }
 
         #endregion
-
-        private static class LeftOuterJoinContainer
-        {
-            public static IQueryable<TResult> LeftOuterJoin<TOuter, TInner, TKey, TResult>(
-                IQueryable<TOuter> outer,
-                IEnumerable<TInner> inner,
-                Expression<Func<TOuter, TKey>> outerKeySelector,
-                Expression<Func<TInner, TKey>> innerKeySelector,
-                Expression<Func<TOuter, TInner, TResult>> resultSelector)
-            {
-                var joined = 
-                    outer.GroupJoin(
-                        inner, 
-                        outerKeySelector, 
-                        innerKeySelector,
-                        (o, i) => new Tuple<TOuter, IEnumerable<TInner>>(o, i));
-
-                Type tupleType = joined.GetType().GetGenericArguments().First();
-
-                ReplaceVisitor rv;
-
-                ParameterExpression oldResultParam1 = resultSelector.Parameters[0];
-                ParameterExpression oldResultParam2 = resultSelector.Parameters[1];
-
-                Expression newResultSelectorBody = resultSelector.Body;
-
-                ParameterExpression anonParam = Expression.Parameter(tupleType);
-                ParameterExpression innerParam = Expression.Parameter(typeof(TInner));
-
-                Expression selector = Expression.Property(anonParam, tupleType.GetProperty("Item1"));
-
-                rv = new ReplaceVisitor(exp => exp == oldResultParam1, exp => selector);
-                newResultSelectorBody = rv.Visit(newResultSelectorBody);
-
-                rv = new ReplaceVisitor(exp => exp == oldResultParam2, exp => innerParam);
-                newResultSelectorBody = rv.Visit(newResultSelectorBody);
-
-                LambdaExpression newResultSelector = Expression.Lambda(newResultSelectorBody, anonParam, innerParam);
-
-                var result = 
-                    joined.SelectMany(
-                        o => o.Item2.DefaultIfEmpty(), 
-                        newResultSelector as Expression<Func<Tuple<TOuter, IEnumerable<TInner>>, TInner, TResult>>);
-
-                return result;
-            }
-
-            private class ReplaceVisitor : ExpressionVisitor
-            {
-                public ReplaceVisitor(Func<Expression, bool> condition, Func<Expression, Expression> newExpression)
-                {
-                    this.Condition = condition;
-                    this.NewExpression = newExpression;
-                }
-
-                public Func<Expression, bool> Condition { get; private set; }
-
-                public Func<Expression, Expression> NewExpression { get; private set; }
-
-                public override Expression Visit(Expression exp)
-                {
-                    if (this.Condition(exp))
-                    {
-                        return this.NewExpression(exp);
-                    }
-                    else
-                    {
-                        return base.Visit(exp);
-                    }
-                }
-            }
-        }
     }
 }

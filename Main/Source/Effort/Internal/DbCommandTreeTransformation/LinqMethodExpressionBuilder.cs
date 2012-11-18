@@ -182,6 +182,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return Expression.Call(method, source);
         }
 
+        public Expression DefaultIfEmpty(Expression source)
+        {
+            Type sourceType = TypeHelper.GetElementType(source.Type);
+            MethodInfo genericMethod = this.queryMethods.DefaultIfEmpty;
+
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
+
+            return Expression.Call(method, source);
+        }
+
         public Expression Except(Expression first, Expression second)
         {
             Type firstType = TypeHelper.GetElementType(first.Type);
@@ -340,73 +350,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 genericMethod.MakeGenericMethod(firstType, collectionType, resultType);
 
             return Expression.Call(
-                null,
                 method,
                 first,
                 Expression.Quote(collectionSelector),
                 Expression.Quote(resultSelector));
-        }
-
-        public Expression Join(
-            Expression left, 
-            Expression right, 
-            string name1, 
-            string name2, 
-            LambdaExpression leftKeySelector, 
-            LambdaExpression rightKeySelector, 
-            DbExpressionKind joinType)
-        {
-            Type rightType = TypeHelper.GetElementType(right.Type);
-            Type leftType = TypeHelper.GetElementType(left.Type);
-
-            Dictionary<string, Type> resultTypeProps =
-                new Dictionary<string, Type>() 
-                { 
-                    { name1, leftType },
-                    { name2, rightType }
-                };
-
-            Type anonymType = AnonymousTypeFactory.Create(resultTypeProps);
-
-            MethodInfo genericJoin = null;
-
-            switch (joinType)
-            {
-                case DbExpressionKind.InnerJoin:
-                    genericJoin = this.queryMethods.Join;
-                    break;
-                case DbExpressionKind.LeftOuterJoin:
-                    genericJoin = this.queryMethods.LeftOuterJoin;
-                    break;
-                case DbExpressionKind.FullOuterJoin:
-                    throw new NotImplementedException();
-                default:
-                    throw new InvalidOperationException();
-            }
-
-            MethodInfo joinMethod = genericJoin.MakeGenericMethod(
-                leftType,
-                rightType,
-                leftKeySelector.ReturnType,
-                anonymType);
-
-            ParameterExpression p1 = Expression.Parameter(leftType);
-            ParameterExpression p2 = Expression.Parameter(rightType);
-
-            Expression constructor = Expression.New(anonymType.GetConstructors().First(), p1, p2);
-            Expression resultSelector = Expression.Lambda(constructor, p1, p2);
-
-            Expression result = 
-                Expression.Call(
-                    null, 
-                    joinMethod, 
-                    left, 
-                    right,
-                    Expression.Quote(leftKeySelector),
-                    Expression.Quote(rightKeySelector),
-                    Expression.Quote(resultSelector));
-
-            return result;
         }
     }
 }

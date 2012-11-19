@@ -76,7 +76,7 @@ namespace Effort.Internal.TypeConversion
 
             if (type.Facets.TryGetValue("FixedLength", false, out facet))
             {
-                if (((bool?)facet.Value).HasValue)
+                if (!facet.IsUnbounded && facet.Value != null)
                 {
                     facets.FixedLength = (bool)facet.Value == true;
                 }
@@ -97,7 +97,11 @@ namespace Effort.Internal.TypeConversion
 
             if (type.Facets.TryGetValue("MaxLength", false, out facet))
             {
-                if (((int?)facet.Value).HasValue)
+                if (facet.IsUnbounded)
+                {
+                    facets.LimitedLength = false;
+                }
+                else if (facet.Value != null)
                 {
                     facets.MaxLenght = (int)facet.Value;
                     facets.LimitedLength = true;

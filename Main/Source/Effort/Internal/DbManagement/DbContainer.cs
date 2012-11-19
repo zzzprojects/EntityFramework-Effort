@@ -31,24 +31,18 @@ namespace Effort.Internal.DbManagement
     using System.Data.Metadata.Edm;
     using System.Diagnostics;
     using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using System.Threading;
     using Effort.DataLoaders;
     using Effort.Internal.Caching;
     using Effort.Internal.Common;
     using Effort.Internal.DbCommandTreeTransformation;
+    using Effort.Internal.DbManagement.Engine;
+    using Effort.Internal.DbManagement.Schema;
     using Effort.Internal.Diagnostics;
     using Effort.Internal.TypeConversion;
-    using Effort.Internal.TypeGeneration;
     using NMemory;
     using NMemory.Indexes;
     using NMemory.Modularity;
     using NMemory.StoredProcedures;
-    using NMemory.Tables;
-    using Effort.Internal.DbManagement.Schema;
-    using Effort.Internal.DbManagement.Engine;
 
     internal class DbContainer : ITableProvider
     {
@@ -66,11 +60,6 @@ namespace Effort.Internal.DbManagement
             this.logger = new Logger();
             this.transformCache = new ConcurrentDictionary<string, IStoredProcedure>();
             this.converter = new DefaultTypeConverter();
-        }
-
-        ~DbContainer()
-        {
-            Console.WriteLine("DbContainer destructor");
         }
 
         public Database Internal

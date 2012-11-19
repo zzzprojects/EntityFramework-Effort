@@ -76,8 +76,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             string secondName)
         {
             Type firstType = TypeHelper.GetElementType(first.Type);
-            Type secondType = TypeHelper.GetDelegateReturnType(collectionSelector.Type);
-            secondType = TypeHelper.GetElementType(secondType);
+            Type secondType = TypeHelper.GetElementType(collectionSelector.Body.Type);
 
             Dictionary<string, Type> resultTypeProps =
                 new Dictionary<string, Type>

@@ -36,6 +36,27 @@ namespace Effort.Internal.Common
                 return;
             }
 
+            if (left.Type.IsValueType && right.Type.IsValueType)
+            {
+                bool leftNullable = TypeHelper.IsNullable(left.Type);
+                bool rightNullable = TypeHelper.IsNullable(right.Type);
+
+                if (leftNullable || rightNullable)
+                {
+                    if (leftNullable && Nullable.GetUnderlyingType(left.Type) == right.Type)
+                    {
+                        ConvertExpression(ref left, ref right);
+                        return;
+                    }
+
+                    if (rightNullable && Nullable.GetUnderlyingType(right.Type) == left.Type)
+                    {
+                        ConvertExpression(ref right, ref left);
+                        return;
+                    }
+                }
+            }
+
             if (TypeHelper.IsCastableTo(left.Type, right.Type))
             {
                 ConvertExpression(ref right, ref left);
@@ -45,27 +66,6 @@ namespace Effort.Internal.Common
             {
                 ConvertExpression(ref left, ref right);
                 return;
-            }
-
-            if (!left.Type.IsValueType || !right.Type.IsValueType)
-            {
-                return;
-            }
-
-            bool leftNullable = TypeHelper.IsNullable(left.Type);
-            bool rightNullable = TypeHelper.IsNullable(right.Type);
-
-            if (leftNullable || rightNullable)
-            {
-                if (leftNullable && Nullable.GetUnderlyingType(left.Type) == right.Type)
-                {
-                    ConvertExpression(ref left, ref right);
-                }
-
-                if (rightNullable && Nullable.GetUnderlyingType(right.Type) == left.Type)
-                {
-                    ConvertExpression(ref right, ref left);
-                }
             }
         }
 

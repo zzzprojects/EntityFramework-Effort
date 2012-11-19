@@ -348,11 +348,9 @@ namespace Effort.Internal.DbCommandTreeTransformation
             LambdaExpression resultSelector)
         {
             Type firstType = TypeHelper.GetElementType(first.Type);
+            Type collectionType = TypeHelper.GetElementType(collectionSelector.Body.Type);
 
-            Type collectionType = TypeHelper.GetDelegateReturnType(collectionSelector.Type);
-            collectionType = TypeHelper.GetElementType(collectionType);
-
-            Type resultType = TypeHelper.GetDelegateReturnType(resultSelector.Type);
+            Type resultType = resultSelector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.SelectManyWithResultSelector;
 

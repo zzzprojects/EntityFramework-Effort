@@ -63,7 +63,9 @@ namespace Effort.Internal.Common
 
         public static bool IsNullable(Type type)
         {
-            return !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+            return 
+                !type.IsValueType || 
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
         }
 
         public static Type MakeNullable(Type type)

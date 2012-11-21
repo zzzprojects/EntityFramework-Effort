@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="IResultSetElement.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.ResultSets
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    [TestClass]
-    public class ResultSetFixture
+    public interface IResultSetElement
     {
-        [TestMethod]
-        public void SerializeResultSet()
-        {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+        object GetValue(string name);
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        bool HasValue(string name);
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
-        }
+        string[] FieldNames { get; }
     }
 }

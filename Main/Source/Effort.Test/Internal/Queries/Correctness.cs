@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="Correctness.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,54 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.Queries
 {
     using System.Collections.Generic;
     using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class Correctness : ICorrectness
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        private IResultSet expected;
+        private IResultSet actual;
+        private bool ordered;
+
+        public Correctness(IResultSet expected, IResultSet actual)
+            : this(expected, actual, false)
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        }
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+        public Correctness(IResultSet expected, IResultSet actual, bool ordered)
+        {
+            this.expected = expected;
+            this.actual = actual;
+            this.ordered = ordered;
+        }
+
+        public bool Check()
+        {
+            IEqualityComparer<IResultSet> comparer = null;
+
+            if (this.ordered)
+            {
+                comparer = new OrderedResultSetComparer();
+            }
+            else
+            {
+                comparer = new ResultSetComparer();
+            }
+
+            return comparer.Equals(this.Expected, this.Actual);
+        }
+
+        public IResultSet Expected
+        {
+            get { return this.expected; }
+        }
+
+        public IResultSet Actual
+        {
+            get { return this.actual; }
         }
     }
 }

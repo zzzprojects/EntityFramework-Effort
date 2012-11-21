@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="DataReaderInspectorFixture.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Test
 {
@@ -28,8 +28,8 @@ namespace Effort.Test
     using System.Linq;
     using Effort.DataLoaders;
     using Effort.Test.Data.Northwind;
-    using Effort.Test.Environment;
-    using Effort.Test.Environment.Fakes;
+    using Effort.Test.Internal;
+    using Effort.Test.Internal.Fakes;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

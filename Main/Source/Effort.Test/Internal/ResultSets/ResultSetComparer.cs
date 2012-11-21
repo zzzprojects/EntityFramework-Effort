@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="ResultSetComparer.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,59 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.ResultSets
 {
     using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Linq;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class ResultSetComparer : IEqualityComparer<IResultSet>
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        public bool Equals(IResultSet x, IResultSet y)
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            List<IResultSetElement> xElements = x.Elements.ToList();
+            List<IResultSetElement> yElements = y.Elements.ToList();
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+            if (xElements.Count != yElements.Count)
+            {
+                return false;
+            }
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+            for (int i = 0; i < xElements.Count; i++)
+            {
+                IResultSetElement xElement = xElements[i];
+
+                bool equals = false;
+
+                int j = 0;
+                for (; j < yElements.Count; j++)
+                {
+                    IResultSetElement yElement = yElements[j];
+
+                    if (xElement.Equals(yElement))
+                    {
+                        equals = true;
+                        break;
+                    }
+                }
+
+
+                if (!equals)
+                {
+                    return false;
+                }
+                else
+                {
+                    yElements.RemoveAt(j);
+                }
+            }
+
+            return true;
+        }
+
+
+        public int GetHashCode(IResultSet obj)
+        {
+            return 0;
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="TimestampFixture.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,56 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Features
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
+    using System.Linq;
+    using Effort.Test.Data.Feature;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class ResultSetFixture
+    public class TimestampFixture
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        private FeatureObjectContext context;
+
+        [TestInitialize]
+        public void Initialize()
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            this.context = new LocalFeatureObjectContext();
+        }
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        [TestMethod]
+        public void TimestampQuery()
+        {
+            TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+            Assert.IsNotNull(timestamp);
+            Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
+        }
+
+        [TestMethod]
+        public void TimestampInsert()
+        {
+            TimestampSupport timestamp = new TimestampSupport();
+            timestamp.Description = "New record";
+            
+            context.TimestampSupports.AddObject(timestamp);
+            context.SaveChanges();
+
+            Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
+        }
+
+        [TestMethod]
+        public void TimestampUpdate()
+        {
+            TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
+            byte[] currentValue = timestamp.Timestamp;
+
+            timestamp.Description += "(updated)";
+            
+            context.SaveChanges();
+
+            Assert.IsTrue(timestamp.Timestamp.Select((v, i) => v != currentValue[i]).Any(x => x));
+            //Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
         }
     }
 }

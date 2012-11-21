@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="DataReaderInspectorProviderFactory.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,22 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.DataReaderInspector
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Data.Common;
+    using EFProviderWrapperToolkit;
 
-    [TestClass]
-    public class ResultSetFixture
+    public class DataReaderInspectorProviderFactory : DbProviderFactoryBase
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        public static readonly DataReaderInspectorProviderFactory Instance = new DataReaderInspectorProviderFactory();
+
+        public DataReaderInspectorProviderFactory() : base(new DataReaderInspectorProviderServices())
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+        }
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
-
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+        public override DbConnection CreateConnection()
+        {
+            return new DataReaderInspectorConnection(null);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="ResultSetJsonSerializer.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,42 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.ResultSets
 {
     using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.IO;
+    using System.Linq;
+    using Newtonsoft.Json;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal static class ResultSetJsonSerializer
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        public static string Serialize(IResultSet resultSet)
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            IResultSetElement[] elements = resultSet.Elements.ToArray();
+            IDictionary<string, object>[] convertedElements = new IDictionary<string,object>[elements.Length];
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+            for (int i = 0; i < elements.Length; i++)
+            {
+                IResultSetElement element = elements[i];
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+                IDictionary<string, object> convertedElement = new Dictionary<string, object>();
+
+                foreach (string field in element.FieldNames)
+                {
+                    convertedElement.Add(field, element.GetValue(field));
+                }
+
+                convertedElements[i] = convertedElement;
+            }
+
+
+            using (TextWriter textWriter = new StringWriter())
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(textWriter, convertedElements);
+
+                return textWriter.ToString();
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="ResultSetComposerMock.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,53 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.Fakes
 {
     using System.Collections.Generic;
     using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class ResultSetComposerMock : IResultSetComposer
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        private int commitCounter;
+        private int setValueCounter;
+
+        private HashSet<string> currentItem;
+
+        public ResultSetComposerMock()
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            this.currentItem = new HashSet<string>();
+            
+            this.commitCounter = 0;
+            this.setValueCounter = 0;
+        }
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        public IResultSet ResultSet
+        {
+            get { return null; }
+        }
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+        public int CommitCount
+        {
+            get { return this.commitCounter; }
+        }
+
+        public int SetValueCount
+        {
+            get { return this.setValueCounter; }
+        }
+
+        public void SetValue<T>(string name, T value)
+        {
+            if (this.currentItem.Add(name))
+            {
+                this.setValueCounter++;
+            }
+        }
+
+        public void Commit()
+        {
+            this.commitCounter++;
+            this.currentItem.Clear();
         }
     }
 }

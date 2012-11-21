@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="DataReaderInspectorProviderConfiguration.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,37 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.DataReaderInspector
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Threading;
+    using EFProviderWrapperToolkit;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal static class DataReaderInspectorProviderConfiguration
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        public static readonly string ProviderInvariantName = "DataReaderInspectorProvider";
+
+        private static bool registered = false;
+        private static object sync = new object();
+
+        public static void RegisterProvider()
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            if (!registered)
+            {
+                lock (sync)
+                {
+                    if (!registered)
+                    {
+                        DbProviderFactoryBase.RegisterProvider(
+                            "Data Reader Inspector Provider", 
+                            ProviderInvariantName, 
+                            "Inspect DbDataReader result", 
+                            typeof(DataReaderInspectorProviderFactory));
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
-
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+                        Thread.MemoryBarrier();
+                        registered = true;
+                    }
+                }
+            }
         }
     }
 }

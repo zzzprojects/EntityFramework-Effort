@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="NorthwindQueryTester.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.Queries
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Effort.Test.Data.Northwind;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class NorthwindQueryTester : QueryTester<NorthwindObjectContext>
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        public NorthwindQueryTester() 
+            : base(NorthwindObjectContext.DefaultConnectionString, new NorthwindLocalDataLoader())
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
-
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
-
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
         }
     }
 }

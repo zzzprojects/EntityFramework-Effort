@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="ResultSetExtensions.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,22 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.Queries
 {
-    using System.Collections.Generic;
     using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal static class ResultSetExtensions
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        public static string ConvertToJsonSerialized(this IResultSet resultSet)
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            return ResultSetJsonSerializer.Serialize(resultSet);
+        }
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        public static string ConvertToJsonSerializedCSharpString(this IResultSet resultSet)
+        {
+            string result = ConvertToJsonSerialized(resultSet);
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+            return result.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
     }
 }

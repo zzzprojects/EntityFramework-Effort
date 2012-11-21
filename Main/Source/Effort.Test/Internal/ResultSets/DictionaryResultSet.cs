@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="DictionaryResultSet.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,26 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.ResultSets
 {
     using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Linq;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class DictionaryResultSet : IResultSet
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        IDictionary<string, object>[] elements;
+
+        public DictionaryResultSet(IDictionary<string, object>[] elements)
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
-
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
-
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+            this.elements = elements;
+        }
+        public IEnumerable<IResultSetElement> Elements
+        {
+            get 
+            { 
+                return this.elements
+                    .Select(x => new DictionaryResultSetElement(x)); 
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // <copyright file="TestInitialization.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
@@ -20,7 +20,7 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
 namespace Effort.Test
 {
@@ -33,7 +33,7 @@ namespace Effort.Test
         public static void Initialize(TestContext context)
         {
             Effort.Provider.EffortProviderConfiguration.RegisterProvider();
-            Effort.Test.Environment.DataReaderInspector.DataReaderInspectorProviderConfiguration.RegisterProvider();
+            Effort.Test.Internal.DataReaderInspector.DataReaderInspectorProviderConfiguration.RegisterProvider();
         }
     }
 }

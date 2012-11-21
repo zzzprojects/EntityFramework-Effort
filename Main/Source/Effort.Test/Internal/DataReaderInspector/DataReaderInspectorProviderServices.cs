@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="DataReaderInspectorProviderServices.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,31 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.DataReaderInspector
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Data.Common;
+    using System.Data.Common.CommandTrees;
+    using Effort.Provider;
+    using EFProviderWrapperToolkit;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class DataReaderInspectorProviderServices : DbProviderServicesBase
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        protected override string DefaultWrappedProviderName
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            get { return EffortProviderConfiguration.ProviderInvariantName; }
+        }
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        protected override string ProviderInvariantName
+        {
+            get { return DataReaderInspectorProviderConfiguration.ProviderInvariantName; }
+        }
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+        public override DbCommandDefinitionWrapper CreateCommandDefinitionWrapper(DbCommandDefinition wrappedCommandDefinition, DbCommandTree commandTree)
+        {
+            return new DbCommandDefinitionWrapper(
+                wrappedCommandDefinition,
+                commandTree,
+                (tree, definition) => new DataReaderInspectorCommand(tree, definition));
         }
     }
 }

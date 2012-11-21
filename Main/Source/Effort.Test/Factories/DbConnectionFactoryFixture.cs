@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="DbConnectionFactoryFixture.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,28 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Factories
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
+    using System.Data.Common;
+    using System.Linq;
+    using Effort.DataLoaders;
+    using Effort.Provider;
+    using Effort.Test.Data.Staff;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class ResultSetFixture
+    public class DbConnectionFactoryFixture
     {
         [TestMethod]
-        public void SerializeResultSet()
+        public void CsvDataProvider()
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            string path = "C:\\";
+            DbConnection connection = DbConnectionFactory.CreateTransient(new CsvDataLoader(path));
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+            EffortConnectionStringBuilder csb = new EffortConnectionStringBuilder(connection.ConnectionString);
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+            Assert.AreEqual(csb.DataLoaderType, typeof(CsvDataLoader));
+            Assert.AreEqual(csb.DataLoaderArgument, path);
         }
     }
 }

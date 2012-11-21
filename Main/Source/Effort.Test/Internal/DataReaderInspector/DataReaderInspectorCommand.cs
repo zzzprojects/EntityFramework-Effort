@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="DataReaderInspectorCommand.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,40 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.DataReaderInspector
 {
-    using System.Collections.Generic;
+    using System;
+    using System.Data;
+    using System.Data.Common;
     using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using EFProviderWrapperToolkit;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class DataReaderInspectorCommand : DbCommandWrapper
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        public DataReaderInspectorCommand(
+            DbCommand wrappedCommand,
+            DbCommandDefinitionWrapper definition)
+
+            : base(wrappedCommand, definition)
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+        }
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
+        {
+            IResultSetComposer composer = null;
+            DataReaderInspectorConnection connection = this.Connection as DataReaderInspectorConnection;
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+            if (connection != null)
+            {
+                 composer = connection.Composer;
+            }
+
+            if (composer == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return new DataReaderInspectorDataReader(base.ExecuteDbDataReader(behavior), composer);
         }
     }
 }

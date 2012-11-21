@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="DictionaryResultSetComposer.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,53 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Internal.ResultSets
 {
     using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    [TestClass]
-    public class ResultSetFixture
+    internal class DictionaryResultSetComposer : IResultSetComposer
     {
-        [TestMethod]
-        public void SerializeResultSet()
+        private IResultSet createdResultSet;
+
+        private IDictionary<string, object> current;
+        private List<IDictionary<string, object>> resultSet;
+
+        public DictionaryResultSetComposer()
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            this.createdResultSet = null;
+            this.current = new Dictionary<string, object>();
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+            this.resultSet = new List<IDictionary<string, object>>();
+        }
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+        public IResultSet ResultSet
+        {
+            get 
+            {
+                if (this.createdResultSet == null)
+                {
+                    this.CreateResultSet();
+                }
+
+                return this.createdResultSet;
+            }
+        }
+
+        public void SetValue<T>(string name, T value)
+        {
+            this.current[name] = value;
+        }
+
+        public void Commit()
+        {
+            this.resultSet.Add(this.current);
+
+            this.current = new Dictionary<string, object>();
+        }
+
+        private void CreateResultSet() 
+        {
+            this.createdResultSet = new DictionaryResultSet(this.resultSet.ToArray());
         }
     }
 }

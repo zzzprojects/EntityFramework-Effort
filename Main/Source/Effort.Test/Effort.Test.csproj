@@ -96,59 +96,59 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AggregationFixture.cs" />
-    <Compile Include="BinaryFixture.cs" />
-    <Compile Include="CanonicalFunctionsFixture.cs" />
-    <Compile Include="ConstraintFixture.cs" />
+    <Compile Include="Features\AggregationFixture.cs" />
+    <Compile Include="Features\BinaryFixture.cs" />
+    <Compile Include="Features\CanonicalFunctionsFixture.cs" />
+    <Compile Include="Features\ConstraintFixture.cs" />
     <Compile Include="Csv\CsvReaderFixture.cs" />
     <Compile Include="Csv\FieldValueFixture.cs" />
     <Compile Include="DataReaderInspectorFixture.cs" />
-    <Compile Include="DbConnectionFactoryFixture.cs" />
+    <Compile Include="Factories\DbConnectionFactoryFixture.cs" />
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
-    <Compile Include="EntityConnectionFactoryFixture.cs" />
-    <Compile Include="Environment\Fakes\ResultSetComposerMock.cs" />
-    <Compile Include="Environment\Queries\Correctness.cs" />
-    <Compile Include="Environment\Queries\ICorrectness.cs" />
-    <Compile Include="Environment\Queries\IQueryTester`1.cs" />
-    <Compile Include="Environment\Queries\NorthwindQueryTester.cs" />
-    <Compile Include="Environment\Queries\ResultSetExtensions.cs" />
-    <Compile Include="IncludeFixture.cs" />
-    <Compile Include="ComplexQueryFixture.cs" />
-    <Compile Include="JoinFixture.cs" />
-    <Compile Include="ManipulationFixture.cs" />
+    <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Internal\Fakes\ResultSetComposerMock.cs" />
+    <Compile Include="Internal\Queries\Correctness.cs" />
+    <Compile Include="Internal\Queries\ICorrectness.cs" />
+    <Compile Include="Internal\Queries\IQueryTester`1.cs" />
+    <Compile Include="Internal\Queries\NorthwindQueryTester.cs" />
+    <Compile Include="Internal\Queries\ResultSetExtensions.cs" />
+    <Compile Include="Features\IncludeFixture.cs" />
+    <Compile Include="Features\ComplexQueryFixture.cs" />
+    <Compile Include="Features\JoinFixture.cs" />
+    <Compile Include="Features\ManipulationFixture.cs" />
     <Compile Include="StorageSchemaModifierFixture.cs" />
-    <Compile Include="AssociationFixture.cs" />
-    <Compile Include="ObjectContextFactoryFixture.cs" />
+    <Compile Include="Features\AssociationFixture.cs" />
+    <Compile Include="Factories\ObjectContextFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BasicFixture.cs" />
+    <Compile Include="Features\BasicFixture.cs" />
     <Compile Include="ResultSetFixture.cs" />
     <Compile Include="TestInitialization.cs" />
-    <Compile Include="TimestampFixture.cs" />
-    <Compile Include="Environment\ResultSets\OrderedResultSetComparer.cs" />
-    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorCommand.cs">
+    <Compile Include="Features\TimestampFixture.cs" />
+    <Compile Include="Internal\ResultSets\OrderedResultSetComparer.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorCommand.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorConnection.cs">
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorConnection.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorDataReader.cs" />
-    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorProviderConfiguration.cs" />
-    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorProviderFactory.cs" />
-    <Compile Include="Environment\DataReaderInspector\DataReaderInspectorProviderServices.cs" />
-    <Compile Include="Environment\EntityConnectionHelper.cs" />
-    <Compile Include="Environment\ResultSets\DictionaryResultSet.cs" />
-    <Compile Include="Environment\ResultSets\DictionaryResultSetComposer.cs" />
-    <Compile Include="Environment\ResultSets\DictionaryResultSetElement.cs" />
-    <Compile Include="Environment\ResultSets\IResultSet.cs" />
-    <Compile Include="Environment\ResultSets\IResultSetComposer.cs" />
-    <Compile Include="Environment\ResultSets\IResultSetElement.cs" />
-    <Compile Include="Environment\ResultSets\JsonResultSet.cs" />
-    <Compile Include="Environment\Queries\QueryTester`1.cs" />
-    <Compile Include="Environment\ResultSets\ResultSetComparer.cs" />
-    <Compile Include="Environment\ResultSets\ResultSetJsonSerializer.cs" />
-    <Compile Include="TransactionFixture.cs" />
-    <Compile Include="ExpressionFixture.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorDataReader.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorProviderConfiguration.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorProviderFactory.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorProviderServices.cs" />
+    <Compile Include="Internal\EntityConnectionHelper.cs" />
+    <Compile Include="Internal\ResultSets\DictionaryResultSet.cs" />
+    <Compile Include="Internal\ResultSets\DictionaryResultSetComposer.cs" />
+    <Compile Include="Internal\ResultSets\DictionaryResultSetElement.cs" />
+    <Compile Include="Internal\ResultSets\IResultSet.cs" />
+    <Compile Include="Internal\ResultSets\IResultSetComposer.cs" />
+    <Compile Include="Internal\ResultSets\IResultSetElement.cs" />
+    <Compile Include="Internal\ResultSets\JsonResultSet.cs" />
+    <Compile Include="Internal\Queries\QueryTester`1.cs" />
+    <Compile Include="Internal\ResultSets\ResultSetComparer.cs" />
+    <Compile Include="Internal\ResultSets\ResultSetJsonSerializer.cs" />
+    <Compile Include="Features\TransactionFixture.cs" />
+    <Compile Include="Features\ExpressionFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -171,16 +171,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Environment\Resources\StorageSchemas\SSDLv3.xml">
+    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv3.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Environment\Resources\StorageSchemas\SSDLv2.xml">
+    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv2.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Environment\Resources\StorageSchemas\SSDLv1.xml">
+    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv1.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ResultSetFixture.cs" company="Effort Team">
+// <copyright file="EntityConnectionFactoryFixture.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,41 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Factories
 {
-    using System.Collections.Generic;
-    using Effort.Test.Internal.ResultSets;
+    using System.Data.EntityClient;
+    using System.Data.Objects;
+    using System.Linq;
+    using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class ResultSetFixture
+    public class EntityConnectionFactoryFixture
     {
         [TestMethod]
-        public void SerializeResultSet()
+        public void EntityConnectionFactory_CreateTransientEntityConnection()
         {
-            IResultSet resultSet =
-                new DictionaryResultSet(
-                    new[] {
-                        new Dictionary<string, object> {
-                            { "a", 1 },
-                            { "b", true },
-                            { "c", null }
-                        },
-                        new Dictionary<string, object> {
-                            { "a", 2 },
-                            { "b", true },
-                            { "c", "string" }
-                        }
-                    });
+            EntityConnection connection = EntityConnectionFactory.CreateTransient(NorthwindObjectContext.DefaultConnectionString);
+        }
 
-            string serialized = ResultSetJsonSerializer.Serialize(resultSet);
+        [TestMethod]
+        public void EntityConnectionFactory_CreateTransientEntityConnection_InitializesDataSchema()
+        {
+            EntityConnection connection = EntityConnectionFactory.CreateTransient(NorthwindObjectContext.DefaultConnectionString);
 
-            Assert.AreEqual("[{\"a\":1,\"b\":true,\"c\":null},{\"a\":2,\"b\":true,\"c\":\"string\"}]", serialized);    
+            using (ObjectContext context = new ObjectContext(connection))
+            {
+                Assert.IsTrue(context.DatabaseExists());
+                Assert.AreEqual(0, context.CreateObjectSet<Product>().Count(), "Zero rows in the fake table");
+            }
+        }
+
+        [TestMethod]
+        public void EntityConnectionFactory_CreatePersistentEntityConnection()
+        {
+            //// TODO: Use unique connection string
+
+            EntityConnection connection = EntityConnectionFactory.CreatePersistent(NorthwindObjectContext.DefaultConnectionString);
         }
     }
 }

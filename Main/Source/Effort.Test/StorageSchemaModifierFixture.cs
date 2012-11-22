@@ -35,6 +35,7 @@ namespace Effort.Test
     using Effort.Internal.StorageSchema;
     using Effort.Provider;
     using Effort.Test.Data.Northwind;
+    using Effort.Test.Internal;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -53,7 +54,7 @@ namespace Effort.Test
         [TestMethod]
         public void RewriteSsdlV1()
         {
-            XElement ssdl = LoadXml("Effort.Test.Environment.Resources.StorageSchemas.SSDLv1.xml");
+            XElement ssdl = LoadXml(1);
 
             UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
 
@@ -63,7 +64,7 @@ namespace Effort.Test
         [TestMethod]
         public void RewriteSsdlV2()
         {
-            XElement ssdl = LoadXml("Effort.Test.Environment.Resources.StorageSchemas.SSDLv2.xml");
+            XElement ssdl = LoadXml(2);
 
             UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
 
@@ -71,20 +72,69 @@ namespace Effort.Test
         }
 
         [TestMethod]
-        [Ignore]
         public void RewriteSsdlV3()
         {
-            XElement ssdl = LoadXml("Effort.Test.Environment.Resources.StorageSchemas.SSDLv3.xml");
+            // SSDL v3 requires .NET45
+            if (!PlatformDetector.IsNet45OrNewer)
+            {
+                return;
+            }
+
+            XElement ssdl = LoadXml(3);
 
             UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
 
-            // FAILS: Requires .NET 4.5
             ValidateSsdl(ssdl); 
+        }
+
+
+        private static XElement LoadXml(int version)
+        {
+            XElement result = null;
+
+            result = LoadXml(GetResourceName(version, true));
+
+            if (result != null)
+            {
+                return result;
+            }
+
+            result = LoadXml(GetResourceName(version, false));
+
+            return result;
+        }
+
+        private static string GetResourceName(int version, bool includeFramework)
+        {
+            string framework = string.Empty;
+
+            if (includeFramework)
+            {
+                if (PlatformDetector.IsNet45OrNewer)
+                {
+                    framework = ".net45";
+                }
+                else
+                {
+                    framework = ".net40";
+                }
+            }
+
+            return string.Format(
+                "Effort.Test.Internal.Resources.StorageSchemas.SSDLv{0}{1}.xml",
+                version,
+                framework);
         }
 
         private static XElement LoadXml(string resourceName)
         {
             Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+
+            if (stream == null)
+            {
+                return null;
+            }
+
             return XDocument.Load(stream).Root;
         }
 

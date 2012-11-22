@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EmptyDataLoader.cs" company="Effort Team">
+// <copyright file="CachingTableDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,32 +24,21 @@
 
 namespace Effort.DataLoaders
 {
-    /// <summary>
-    /// Represents a data loader that retrieves no data.
-    /// </summary>
-    public sealed class EmptyDataLoader : IDataLoader
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public class CachingTableDataLoader : ITableDataLoader
     {
-        /// <summary>
-        /// Gets or sets the argument that does not effect anything.
-        /// </summary>
-        /// <value>
-        /// The argument.
-        /// </value>
-        string IDataLoader.Argument
+        private object[][] data;
+
+        public CachingTableDataLoader(ITableDataLoader wrappedTableDataLoader)
         {
-            get;
-            set;
+            this.data = wrappedTableDataLoader.GetData().ToArray();
         }
 
-        /// <summary>
-        /// Creates a <see cref="EmptyTableDataLoaderFactory" /> instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="EmptyTableDataLoaderFactory" /> instance.
-        /// </returns>
-        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+        public IEnumerable<object[]> GetData()
         {
-            return new EmptyTableDataLoaderFactory();
+            return this.data;
         }
     }
 }

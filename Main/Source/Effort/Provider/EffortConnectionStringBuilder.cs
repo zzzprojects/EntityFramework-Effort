@@ -37,7 +37,6 @@ namespace Effort.Provider
         private static readonly string InstanceIdKey = "InstanceId";
         private static readonly string DataLoaderTypeKey = "DataLoaderType";
         private static readonly string DataLoaderArgKey = "DataLoaderArg";
-        private static readonly string DataLoaderCachedKey = "DataLoaderCached";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
@@ -154,32 +153,6 @@ namespace Effort.Provider
             set
             {
                 this[DataLoaderArgKey] = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the data retrieved by the data loader 
-        /// should be cached.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if the records loaded by the loader should be cached; otherwise, 
-        ///   <c>false</c>.
-        /// </value>
-        public bool DataLoaderCached
-        {
-            get
-            {
-                if (!this.ContainsKey(DataLoaderCachedKey))
-                {
-                    return false;
-                }
-
-                return bool.Parse(this[DataLoaderCachedKey] as string);
-            }
-
-            set
-            {
-                this[DataLoaderCachedKey] = value.ToString();
             }
         }
     }

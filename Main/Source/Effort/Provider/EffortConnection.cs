@@ -276,7 +276,6 @@ namespace Effort.Provider
                 parameters.DataLoader = dataLoader;
             }
 
-            parameters.IsDataLoaderCached = connectionString.DataLoaderCached;
             parameters.IsTransient = this.isPrimaryTransient;
 
             return new DbContainer(parameters);

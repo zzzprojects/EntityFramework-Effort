@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TableInitialDataStore.cs" company="Effort Team">
+// <copyright file="CachingTableDataLoaderStore.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,54 +22,58 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.Caching
+namespace Effort.DataLoaders
 {
     using System;
-    using Effort.DataLoaders;
-    using Effort.Internal.DbManagement;
+    using Effort.Internal.Caching;
 
     /// <summary>
-    /// Represents a cache that stores <see cref="TableInitialData"/> objects.
+    /// Represents a cache that stores <see cref="CachedDataLoaderData"/> objects.
     /// </summary>
-    internal static class TableInitialDataStore
+    internal static class CachingTableDataLoaderStore
     {
         /// <summary>
         /// Internal collection.
         /// </summary>
-        private static ConcurrentCache<TableInitialDataKey, DbTableInitialData> store;
+        private static ConcurrentCache<
+            CachingTableDataLoaderKey, 
+            CachingTableDataLoader> store;
 
         /// <summary>
-        /// Initializes static members of the the <see cref="TableInitialDataStore" /> class.
+        /// Initializes static members of the the <see cref="CachingTableDataLoaderStore" /> 
+        /// class.
         /// </summary>
-        static TableInitialDataStore()
+        static CachingTableDataLoaderStore()
         {
-            store = new ConcurrentCache<TableInitialDataKey, DbTableInitialData>();
+            store = new ConcurrentCache<
+                CachingTableDataLoaderKey,
+                CachingTableDataLoader>();
         }
 
         /// <summary>
-        /// Returns a <see cref="DbTableInitialData"/> object that satisfies the specified 
+        /// Returns a <see cref="CachedDataLoaderData"/> object that satisfies the specified 
         /// arguments. If no such element exists the provided factory method is used to create 
         /// one.
         /// </summary>
         /// <param name="loader">
         /// The data loader that fetches the data.
         /// </param>
-        /// <param name="entityType">
-        /// Type of the entities.
+        /// <param name="tableName">
+        /// Name of the table.
         /// </param>
-        /// <param name="tableInitialDataFactoryMethod">
-        /// The factory method that instatiates the desired DbTableInitialData object.
+        /// <param name="factoryMethod">
+        /// The factory method that instatiates the desired CachedDataLoaderTableData object.
         /// </param>
         /// <returns></returns>
-        public static DbTableInitialData GetDbInitialData(
-            IDataLoader loader, 
-            Type entityType, 
-            Func<DbTableInitialData> tableInitialDataFactoryMethod)
+        public static CachingTableDataLoader GetCachedData(
+            IDataLoader loader,
+            string tableName,
+            Func<CachingTableDataLoader> factoryMethod)
         {
-            TableInitialDataKey key =
-                new TableInitialDataKey(loader.GetType(), loader.Argument, entityType);
+            CachingTableDataLoaderKey key =
+                new CachingTableDataLoaderKey(loader.GetType(), loader.Argument, tableName);
 
-            return store.Get(key, tableInitialDataFactoryMethod);
+            return store.Get(key, factoryMethod);
         }
     }
 }

@@ -28,8 +28,6 @@ namespace Effort.Internal.DbManagement
 
     internal class DbContainerParameters
     {
-        public bool IsDataLoaderCached { get; set; }
-
         public IDataLoader DataLoader { get; set; }
 
         public bool IsTransient { get; set; }

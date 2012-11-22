@@ -62,16 +62,5 @@ namespace Effort.Test
 
             Assert.AreEqual(typeof(Effort.DataLoaders.EmptyDataLoader), reader.DataLoaderType);
         }
-
-        [TestMethod]
-        public void EffortConnectionStringBuilder_DataLoaderCached()
-        {
-            EffortConnectionStringBuilder writer = new EffortConnectionStringBuilder();
-            writer.DataLoaderCached = true;
-
-            EffortConnectionStringBuilder reader = new EffortConnectionStringBuilder(writer.ConnectionString);
-
-            Assert.AreEqual(true, reader.DataLoaderCached);
-        }
     }
 }

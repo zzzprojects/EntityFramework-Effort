@@ -27,9 +27,13 @@ namespace Effort.Internal.DbManagement.Schema
     using System;
     using System.Reflection;
     using NMemory.Indexes;
+    using System.Linq.Expressions;
+    using Effort.Internal.Common;
 
     internal class DbTableInformation
     {
+        private Lazy<Delegate> initializer;
+
         public DbTableInformation(
             string tableName, 
             Type entityType, 
@@ -46,6 +50,8 @@ namespace Effort.Internal.DbManagement.Schema
             this.Properties = properties;
             this.Constraints = constraints;
             this.PrimaryKeyInfo = primaryKeyInfo;
+
+            this.initializer = new Lazy<Delegate>(CreateEntityInitializer, true);
         }
 
         public string TableName { get; set; }
@@ -62,5 +68,19 @@ namespace Effort.Internal.DbManagement.Schema
         public object[] Constraints { get; private set; }
 
         public IKeyInfo PrimaryKeyInfo { get; private set; }
+
+        public Delegate EntityInitializer
+        {
+            get { return this.initializer.Value; }
+
+        }
+
+        private Delegate CreateEntityInitializer()
+        {
+            LambdaExpression initializerExpression =
+                LambdaExpressionHelper.CreateInitializerExpression(EntityType, Properties);
+
+            return initializerExpression.Compile();
+        }
     }
 }

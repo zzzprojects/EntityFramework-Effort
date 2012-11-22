@@ -34,7 +34,10 @@ namespace Effort.Internal.Common.XmlProcessing
         private IAttributeModifier attributeModifier;
         private IElementModifier elementModifier;
 
-        public ComposedElementModifier(IElementSelector elementSelector, IElementAttributeSelector attributeSelector, IAttributeModifier attributeModifier)
+        public ComposedElementModifier(
+            IElementSelector elementSelector, 
+            IElementAttributeSelector attributeSelector, 
+            IAttributeModifier attributeModifier)
         {
             if (elementSelector == null)
             {
@@ -56,7 +59,9 @@ namespace Effort.Internal.Common.XmlProcessing
             this.attributeModifier = attributeModifier;
         }
 
-        public ComposedElementModifier(IElementSelector elementSelector, IElementModifier elementModifier)
+        public ComposedElementModifier(
+            IElementSelector elementSelector, 
+            IElementModifier elementModifier)
         {
             if (elementSelector == null)
             {

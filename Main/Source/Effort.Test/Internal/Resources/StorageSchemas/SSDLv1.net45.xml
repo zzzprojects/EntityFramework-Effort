@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--
- <copyright file="SSDLv2.xml" company="Effort Team">
+ <copyright file="SSDLv1.net45.xml" company="Effort Team">
      Copyright (C) 2012 Effort Team
 
      Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,10 +22,10 @@
      THE SOFTWARE.
  </copyright>
 -->
-<Schema xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl"
-        Namespace="SSDLV2" Provider="System.Data.SqlClient" ProviderManifestToken="2008">
+<Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm/ssdl"
+        Namespace="SSDLV1" Provider="System.Data.SqlClient" ProviderManifestToken="2008">
   <EntityContainer Name="Container">
-    <EntitySet Name="EntitySet" EntityType="SSDLV2.EntityType1" />
+    <EntitySet Name="EntitySet1" EntityType="SSDLV1.EntityType1" />
   </EntityContainer>
   
   <EntityType Name="EntityType1">
@@ -42,14 +42,7 @@
   
   <Function Name="Function1" ReturnType="nvarchar">
     <Parameter Name="Param1" Type="nvarchar" />
-    <Parameter Name="Param2" Type="nchar" />
-    <Parameter Name="Param3" Type="Collection(int)" />
-  </Function>
-  
-  <Function Name="Function2" ReturnType="Collection(nvarchar)">
-    <Parameter Name="Param1" Type="nvarchar" />
     <Parameter Name="Param2" Type="image" />
-    <Parameter Name="Param3" Type="Collection(int)" />
   </Function>
   
 </Schema>

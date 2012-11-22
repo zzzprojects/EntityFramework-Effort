@@ -32,6 +32,8 @@ namespace Effort.DataLoaders
     /// </summary>
     public class EntityDataLoader : IDataLoader
     {
+        private string entityConnectionString;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityDataLoader" /> class.
         /// </summary>
@@ -45,7 +47,7 @@ namespace Effort.DataLoaders
         /// <param name="entityConnectionString">The entity connection string.</param>
         public EntityDataLoader(string entityConnectionString)
         {
-            this.Argument = entityConnectionString;
+            this.entityConnectionString = entityConnectionString;
         }
 
         /// <summary>
@@ -55,10 +57,17 @@ namespace Effort.DataLoaders
         /// <value>
         /// The argument.
         /// </value>
-        public string Argument
+        string IDataLoader.Argument
         {
-            get;
-            set;
+            get
+            {
+                return this.entityConnectionString;
+            }
+
+            set
+            {
+                this.entityConnectionString = value;
+            }
         }
 
         /// <summary>
@@ -70,7 +79,7 @@ namespace Effort.DataLoaders
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
             return new EntityTableDataLoaderFactory(
-                () => new EntityConnection(this.Argument));
+                () => new EntityConnection(this.entityConnectionString));
         }
     }
 }

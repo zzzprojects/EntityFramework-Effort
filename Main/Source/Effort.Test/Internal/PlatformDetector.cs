@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EmptyDataLoader.cs" company="Effort Team">
+// <copyright file="PlatformDetector.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,34 +22,18 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.DataLoaders
+namespace Effort.Test.Internal
 {
-    /// <summary>
-    /// Represents a data loader that retrieves no data.
-    /// </summary>
-    public sealed class EmptyDataLoader : IDataLoader
-    {
-        /// <summary>
-        /// Gets or sets the argument that does not effect anything.
-        /// </summary>
-        /// <value>
-        /// The argument.
-        /// </value>
-        string IDataLoader.Argument
-        {
-            get;
-            set;
-        }
+    using System;
 
-        /// <summary>
-        /// Creates a <see cref="EmptyTableDataLoaderFactory" /> instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="EmptyTableDataLoaderFactory" /> instance.
-        /// </returns>
-        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+    internal static class PlatformDetector
+    {
+        public static bool IsNet45OrNewer
         {
-            return new EmptyTableDataLoaderFactory();
+            get
+            {
+                return Type.GetType("System.Reflection.ReflectionContext", false) != null;
+            }
         }
     }
 }

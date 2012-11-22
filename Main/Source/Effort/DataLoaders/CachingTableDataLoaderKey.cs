@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TableInitialDataKey.cs" company="Effort Team">
+// <copyright file="CachingTableDataLoaderKey.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.Caching
+namespace Effort.DataLoaders
 {
     using System;
 
     /// <summary>
     /// Represents a key the identifies data that was loaded by a data loader component.
     /// </summary>
-    internal class TableInitialDataKey : IEquatable<TableInitialDataKey>
+    internal class CachingTableDataLoaderKey : IEquatable<CachingTableDataLoaderKey>
     {
         /// <summary>
         /// The type of the data loader.
@@ -42,12 +42,12 @@ namespace Effort.Internal.Caching
         private string loaderArg;
 
         /// <summary>
-        /// The type of the entity that is manifested with the loaded data.
+        /// The name of the table.
         /// </summary>
-        private Type entityType;
+        private string tableName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TableInitialDataKey" /> class.
+        /// Initializes a new instance of the <see cref="CachingTableDataLoaderKey" /> class.
         /// </summary>
         /// <param name="loaderType">
         /// The type of the data loader.
@@ -55,36 +55,39 @@ namespace Effort.Internal.Caching
         /// <param name="loaderArg">
         /// The argument that represent the state of the data loader.
         /// </param>
-        /// <param name="entityType">
-        /// The type of the entity that is manifested with the loaded data.
+        /// <param name="tableName">
+        /// The name of the table.
         /// </param>
-        public TableInitialDataKey(Type loaderType, string loaderArg, Type entityType)
+        public CachingTableDataLoaderKey(Type loaderType, string loaderArg, string tableName)
         {
             this.loaderType = loaderType;
             this.loaderArg = loaderArg ?? string.Empty;
-            this.entityType = entityType;
+            this.tableName = tableName ?? string.Empty;
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="TableInitialDataKey" /> is equal to 
+        /// Determines whether the specified <see cref="CachingTableDataLoaderKey" /> is equal to 
         /// this instance.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="TableInitialDataKey" /> to compare with this instance.
+        /// The <see cref="CachingTableDataLoaderKey" /> to compare with this instance.
         /// </param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="TableInitialDataKey" /> is equal to this 
+        ///   <c>true</c> if the specified <see cref="CachingTableDataLoaderKey" /> is equal to this 
         ///   instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(TableInitialDataKey other)
+        public bool Equals(CachingTableDataLoaderKey other)
         {
             return
                 this.loaderType.Equals(other.loaderType) &&
                 string.Equals(
-                    this.loaderArg, 
-                    other.loaderArg, 
+                    this.loaderArg,
+                    other.loaderArg,
                     StringComparison.InvariantCultureIgnoreCase) &&
-                this.entityType.Equals(other.entityType);
+                string.Equals(
+                    this.tableName,
+                    other.tableName,
+                    StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -100,7 +103,7 @@ namespace Effort.Internal.Caching
         /// </returns>
         public override bool Equals(object obj)
         {
-            TableInitialDataKey other = obj as TableInitialDataKey;
+            CachingTableDataLoaderKey other = obj as CachingTableDataLoaderKey;
 
             if (other == null)
             {
@@ -119,10 +122,10 @@ namespace Effort.Internal.Caching
         /// </returns>
         public override int GetHashCode()
         {
-            return 
-                this.loaderType.GetHashCode() % 
-                this.loaderArg.GetHashCode() % 
-                this.entityType.GetHashCode();
+            return
+                this.loaderType.GetHashCode() %
+                this.loaderArg.GetHashCode() %
+                this.tableName.GetHashCode();
         }
     }
 }

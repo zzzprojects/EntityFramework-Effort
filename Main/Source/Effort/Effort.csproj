@@ -23,25 +23,6 @@
     <SccProvider>
     </SccProvider>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
@@ -77,36 +58,6 @@
     <CodeAnalysisRuleDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'No Opt|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\No Opt\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Debug\MMDB.EntityFrameworkProvider.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'No Opt|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\No Opt\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Debug\MMDB.EntityFrameworkProvider.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;B:\Programs\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -121,6 +72,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLoaders\CachingDataLoader.cs" />
+    <Compile Include="DataLoaders\CachingTableDataLoader.cs" />
+    <Compile Include="DataLoaders\CachingTableDataLoaderFactory.cs" />
     <Compile Include="DataLoaders\ColumnDescription.cs" />
     <Compile Include="DataLoaders\CsvDataLoader.cs" />
     <Compile Include="DataLoaders\EmptyDataLoader.cs" />
@@ -136,8 +90,8 @@
     <Compile Include="Internal\Caching\ObjectContextTypeKey.cs" />
     <Compile Include="Internal\Caching\ObjectContextTypeStore.cs" />
     <Compile Include="Internal\Caching\DbSchemaKey.cs" />
-    <Compile Include="Internal\Caching\TableInitialDataKey.cs" />
-    <Compile Include="Internal\Caching\TableInitialDataStore.cs" />
+    <Compile Include="DataLoaders\CachingTableDataLoaderKey.cs" />
+    <Compile Include="DataLoaders\CachingTableDataLoaderStore.cs" />
     <Compile Include="Internal\Caching\DbSchemaStore.cs" />
     <Compile Include="Internal\CommandActions\CommandActionFactory.cs" />
     <Compile Include="Internal\Common\EdmHelper.cs" />
@@ -219,7 +173,6 @@
     <Compile Include="Internal\DbManagement\Engine\ExtendedQueryCompiler.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbRelationInformation.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchemaFactory.cs" />
-    <Compile Include="Internal\DbManagement\DbTableInitialData.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchema.cs" />
     <Compile Include="Internal\DbManagement\DbContainer.cs" />
     <Compile Include="Internal\DbManagement\DbMethodProvider.cs" />

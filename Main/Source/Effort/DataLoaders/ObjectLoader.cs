@@ -29,12 +29,13 @@ namespace Effort.DataLoaders
     using System.Linq.Expressions;
     using System.Reflection;
     using Effort.Internal.Common;
+    using Effort.Internal.DbManagement.Schema;
 
     internal static class ObjectLoader
     {
         public static IEnumerable<object> Load(
             ITableDataLoaderFactory loaderFactory, 
-            string tableName, 
+            DbTableInformation table, 
             Type entityType)
         {
             List<ColumnDescription> columns = new List<ColumnDescription>();
@@ -54,15 +55,10 @@ namespace Effort.DataLoaders
                 columns.Add(new ColumnDescription(property.Name, property.PropertyType));
             }
 
-            TableDescription tableDescription = new TableDescription(tableName, columns);
+            TableDescription tableDescription = 
+                new TableDescription(table.TableName, columns);
 
-            ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
-
-            LambdaExpression initializerExpression =
-                LambdaExpressionHelper.CreateInitializerExpression(entityType, properties);
-           
-            Delegate initializer = initializerExpression.Compile();
-          
+            ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);       
 
             foreach (object[] data in loader.GetData())
             {
@@ -79,7 +75,7 @@ namespace Effort.DataLoaders
                     }
                 }
 
-                object entity = initializer.DynamicInvoke(data);
+                object entity = table.EntityInitializer.DynamicInvoke(data);
 
                 yield return entity;
             }

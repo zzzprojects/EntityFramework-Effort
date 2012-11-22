@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--
- <copyright file="SSDLv3.xml" company="Effort Team">
+ <copyright file="SSDLv2.net40.xml" company="Effort Team">
      Copyright (C) 2012 Effort Team
 
      Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,10 +22,10 @@
      THE SOFTWARE.
  </copyright>
 -->
-<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl"
-        Namespace="SSDLV3" Provider="System.Data.SqlClient" ProviderManifestToken="2008">
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl"
+        Namespace="SSDLV2" Provider="System.Data.SqlClient" ProviderManifestToken="2008">
   <EntityContainer Name="Container">
-    <EntitySet Name="EntitySet" EntityType="SSDLV3.EntityType1" />
+    <EntitySet Name="EntitySet" EntityType="SSDLV2.EntityType1" />
   </EntityContainer>
   
   <EntityType Name="EntityType1">
@@ -40,22 +40,16 @@
     <Property Name="Property5" Type="char" />
   </EntityType>
   
-  <Function Name="Function1">
+  <Function Name="Function1" ReturnType="nvarchar">
     <Parameter Name="Param1" Type="nvarchar" />
-    <Parameter Name="Param2" Type="image" />
-    <ReturnType>
-      <CollectionType>
-        <RowType>
-          <Property Name="ReturnTypeProperty1" Type="int" />
-          <Property Name="ReturnTypeProperty2" Type="bigint" />
-        </RowType>
-      </CollectionType>
-    </ReturnType>
+    <Parameter Name="Param2" Type="nchar" />
+    <Parameter Name="Param3" Type="Collection(int)" />
   </Function>
   
-  <Function Name="Function2" ReturnType="nvarchar">
+  <Function Name="Function2" ReturnType="Collection(nvarchar)">
     <Parameter Name="Param1" Type="nvarchar" />
     <Parameter Name="Param2" Type="image" />
+    <Parameter Name="Param3" Type="Collection(int)" />
   </Function>
   
 </Schema>

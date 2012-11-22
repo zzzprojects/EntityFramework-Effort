@@ -182,11 +182,6 @@ namespace Effort.Internal.DbManagement
             }
         }
 
-        private IEnumerable<object> CreateInitialData(ITableDataLoaderFactory loaderFactory, DbTableInformation tableInfo)
-        {
-            return ObjectLoader.Load(loaderFactory, tableInfo.TableName, tableInfo.EntityType);
-        }
-
         private ITableDataLoaderFactory CreateDataLoaderFactory()
         {
             if (this.parameters.DataLoader == null)
@@ -197,22 +192,11 @@ namespace Effort.Internal.DbManagement
             return this.parameters.DataLoader.CreateTableDataLoaderFactory();
         }
 
-        private IEnumerable<object> GetInitialData(ITableDataLoaderFactory loaderFactory, DbTableInformation tableInfo)
+        private IEnumerable<object> GetInitialData(
+            ITableDataLoaderFactory loaderFactory,
+            DbTableInformation tableInfo)
         {
-            if (this.parameters.DataLoader != null && !this.parameters.IsDataLoaderCached)
-            {
-                DbTableInitialData initialData =
-                    TableInitialDataStore.GetDbInitialData(
-                        this.parameters.DataLoader,
-                        tableInfo.EntityType,
-                        () => new DbTableInitialData(this.CreateInitialData(loaderFactory, tableInfo)));
-
-                return initialData.GetClonedInitialData();
-            }
-            else
-            {
-                return this.CreateInitialData(loaderFactory, tableInfo);
-            }
+            return ObjectLoader.Load(loaderFactory, tableInfo, tableInfo.EntityType);
         }
     }
 }

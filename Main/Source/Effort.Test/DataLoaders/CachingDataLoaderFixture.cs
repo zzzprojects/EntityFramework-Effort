@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EmptyDataLoader.cs" company="Effort Team">
+// <copyright file="CachingDataLoaderFixture.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,34 +22,40 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.DataLoaders
+namespace Effort.Test.DataLoaders
 {
-    /// <summary>
-    /// Represents a data loader that retrieves no data.
-    /// </summary>
-    public sealed class EmptyDataLoader : IDataLoader
-    {
-        /// <summary>
-        /// Gets or sets the argument that does not effect anything.
-        /// </summary>
-        /// <value>
-        /// The argument.
-        /// </value>
-        string IDataLoader.Argument
-        {
-            get;
-            set;
-        }
+    using System.Data.Common;
+    using System.Linq;
+    using Effort.Test.Data.Staff;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Effort.DataLoaders;
 
-        /// <summary>
-        /// Creates a <see cref="EmptyTableDataLoaderFactory" /> instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="EmptyTableDataLoaderFactory" /> instance.
-        /// </returns>
-        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+    [TestClass]
+    public class CachingDataLoaderFixture
+    {
+        [TestMethod]
+        public void CachingDataLoader_Recreate()
         {
-            return new EmptyTableDataLoaderFactory();
+            CsvDataLoader wrapped = new CsvDataLoader("C:\\path");
+
+            CachingDataLoader original = new CachingDataLoader(wrapped);
+
+            CachingDataLoader recreated = new CachingDataLoader();
+            ((IDataLoader)recreated).Argument = ((IDataLoader)original).Argument;
+
+            Assert.AreEqual(
+                original.WrappedDataLoader.GetType(),
+                recreated.WrappedDataLoader.GetType());
+
+            Assert.IsInstanceOfType(
+                recreated.WrappedDataLoader,
+                typeof(CsvDataLoader));
+
+            CsvDataLoader recreatedWrapped = recreated.WrappedDataLoader as CsvDataLoader;
+
+            Assert.AreEqual(
+                wrapped.ContainerFolderPath,
+                recreatedWrapped.ContainerFolderPath);
         }
     }
 }

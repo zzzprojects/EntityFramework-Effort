@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="CsvDataLoader.cs" company="Effort Team">
+// <copyright file="CachingDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,72 +24,74 @@
 
 namespace Effort.DataLoaders
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Data.Common;
+
     /// <summary>
-    /// Represents a data loader that reads data from CSV files.
+    /// Represents a data loader that serves as a caching layer above another data loader.
     /// </summary>
-    public class CsvDataLoader : IDataLoader
+    public class CachingDataLoader : IDataLoader
     {
-        private string path;
+        private const string WrappedType = "Type";
+        private const string WrappedArgument = "Argument";
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CsvDataLoader" /> class.
-        /// </summary>
-        public CsvDataLoader()
+        private IDataLoader wrappedDataLoader;
+
+        public CachingDataLoader()
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CsvDataLoader" /> class.
-        /// </summary>
-        /// <param name="path">The path of the folder that contains the CSV files.</param>
-        public CsvDataLoader(string path)
+        public CachingDataLoader(IDataLoader wrappedDataLoader)
         {
-            this.path = path;
+            this.wrappedDataLoader = wrappedDataLoader;
         }
 
-        /// <summary>
-        /// Gets path of the folder that contains the CSV files.
-        /// </summary>
-        /// <value>
-        /// The path of the folder.
-        /// </value>
-        public string ContainerFolderPath
+        public IDataLoader WrappedDataLoader
         {
             get
             {
-                return this.path;
+                return this.wrappedDataLoader;
             }
         }
 
-        /// <summary>
-        /// Gets or sets the argument that contains the path of the folder where the CSV
-        /// files are located.
-        /// </summary>
-        /// <value>
-        /// The argument.
-        /// </value>
         string IDataLoader.Argument
         {
-            get 
-            { 
-                return this.path; 
+            get
+            {
+                DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
+
+                if (this.wrappedDataLoader != null)
+                {
+                    builder[WrappedType] = 
+                        this.wrappedDataLoader.GetType().AssemblyQualifiedName;
+                    builder[WrappedArgument] = 
+                        this.wrappedDataLoader.Argument;
+                }
+
+                return builder.ToString();
             }
 
-            set 
-            { 
-                this.path = value; 
+            set
+            {
+                DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
+                builder.ConnectionString = value;
+
+                string typeName = builder[WrappedType] as string;
+
+                this.wrappedDataLoader = 
+                    Activator.CreateInstance(Type.GetType(typeName)) as IDataLoader;
+
+                this.wrappedDataLoader.Argument = 
+                    builder[WrappedArgument] as string;
             }
         }
 
-        /// <summary>
-        /// Creates a <see cref="CsvTableDataLoaderFactory" /> instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="CsvTableDataLoaderFactory" /> instance.
-        /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
-            return new CsvTableDataLoaderFactory(this.path);
+            throw new NotImplementedException();
         }
     }
 }

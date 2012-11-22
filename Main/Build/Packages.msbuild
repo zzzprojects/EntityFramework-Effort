@@ -1,0 +1,32 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0" DefaultTargets="default">
+  <PropertyGroup>
+    <BaseDir>$(MSBuildProjectDirectory)\..</BaseDir>
+    <Configuration Condition="'$(Configuration)'==''" >Release</Configuration>
+    <PackageDir>$(MSBuildProjectDirectory)\Packages</PackageDir>
+	<SolutionDir>$(BaseDir)\Source</SolutionDir>
+    <SolutionFile>$(SolutionDir)\Effort.sln</SolutionFile>
+  </PropertyGroup>
+ 
+  <Target Name="default" DependsOnTargets="Compile; Package" />
+ 
+  <Target Name="Compile">
+	<RemoveDir Directories="$(SolutionDir)\Effort\bin\$(Configuration)\" />
+    <MSBuild Projects="$(SolutionFile)" Properties="Configuration=$(Configuration)"  />
+  </Target>
+ 
+  <Target Name="Package">
+	<RemoveDir Directories="$(PackageDir)" />
+  
+    <ItemGroup>
+      <MainBinaries Include="$(SolutionDir)\Effort\bin\$(Configuration)\**\*.*" />
+    </ItemGroup>
+ 
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\Effort.nuspec" DestinationFolder="$(PackageDir)\Effort" />
+ 
+    <Copy SourceFiles="@(MainBinaries)" DestinationFolder="$(PackageDir)\Effort\lib\net40\%(RecursiveDir)" />
+	<Copy SourceFiles="@(MainBinaries)" DestinationFolder="$(PackageDir)\Effort\lib\net45\%(RecursiveDir)" />
+ 
+    <Exec WorkingDirectory="$(PackageDir)\Effort" 
+          Command="$(SolutionDir)\.nuget\nuget.exe pack $(PackageDir)\Effort\Effort.nuspec" />
+  </Target>
+</Project>

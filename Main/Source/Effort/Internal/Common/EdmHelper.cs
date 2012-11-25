@@ -28,15 +28,15 @@ namespace Effort.Internal.Common
     using System.Linq;
 
     /// <summary>
-    /// Providers helper method for EDM types.
+    ///     Providers helper method for EDM types.
     /// </summary>
     internal static class EdmHelper
     {
         /// <summary>
-        /// Returns the name of the table that is represented by the specified entity set.
+        ///     Returns the name of the table that is represented by the specified entity set.
         /// </summary>
-        /// <param name="entitySet">The entity set.</param>
-        /// <returns>The name of the table represented by the entity set.</returns>
+        /// <param name="entitySet"> The entity set. </param>
+        /// <returns >The name of the table represented by the entity set. </returns>
         public static string GetTableName(this EntitySetBase entitySet)
         {
             MetadataProperty property = entitySet
@@ -52,10 +52,11 @@ namespace Effort.Internal.Common
         }
 
         /// <summary>
-        /// Returns the name of the table column that is represented by the specified member.
+        ///     Returns the name of the table column that is represented by the specified
+        ///     member.
         /// </summary>
-        /// <param name="member">The member.</param>
-        /// <returns>The name of the table column represented by the member.</returns>
+        /// <param name="member"> The member. </param>
+        /// <returns> The name of the table column represented by the member. </returns>
         public static string GetColumnName(this EdmMember member)
         {
             return member.Name;

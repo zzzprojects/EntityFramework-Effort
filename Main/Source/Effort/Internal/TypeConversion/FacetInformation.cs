@@ -25,55 +25,55 @@
 namespace Effort.Internal.TypeConversion
 {
     /// <summary>
-    /// Contains EDM type facet information about a field.
+    ///     Contains EDM type facet information about a field.
     /// </summary>
     internal class FacetInformation
     {
         /// <summary>
-        /// Gets or sets a value indicating whether the field is nullable.
+        ///     Gets or sets a value indicating whether the field is nullable.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if nullable; otherwise, <c>false</c>.
+        ///     <c>true</c> if nullable; otherwise, <c>false</c>.
         /// </value>
         public bool Nullable { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the field is an identity field.
+        ///     Gets or sets a value indicating whether the field is an identity field.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if identity field; otherwise, <c>false</c>.
+        ///     <c>true</c> if identity field; otherwise, <c>false</c>.
         /// </value>
         public bool Identity { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the field value is computed.
+        ///     Gets or sets a value indicating whether the field value is computed.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if computed; otherwise, <c>false</c>.
+        ///     <c>true</c> if computed; otherwise, <c>false</c>.
         /// </value>
         public bool Computed { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether length of the field is limited.
+        ///     Gets or sets a value indicating whether length of the field is limited.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the length of the field is limited; otherwise, <c>false</c>.
+        ///     <c>true</c> if the length of the field is limited; otherwise, <c>false</c>.
         /// </value>
         public bool LimitedLength { get; set; }
 
         /// <summary>
-        /// Gets or sets the max lenght of the field.
+        ///     Gets or sets the max lenght of the field.
         /// </summary>
         /// <value>
-        /// The max lenght of the field.
+        ///     The max lenght of the field.
         /// </value>
         public int MaxLenght { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the length of the field is fixed.
+        ///     Gets or sets a value indicating whether the length of the field is fixed.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if the length of the field is fixed; otherwise, <c>false</c>.
+        ///     <c>true</c> if the length of the field is fixed; otherwise, <c>false</c>.
         /// </value>
         public bool FixedLength { get; set; }
     }

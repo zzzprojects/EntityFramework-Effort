@@ -28,7 +28,7 @@ namespace Effort.Provider
     using System.Data.Common;
 
     /// <summary>
-    /// Represents an Effort transaction. This class cannot be inherited.
+    ///     Represents an Effort transaction. This class cannot be inherited.
     /// </summary>
     public sealed class EffortTransaction : DbTransaction
     {
@@ -39,12 +39,16 @@ namespace Effort.Provider
         private NMemory.Transactions.Transaction transaction;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortTransaction" /> class.
+        ///     Initializes a new instance of the <see cref="EffortTransaction" /> class.
         /// </summary>
-        /// <param name="connection">The connection.</param>
-        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="connection">
+        ///     The <see cref="EffortTransaction" /> object.
+        /// </param>
+        /// <param name="isolationLevel">
+        ///     The isolation level.
+        /// </param>
         /// <exception cref="System.InvalidOperationException">
-        /// Ambient transaction is already set.
+        ///     Ambient transaction is already set.
         /// </exception>
         public EffortTransaction(
             EffortConnection connection, 
@@ -71,7 +75,7 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Commits the database transaction.
+        ///     Commits the database transaction.
         /// </summary>
         public override void Commit()
         {
@@ -79,10 +83,10 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Specifies the <see cref="T:System.Data.IsolationLevel" /> for this transaction.
+        ///     Specifies the <see cref="T:System.Data.IsolationLevel" /> for this transaction.
         /// </summary>
         /// <returns>
-        /// The <see cref="T:System.Data.IsolationLevel" /> for this transaction.
+        ///     The <see cref="T:System.Data.IsolationLevel" /> for this transaction.
         /// </returns>
         public override System.Data.IsolationLevel IsolationLevel
         {
@@ -93,10 +97,10 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the internal NMemory transaction object.
+        ///     Gets the internal NMemory transaction object.
         /// </summary>
         /// <value>
-        /// The NMemory transaction object.
+        ///     The NMemory transaction object.
         /// </value>
         public NMemory.Transactions.Transaction InternalTransaction
         {
@@ -107,7 +111,7 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Rolls back a transaction from a pending state.
+        ///     Rolls back a transaction from a pending state.
         /// </summary>
         public override void Rollback()
         {
@@ -115,10 +119,11 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the <see cref="T:EffortConnection" /> object associated with the transaction.
+        ///     Gets the <see cref="T:EffortConnection" /> object associated with the 
+        ///     transaction.
         /// </summary>
         /// <returns>
-        /// The <see cref="T:EffortConnection" /> object associated with the transaction.
+        ///     The <see cref="T:EffortConnection" /> object associated with the transaction.
         /// </returns>
         protected override DbConnection DbConnection
         {
@@ -129,12 +134,12 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="T:EffortTransaction" /> and
-        /// optionally releases the managed resources.
+        ///     Releases the unmanaged resources used by the <see cref="T:EffortTransaction" />
+        ///     and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// If true, this method releases all resources held by any managed objects that this
-        /// <see cref="T:EffortTransaction" /> references.
+        ///     If true, this method releases all resources held by any managed objects that 
+        ///     this <see cref="T:EffortTransaction" /> references.
         /// </param>
         protected override void Dispose(bool disposing)
         {

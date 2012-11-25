@@ -28,20 +28,20 @@ namespace Effort.Internal.Caching
     using System.Collections.Concurrent;
 
     /// <summary>
-    /// Represents a thread-safe generic dictionary-like cache.
+    ///     Represents a thread-safe generic dictionary-like cache.
     /// </summary>
-    /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TElement">The type of the elements.</typeparam>
+    /// <typeparam name="TKey"> The type of the key. </typeparam>
+    /// <typeparam name="TElement"> The type of the elements. </typeparam>
     internal class ConcurrentCache<TKey, TElement> 
     {
         /// <summary>
-        /// The internal store.
+        ///     The internal store.
         /// </summary>
         private ConcurrentDictionary<TKey, Lazy<TElement>> store;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentCache{TKey,TElement}" /> 
-        /// class.
+        ///     Initializes a new instance of the <see cref="ConcurrentCache{TKey,TElement}" /> 
+        ///     class.
         /// </summary>
         public ConcurrentCache() 
         {
@@ -49,22 +49,22 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Gets the element associated with the specified key.
+        ///     Gets the element associated with the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>The queried element.</returns>
+        /// <param name="key"> The key that identifies the cached element. </param>
+        /// <returns> The cached element. </returns>
         public TElement Get(TKey key)
         {
             return this.Get(key, () => { throw new InvalidOperationException(); });
         }
 
         /// <summary>
-        /// Gets the element associated with the specified key. If no such element exists, it
-        /// is initialized by the supplied factory method.
+        ///     Gets the element associated with the specified key. If no such element exists,
+        ///     it is initialized by the supplied factory method.
         /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="factory">The element factory method.</param>
-        /// <returns>The queried element</returns>
+        /// <param name="key"> The key that identifies the cached element. </param>
+        /// <param name="factory"> The element factory method. </param>
+        /// <returns> The queried element. </returns>
         public TElement Get(TKey key, Func<TElement> factory)
         {
             Lazy<TElement> element = 
@@ -77,11 +77,14 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the store containes an element associated to the specified key.
+        ///     Determines whether the store containes an element associated to the specified
+        ///     key.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="key"> 
+        ///     The key that identifies the cached element. 
+        /// </param>
         /// <returns>
-        ///   <c>true</c> if it contains the appropriate element otherwise, <c>false</c>.
+        ///     <c>true</c> if it contains the appropriate element otherwise, <c>false</c>.
         /// </returns>
         public bool Contains(TKey key)
         {
@@ -89,9 +92,9 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Removes the element associate to the specified key.
+        ///     Removes the element associate to the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="key"> The key that identifies the cached element. </param>
         public void Remove(TKey key)
         {
             Lazy<TElement> value;

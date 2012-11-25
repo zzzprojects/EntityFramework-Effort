@@ -33,18 +33,18 @@ namespace Effort.Provider
     using Effort.Internal.DbManagement.Schema;
 
     /// <summary>
-    /// Represents an Effort command that realizes text representations.
+    ///     Represents an Effort command that realizes text representations.
     /// </summary>
     public sealed class EffortCommand : EffortCommandBase
     {
         /// <summary>
-        /// Executes the command text against the connection.
+        ///     Executes the command text against the connection.
         /// </summary>
         /// <param name="behavior">
-        /// An instance of <see cref="T:System.Data.CommandBehavior" />.
+        ///     An instance of <see cref="T:System.Data.CommandBehavior" />.
         /// </param>
         /// <returns>
-        /// A <see cref="T:System.Data.Common.DbDataReader" />.
+        ///     A <see cref="T:System.Data.Common.DbDataReader" />.
         /// </returns>
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
@@ -52,10 +52,10 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Executes the query.
+        ///     Executes the query.
         /// </summary>
         /// <returns>
-        /// The number of rows affected.
+        ///     The number of rows affected.
         /// </returns>
         public override int ExecuteNonQuery()
         {
@@ -84,11 +84,11 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Executes the query and returns the first column of the first row in the result set 
-        /// returned by the query. All other columns and rows are ignored.
+        ///     Executes the query and returns the first column of the first row in the result
+        ///     set returned by the query. All other columns and rows are ignored.
         /// </summary>
         /// <returns>
-        /// The first column of the first row in the result set.
+        ///     The first column of the first row in the result set.
         /// </returns>
         public override object ExecuteScalar()
         {

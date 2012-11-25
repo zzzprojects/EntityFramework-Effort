@@ -29,8 +29,18 @@ namespace Effort.DataLoaders
     using System.Reflection;
     using Effort.Internal.DbManagement.Schema;
 
+    /// <summary>
+    ///     Loads data from a table data loader and materializes it.
+    /// </summary>
     internal static class ObjectLoader
     {
+        /// <summary>
+        ///     Loads the table data from the specified table data loader and materializes it
+        ///     bases on the specified metadata.
+        /// </summary>
+        /// <param name="loaderFactory"> The loader factory. </param>
+        /// <param name="table"> The table metadata. </param>
+        /// <returns> The materialized data. </returns>
         public static IEnumerable<object> Load(
             ITableDataLoaderFactory loaderFactory, 
             DbTableInformation table)

@@ -25,21 +25,21 @@
 namespace Effort.Internal.Caching
 {
     /// <summary>
-    /// Represents a cache that stores <see cref="T:DataLoaderConfigurationLatch"/> objects.
+    ///     Represents a cache that stores <see cref="T:DataLoaderConfigurationLatch"/> 
+    ///     objects.
     /// </summary>
     internal static class DataLoaderConfigurationLatchStore
     {
         /// <summary>
-        /// Internal collection.
+        ///     Internal collection.
         /// </summary>
         private static ConcurrentCache<
             DataLoaderConfigurationKey,
             DataLoaderConfigurationLatch> store;
 
         /// <summary>
-        /// Initializes static members of the the 
-        /// <see cref="DataLoaderConfigurationLatchStore" /> 
-        /// class.
+        ///     Initializes static members of the the 
+        ///     <see cref="DataLoaderConfigurationLatchStore" /> class.
         /// </summary>
         static DataLoaderConfigurationLatchStore()
         {
@@ -49,10 +49,10 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Return the latch associated to specified data loader configuration
+        ///     Return the latch associated to specified data loader configuration
         /// </summary>
-        /// <param name="key">Identifies the data loader configuration.</param>
-        /// <returns>The configuration latch.</returns>
+        /// <param name="key"> Identifies the data loader configuration. </param>
+        /// <returns> The configuration latch. </returns>
         public static DataLoaderConfigurationLatch GetLatch(
             DataLoaderConfigurationKey key)
         {

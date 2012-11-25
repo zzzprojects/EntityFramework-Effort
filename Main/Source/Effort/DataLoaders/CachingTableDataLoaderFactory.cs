@@ -27,13 +27,38 @@ namespace Effort.DataLoaders
     using System;
     using Effort.Internal.Caching;
 
+    /// <summary>
+    ///     Represents a table data loader factory that creates 
+    ///     <see cref="CachingTableDataLoader"/> instances for tables.
+    /// </summary>
     public class CachingTableDataLoaderFactory : ITableDataLoaderFactory
     {
+        /// <summary>
+        ///     The wrapped data loader.
+        /// </summary>
         private IDataLoader wrappedDataLoader;
-        private ITableDataLoaderFactory wrappedTableDataLoaderFactory;
-        private IDataLoaderConfigurationLatch latch;
-        private ICachingTableDataLoaderStoreProxy dataStoreProxy;
 
+        /// <summary>
+        ///     The table data loader factory retrieved from the wrapped data loader if neeed.
+        /// </summary>
+        private ITableDataLoaderFactory wrappedTableDataLoaderFactory;
+
+        /// <summary>
+        ///     The latch that locks the entire configuration of the wrapped data loader in
+        ///     order to make it be used only once during the caching phase.
+        /// </summary>
+        private IDataLoaderConfigurationLatch latch;
+
+        /// <summary>
+        ///     The store that contains the cached table data.
+        /// </summary>
+        private ICachingTableDataLoaderStore dataStore;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CachingTableDataLoaderFactory" /> 
+        ///     class.
+        /// </summary>
+        /// <param name="wrappedDataLoader"> The wrapped data loader. </param>
         public CachingTableDataLoaderFactory(IDataLoader wrappedDataLoader)
             : this(
                 wrappedDataLoader, 
@@ -42,26 +67,40 @@ namespace Effort.DataLoaders
         {
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CachingTableDataLoaderFactory" /> 
+        ///     class.
+        /// </summary>
+        /// <param name="wrappedDataLoader"> The wrapped data loader. </param>
+        /// <param name="latch"> The latch that locks the data loader configuration. </param>
+        /// <param name="dataStore"> The store that contains the cached data. </param>
         internal CachingTableDataLoaderFactory(
             IDataLoader wrappedDataLoader,
             IDataLoaderConfigurationLatch latch,
-            ICachingTableDataLoaderStoreProxy dataStoreProxy)
+            ICachingTableDataLoaderStore dataStore)
         {
             if (wrappedDataLoader == null)
             {
                 throw new ArgumentNullException("wrappedDataLoader");
             }
 
-            if (dataStoreProxy == null)
+            if (dataStore == null)
             {
                 throw new ArgumentNullException("dataStoreProxy");
             }
 
             this.wrappedDataLoader = wrappedDataLoader;
             this.latch = latch;
-            this.dataStoreProxy = dataStoreProxy;
+            this.dataStore = dataStore;
         }
 
+        /// <summary>
+        ///     Creates a data loader for the specified table.
+        /// </summary>
+        /// <param name="table"> The metadata of the table. </param>
+        /// <returns>
+        ///     The data loader for the table.
+        /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
             CachingTableDataLoaderKey key =
@@ -69,17 +108,22 @@ namespace Effort.DataLoaders
                     new DataLoaderConfigurationKey(this.wrappedDataLoader), 
                     table.Name);
 
-            if (latch != null)
+            // If the table data cache does not exists, then the data loader configuration
+            // should be locked
+            if (latch != null && !this.dataStore.Contains(key))
             {
-                if (!this.dataStoreProxy.Contains(key))
-                {
-                    latch.Acquire();
-                }
+                latch.Acquire();
             }
-
-            return this.dataStoreProxy.GetCachedData(key, () => CreateCachedData(table));
+            
+            // It does not matter if the table data cache was created during the waiting,
+            // maybe there is still tables thats data is not fetched
+            return this.dataStore.GetCachedData(key, () => CreateCachedData(table));
         }
 
+        /// <summary>
+        ///     Disposes the wrapped data loader table factory and releases the latch on the
+        ///     wrapped data loader configuration.
+        /// </summary>
         public void Dispose()
         {
             if (this.wrappedTableDataLoaderFactory != null)
@@ -94,6 +138,11 @@ namespace Effort.DataLoaders
             }
         }
 
+        /// <summary>
+        ///     Creates the default latch for the data loader configuration locking.
+        /// </summary>
+        /// <param name="dataLoader"> The data loader. </param>
+        /// <returns> The latch. </returns>
         private static IDataLoaderConfigurationLatch CreateLatch(IDataLoader dataLoader)
         {
             DataLoaderConfigurationKey key = new DataLoaderConfigurationKey(dataLoader);
@@ -101,6 +150,11 @@ namespace Effort.DataLoaders
             return new DataLoaderConfigurationLatchProxy(key);
         }
 
+        /// <summary>
+        ///     Creates a proxy for the global table data cache.
+        /// </summary>
+        /// <param name="table"> The table metadata. </param>
+        /// <returns> The proxy for the cache. </returns>
         private CachingTableDataLoader CreateCachedData(TableDescription table)
         {
             if (this.wrappedTableDataLoaderFactory == null)

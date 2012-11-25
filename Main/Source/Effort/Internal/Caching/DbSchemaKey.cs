@@ -32,21 +32,21 @@ namespace Effort.Internal.Caching
     using Effort.Internal.Common;
 
     /// <summary>
-    /// Represents a key that identifies <see cref="T:DbSchema"/> objects.
+    ///     Represents a key that identifies <see cref="T:DbSchema"/> objects.
     /// </summary>
     internal class DbSchemaKey : IEquatable<DbSchemaKey>
     {
         /// <summary>
-        /// Serialized form the StoreItemCollection, used as the key.
+        ///     Serialized form the StoreItemCollection, used as the key.
         /// </summary>
         private string innerKey;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DbSchemaKey" /> class.
+        ///     Initializes a new instance of the <see cref="DbSchemaKey" /> class.
         /// </summary>
         /// <param name="storeItemCollection">
-        /// The store item collection that the corresponding <see cref="T:DbSchema"/> is based
-        /// on.
+        ///     The store item collection that the corresponding <see cref="T:DbSchema"/> is 
+        ///     based on.
         /// </param>
         public DbSchemaKey(StoreItemCollection storeItemCollection)
         {
@@ -92,18 +92,18 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="DbSchemaKey" /> class from being
-        /// created.
+        ///     Prevents a default instance of the <see cref="DbSchemaKey" /> class from being
+        ///     created.
         /// </summary>
         private DbSchemaKey()
         {
         }
 
         /// <summary>
-        /// Creates a <see cref="DbSchemaKey"/> object based on the specified string.
+        ///     Creates a <see cref="DbSchemaKey"/> object based on the specified string.
         /// </summary>
-        /// <param name="value">The string.</param>
-        /// <returns>The <see cref="DbSchemaKey"/> object.</returns>
+        /// <param name="value"> The string. </param>
+        /// <returns> The <see cref="DbSchemaKey"/> object. </returns>
         public static DbSchemaKey FromString(string value)
         {
             DbSchemaKey result = new DbSchemaKey();
@@ -113,15 +113,15 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="DbSchemaKey" /> is equal to this 
-        /// instance.
+        ///     Determines whether the specified <see cref="DbSchemaKey" /> is equal to this 
+        ///     instance.
         /// </summary>
         /// <param name="other">
-        /// The <see cref="DbSchemaKey" /> to compare with this instance.
+        ///     The <see cref="DbSchemaKey" /> to compare with this instance.
         /// </param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
-        ///   instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
+        ///     instance; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(DbSchemaKey other)
         {
@@ -134,15 +134,15 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this 
-        /// instance.
+        ///     Determines whether the specified <see cref="System.Object" /> is equal to this 
+        ///     instance.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="System.Object" /> to compare with this instance.
+        ///     The <see cref="System.Object" /> to compare with this instance.
         /// </param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
-        ///   instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
+        ///     instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -150,11 +150,11 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data 
-        /// structures like a hash table. 
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data 
+        ///     structures like a hash table. 
         /// </returns>
         public override int GetHashCode()
         {
@@ -162,10 +162,10 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {

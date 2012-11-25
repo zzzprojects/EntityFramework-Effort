@@ -33,8 +33,8 @@ namespace Effort.DataLoaders
     using Effort.Internal.Common;
 
     /// <summary>
-    /// Represents a table data loader that retrieves data from the specified table of the
-    /// specified database.
+    ///     Represents a table data loader that retrieves data from the specified table of the
+    ///     specified database.
     /// </summary>
     public class EntityTableDataLoader : TableDataLoaderBase
     {
@@ -43,10 +43,10 @@ namespace Effort.DataLoaders
         private EntitySet entitySet;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EntityTableDataLoader" /> class.
+        ///     Initializes a new instance of the <see cref="EntityTableDataLoader" /> class.
         /// </summary>
-        /// <param name="connection">The connection towards the database.</param>
-        /// <param name="table">The metadata of the table.</param>
+        /// <param name="connection"> The connection towards the database. </param>
+        /// <param name="table"> The metadata of the table. </param>
         public EntityTableDataLoader(EntityConnection connection, TableDescription table)
             : base(table)
         {
@@ -58,10 +58,10 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Creates a data reader that retrieves the initial data from the database.
+        ///     Creates a data reader that retrieves the initial data from the database.
         /// </summary>
         /// <returns>
-        /// The data reader.
+        ///     The data reader.
         /// </returns>
         protected override IDataReader CreateDataReader()
         {
@@ -98,12 +98,12 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Converts DBNull values to CLR null.
+        ///     Converts DBNull values to CLR null.
         /// </summary>
-        /// <param name="value">The current value.</param>
-        /// <param name="type">The expected type.</param>
+        /// <param name="value"> The current value. </param>
+        /// <param name="type"> The expected type. </param>
         /// <returns>
-        /// The expected value.
+        ///     The expected value.
         /// </returns>
         protected override object ConvertValue(object value, Type type)
         {

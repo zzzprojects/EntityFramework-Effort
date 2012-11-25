@@ -29,15 +29,15 @@ namespace Effort.DataLoaders
     using System.Linq;
 
     /// <summary>
-    /// Stores the metadata of a table.
+    ///     Stores the metadata of a table.
     /// </summary>
     public sealed class TableDescription
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TableDescription" /> class.
+        ///     Initializes a new instance of the <see cref="TableDescription" /> class.
         /// </summary>
-        /// <param name="name">The name of the table.</param>
-        /// <param name="columns">The columns of the table.</param>
+        /// <param name="name"> The name of the table. </param>
+        /// <param name="columns"> The columns of the table. </param>
         internal TableDescription(string name, IEnumerable<ColumnDescription> columns)
         {
             this.Name = name;
@@ -45,18 +45,18 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Gets the name of the table.
+        ///     Gets the name of the table.
         /// </summary>
         /// <value>
-        /// The name of the table.
+        ///     The name of the table.
         /// </value>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets the columns of the table.
+        ///     Gets the columns of the table.
         /// </summary>
         /// <value>
-        /// The columns of the table.
+        ///     The columns of the table.
         /// </value>
         public ReadOnlyCollection<ColumnDescription> Columns { get; private set; }
     }

@@ -31,7 +31,7 @@ namespace Effort.Internal.DbManagement.Engine.Modifiers
     using Effort.Internal.DbCommandTreeTransformation;
 
     /// <summary>
-    /// Transforms SingleResult&gt;&lt;(x).FirstOrDefault() to x
+    ///     Transforms SingleResult&gt;&lt;(x).FirstOrDefault() to x
     /// </summary>
     internal class ExcrescentSingleResultCleanserVisitor : ExpressionRewriterBase
     {

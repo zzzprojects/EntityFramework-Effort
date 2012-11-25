@@ -25,15 +25,15 @@
 namespace Effort.DataLoaders
 {
     /// <summary>
-    /// Represents a data loader that retrieves no data.
+    ///     Represents a data loader that retrieves no data.
     /// </summary>
     public sealed class EmptyDataLoader : IDataLoader
     {
         /// <summary>
-        /// Gets or sets the argument that does not effect anything.
+        ///     Gets or sets the argument that does not effect anything.
         /// </summary>
-        /// <value>
-        /// The argument.
+        /// <value> 
+        ///     The argument. 
         /// </value>
         string IDataLoader.Argument
         {
@@ -42,10 +42,10 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Creates a <see cref="EmptyTableDataLoaderFactory" /> instance.
+        ///     Creates a <see cref="EmptyTableDataLoaderFactory" /> instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="EmptyTableDataLoaderFactory" /> instance.
+        ///     A <see cref="EmptyTableDataLoaderFactory" /> instance.
         /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {

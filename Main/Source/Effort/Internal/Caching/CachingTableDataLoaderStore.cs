@@ -28,20 +28,20 @@ namespace Effort.Internal.Caching
     using Effort.DataLoaders;
 
     /// <summary>
-    /// Represents a cache that stores <see cref="T:CachedDataLoaderData"/> objects.
+    ///     Represents a cache that stores <see cref="T:CachedDataLoaderData"/> objects.
     /// </summary>
     internal static class CachingTableDataLoaderStore
     {
         /// <summary>
-        /// Internal collection.
+        ///     Internal collection.
         /// </summary>
         private static ConcurrentCache<
             CachingTableDataLoaderKey, 
             CachingTableDataLoader> store;
 
         /// <summary>
-        /// Initializes static members of the the <see cref="CachingTableDataLoaderStore" /> 
-        /// class.
+        ///     Initializes static members of the the 
+        ///     <see cref="CachingTableDataLoaderStore" /> class.
         /// </summary>
         static CachingTableDataLoaderStore()
         {
@@ -51,19 +51,19 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Returns a <see cref="T:CachingTableDataLoader"/> object that satisfies the 
-        /// specified arguments. If no such element exists the provided factory method is used
-        /// to create one.
+        ///     Returns a <see cref="T:CachingTableDataLoader"/> object that satisfies the 
+        ///     specified arguments. If no such element exists the provided factory method is
+        ///     used to create one.
         /// </summary>
         /// <param name="key">
-        /// Identifies the caching data loader.
+        ///     Identifies the caching data loader.
         /// </param>
         /// <param name="factoryMethod">
-        /// The factory method that instatiates the desired 
-        /// <see cref="T:CachingTableDataLoader"/> object.
+        ///     The factory method that instatiates the desired 
+        ///     <see cref="T:CachingTableDataLoader"/> object.
         /// </param>
         /// <returns>
-        /// The <see cref="T:CachingTableDataLoader"/> object.
+        ///     The <see cref="T:CachingTableDataLoader"/> object.
         /// </returns>
         public static CachingTableDataLoader GetCachedData(
             CachingTableDataLoaderKey key,
@@ -73,12 +73,13 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the store containes an element associated to the specified key.
+        ///     Determines whether the store containes an element associated to the specified
+        ///     key.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="key"> The key. </param>
         /// <returns>
-        ///   <c>true</c> if the store contains the appropriate element otherwise, 
-        ///   <c>false</c>.
+        ///     <c>true</c> if the store contains the appropriate element otherwise, 
+        ///     <c>false</c>.
         /// </returns>
         public static bool Contains(CachingTableDataLoaderKey key)
         {

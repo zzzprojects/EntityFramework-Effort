@@ -28,19 +28,37 @@ namespace Effort.DataLoaders
     using System.Data.Common;
 
     /// <summary>
-    /// Represents a data loader that serves as a caching layer above another data loader.
+    ///     Represents a data loader that serves as a caching layer above another data loader.
     /// </summary>
     public class CachingDataLoader : IDataLoader
     {
+        /// <summary>
+        ///     The attribute name of the type of the wrapped data loader in the argument.
+        /// </summary>
         private const string WrappedType = "Type";
+
+
+        /// <summary>
+        ///     The attribute name of the argument of the wrapped data loader in the argument.
+        /// </summary>
         private const string WrappedArgument = "Argument";
 
+        /// <summary>
+        ///     The wrapped data loader.
+        /// </summary>
         private IDataLoader wrappedDataLoader;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CachingDataLoader" /> class.
+        /// </summary>
         public CachingDataLoader()
         {
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CachingDataLoader" /> class.
+        /// </summary>
+        /// <param name="wrappedDataLoader"> The wrapped data loader. </param>
         public CachingDataLoader(IDataLoader wrappedDataLoader)
         {
             if (wrappedDataLoader == null)
@@ -51,6 +69,12 @@ namespace Effort.DataLoaders
             this.wrappedDataLoader = wrappedDataLoader;
         }
 
+        /// <summary>
+        ///     Gets the wrapped data loader.
+        /// </summary>
+        /// <value>
+        ///     The wrapped data loader.
+        /// </value>
         public IDataLoader WrappedDataLoader
         {
             get
@@ -59,6 +83,12 @@ namespace Effort.DataLoaders
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the argument that describes the complete state of the data loader.
+        /// </summary>
+        /// <value>
+        ///     The argument.
+        /// </value>
         string IDataLoader.Argument
         {
             get
@@ -91,6 +121,12 @@ namespace Effort.DataLoaders
             }
         }
 
+        /// <summary>
+        ///     Creates a table data loader factory.
+        /// </summary>
+        /// <returns>
+        ///     A table data loader factory.
+        /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
             return new CachingTableDataLoaderFactory(this.wrappedDataLoader);

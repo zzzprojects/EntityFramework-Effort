@@ -27,17 +27,30 @@ namespace Effort.DataLoaders
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    ///     Represents a table data loader that returns cached data that was retrieved from
+    ///     another table data loader.
+    /// </summary>
     public class CachingTableDataLoader : ITableDataLoader
     {
+        /// <summary>
+        ///     The cached data.
+        /// </summary>
         private object[][] data;
 
-        public CachingTableDataLoader(ITableDataLoader wrappedTableDataLoader)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CachingTableDataLoader" /> class.
+        /// </summary>
+        /// <param name="tableDataLoader">
+        ///     The table data loader that is used to retrieve the data.
+        /// </param>
+        public CachingTableDataLoader(ITableDataLoader tableDataLoader)
         {
             IEnumerable<object[]> data;
 
-            if (wrappedTableDataLoader != null)
+            if (tableDataLoader != null)
             {
-                data = wrappedTableDataLoader.GetData();
+                data = tableDataLoader.GetData();
             }
             else
             {
@@ -47,6 +60,12 @@ namespace Effort.DataLoaders
             this.data = data.ToArray();
         }
 
+        /// <summary>
+        ///     Creates initial data for the table.
+        /// </summary>
+        /// <returns>
+        ///     The data created for the table.
+        /// </returns>
         public IEnumerable<object[]> GetData()
         {
             return this.data;

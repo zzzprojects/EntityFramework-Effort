@@ -27,17 +27,17 @@ namespace Effort.Internal.Caching
     using System;
 
     /// <summary>
-    /// Represents a key that identifies dynamically created Effort-ready DbContext types.
+    ///     Represents a key that identifies dynamically created Effort-ready DbContext types.
     /// </summary>
     internal class ObjectContextTypeKey : IEquatable<ObjectContextTypeKey>
     {
         /// <summary>
-        /// The entity connection string that identifies the database instance.
+        ///     The entity connection string that identifies the database instance.
         /// </summary>
         private string entityConnectionString;
 
         /// <summary>
-        /// The effort connection string that containes the database configuration.
+        ///     The effort connection string that containes the database configuration.
         /// </summary>
         private string effortConnectionString;
 
@@ -47,16 +47,16 @@ namespace Effort.Internal.Caching
         private string objectContextType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ObjectContextTypeKey" /> class.
+        ///     Initializes a new instance of the <see cref="ObjectContextTypeKey" /> class.
         /// </summary>
         /// <param name="entityConnectionString">
-        /// The entity connection string that identifies the database instance.
+        ///     The entity connection string that identifies the database instance.
         /// </param>
         /// <param name="effortConnectionString">
-        /// The effort connection string that containes the database configuration.
+        ///     The effort connection string that containes the database configuration.
         /// </param>
         /// <param name="objectContextType">
-        /// The base type of the ObjectContext.
+        ///     The base type of the ObjectContext.
         /// </param>
         public ObjectContextTypeKey(
             string entityConnectionString, 
@@ -69,15 +69,15 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="ObjectContextTypeKey" /> is equal to 
-        /// this instance.
+        ///     Determines whether the specified <see cref="ObjectContextTypeKey" /> is equal 
+        ///     to this instance.
         /// </summary>
         /// <param name="other">
-        /// The <see cref="ObjectContextTypeKey" /> to compare with this instance.
+        ///     The <see cref="ObjectContextTypeKey" /> to compare with this instance.
         /// </param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="ObjectContextTypeKey" /> is equal to this 
-        ///   instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="ObjectContextTypeKey" /> is equal to 
+        ///     this instance; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(ObjectContextTypeKey other)
         {
@@ -99,11 +99,11 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and 
-        /// data structures like a hash table. 
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data 
+        ///     structures like a hash table. 
         /// </returns>
         public override int GetHashCode()
         {
@@ -114,15 +114,15 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this 
-        /// instance.
+        ///     Determines whether the specified <see cref="System.Object" /> is equal to this 
+        ///     instance.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="System.Object" /> to compare with this instance.
+        ///     The <see cref="System.Object" /> to compare with this instance.
         /// </param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
-        ///   instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
+        ///     instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {

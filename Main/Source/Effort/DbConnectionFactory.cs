@@ -30,16 +30,16 @@ namespace Effort
     using Effort.Provider;
 
     /// <summary>
-    /// Provides factory methods that are able to create <see cref="T:DbConnection"/> objects 
-    /// that rely on in-process and in-memory databases. All of the data operations initiated 
-    /// from these connection objects are executed by the appropriate in-memory database, so 
-    /// using these connection objects does not require any external dependency outside of the 
-    /// scope of the application.
+    ///     Provides factory methods that are able to create <see cref="T:DbConnection"/> 
+    ///     objects that rely on in-process and in-memory databases. All of the data operations
+    ///     initiated from these connection objects are executed by the appropriate in-memory 
+    ///     database, so using these connection objects does not require any external 
+    ///     dependency outside of the scope of the application.
     /// </summary>
     public static class DbConnectionFactory
     {
         /// <summary>
-        /// Initializes static members of the <see cref="DbConnectionFactory" /> class.
+        ///     Initializes static members of the <see cref="DbConnectionFactory" /> class.
         /// </summary>
         static DbConnectionFactory()
         {
@@ -49,19 +49,21 @@ namespace Effort
         #region Persistent
 
         /// <summary>
-        /// Creates a <see cref="T:DbConnection"/> object that rely on an in-memory database 
-        /// instance that lives during the complete application lifecycle. If the database is 
-        /// accessed the first time, then its state will be initialized by the provided 
-        /// <see cref="T:IDataLoader"/> object.
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory 
+        ///     database instance that lives during the complete application lifecycle. If the
+        ///     database is accessed the first time, then its state will be initialized by the
+        ///     provided <see cref="T:IDataLoader"/> object.
         /// </summary>
         /// <param name="instanceId">
-        /// The identifier of the in-memory database.
+        ///     The identifier of the in-memory database.
         /// </param>
         /// <param name="dataLoader">
-        /// The <see cref="T:IDataLoader"/> object that might initialize the state of the 
-        /// in-memory database.
+        ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        ///     in-memory database.
         /// </param>
-        /// <returns>The <see cref="T:DbConnection"/> object.</returns>
+        /// <returns>
+        ///     The <see cref="T:DbConnection"/> object.
+        /// </returns>
         public static DbConnection CreatePersistent(string instanceId, IDataLoader dataLoader)
         {
             EffortConnection connection = Create(instanceId, dataLoader);
@@ -70,13 +72,13 @@ namespace Effort
         }
 
         /// <summary>
-        /// Creates a <see cref="T:DbConnection"/> object that rely on an in-memory database 
-        /// instance that lives during the complete application lifecycle.
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory 
+        ///     database instance that lives during the complete application lifecycle.
         /// </summary>
         /// <param name="instanceId">
-        /// The identifier of the in-memory database.</param>
+        ///     The identifier of the in-memory database.</param>
         /// <returns>
-        /// The <see cref="T:DbConnection"/> object.
+        ///     The <see cref="T:DbConnection"/> object.
         /// </returns>
         public static DbConnection CreatePersistent(string instanceId)
         {
@@ -88,18 +90,18 @@ namespace Effort
         #region Transient
 
         /// <summary>
-        /// Creates a <see cref="T:DbConnection"/> object that rely on an in-memory database 
-        /// instance that lives during the connection object lifecycle. If the connection 
-        /// object is disposed or garbage collected, then underlying database will be garbage 
-        /// collected too. The initial state of the database is initialized by the provided 
-        /// <see cref="T:IDataLoader"/> object.
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory 
+        ///     database instance that lives during the connection object lifecycle. If the 
+        ///     connection object is disposed or garbage collected, then underlying database 
+        ///     will be garbage collected too. The initial state of the database is initialized
+        ///     by the provided <see cref="T:IDataLoader"/> object.
         /// </summary>
         /// <param name="dataLoader">
-        /// The <see cref="T:IDataLoader"/> object that initializes the state of the in-memory 
-        /// database.
+        ///     The <see cref="T:IDataLoader"/> object that initializes the state of the 
+        ///     in-memory database.
         /// </param>
         /// <returns>
-        /// The <see cref="T:DbConnection"/> object.
+        ///     The <see cref="T:DbConnection"/> object.
         /// </returns>
         public static DbConnection CreateTransient(IDataLoader dataLoader)
         {
@@ -112,13 +114,13 @@ namespace Effort
         }
 
         /// <summary>
-        /// Creates a <see cref="T:DbConnection"/> object that rely on an in-memory database 
-        /// instance that lives during the connection object lifecycle. If the connection 
-        /// object is disposed or garbage collected, then underlying database will be garbage 
-        /// collected too.
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory
+        ///     database instance that lives during the connection object lifecycle. If the 
+        ///     connection object is disposed or garbage collected, then underlying database 
+        ///     will be garbage collected too.
         /// </summary>
         /// <returns>
-        /// The <see cref="T:DbConnection"/> object.
+        ///     The <see cref="T:DbConnection"/> object.
         /// </returns>
         public static DbConnection CreateTransient()
         {
@@ -128,12 +130,12 @@ namespace Effort
         #endregion
 
         /// <summary>
-        /// Creates an EffortConnection object with a connection string that represents the 
-        /// specified parameter values.
+        ///     Creates an EffortConnection object with a connection string that represents the 
+        ///     specified parameter values.
         /// </summary>
-        /// <param name="instanceId">The instance id.</param>
-        /// <param name="dataLoader">The data loader.</param>
-        /// <returns>The EffortConnection object.</returns>
+        /// <param name="instanceId"> The instance id. </param>
+        /// <param name="dataLoader"> The data loader. </param>
+        /// <returns> The EffortConnection object. </returns>
         private static EffortConnection Create(string instanceId, IDataLoader dataLoader)
         {
             EffortConnectionStringBuilder connectionString = 

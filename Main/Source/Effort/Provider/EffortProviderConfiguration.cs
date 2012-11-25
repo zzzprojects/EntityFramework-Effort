@@ -30,27 +30,27 @@ namespace Effort.Provider
     using System.Threading;
 
     /// <summary>
-    /// Configuration module for the Effort provider.
+    ///     Configuration module for the Effort provider.
     /// </summary>
     public static class EffortProviderConfiguration
     {
         /// <summary>
-        /// The provider invariant name of the Effort provider.
+        ///     The provider invariant name of the Effort provider.
         /// </summary>
         public static readonly string ProviderInvariantName = "EffortProvider";
 
         /// <summary>
-        /// Indicates if the Effort provider is registered.
+        ///     Indicates if the Effort provider is registered.
         /// </summary>
         private static bool isRegistered = false;
 
         /// <summary>
-        /// Latch object that is used to avoid double registration.
+        ///     Latch object that is used to avoid double registration.
         /// </summary>
         private static object latch = new object();
 
         /// <summary>
-        /// Registers the provider factory.
+        ///     Registers the provider factory.
         /// </summary>
         public static void RegisterProvider()
         {

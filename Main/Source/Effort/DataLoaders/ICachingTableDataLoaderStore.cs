@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ICachingTableDataLoaderStoreProxy.cs" company="Effort Team">
+// <copyright file="ICachingTableDataLoaderStore.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,12 +27,37 @@ namespace Effort.DataLoaders
     using System;
     using Effort.Internal.Caching;
 
-    internal interface ICachingTableDataLoaderStoreProxy
+    /// <summary>
+    ///     Provides functionality to check or return cached table data.
+    /// </summary>
+    internal interface ICachingTableDataLoaderStore
     {
+        /// <summary>
+        ///     Returns the stored table data.
+        /// </summary>
+        /// <param name="key"> 
+        ///     The key that identifies the table data.
+        /// </param>
+        /// <param name="factoryMethod">
+        ///     The factory method that initilizes the table data if has not been added to the
+        ///     store yet.
+        /// </param>
+        /// <returns>
+        ///     The table data.
+        /// </returns>
         CachingTableDataLoader GetCachedData(
             CachingTableDataLoaderKey key,
             Func<CachingTableDataLoader> factoryMethod);
 
+        /// <summary>
+        ///     Determines whether the desired table data is added to store.
+        /// </summary>
+        /// <param name="key">
+        ///     The key that identifies the table data.
+        /// </param>
+        /// <returns>
+        ///   <c>true</c> if the store contains the data, otherwise <c>false</c>.
+        /// </returns>
         bool Contains(CachingTableDataLoaderKey key);
     }
 }

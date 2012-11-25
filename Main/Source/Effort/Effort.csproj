@@ -85,7 +85,7 @@
     <Compile Include="DataLoaders\EmptyDataLoader.cs" />
     <Compile Include="DataLoaders\EntityDataLoader.cs" />
     <Compile Include="DataLoaders\IDataLoaderConfigurationLatch.cs" />
-    <Compile Include="DataLoaders\ICachingTableDataLoaderStoreProxy.cs" />
+    <Compile Include="DataLoaders\ICachingTableDataLoaderStore.cs" />
     <Compile Include="DataLoaders\ObjectLoader.cs" />
     <Compile Include="DataLoaders\TableDataLoaderBase.cs" />
     <Compile Include="DataLoaders\IDataLoader.cs" />

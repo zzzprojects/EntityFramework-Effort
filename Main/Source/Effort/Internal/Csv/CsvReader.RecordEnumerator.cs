@@ -32,7 +32,7 @@ namespace Effort.Internal.Csv
     internal partial class CsvReader
     {
         /// <summary>
-        /// Supports a simple iteration over the records of a <see cref="T:CsvReader"/>.
+        ///     Supports a simple iteration over the records of a <see cref="T:CsvReader"/>.
         /// </summary>
         public struct RecordEnumerator
             : IEnumerator<string[]>, IEnumerator
@@ -40,17 +40,17 @@ namespace Effort.Internal.Csv
             #region Fields
 
             /// <summary>
-            /// Contains the enumerated <see cref="T:CsvReader"/>.
+            ///     Contains the enumerated <see cref="T:CsvReader"/>.
             /// </summary>
             private CsvReader reader;
 
             /// <summary>
-            /// Contains the current record.
+            ///     Contains the current record.
             /// </summary>
             private string[] current;
 
             /// <summary>
-            /// Contains the current record index.
+            ///     Contains the current record index.
             /// </summary>
             private long currentRecordIndex;
 
@@ -59,9 +59,11 @@ namespace Effort.Internal.Csv
             #region Constructors
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="T:RecordEnumerator"/> class.
+            ///     Initializes a new instance of the <see cref="T:RecordEnumerator"/> class.
             /// </summary>
-            /// <param name="reader">The <see cref="T:CsvReader"/> to iterate over.</param>
+            /// <param name="reader">
+            ///     The <see cref="T:CsvReader"/> to iterate over.
+            /// </param>
             /// <exception cref="T:ArgumentNullException">
             ///		<paramref name="reader"/> is a <see langword="null"/>.
             /// </exception>
@@ -83,7 +85,7 @@ namespace Effort.Internal.Csv
             #region IEnumerator<string[]> Members
 
             /// <summary>
-            /// Gets the current record.
+            ///     Gets the current record.
             /// </summary>
             public string[] Current
             {
@@ -91,11 +93,12 @@ namespace Effort.Internal.Csv
             }
 
             /// <summary>
-            /// Advances the enumerator to the next record of the CSV.
+            ///     Advances the enumerator to the next record of the CSV.
             /// </summary>
             /// <returns>
-            /// <see langword="true"/> if the enumerator was successfully advanced to the next 
-            /// record, <see langword="false"/> if the enumerator has passed the end of the CSV.
+            ///     <see langword="true"/> if the enumerator was successfully advanced to the 
+            ///     next record, <see langword="false"/> if the enumerator has passed the end
+            ///     of the CSV.
             /// </returns>
             public bool MoveNext()
             {
@@ -128,7 +131,8 @@ namespace Effort.Internal.Csv
             #region IEnumerator Members
 
             /// <summary>
-            /// Sets the enumerator to its initial position, which is before the first record in the CSV.
+            ///     Sets the enumerator to its initial position, which is before the first 
+            ///     record in the CSV.
             /// </summary>
             public void Reset()
             {
@@ -145,7 +149,7 @@ namespace Effort.Internal.Csv
             }
 
             /// <summary>
-            /// Gets the current record.
+            ///     Gets the current record.
             /// </summary>
             object IEnumerator.Current
             {
@@ -166,8 +170,8 @@ namespace Effort.Internal.Csv
             #region IDisposable Members
 
             /// <summary>
-            /// Performs application-defined tasks associated with freeing, releasing, or 
-            /// resetting unmanaged resources.
+            ///     Performs application-defined tasks associated with freeing, releasing, or 
+            ///     resetting unmanaged resources.
             /// </summary>
             public void Dispose()
             {

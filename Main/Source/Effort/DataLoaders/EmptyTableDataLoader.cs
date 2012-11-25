@@ -27,15 +27,15 @@ namespace Effort.DataLoaders
     using System.Collections.Generic;
 
     /// <summary>
-    /// Represents a table data loader that retrieves no data.
+    ///     Represents a table data loader that retrieves no data.
     /// </summary>
     public class EmptyTableDataLoader : ITableDataLoader
     {
         /// <summary>
-        /// Creates no data for the table.
+        ///     Creates no data for the table.
         /// </summary>
         /// <returns>
-        /// An empty enumerable object.
+        ///     An empty enumerable object.
         /// </returns>
         public IEnumerable<object[]> GetData()
         {

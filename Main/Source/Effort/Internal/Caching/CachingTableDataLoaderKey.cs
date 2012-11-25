@@ -27,28 +27,29 @@ namespace Effort.Internal.Caching
     using System;
 
     /// <summary>
-    /// Represents a key the identifies data that was loaded by a data loader component.
+    ///     Represents a key the identifies data that was loaded by a data loader component.
     /// </summary>
     internal class CachingTableDataLoaderKey : IEquatable<CachingTableDataLoaderKey>
     {
         /// <summary>
-        /// Identifies the data loader configuration
+        ///     Identifies the data loader configuration
         /// </summary>
         private DataLoaderConfigurationKey loaderConfiguration;
 
         /// <summary>
-        /// The name of the table.
+        ///     The name of the table.
         /// </summary>
         private string tableName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CachingTableDataLoaderKey" /> class.
+        ///     Initializes a new instance of the <see cref="CachingTableDataLoaderKey" /> 
+        ///     class.
         /// </summary>
         /// <param name="loaderConfiguration">
-        /// Identifies the data loader configuration.
+        ///     Identifies the data loader configuration.
         /// </param>
         /// <param name="tableName">
-        /// The name of the table.
+        ///     The name of the table.
         /// </param>
         public CachingTableDataLoaderKey(
             DataLoaderConfigurationKey loaderConfiguration, 
@@ -69,15 +70,15 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="CachingTableDataLoaderKey" /> is equal to 
-        /// this instance.
+        ///     Determines whether the specified <see cref="CachingTableDataLoaderKey" /> is 
+        ///     equal to this instance.
         /// </summary>
         /// <param name="other">
-        /// The <see cref="CachingTableDataLoaderKey" /> to compare with this instance.
+        ///     The <see cref="CachingTableDataLoaderKey" /> to compare with this instance.
         /// </param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="CachingTableDataLoaderKey" /> is equal to this 
-        ///   instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="CachingTableDataLoaderKey" /> is equal
+        ///     to this instance; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(CachingTableDataLoaderKey other)
         {
@@ -92,15 +93,15 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this 
-        /// instance.
+        ///     Determines whether the specified <see cref="System.Object" /> is equal to this 
+        ///     instance.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="System.Object" /> to compare with this instance.
+        ///     The <see cref="System.Object" /> to compare with this instance.
         /// </param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
-        ///   instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
+        ///     instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -108,11 +109,11 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data 
-        /// structures like a hash table. 
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data 
+        ///     structures like a hash table. 
         /// </returns>
         public override int GetHashCode()
         {

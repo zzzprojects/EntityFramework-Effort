@@ -27,26 +27,53 @@ namespace Effort.DataLoaders
     using System;
     using Effort.Internal.Caching;
 
+    /// <summary>
+    ///     Represents a proxy towards the appropriate 
+    ///     <see cref="T:Effort.Internal.Caching.DataLoaderConfigurationLatch"/> object.
+    /// </summary>
     internal sealed class DataLoaderConfigurationLatchProxy : 
         IDataLoaderConfigurationLatch, 
         IDisposable
     {
+        /// <summary>
+        ///     Indicates is the latch is acquired.
+        /// </summary>
         private bool aquired;
+
+        /// <summary>
+        ///     The key that identifies the latch.
+        /// </summary>
         private DataLoaderConfigurationKey key;
+
+        /// <summary>
+        ///     The global configuration latch.
+        /// </summary>
         private DataLoaderConfigurationLatch latch;
 
+        /// <summary>
+        ///     Initializes a new instance of the 
+        ///     <see cref="DataLoaderConfigurationLatchProxy" /> class.
+        /// </summary>
+        /// <param name="key"> The key that identifies the global latch. </param>
         public DataLoaderConfigurationLatchProxy(DataLoaderConfigurationKey key)
         {
             this.aquired = false;
             this.key = key;
         }
 
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="DataLoaderConfigurationLatchProxy" /> 
+        ///     class.
+        /// </summary>
         ~DataLoaderConfigurationLatchProxy()
         {
             GC.SuppressFinalize(this);
             this.Dispose(false);
         }
 
+        /// <summary>
+        ///     Acquires the configuration latch.
+        /// </summary>
         public void Acquire()
         {
             if (this.aquired)
@@ -63,6 +90,9 @@ namespace Effort.DataLoaders
             this.aquired = true;
         }
 
+        /// <summary>
+        ///     Releases the configuration latch.
+        /// </summary>
         public void Release()
         {
             if (!this.aquired)
@@ -76,6 +106,9 @@ namespace Effort.DataLoaders
             // The latch is not removed from the cache
         }
 
+        /// <summary>
+        ///     Releases the configuration latch.
+        /// </summary>
         void IDisposable.Dispose()
         {
             this.Dispose(true);

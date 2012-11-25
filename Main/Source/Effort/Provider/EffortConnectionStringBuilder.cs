@@ -29,8 +29,8 @@ namespace Effort.Provider
     using Effort.DataLoaders;
 
     /// <summary>
-    /// Providers a simple way to manage the contents of connection string used by the
-    /// <see cref="EffortConnection"/> class.
+    ///     Providers a simple way to manage the contents of connection string used by the
+    ///     <see cref="EffortConnection"/> class.
     /// </summary>
     public class EffortConnectionStringBuilder : DbConnectionStringBuilder
     {
@@ -39,20 +39,20 @@ namespace Effort.Provider
         private static readonly string DataLoaderArgKey = "DataLoaderArg";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
-        /// class.
+        ///     Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
+        ///     class.
         /// </summary>
         public EffortConnectionStringBuilder()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
-        /// class. The provided connection string provides the data for the internal connection
-        /// information of the instance.
+        ///     Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
+        ///     class. The provided connection string provides the data for the internal
+        ///     connection information of the instance.
         /// </summary>
         /// <param name="connectionString">
-        /// The basis for the object's internal connection information.
+        ///     The basis for the object's internal connection information.
         /// </param>
         public EffortConnectionStringBuilder(string connectionString)
         {
@@ -60,10 +60,10 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the string that identifies the database instance.
+        ///     Gets or sets the string that identifies the database instance.
         /// </summary>
         /// <value>
-        /// The identifier of the database instance.
+        ///     The identifier of the database instance.
         /// </value>
         public string InstanceId
         {
@@ -84,15 +84,15 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the type of the data loader that is used to initialize the state of 
-        /// the database instance. It has to implement the 
-        /// <see cref="Effort.DataLoaders.IDataLoader"/> interface.
+        ///     Gets or sets the type of the data loader that is used to initialize the state
+        ///     of the database instance. It has to implement the 
+        ///     <see cref="Effort.DataLoaders.IDataLoader"/> interface.
         /// </summary>
         /// <value>
-        /// The type of the data loader. 
+        ///     The type of the data loader. 
         /// </value>
         /// <exception cref="System.InvalidOperationException">
-        /// Cannot set data loader.
+        ///     Cannot set data loader.
         /// </exception>
         public Type DataLoaderType
         {
@@ -132,11 +132,11 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the data loader argument that is used by the data loader to initialize
-        /// the state of the database.
+        ///     Gets or sets the data loader argument that is used by the data loader to
+        ///     initialize the state of the database.
         /// </summary>
         /// <value>
-        /// The data loader argument.
+        ///     The data loader argument.
         /// </value>
         public string DataLoaderArgument
         {

@@ -27,8 +27,24 @@ namespace Effort.DataLoaders
     using System;
     using Effort.Internal.Caching;
 
-    internal class CachingTableDataLoaderStoreProxy : ICachingTableDataLoaderStoreProxy
+    /// <summary>
+    ///     Represents a proxy towards the global table data store.
+    /// </summary>
+    internal class CachingTableDataLoaderStoreProxy : ICachingTableDataLoaderStore
     {
+        /// <summary>
+        ///     Returns the stored table data.
+        /// </summary>
+        /// <param name="key"> 
+        ///     The key that identifies the table data.
+        /// </param>
+        /// <param name="factoryMethod">
+        ///     The factory method that initilizes the table data if has not been added to the
+        ///     store yet.
+        /// </param>
+        /// <returns>
+        ///     The table data.
+        /// </returns>
         public CachingTableDataLoader GetCachedData(
             CachingTableDataLoaderKey key,
             Func<CachingTableDataLoader> factoryMethod)
@@ -36,6 +52,15 @@ namespace Effort.DataLoaders
             return CachingTableDataLoaderStore.GetCachedData(key, factoryMethod);
         }
 
+        /// <summary>
+        ///     Determines whether the desired table data is added to store.
+        /// </summary>
+        /// <param name="key">
+        ///     The key that identifies the table data.
+        /// </param>
+        /// <returns>
+        ///   <c>true</c> if the store contains the data, otherwise <c>false</c>.
+        /// </returns>
         public bool Contains(CachingTableDataLoaderKey key)
         {
             return CachingTableDataLoaderStore.Contains(key);

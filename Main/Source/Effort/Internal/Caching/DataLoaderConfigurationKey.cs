@@ -27,11 +27,26 @@ namespace Effort.Internal.Caching
     using System;
     using Effort.DataLoaders;
 
+    /// <summary>
+    ///     Represents a key that identifies a data loader configuration.
+    /// </summary>
     internal class DataLoaderConfigurationKey : IEquatable<DataLoaderConfigurationKey>
     {
+        /// <summary>
+        ///     The type of the data loader.
+        /// </summary>
         private Type type;
+
+        /// <summary>
+        ///     The argument of the data loader that describes its complete state.
+        /// </summary>
         private string argument;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DataLoaderConfigurationKey" /> 
+        ///     class.
+        /// </summary>
+        /// <param name="loader"> The data loader. </param>
         public DataLoaderConfigurationKey(IDataLoader loader)
         {
             if (loader == null)
@@ -43,6 +58,17 @@ namespace Effort.Internal.Caching
             this.argument = loader.Argument ?? string.Empty;
         }
 
+        /// <summary>
+        ///     Determines whether the specified <see cref="DataLoaderConfigurationKey" /> is 
+        ///     equal to this instance.
+        /// </summary>
+        /// <param name="other">
+        ///     The <see cref="DataLoaderConfigurationKey" /> to compare with this instance.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c> if the specified <see cref="DataLoaderConfigurationKey" /> is equal
+        ///     to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public bool Equals(DataLoaderConfigurationKey other)
         {
             if (other == null)
@@ -55,11 +81,29 @@ namespace Effort.Internal.Caching
                 this.argument.Equals(other.argument, StringComparison.InvariantCulture);
         }
 
+        /// <summary>
+        ///     Determines whether the specified <see cref="System.Object" /> is equal to this 
+        ///     instance.
+        /// </summary>
+        /// <param name="obj">
+        ///     The <see cref="System.Object" /> to compare with this instance.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this 
+        ///     instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             return base.Equals(obj as DataLoaderConfigurationKey);
         }
 
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data 
+        ///     structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
         {
             return this.type.GetHashCode() % this.argument.GetHashCode();

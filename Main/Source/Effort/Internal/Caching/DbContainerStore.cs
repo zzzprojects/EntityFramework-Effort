@@ -28,17 +28,17 @@ namespace Effort.Internal.Caching
     using Effort.Internal.DbManagement;
 
     /// <summary>
-    /// Represents a cache that stores <see cref="DbContainer"/> objects.
+    ///     Represents a cache that stores <see cref="DbContainer"/> objects.
     /// </summary>
     internal class DbContainerStore
     {
         /// <summary>
-        /// Internal collection.
+        ///     Internal collection.
         /// </summary>
         private static ConcurrentCache<string, DbContainer> store;
 
         /// <summary>
-        /// Initializes static members of the <see cref="DbContainerStore" /> class.
+        ///     Initializes static members of the <see cref="DbContainerStore" /> class.
         /// </summary>
         static DbContainerStore()
         {
@@ -46,13 +46,13 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Returns a <see cref="DbContainer"/> object identified by the specified instance
-        /// identifier. If no such element exist, the specified factory method is used to
-        /// create one.
+        ///     Returns a <see cref="DbContainer"/> object identified by the specified instance
+        ///     identifier. If no such element exist, the specified factory method is used to
+        ///     create one.
         /// </summary>
-        /// <param name="instanceId">The instance id.</param>
-        /// <param name="databaseFactoryMethod">The database factory method.</param>
-        /// <returns>The  <see cref="DbContainer"/> object.</returns>
+        /// <param name="instanceId"> The instance id. </param>
+        /// <param name="databaseFactoryMethod"> The database factory method. </param>
+        /// <returns> The <see cref="DbContainer"/> object. </returns>
         public static DbContainer GetDbContainer(
             string instanceId, 
             Func<DbContainer> databaseFactoryMethod)
@@ -61,9 +61,9 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Removes the DbContainer associated to the specified identifier from the cache.
+        ///     Removes the DbContainer associated to the specified identifier from the cache.
         /// </summary>
-        /// <param name="instanceId">The instance identifier.</param>
+        /// <param name="instanceId"> The instance identifier. </param>
         public static void RemoveDbContainer(string instanceId)
         {
             store.Remove(instanceId);

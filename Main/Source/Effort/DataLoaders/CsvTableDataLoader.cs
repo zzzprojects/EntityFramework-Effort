@@ -33,27 +33,27 @@ namespace Effort.DataLoaders
     using Effort.Internal.Csv;
 
     /// <summary>
-    /// Represent a table data loader that retrieves data from a CSV file.
+    ///     Represent a table data loader that retrieves data from a CSV file.
     /// </summary>
     public class CsvTableDataLoader : TableDataLoaderBase
     {
         private FileInfo file;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CsvTableDataLoader" /> class.
+        ///     Initializes a new instance of the <see cref="CsvTableDataLoader" /> class.
         /// </summary>
-        /// <param name="path">The path of the CSV file.</param>
-        /// <param name="table">The metadata of the requested table.</param>
+        /// <param name="path"> The path of the CSV file. </param>
+        /// <param name="table"> The metadata of the requested table. </param>
         public CsvTableDataLoader(string path, TableDescription table) : base(table)
         {
             this.file = new FileInfo(path);
         }
 
         /// <summary>
-        /// Creates initial data for the table.
+        ///     Creates initial data for the table.
         /// </summary>
         /// <returns>
-        /// The data created for the table.
+        ///     The data created for the table.
         /// </returns>
         public override IEnumerable<object[]> GetData()
         {
@@ -72,11 +72,11 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Creates a CSV data reader that retrieves the initial data from the appropriate CSV 
-        /// file.
+        ///     Creates a CSV data reader that retrieves the initial data from the appropriate
+        ///     CSV file.
         /// </summary>
         /// <returns>
-        /// The CSV data reader.
+        ///     The CSV data reader.
         /// </returns>
         protected override IDataReader CreateDataReader()
         {
@@ -88,15 +88,19 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Converts the string value to the appropriate type.
+        ///     Converts the string value to the appropriate type.
         /// </summary>
-        /// <param name="value">The current string value.</param>
-        /// <param name="type">The expected type.</param>
+        /// <param name="value">
+        ///     The current string value.
+        /// </param>
+        /// <param name="type"> 
+        ///     The expected type. 
+        /// </param>
         /// <returns>
-        /// The expected value.
+        ///     The expected value.
         /// </returns>
         /// <exception cref="System.FormatException">
-        /// The string value is in wrong format.
+        ///     The string value is in wrong format.
         /// </exception>
         protected override object ConvertValue(object value, Type type)
         {

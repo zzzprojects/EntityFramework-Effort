@@ -28,22 +28,36 @@ namespace Effort.Internal.Caching
     using System.Threading;
     using Effort.DataLoaders;
 
+    /// <summary>
+    ///     Represents a latch that locks data loader configurations.
+    /// </summary>
     internal class DataLoaderConfigurationLatch : IDataLoaderConfigurationLatch
     {
-        private Guid guid;
+        /// <summary>
+        ///     The semaphore that is used for locking.
+        /// </summary>
         private SemaphoreSlim semaphore;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DataLoaderConfigurationLatch" />
+        ///     class.
+        /// </summary>
         public DataLoaderConfigurationLatch()
         {
-            this.guid = Guid.NewGuid();
             this.semaphore = new SemaphoreSlim(1);
         }
 
+        /// <summary>
+        ///     Acquires the configuration latch.
+        /// </summary>
         public void Acquire()
         {
             this.semaphore.Wait();
         }
 
+        /// <summary>
+        ///     Releases the configuration latch.
+        /// </summary>
         public void Release()
         {
             this.semaphore.Release();

@@ -24,10 +24,19 @@
 
 namespace Effort.DataLoaders
 {
+    /// <summary>
+    ///     Provides functionality to acquire or release a data loader configuration latch.
+    /// </summary>
     internal interface IDataLoaderConfigurationLatch
     {
+        /// <summary>
+        ///     Acquires the configuration latch.
+        /// </summary>
         void Acquire();
 
+        /// <summary>
+        ///     Releases the configuration latch.
+        /// </summary>
         void Release();
     }
 }

@@ -31,7 +31,7 @@ namespace Effort.Internal.Csv
     using System.Security.Permissions;
 
     /// <summary>
-    /// Represents the exception that is thrown when a CSV file is malformed.
+    ///     Represents the exception that is thrown when a CSV file is malformed.
     /// </summary>
     [Serializable]
     internal class MalformedCsvException 
@@ -40,27 +40,27 @@ namespace Effort.Internal.Csv
         #region Fields
 
         /// <summary>
-        /// Contains the message that describes the error.
+        ///     Contains the message that describes the error.
         /// </summary>
         private string message;
 
         /// <summary>
-        /// Contains the raw data when the error occured.
+        ///     Contains the raw data when the error occured.
         /// </summary>
         private string rawData;
 
         /// <summary>
-        /// Contains the current field index.
+        ///     Contains the current field index.
         /// </summary>
         private int currentFieldIndex;
 
         /// <summary>
-        /// Contains the current record index.
+        ///     Contains the current record index.
         /// </summary>
         private long currentRecordIndex;
 
         /// <summary>
-        /// Contains the current position in the raw data.
+        ///     Contains the current position in the raw data.
         /// </summary>
         private int currentPosition;
 
@@ -69,7 +69,7 @@ namespace Effort.Internal.Csv
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the MalformedCsvException class.
+        ///     Initializes a new instance of the MalformedCsvException class.
         /// </summary>
         public MalformedCsvException()
             : this(null, null)
@@ -77,10 +77,10 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MalformedCsvException class.
+        ///     Initializes a new instance of the MalformedCsvException class.
         /// </summary>
         /// <param name="message">
-        /// The message that describes the error.
+        ///     The message that describes the error.
         /// </param>
         public MalformedCsvException(string message)
             : this(message, null)
@@ -88,13 +88,13 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MalformedCsvException class.
+        ///     Initializes a new instance of the MalformedCsvException class.
         /// </summary>
         /// <param name="message">
-        /// The message that describes the error.
+        ///     The message that describes the error.
         /// </param>
         /// <param name="innerException">
-        /// The exception that is the cause of the current exception.
+        ///     The exception that is the cause of the current exception.
         /// </param>
         public MalformedCsvException(string message, Exception innerException)
             : base(String.Empty, innerException)
@@ -108,19 +108,19 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MalformedCsvException class.
+        ///     Initializes a new instance of the MalformedCsvException class.
         /// </summary>
         /// <param name="rawData">
-        /// The raw data when the error occured.
+        ///     The raw data when the error occured.
         /// </param>
         /// <param name="currentPosition">
-        /// The current position in the raw data.
+        ///     The current position in the raw data.
         /// </param>
         /// <param name="currentRecordIndex">
-        /// The current record index.
+        ///     The current record index.
         /// </param>
         /// <param name="currentFieldIndex">
-        /// The current field index.
+        ///     The current field index.
         /// </param>
         public MalformedCsvException(
             string rawData, 
@@ -132,22 +132,22 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MalformedCsvException class.
+        ///     Initializes a new instance of the MalformedCsvException class.
         /// </summary>
         /// <param name="rawData">
-        /// The raw data when the error occured.
+        ///     The raw data when the error occured.
         /// </param>
         /// <param name="currentPosition">
-        /// The current position in the raw data.
+        ///     The current position in the raw data.
         /// </param>
         /// <param name="currentRecordIndex">
-        /// The current record index.
+        ///     The current record index.
         /// </param>
         /// <param name="currentFieldIndex">
-        /// The current field index.
+        ///     The current field index.
         /// </param>
         /// <param name="innerException">
-        /// The exception that is the cause of the current exception.
+        ///     The exception that is the cause of the current exception.
         /// </param>
         public MalformedCsvException(
             string rawData, 
@@ -173,15 +173,16 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MalformedCsvException class with serialized data.
+        ///     Initializes a new instance of the MalformedCsvException class with serialized 
+        ///     data.
         /// </summary>
         /// <param name="info">
-        /// The <see cref="T:SerializationInfo"/> that holds the serialized object data about 
-        /// the exception being thrown.
+        ///     The <see cref="T:SerializationInfo"/> that holds the serialized object data
+        ///     about the exception being thrown.
         /// </param>
         /// <param name="context">
-        /// The <see cref="T:StreamingContext"/> that contains contextual information about the
-        /// source or destination.
+        ///     The <see cref="T:StreamingContext"/> that contains contextual information about
+        ///     the source or destination.
         /// </param>
         protected MalformedCsvException(SerializationInfo info, StreamingContext context)
             : base(info, context)
@@ -199,36 +200,36 @@ namespace Effort.Internal.Csv
         #region Properties
 
         /// <summary>
-        /// Gets the raw data when the error occured.
+        ///     Gets the raw data when the error occured.
         /// </summary>
-        /// <value>The raw data when the error occured.</value>
+        /// <value> The raw data when the error occured. </value>
         public string RawData
         {
             get { return this.rawData; }
         }
 
         /// <summary>
-        /// Gets the current position in the raw data.
+        ///     Gets the current position in the raw data.
         /// </summary>
-        /// <value>The current position in the raw data.</value>
+        /// <value> The current position in the raw data. </value>
         public int CurrentPosition
         {
             get { return this.currentPosition; }
         }
 
         /// <summary>
-        /// Gets the current record index.
+        ///     Gets the current record index.
         /// </summary>
-        /// <value>The current record index.</value>
+        /// <value> The current record index. </value>
         public long CurrentRecordIndex
         {
             get { return this.currentRecordIndex; }
         }
 
         /// <summary>
-        /// Gets the current field index.
+        ///     Gets the current field index.
         /// </summary>
-        /// <value>The current record index.</value>
+        /// <value> The current record index. </value>
         public int CurrentFieldIndex
         {
             get { return this.currentFieldIndex; }
@@ -239,25 +240,25 @@ namespace Effort.Internal.Csv
         #region Overrides
 
         /// <summary>
-        /// Gets a message that describes the current exception.
+        ///     Gets a message that describes the current exception.
         /// </summary>
-        /// <value>A message that describes the current exception.</value>
+        /// <value> A message that describes the current exception. </value>
         public override string Message
         {
             get { return this.message; }
         }
 
         /// <summary>
-        /// When overridden in a derived class, sets the <see cref="T:SerializationInfo"/> with
-        /// information about the exception.
+        ///     When overridden in a derived class, sets the <see cref="T:SerializationInfo"/>
+        ///     with information about the exception.
         /// </summary>
         /// <param name="info">
-        /// The <see cref="T:SerializationInfo"/> that holds the serialized object data about 
-        /// the exception being thrown.
+        ///     The <see cref="T:SerializationInfo"/> that holds the serialized object data
+        ///     about the exception being thrown.
         /// </param>
         /// <param name="context">
-        /// The <see cref="T:StreamingContext"/> that contains contextual information about the
-        /// source or destination.
+        ///     The <see cref="T:StreamingContext"/> that contains contextual information about
+        ///     the source or destination.
         /// </param>
         public override void GetObjectData(
             SerializationInfo info,

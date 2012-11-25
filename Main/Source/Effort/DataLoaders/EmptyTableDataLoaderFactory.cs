@@ -25,17 +25,19 @@
 namespace Effort.DataLoaders
 {
     /// <summary>
-    /// Represent a table data loader factory that creates <see cref="EmptyTableDataLoader" />
-    /// instances for tables.
+    ///     Represent a table data loader factory that creates 
+    ///     <see cref="EmptyTableDataLoader" /> instances for tables.
     /// </summary>
     public class EmptyTableDataLoaderFactory : ITableDataLoaderFactory
     {
         /// <summary>
-        /// Creates a <see cref="EmptyTableDataLoader" /> instance.
+        ///     Creates a <see cref="EmptyTableDataLoader" /> instance.
         /// </summary>
-        /// <param name="table">The metadata of the table.</param>
+        /// <param name="table">
+        ///     The metadata of the table.
+        /// </param>
         /// <returns>
-        /// The <see cref="EmptyTableDataLoader" /> instance for the table.
+        ///     The <see cref="EmptyTableDataLoader" /> instance for the table.
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
@@ -43,7 +45,7 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Does nothing
+        ///     Does nothing.
         /// </summary>
         public void Dispose()
         { 

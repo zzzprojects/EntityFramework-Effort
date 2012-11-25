@@ -28,7 +28,7 @@ namespace Effort.Internal.Csv
     using System;
 
     /// <summary>
-    /// Provides data for the <see cref="M:CsvReader.ParseError"/> event.
+    ///     Provides data for the <see cref="M:CsvReader.ParseError"/> event.
     /// </summary>
     internal class ParseErrorEventArgs
         : EventArgs
@@ -36,12 +36,12 @@ namespace Effort.Internal.Csv
         #region Fields
 
         /// <summary>
-        /// Contains the error that occured.
+        ///     Contains the error that occured.
         /// </summary>
         private MalformedCsvException error;
 
         /// <summary>
-        /// Contains the action to take.
+        ///     Contains the action to take.
         /// </summary>
         private ParseErrorAction action;
 
@@ -50,10 +50,10 @@ namespace Effort.Internal.Csv
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the ParseErrorEventArgs class.
+        ///     Initializes a new instance of the ParseErrorEventArgs class.
         /// </summary>
-        /// <param name="error">The error that occured.</param>
-        /// <param name="defaultAction">The default action to take.</param>
+        /// <param name="error"> The error that occured. </param>
+        /// <param name="defaultAction"> The default action to take. </param>
         public ParseErrorEventArgs(MalformedCsvException error, ParseErrorAction defaultAction)
             : base()
         {
@@ -66,18 +66,18 @@ namespace Effort.Internal.Csv
         #region Properties
 
         /// <summary>
-        /// Gets the error that occured.
+        ///     Gets the error that occured.
         /// </summary>
-        /// <value>The error that occured.</value>
+        /// <value> The error that occured. </value>
         public MalformedCsvException Error
         {
             get { return this.error; }
         }
 
         /// <summary>
-        /// Gets or sets the action to take.
+        ///     Gets or sets the action to take.
         /// </summary>
-        /// <value>The action to take.</value>
+        /// <value> The action to take. </value>
         public ParseErrorAction Action
         {
             get { return this.action; }

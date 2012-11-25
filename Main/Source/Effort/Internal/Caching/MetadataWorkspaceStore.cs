@@ -28,17 +28,17 @@ namespace Effort.Internal.Caching
     using System.Data.Metadata.Edm;
 
     /// <summary>
-    /// Represents a cache that stores <see cref="MetadataWorkspace"/> object.
+    ///     Represents a cache that stores <see cref="MetadataWorkspace"/> object.
     /// </summary>
     internal class MetadataWorkspaceStore
     {
         /// <summary>
-        /// Internal collection.
+        ///     Internal collection.
         /// </summary>
         private static ConcurrentCache<string, MetadataWorkspace> store;
 
         /// <summary>
-        /// Initializes static members the <see cref="MetadataWorkspaceStore" /> class.
+        ///     Initializes static members the <see cref="MetadataWorkspaceStore" /> class.
         /// </summary>
         static MetadataWorkspaceStore()
         {
@@ -46,18 +46,18 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Returns a <see cref="MetadataWorkspace"/> object that derived from the specified
-        /// metadata in order to be compatible with the Effort provider. If no such element 
-        /// exist, the specified factory method is used to create one.
+        ///     Returns a <see cref="MetadataWorkspace"/> object that derived from the 
+        ///     specified metadata in order to be compatible with the Effort provider. If no 
+        ///     such element exist, the specified factory method is used to create one.
         /// </summary>
         /// <param name="metadata">
-        /// References the metadata resource.
+        ///     References the metadata resource.
         /// </param>
         /// <param name="workspaceFactoryMethod">
-        /// The factory method that instantiates the desired element.
+        ///     The factory method that instantiates the desired element.
         /// </param>
         /// <returns>
-        /// The MetadataWorkspace object.
+        ///     The MetadataWorkspace object.
         /// </returns>
         public static MetadataWorkspace GetMetadataWorkspace(
             string metadata, 

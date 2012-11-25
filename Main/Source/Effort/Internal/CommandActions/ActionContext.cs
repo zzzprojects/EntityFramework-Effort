@@ -30,24 +30,24 @@ namespace Effort.Internal.CommandActions
     using NMemory.Transactions;
 
     /// <summary>
-    /// Containes information about a command execution environment.
+    ///     Containes information about a command execution environment.
     /// </summary>
     internal sealed class ActionContext
     {
         /// <summary>
-        /// The database container that the command is executed on.
+        ///     The database container that the command is executed on.
         /// </summary>
         private DbContainer container;
 
         /// <summary>
-        /// The parameters of the command action.
+        ///     The parameters of the command action.
         /// </summary>
         private IList<CommandActionParameter> parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActionContext" /> class.
+        ///     Initializes a new instance of the <see cref="ActionContext" /> class.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="container"> The container. </param>
         public ActionContext(DbContainer container)
         {
             this.container = container;
@@ -55,10 +55,10 @@ namespace Effort.Internal.CommandActions
         }
 
         /// <summary>
-        /// Gets the database container that the command should be executed on.
+        ///     Gets the database container that the command should be executed on.
         /// </summary>
         /// <value>
-        /// The db container.
+        ///     The db container.
         /// </value>
         public DbContainer DbContainer
         {
@@ -69,10 +69,10 @@ namespace Effort.Internal.CommandActions
         }
 
         /// <summary>
-        /// Gets the collection of the parameters of the command action.
+        ///     Gets the collection of the parameters of the command action.
         /// </summary>
         /// <value>
-        /// The collection of the command action parameters.
+        ///     The collection of the command action parameters.
         /// </value>
         public IList<CommandActionParameter> Parameters
         {
@@ -83,10 +83,10 @@ namespace Effort.Internal.CommandActions
         }
 
         /// <summary>
-        /// Gets or sets the transaction that the command action is executed within.
+        ///     Gets or sets the transaction that the command action is executed within.
         /// </summary>
         /// <value>
-        /// The transaction.
+        ///     The transaction.
         /// </value>
         public Transaction Transaction 
         { 

@@ -28,26 +28,26 @@ namespace Effort.Internal.Csv
     using System;
 
     /// <summary>
-    /// Represent a parsed field value.
+    ///     Represent a parsed field value.
     /// </summary>
     internal struct FieldValue
     {
         /// <summary>
-        /// Indicates if the field has value.
+        ///     Indicates if the field has value.
         /// </summary>
         private bool hasValue;
 
         /// <summary>
-        /// The value of the field.
+        ///     The value of the field.
         /// </summary>
         private string value;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="FieldValue" /> struct from being 
-        /// created.
+        ///     Prevents a default instance of the <see cref="FieldValue" /> struct from being 
+        ///     created.
         /// </summary>
-        /// <param name="value">The field if not missing</param>
-        /// <param name="hasValue">if set to <c>true</c> the field has value.</param>
+        /// <param name="value"> The field if not missing. </param>
+        /// <param name="hasValue"> if set to <c>true</c> the field has value. </param>
         private FieldValue(string value, bool hasValue)
         {
             this.hasValue = hasValue;
@@ -55,15 +55,15 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Representing a missing value;
+        ///     Represents a missing value.
         /// </summary>
         public static readonly FieldValue Missing = new FieldValue(null, false);
 
         /// <summary>
-        /// Gets a value indicating whether the field value is missing
+        ///     Gets a value indicating whether the field value is missing
         /// </summary>
         /// <value>
-        /// <c>true</c> if the value is missing; otherwise, <c>false</c>.
+        ///     <c>true</c> if the value is missing; otherwise, <c>false</c>.
         /// </value>
         public bool IsMissing 
         {
@@ -74,13 +74,13 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the field value.
+        ///     Gets the field value.
         /// </summary>
         /// <value>
-        /// The field value.
+        ///     The field value.
         /// </value>
         /// <exception cref="System.InvalidOperationException">
-        /// The field value is missing.
+        ///     The field value is missing.
         /// </exception>
         public string Value
         {
@@ -96,21 +96,23 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Implicit conversion from <see cref="System.String"/> to <see cref="FieldValue"/>.
+        ///     Implicit conversion from <see cref="System.String"/> to 
+        ///     <see cref="FieldValue"/>.
         /// </summary>
-        /// <param name="value">The <see cref="System.String"/> value.</param>
-        /// <returns>The <see cref="FieldValue"/> value.</returns>
+        /// <param name="value"> The <see cref="System.String"/> value. </param>
+        /// <returns> The <see cref="FieldValue"/> value. </returns>
         public static implicit operator FieldValue(string value)
         {
             return new FieldValue(value, true);
         }
 
         /// <summary>
-        /// Concats a <see cref="FieldValue"/> value with a <see cref="System.String"/> value.
+        ///     Concats a <see cref="FieldValue"/> value with a <see cref="System.String"/>
+        ///     value.
         /// </summary>
-        /// <param name="left">The <see cref="FieldValue"/> value.</param>
-        /// <param name="right">The <see cref="System.String"/> value.</param>
-        /// <returns>The result of the concatenation.</returns>
+        /// <param name="left"> The <see cref="FieldValue"/> value. </param>
+        /// <param name="right"> The <see cref="System.String"/> value. </param>
+        /// <returns> The result of the concatenation. </returns>
         public static FieldValue operator +(FieldValue left, string right)
         {
             if (left.IsMissing)
@@ -124,11 +126,12 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Concats a <see cref="System.String"/> value with a <see cref="FieldValue"/> value.
+        ///     Concats a <see cref="System.String"/> value with a <see cref="FieldValue"/>
+        ///     value.
         /// </summary>
-        /// <param name="left">The <see cref="System.String"/> value.</param>
-        /// <param name="right">The <see cref="FieldValue"/> value.</param>
-        /// <returns>The result of the concatenation.</returns>
+        /// <param name="left"> The <see cref="System.String"/> value. </param>
+        /// <param name="right"> The <see cref="FieldValue"/> value. </param>
+        /// <returns> The result of the concatenation. </returns>
         public static FieldValue operator +(string left, FieldValue right)
         {
             if (right.IsMissing)
@@ -142,10 +145,10 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -164,11 +167,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data 
-        /// structures like a hash table. 
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data 
+        ///     structures like a hash table. 
         /// </returns>
         public override int GetHashCode()
         {

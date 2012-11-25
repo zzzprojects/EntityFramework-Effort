@@ -30,21 +30,21 @@ namespace Effort.Internal.Common
     using System.Reflection;
 
     /// <summary>
-    /// Create DbCommandTree objects.
+    ///     Create DbCommandTree objects.
     /// </summary>
     internal static class CommandTreeBuilder
     {
         /// <summary>
-        /// Creates the full database scan expression.
+        ///     Creates the full database scan expression.
         /// </summary>
         /// <param name="workspace">
-        /// The workspace that contains the metadata of the database
+        ///     The workspace that contains the metadata of the database
         /// </param>
         /// <param name="entitySet">
-        /// The entity set that is being scanned.
+        ///     The entity set that is being scanned.
         /// </param>
         /// <returns>
-        /// The DbCommandTree object.
+        ///     The DbCommandTree object.
         /// </returns>
         public static DbCommandTree CreateSelectAll(
             MetadataWorkspace workspace, 

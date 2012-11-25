@@ -28,18 +28,19 @@ namespace Effort.DataLoaders
     using System.IO;
 
     /// <summary>
-    /// Represents a table data loader factory that creates <see cref="CsvTableDataLoader" />
-    /// instances for tables.
+    ///     Represents a table data loader factory that creates 
+    ///     <see cref="CsvTableDataLoader" /> instances for tables.
     /// </summary>
     internal class CsvTableDataLoaderFactory : ITableDataLoaderFactory
     {
         private DirectoryInfo source;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CsvTableDataLoaderFactory" /> class.
+        ///     Initializes a new instance of the <see cref="CsvTableDataLoaderFactory" /> 
+        ///     class.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <exception cref="System.ArgumentException">The path does not exists.</exception>
+        /// <param name="path"> The path. </param>
+        /// <exception cref="System.ArgumentException"> The path does not exists. </exception>
         public CsvTableDataLoaderFactory(string path)
         {
             this.source = new DirectoryInfo(path);
@@ -51,11 +52,13 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Creates a <see cref="CsvTableDataLoader" /> instance for the specified table.
+        ///     Creates a <see cref="CsvTableDataLoader" /> instance for the specified table.
         /// </summary>
-        /// <param name="table">The metadata of the table.</param>
+        /// <param name="table">
+        ///     The metadata of the table. 
+        /// </param>
         /// <returns>
-        /// The <see cref="CsvTableDataLoader" /> instance for the table.
+        ///     The <see cref="CsvTableDataLoader" /> instance for the table.
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
@@ -66,7 +69,7 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Does nothing.
+        ///     Does nothing.
         /// </summary>
         public void Dispose()
         {

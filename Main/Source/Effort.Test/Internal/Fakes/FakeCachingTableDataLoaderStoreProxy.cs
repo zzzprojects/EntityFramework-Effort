@@ -29,7 +29,7 @@ namespace Effort.Test.Internal.Fakes
     using Effort.DataLoaders;
     using Effort.Internal.Caching;
 
-    internal class FakeCachingTableDataLoaderStoreProxy : ICachingTableDataLoaderStoreProxy
+    internal class FakeCachingTableDataLoaderStoreProxy : ICachingTableDataLoaderStore
     {
         private Dictionary<CachingTableDataLoaderKey, CachingTableDataLoader> simpleCache;
 

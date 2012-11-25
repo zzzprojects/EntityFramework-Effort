@@ -29,7 +29,7 @@ namespace Effort.Provider
     using System.Data.Common;
 
     /// <summary>
-    /// Provides a base class for Effort-specific classes that represent commands.
+    ///     Provides a base class for Effort-specific classes that represent commands.
     /// </summary>
     public abstract class EffortCommandBase : DbCommand
     {
@@ -38,7 +38,7 @@ namespace Effort.Provider
         private EffortParameterCollection parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortCommandBase" /> class.
+        ///     Initializes a new instance of the <see cref="EffortCommandBase" /> class.
         /// </summary>
         public EffortCommandBase()
         {
@@ -46,10 +46,10 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the text command to run against the data source.
+        ///     Gets or sets the text command to run against the data source.
         /// </summary>
         /// <returns>
-        /// The text command to execute. The default value is an empty string ("").
+        ///     The text command to execute. The default value is an empty string ("").
         /// </returns>
         public override string CommandText
         {
@@ -58,11 +58,11 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the wait time before terminating the attempt to execute a command and
-        /// generating an error.
+        ///     Gets or sets the wait time before terminating the attempt to execute a command 
+        ///     and generating an error.
         /// </summary>
         /// <returns>
-        /// The time in seconds to wait for the command to execute.
+        ///     The time in seconds to wait for the command to execute.
         /// </returns>
         public override int CommandTimeout
         {
@@ -71,11 +71,11 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Indicates or specifies how the 
-        /// <see cref="P:System.Data.Common.DbCommand.CommandText" /> property is interpreted.
+        ///     Indicates or specifies how the command is interpreted.
         /// </summary>
         /// <returns>
-        /// One of the <see cref="T:System.Data.CommandType" /> values. The default is Text.
+        ///     One of the <see cref="T:System.Data.CommandType" /> values. The default is 
+        ///     Text.
         /// </returns>
         public override CommandType CommandType
         {
@@ -84,9 +84,9 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Adds a new parameter with the supplied name.
+        ///     Adds a new parameter with the supplied name.
         /// </summary>
-        /// <param name="name">The name of the parameter.</param>
+        /// <param name="name"> The name of the parameter. </param>
         protected void AddParameter(string name)
         {
             EffortParameter parameter = new EffortParameter();
@@ -96,9 +96,9 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the collection of <see cref="EffortParameter" /> objects.
+        ///     Gets the collection of <see cref="EffortParameter" /> objects.
         /// </summary>
-        /// <returns>The parameters of the SQL statement or stored procedure.</returns>
+        /// <returns> The parameters of the SQL statement or stored procedure. </returns>
         protected override DbParameterCollection DbParameterCollection
         {
             get 
@@ -108,13 +108,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="EffortConnection" /> used by this command.
+        ///     Gets or sets the <see cref="EffortConnection" /> used by this command.
         /// </summary>
         /// <returns>
-        /// The connection to the data source.
+        ///     The connection to the data source.
         /// </returns>
         /// <exception cref="System.ArgumentException">
-        /// Provided connection object is incompatible
+        ///     Provided connection object is incompatible
         /// </exception>
         protected override DbConnection DbConnection
         {
@@ -145,15 +145,15 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="EffortTransaction" /> within which this command 
-        /// executes.
+        ///     Gets or sets the <see cref="EffortTransaction" /> within which this command 
+        ///     executes.
         /// </summary>
         /// <returns>
-        /// The transaction within which a Command object of a .NET Framework data provider 
-        /// executes. The default value is a null reference (Nothing in Visual Basic).
+        ///     The transaction within which a Command object of a .NET Framework data provider 
+        ///     executes. The default value is a null reference (Nothing in Visual Basic).
         /// </returns>
         /// <exception cref="System.ArgumentException">
-        /// Provided transaction object is incompatible
+        ///     Provided transaction object is incompatible
         /// </exception>
         protected override DbTransaction DbTransaction
         {
@@ -185,12 +185,12 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the command object should be visible in a
-        /// customized interface control.
+        ///     Gets or sets a value indicating whether the command object should be visible in
+        ///     a customized interface control.
         /// </summary>
         /// <returns>
-        /// true, if the command object should be visible in a control; otherwise false. The 
-        /// default is true.
+        ///     true, if the command object should be visible in a control; otherwise false.
+        ///     The default is true.
         /// </returns>
         public override bool DesignTimeVisible
         {
@@ -199,10 +199,10 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the strongly typed <see cref="EffortConnection" /> used by this command.
+        ///     Gets the strongly typed <see cref="EffortConnection" /> used by this command.
         /// </summary>
         /// <returns>
-        /// The connection to the data source.
+        ///     The connection to the data source.
         /// </returns>
         protected EffortConnection EffortConnection
         {
@@ -213,12 +213,12 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Gets the strongly typed <see cref="EffortTransaction" /> within which this command
-        /// executes.
+        ///     Gets the strongly typed <see cref="EffortTransaction" /> within which this
+        ///     command executes.
         /// </summary>
         /// <returns>
-        /// The transaction within which a Command object of a .NET Framework data provider
-        /// executes. The default value is a null reference (Nothing in Visual Basic).
+        ///     The transaction within which a Command object of a .NET Framework data provider
+        ///     executes. The default value is a null reference (Nothing in Visual Basic).
         /// </returns>
         protected EffortTransaction EffortTransaction
         {
@@ -229,38 +229,37 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Executes the query.
+        ///     Executes the query.
         /// </summary>
         /// <returns>
-        /// The number of rows affected.
+        ///     The number of rows affected.
         /// </returns>
         public override abstract int ExecuteNonQuery();
 
         /// <summary>
-        /// Executes the query and returns the first column of the first row in the result set
-        /// returned by the query. All other columns and rows are ignored.
+        ///     Executes the query and returns the first column of the first row in the result
+        ///     set returned by the query. All other columns and rows are ignored.
         /// </summary>
         /// <returns>
-        /// The first column of the first row in the result set.
+        ///     The first column of the first row in the result set.
         /// </returns>
         public override abstract object ExecuteScalar();
 
         /// <summary>
-        /// Creates a prepared (or compiled) version of the command on the data source.
+        ///     Creates a prepared (or compiled) version of the command on the data source.
         /// </summary>
         public override void Prepare()
         {
         }
 
         /// <summary>
-        /// Gets or sets how command results are applied to the 
-        /// <see cref="T:System.Data.DataRow" /> when used by the Update method of a 
-        /// <see cref="T:System.Data.Common.DbDataAdapter" />.
+        ///     Gets or sets how command results are applied to the 
+        ///     <see cref="T:System.Data.DataRow" /> when used by the Update method of a 
+        ///     <see cref="T:System.Data.Common.DbDataAdapter" />.
         /// </summary>
         /// <returns>
-        /// One of the <see cref="T:System.Data.UpdateRowSource" /> values. The default is Both
-        /// unless the command is automatically generated. Then the default is
-        /// None.
+        ///     One of the <see cref="T:System.Data.UpdateRowSource" /> values. The default is
+        ///     Both unless the command is automatically generated. Then the default is None.
         /// </returns>
         public override UpdateRowSource UpdatedRowSource
         {
@@ -269,18 +268,18 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Attempts to cancels the execution of a 
-        /// <see cref="T:System.Data.Common.DbCommand" />.
+        ///     Attempts to cancels the execution of a 
+        ///     <see cref="T:System.Data.Common.DbCommand" />.
         /// </summary>
         public override void Cancel()
         {
         }
 
         /// <summary>
-        /// Creates a new instance of a <see cref="EffortParameter" /> object.
+        ///     Creates a new instance of a <see cref="EffortParameter" /> object.
         /// </summary>
         /// <returns>
-        /// A <see cref="EffortParameter" /> object.
+        ///     A <see cref="EffortParameter" /> object.
         /// </returns>
         protected override DbParameter CreateDbParameter()
         {
@@ -288,13 +287,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Executes the command text against the connection.
+        ///     Executes the command text against the connection.
         /// </summary>
         /// <param name="behavior">
-        /// An instance of <see cref="T:System.Data.CommandBehavior" />.
+        ///     An instance of <see cref="T:System.Data.CommandBehavior" />.
         /// </param>
         /// <returns>
-        /// A <see cref="T:System.Data.Common.DbDataReader" />.
+        ///     A <see cref="T:System.Data.Common.DbDataReader" />.
         /// </returns>
         protected override abstract DbDataReader ExecuteDbDataReader(CommandBehavior behavior);
     }

@@ -31,8 +31,8 @@ namespace Effort.Provider
     using System.Linq;
 
     /// <summary>
-    /// Represents a collection of <see cref="EffortParameter"/> associated with a 
-    /// <see cref="EffortCommand"/>.
+    ///     Represents a collection of <see cref="EffortParameter"/> associated with a 
+    ///     <see cref="EffortCommand"/>.
     /// </summary>
     public sealed class EffortParameterCollection : DbParameterCollection
     {
@@ -40,7 +40,8 @@ namespace Effort.Provider
         private List<EffortParameter> internalCollection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EffortParameterCollection" /> class.
+        ///     Initializes a new instance of the <see cref="EffortParameterCollection" /> 
+        ///     class.
         /// </summary>
         public EffortParameterCollection()
         {
@@ -49,18 +50,18 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Adds a <see cref="T:EffortParameter" /> item with the specified value to the 
-        /// <see cref="T:EffortParameterCollection" />.
+        ///     Adds a <see cref="T:EffortParameter" /> item with the specified value to the 
+        ///     <see cref="T:EffortParameterCollection" />.
         /// </summary>
         /// <param name="value">
-        /// The <see cref="P:EffortParameter.Value" /> of the <see cref="T:EffortParameter" />
-        /// to add to the collection.
+        ///     The <see cref="P:EffortParameter.Value" /> of the 
+        ///     <see cref="T:EffortParameter" /> to add to the collection.
         /// </param>
         /// <returns>
-        /// The index of the <see cref="T:EffortParameter" /> object in the collection.
+        ///     The index of the <see cref="T:EffortParameter" /> object in the collection.
         /// </returns>
         /// <exception cref="System.ArgumentException">
-        /// The provided parameter object is incompatible
+        ///     The provided parameter object is incompatible
         /// </exception>
         public override int Add(object value)
         {
@@ -76,14 +77,14 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Adds an array of items with the specified values to the 
+        ///     Adds an array of items with the specified values to the 
         /// <see cref="T:EffortParameterCollection" />.
         /// </summary>
-        /// <param name="values">An array of values of type <see cref="T:EffortParameter" />
-        /// to add to the collection.
+        ///     <param name="values">An array of values of type 
+        ///     <see cref="T:EffortParameter" /> to add to the collection.
         /// </param>
         /// <exception cref="System.ArgumentException">
-        /// The provided parameter object is incompatible
+        ///     The provided parameter object is incompatible
         /// </exception>
         public override void AddRange(Array values)
         {
@@ -106,8 +107,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Removes all <see cref="T:EffortParameter" /> values from the
-        /// <see cref="T:EffortParameterCollection" />.
+        ///     Removes all <see cref="T:EffortParameter" /> values from the
+        ///     <see cref="T:EffortParameterCollection" />.
         /// </summary>
         public override void Clear()
         {
@@ -115,14 +116,16 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Indicates whether a <see cref="T:EffortParameter" /> with the specified name exists
-        /// in the collection.
+        ///     Indicates whether a <see cref="T:EffortParameter" /> with the specified name
+        ///     exists in the collection.
         /// </summary>
         /// <param name="value">
-        /// The name of the <see cref="T:EffortParameterr" /> to look for in the collection.
+        ///     The name of the <see cref="T:EffortParameterr" /> to look for in the 
+        ///     collection.
         /// </param>
         /// <returns>
-        /// true if the <see cref="T:EffortParameter" /> is in the collection; otherwise false.
+        ///     true if the <see cref="T:EffortParameter" /> is in the collection; otherwise
+        ///     false.
         /// </returns>
         public override bool Contains(string value)
         {
@@ -130,14 +133,15 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Indicates whether a <see cref="T:EffortParameter" /> with the specified 
-        /// <see cref="P:EffortParameter.Value" /> is contained in the collection.
+        ///     Indicates whether a <see cref="T:EffortParameter" /> with the specified 
+        ///     <see cref="P:EffortParameter.Value" /> is contained in the collection.
         /// </summary>
         /// <param name="value">
-        /// The <see cref="P:EffortParameter.Value" /> of the <see cref="T:EffortParameter" /> 
-        /// to look for in the collection.</param>
+        ///     The <see cref="P:EffortParameter.Value" /> of the 
+        ///     <see cref="T:EffortParameter" /> to look for in the collection.</param>
         /// <returns>
-        /// true if the <see cref="T:EffortParameter" /> is in the collection; otherwise false.
+        ///     true if the <see cref="T:EffortParameter" /> is in the collection; otherwise
+        ///     false.
         /// </returns>
         public override bool Contains(object value)
         {
@@ -145,10 +149,14 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Copies an array of items to the collection starting at the specified index.
+        ///     Copies an array of items to the collection starting at the specified index.
         /// </summary>
-        /// <param name="array">The array of items to copy to the collection.</param>
-        /// <param name="index">The index in the collection to copy the items.</param>
+        /// <param name="array">
+        ///     The array of items to copy to the collection.
+        /// </param>
+        /// <param name="index">
+        ///     The index in the collection to copy the items.
+        /// </param>
         public override void CopyTo(Array array, int index)
         {
             for (int i = 0; i < this.internalCollection.Count; i++)
@@ -158,9 +166,11 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Specifies the number of items in the collection.
+        ///     Specifies the number of items in the collection.
         /// </summary>
-        /// <returns>The number of items in the collection.</returns>
+        /// <returns>
+        ///     The number of items in the collection.
+        /// </returns>
         public override int Count
         {
             get 
@@ -170,13 +180,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Exposes the <see cref="M:System.Collections.IEnumerable.GetEnumerator" /> method,
-        /// which supports a simple iteration over a collection by a .NET Framework data
-        /// provider.
+        ///     Exposes the <see cref="M:System.Collections.IEnumerable.GetEnumerator" />
+        ///     method, which supports a simple iteration over a collection by a .NET Framework
+        ///     data provider.
         /// </summary>
         /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate
-        /// through the collection.
+        ///     An <see cref="T:System.Collections.IEnumerator" /> that can be used to iterate
+        ///     through the collection.
         /// </returns>
         public override IEnumerator GetEnumerator()
         {
@@ -184,13 +194,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Returns <see cref="T:EffortParameter" /> the object with the specified name.
+        ///     Returns <see cref="T:EffortParameter" /> the object with the specified name.
         /// </summary>
         /// <param name="parameterName">
-        /// The name of the <see cref="T:EffortParameter" /> in the collection.
+        ///     The name of the <see cref="T:EffortParameter" /> in the collection.
         /// </param>
         /// <returns>
-        /// The <see cref="T:EffortParameter" /> the object with the specified name.
+        ///     The <see cref="T:EffortParameter" /> the object with the specified name.
         /// </returns>
         protected override DbParameter GetParameter(string parameterName)
         {
@@ -198,15 +208,15 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Returns the <see cref="T:EffortParameterr" /> object at the specified index in the
-        /// collection.
+        ///     Returns the <see cref="T:EffortParameterr" /> object at the specified index in 
+        ///     the collection.
         /// </summary>
         /// <param name="index">
-        /// The index of the <see cref="T:EffortParameter" /> in the collection.
+        ///     The index of the <see cref="T:EffortParameter" /> in the collection.
         /// </param>
         /// <returns>
-        /// The <see cref="T:EffortParameter" /> object at the specified index in the 
-        /// collection.
+        ///     The <see cref="T:EffortParameter" /> object at the specified index in the 
+        ///     collection.
         /// </returns>
         protected override DbParameter GetParameter(int index)
         {
@@ -214,14 +224,15 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Returns the index of the <see cref="T:EffortParameter" /> object with the specified
-        /// name.
+        ///     Returns the index of the <see cref="T:EffortParameter" /> object with the 
+        ///     specified name.
         /// </summary>
         /// <param name="parameterName">
-        /// The name of the <see cref="T:EffortParameter" /> object in the collection.
+        ///     The name of the <see cref="T:EffortParameter" /> object in the collection.
         /// </param>
         /// <returns>
-        /// The index of the <see cref="T:EffortParameter" /> object with the specified name.
+        ///     The index of the <see cref="T:EffortParameter" /> object with the specified 
+        ///     name.
         /// </returns>
         public override int IndexOf(string parameterName)
         {
@@ -237,13 +248,13 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Returns the index of the specified <see cref="T:EffortParameter" /> object.
+        ///     Returns the index of the specified <see cref="T:EffortParameter" /> object.
         /// </summary>
         /// <param name="value">
-        /// The <see cref="T:EffortParameter" /> object in the collection.
+        ///     The <see cref="T:EffortParameter" /> object in the collection.
         /// </param>
         /// <returns>
-        /// The index of the specified <see cref="T:EffortParameter" /> object.
+        ///     The index of the specified <see cref="T:EffortParameter" /> object.
         /// </returns>
         public override int IndexOf(object value)
         {
@@ -251,17 +262,17 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Inserts the specified index of the <see cref="T:EffortParameter" /> object with the
-        /// specified name into the collection at the specified index.
+        ///     Inserts the specified index of the <see cref="T:EffortParameter" /> object with
+        ///     the specified name into the collection at the specified index.
         /// </summary>
         /// <param name="index">
-        /// The index at which to insert the <see cref="T:EffortParameter" /> object.
+        ///     The index at which to insert the <see cref="T:EffortParameter" /> object.
         /// </param>
         /// <param name="value">
-        /// The <see cref="T:EffortParameter" /> object to insert into the collection.
+        ///     The <see cref="T:EffortParameter" /> object to insert into the collection.
         /// </param>
         /// <exception cref="System.ArgumentException">
-        /// The provided parameter object is incompatible
+        ///     The provided parameter object is incompatible
         /// </exception>
         public override void Insert(int index, object value)
         {
@@ -276,47 +287,56 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Specifies whether the collection is a fixed size.
+        ///     Specifies whether the collection is a fixed size.
         /// </summary>
-        /// <returns>true if the collection is a fixed size; otherwise false.</returns>
+        /// <returns>
+        ///     true if the collection is a fixed size; otherwise false.
+        /// </returns>
         public override bool IsFixedSize
         {
             get { return false; }
         }
 
         /// <summary>
-        /// Specifies whether the collection is read-only.
+        ///     Specifies whether the collection is read-only.
         /// </summary>
-        /// <returns>true if the collection is read-only; otherwise false.</returns>
+        /// <returns>
+        ///     true if the collection is read-only; otherwise false.
+        /// </returns>
         public override bool IsReadOnly
         {
             get { return false; }
         }
 
         /// <summary>
-        /// Specifies whether the collection is synchronized.
+        ///     Specifies whether the collection is synchronized.
         /// </summary>
-        /// <returns>true if the collection is synchronized; otherwise false.</returns>
+        /// <returns>
+        ///     true if the collection is synchronized; otherwise false.
+        /// </returns>
         public override bool IsSynchronized
         {
             get { return false; }
         }
 
         /// <summary>
-        /// Removes the specified <see cref="T:EffortParameter" /> object from the collection.
+        ///     Removes the specified <see cref="T:EffortParameter" /> object from the 
+        ///     collection.
         /// </summary>
-        /// <param name="value">The <see cref="T:EffortParameter" /> object to remove.</param>
+        /// <param name="value">
+        ///     The <see cref="T:EffortParameter" /> object to remove.
+        /// </param>
         public override void Remove(object value)
         {
             this.internalCollection.Remove(value as EffortParameter);
         }
 
         /// <summary>
-        /// Removes the <see cref="T:EffortParameter" /> object with the specified name from
-        /// the collection.
+        ///     Removes the <see cref="T:EffortParameter" /> object with the specified name 
+        ///     from the collection.
         /// </summary>
         /// <param name="parameterName">
-        /// The name of the <see cref="T:EffortParameter" /> object to remove.
+        ///     The name of the <see cref="T:EffortParameter" /> object to remove.
         /// </param>
         public override void RemoveAt(string parameterName)
         {
@@ -327,11 +347,11 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Removes the <see cref="T:EffortParameter" /> object at the specified from the 
-        /// collection.
+        ///     Removes the <see cref="T:EffortParameter" /> object at the specified from the 
+        ///     collection.
         /// </summary>
         /// <param name="index">
-        /// The index where the <see cref="T:EffortParameter" /> object is located.
+        ///     The index where the <see cref="T:EffortParameter" /> object is located.
         /// </param>
         public override void RemoveAt(int index)
         {
@@ -339,14 +359,14 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Sets the <see cref="T:EffortParameter" /> object with the specified name to a new
-        /// value.
+        ///     Sets the <see cref="T:EffortParameter" /> object with the specified name to 
+        ///     new value.
         /// </summary>
         /// <param name="parameterName">
-        /// The name of the <see cref="T:EffortParameter" /> object in the collection.
+        ///     The name of the <see cref="T:EffortParameter" /> object in the collection.
         /// </param>
         /// <param name="value">
-        /// The new <see cref="T:EffortParameter" /> value.
+        ///     The new <see cref="T:EffortParameter" /> value.
         /// </param>
         protected override void SetParameter(string parameterName, DbParameter value)
         {
@@ -354,15 +374,15 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Sets the <see cref="T:System.Data.Common.DbParameter" /> object at the specified 
-        /// index to a new value.
+        ///     Sets the <see cref="T:System.Data.Common.DbParameter" /> object at the
+        ///     specified index to a new value.
         /// </summary>
         /// <param name="index">
-        /// The index where the <see cref="T:System.Data.Common.DbParameter" /> object is 
-        /// located.
+        ///     The index where the <see cref="T:System.Data.Common.DbParameter" /> object is 
+        ///     located.
         /// </param>
         /// <param name="value">
-        /// The new <see cref="T:System.Data.Common.DbParameter" /> value.
+        ///     The new <see cref="T:System.Data.Common.DbParameter" /> value.
         /// </param>
         protected override void SetParameter(int index, DbParameter value)
         {
@@ -370,12 +390,12 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        /// Specifies the <see cref="T:System.Object" /> to be used to synchronize access to
-        /// the collection.
+        ///     Specifies the <see cref="T:System.Object" /> to be used to synchronize access
+        ///     to the collection.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.Object" /> to be used to synchronize access to the 
-        /// <see cref="T:EffortParameterrCollection" />.
+        ///     A <see cref="T:System.Object" /> to be used to synchronize access to the 
+        ///     <see cref="T:EffortParameterrCollection" />.
         /// </returns>
         public override object SyncRoot
         {

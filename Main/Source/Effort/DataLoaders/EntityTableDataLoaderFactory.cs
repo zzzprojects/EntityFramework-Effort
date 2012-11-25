@@ -28,8 +28,8 @@ namespace Effort.DataLoaders
     using System.Data.EntityClient;
 
     /// <summary>
-    /// Represents a table data loader factory that creates 
-    /// <see cref="EntityTableDataLoader" /> instances for tables.
+    ///     Represents a table data loader factory that creates 
+    ///     <see cref="EntityTableDataLoader" /> instances for tables.
     /// </summary>
     public class EntityTableDataLoaderFactory : ITableDataLoaderFactory
     {
@@ -37,11 +37,11 @@ namespace Effort.DataLoaders
         private EntityConnection connection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EntityTableDataLoaderFactory" /> 
-        /// class.
+        ///     Initializes a new instance of the <see cref="EntityTableDataLoaderFactory" /> 
+        ///     class.
         /// </summary>
         /// <param name="connectionFactory">
-        /// A delegate that creates a connection towards the appropriate database.
+        ///     A delegate that creates a connection towards the appropriate database.
         /// </param>
         public EntityTableDataLoaderFactory(Func<EntityConnection> connectionFactory)
         {
@@ -49,12 +49,15 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Ensures that a connection is established towards to appropriate database and 
-        /// creates a <see cref="EntityTableDataLoader" /> instance for the specified table.
+        ///     Ensures that a connection is established towards to appropriate database and 
+        ///     creates a <see cref="EntityTableDataLoader" /> instance for the specified
+        ///     table.
         /// </summary>
-        /// <param name="table">The metadata of the table.</param>
+        /// <param name="table"> 
+        ///     The metadata of the table.
+        /// </param>
         /// <returns>
-        /// The <see cref="EntityTableDataLoader" /> instance for the table.
+        ///     The <see cref="EntityTableDataLoader" /> instance for the table.
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
@@ -68,7 +71,7 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Disposes the connection established towards the database.
+        ///     Disposes the connection established towards the database.
         /// </summary>
         public void Dispose()
         {

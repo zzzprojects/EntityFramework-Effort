@@ -25,12 +25,12 @@
 namespace Effort.Provider
 {
     /// <summary>
-    /// Specifies a supported available provider manifest token value.
+    ///     Specifies a supported available provider manifest token value.
     /// </summary>
     public enum EffortVersion
     {
         /// <summary>
-        /// Value that represents the "Version1" provider manifest token value.
+        ///     Value that represents the "Version1" provider manifest token value.
         /// </summary>
         Version1
     }

@@ -29,12 +29,12 @@ namespace Effort.Internal.Csv
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Represents the exception that is thrown when a there is a missing field in a record of 
-    /// the CSV file.
+    ///     Represents the exception that is thrown when a there is a missing field in a record
+    ///     of the CSV file.
     /// </summary>
     /// <remarks>
-    /// MissingFieldException would have been a better name, but there is already a 
-    /// <see cref="T:System.MissingFieldException"/>.
+    ///     MissingFieldException would have been a better name, but there is already a 
+    ///     <see cref="T:System.MissingFieldException"/>.
     /// </remarks>
     [Serializable]
     internal class MissingFieldCsvException
@@ -43,7 +43,8 @@ namespace Effort.Internal.Csv
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MissingFieldCsvException" /> class.
+        ///     Initializes a new instance of the <see cref="MissingFieldCsvException" /> 
+        ///     class.
         /// </summary>
         public MissingFieldCsvException()
             : base()
@@ -51,10 +52,10 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MissingFieldCsvException class.
+        ///     Initializes a new instance of the MissingFieldCsvException class.
         /// </summary>
         /// <param name="message">
-        /// The message that describes the error.
+        ///     The message that describes the error.
         /// </param>
         public MissingFieldCsvException(string message)
             : base(message)
@@ -62,13 +63,13 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MissingFieldCsvException class.
+        ///     Initializes a new instance of the MissingFieldCsvException class.
         /// </summary>
         /// <param name="message">
-        /// The message that describes the error.
+        ///     The message that describes the error.
         /// </param>
         /// <param name="innerException">
-        /// The exception that is the cause of the current exception.
+        ///     The exception that is the cause of the current exception.
         /// </param>
         public MissingFieldCsvException(string message, Exception innerException)
             : base(
@@ -78,19 +79,19 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MissingFieldCsvException class.
+        ///     Initializes a new instance of the MissingFieldCsvException class.
         /// </summary>
         /// <param name="rawData">
-        /// The raw data when the error occured.
+        ///     The raw data when the error occured.
         /// </param>
         /// <param name="currentPosition">
-        /// The current position in the raw data.
+        ///     The current position in the raw data.
         /// </param>
         /// <param name="currentRecordIndex">
-        /// The current record index.
+        ///     The current record index.
         /// </param>
         /// <param name="currentFieldIndex">
-        /// The current field index.
+        ///     The current field index.
         /// </param>
         public MissingFieldCsvException(
             string rawData, 
@@ -106,22 +107,22 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MissingFieldCsvException class.
+        ///     Initializes a new instance of the MissingFieldCsvException class.
         /// </summary>
         /// <param name="rawData">
-        /// The raw data when the error occured.
+        ///     The raw data when the error occured.
         /// </param>
         /// <param name="currentPosition">
-        /// The current position in the raw data.
+        ///     The current position in the raw data.
         /// </param>
         /// <param name="currentRecordIndex">
-        /// The current record index.
+        ///     The current record index.
         /// </param>
         /// <param name="currentFieldIndex">
-        /// The current field index.
+        ///     The current field index.
         /// </param>
         /// <param name="innerException">
-        /// The exception that is the cause of the current exception.
+        ///     The exception that is the cause of the current exception.
         /// </param>
         public MissingFieldCsvException(
             string rawData, 
@@ -139,16 +140,16 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the MissingFieldCsvException class with serialized 
-        /// data.
+        ///     Initializes a new instance of the MissingFieldCsvException class with
+        ///     serialized data.
         /// </summary>
         /// <param name="info">
-        /// The <see cref="T:SerializationInfo"/> that holds the serialized object data about 
-        /// the exception being thrown.
+        ///     The <see cref="T:SerializationInfo"/> that holds the serialized object data
+        ///     about the exception being thrown.
         /// </param>
         /// <param name="context">
-        /// The <see cref="T:StreamingContext"/> that contains contextual information about the 
-        /// source or destination.
+        ///     The <see cref="T:StreamingContext"/> that contains contextual information about
+        ///     the source or destination.
         /// </param>
         protected MissingFieldCsvException(SerializationInfo info, StreamingContext context)
             : base(info, context)

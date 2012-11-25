@@ -26,22 +26,22 @@
 namespace Effort.Internal.Csv
 {
 	/// <summary>
-	/// Specifies the action to take when a field is missing.
+	///     Specifies the action to take when a field is missing.
 	/// </summary>
 	internal enum MissingFieldAction
 	{
 		/// <summary>
-		/// Treat as a parsing error.
+		///     Treat as a parsing error.
 		/// </summary>
 		ParseError = 0,
 
 		/// <summary>
-		/// Replaces by an empty value.
+		///     Replaces by an empty value.
 		/// </summary>
 		ReplaceByEmpty = 1,
 
 		/// <summary>
-		/// Replaces by a null value (<see langword="null"/>).
+		///     Replaces by a null value (<see langword="null"/>).
 		/// </summary>
 		ReplaceByNull = 2,
 	}

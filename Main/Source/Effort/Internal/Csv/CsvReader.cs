@@ -35,7 +35,8 @@ namespace Effort.Internal.Csv
     using System.IO;
 
     /// <summary>
-    /// Represents a reader that provides fast, non-cached, forward-only access to CSV data.  
+    ///     Represents a reader that provides fast, non-cached, forward-only access to CSV 
+    ///     data.  
     /// </summary>
     internal partial class CsvReader
         : IDataReader, IEnumerable<string[]>, IDisposable
@@ -43,28 +44,28 @@ namespace Effort.Internal.Csv
         #region Constants
 
         /// <summary>
-        /// Defines the default buffer size.
+        ///     Defines the default buffer size.
         /// </summary>
         public const int DefaultBufferSize = 0x1000;
 
         /// <summary>
-        /// Defines the default delimiter character separating each field.
+        ///     Defines the default delimiter character separating each field.
         /// </summary>
         public const char DefaultDelimiter = ',';
 
         /// <summary>
-        /// Defines the default quote character wrapping every field.
+        ///     Defines the default quote character wrapping every field.
         /// </summary>
         public const char DefaultQuote = '"';
 
         /// <summary>
-        /// Defines the default escape character letting insert quotation characters inside a 
-        /// quoted field.
+        ///     Defines the default escape character letting insert quotation characters inside
+        ///     a quoted field.
         /// </summary>
         public const char DefaultEscape = '"';
 
         /// <summary>
-        /// Defines the default comment character indicating that a line is commented out.
+        ///     Defines the default comment character indicating that a line is commented out.
         /// </summary>
         public const char DefaultComment = '#';
 
@@ -73,7 +74,7 @@ namespace Effort.Internal.Csv
         #region Fields
 
         /// <summary>
-        /// Contains the field header comparer.
+        ///     Contains the field header comparer.
         /// </summary>
         private static readonly StringComparer fieldHeaderComparer = 
             StringComparer.CurrentCultureIgnoreCase;
@@ -81,63 +82,63 @@ namespace Effort.Internal.Csv
         #region Settings
 
         /// <summary>
-        /// Contains the <see cref="T:TextReader"/> pointing to the CSV file.
+        ///     Contains the <see cref="T:TextReader"/> pointing to the CSV file.
         /// </summary>
         private TextReader reader;
 
         /// <summary>
-        /// Contains the buffer size.
+        ///     Contains the buffer size.
         /// </summary>
         private int bufferSize;
 
         /// <summary>
-        /// Contains the comment character indicating that a line is commented out.
+        ///     Contains the comment character indicating that a line is commented out.
         /// </summary>
         private char comment;
 
         /// <summary>
-        /// Contains the escape character letting insert quotation characters inside a quoted 
-        /// field.
+        ///     Contains the escape character letting insert quotation characters inside a
+        ///     quoted field.
         /// </summary>
         private char escape;
 
         /// <summary>
-        /// Contains the delimiter character separating each field.
+        ///     Contains the delimiter character separating each field.
         /// </summary>
         private char delimiter;
 
         /// <summary>
-        /// Contains the quotation character wrapping every field.
+        ///     Contains the quotation character wrapping every field.
         /// </summary>
         private char quote;
 
         /// <summary>
-        /// Determines which values should be trimmed.
+        ///     Determines which values should be trimmed.
         /// </summary>
         private ValueTrimmingOptions trimmingOptions;
 
         /// <summary>
-        /// Indicates if field names are located on the first non commented line.
+        ///     Indicates if field names are located on the first non commented line.
         /// </summary>
         private bool hasHeaders;
 
         /// <summary>
-        /// Contains the default action to take when a parsing error has occured.
+        ///     Contains the default action to take when a parsing error has occured.
         /// </summary>
         private ParseErrorAction defaultParseErrorAction;
 
         /// <summary>
-        /// Contains the action to take when a field is missing.
+        ///     Contains the action to take when a field is missing.
         /// </summary>
         private MissingFieldAction missingFieldAction;
 
         /// <summary>
-        /// Indicates if the reader supports multiline.
+        ///     Indicates if the reader supports multiline.
         /// </summary>
         private bool supportsMultiline;
 
         /// <summary>
-        /// Indicates if the reader will skip empty lines.
+        ///     Indicates if the reader will skip empty lines.
         /// </summary>
         private bool skipEmptyLines;
 
@@ -146,96 +147,96 @@ namespace Effort.Internal.Csv
         #region State
 
         /// <summary>
-        /// Indicates if the class is initialized.
+        ///     Indicates if the class is initialized.
         /// </summary>
         private bool initialized;
 
         /// <summary>
-        /// Contains the field headers.
+        ///     Contains the field headers.
         /// </summary>
         private string[] fieldHeaders;
 
         /// <summary>
-        /// Contains the dictionary of field indexes by header. The key is the field name and 
-        /// the value is its index.
+        ///     Contains the dictionary of field indexes by header. The key is the field name
+        ///     and the value is its index.
         /// </summary>
         private Dictionary<string, int> fieldHeaderIndexes;
 
         /// <summary>
-        /// Contains the current record index in the CSV file.
-        /// A value of <see cref="M:Int32.MinValue"/> means that the reader has not been 
-        /// initialized yet. 
-        /// Otherwise, a negative value means that no record has been read yet.
+        ///     Contains the current record index in the CSV file.
+        ///     A value of <see cref="M:Int32.MinValue"/> means that the reader has not been 
+        ///     initialized yet. 
+        ///     Otherwise, a negative value means that no record has been read yet.
         /// </summary>
         private long currentRecordIndex;
 
         /// <summary>
-        /// Contains the starting position of the next unread field.
+        ///     Contains the starting position of the next unread field.
         /// </summary>
         private int nextFieldStart;
 
         /// <summary>
-        /// Contains the index of the next unread field.
+        ///     Contains the index of the next unread field.
         /// </summary>
         private int nextFieldIndex;
 
         /// <summary>
-        /// Contains the array of the field values for the current record.
-        /// A null value indicates that the field have not been parsed.
+        ///     Contains the array of the field values for the current record.
+        ///     A null value indicates that the field have not been parsed.
         /// </summary>
         private FieldValue[] fields;
 
         /// <summary>
-        /// Contains the maximum number of fields to retrieve for each record.
+        ///     Contains the maximum number of fields to retrieve for each record.
         /// </summary>
         private int fieldCount;
 
         /// <summary>
-        /// Contains the read buffer.
+        ///     Contains the read buffer.
         /// </summary>
         private char[] buffer;
 
         /// <summary>
-        /// Contains the current read buffer length.
+        ///     Contains the current read buffer length.
         /// </summary>
         private int bufferLength;
 
         /// <summary>
-        /// Indicates if the end of the reader has been reached.
+        ///     Indicates if the end of the reader has been reached.
         /// </summary>
         private bool eof;
 
         /// <summary>
-        /// Indicates if the last read operation reached an EOL character.
+        ///     Indicates if the last read operation reached an EOL character.
         /// </summary>
         private bool eol;
 
         /// <summary>
-        /// Indicates if the first record is in cache.
-        /// This can happen when initializing a reader with no headers
-        /// because one record must be read to get the field count automatically
+        ///     Indicates if the first record is in cache.
+        ///     This can happen when initializing a reader with no headers because one record
+        ///     must be read to get the field count automatically
         /// </summary>
         private bool firstRecordInCache;
 
         /// <summary>
-        /// Indicates if one or more field are missing for the current record.
-        /// Resets after each successful record read.
+        ///     Indicates if one or more field are missing for the current record.
+        ///     Resets after each successful record read.
         /// </summary>
         private bool missingFieldFlag;
 
         /// <summary>
-        /// Indicates if a parse error occured for the current record.
-        /// Resets after each successful record read.
+        ///     Indicates if a parse error occured for the current record.
+        ///     Resets after each successful record read.
         /// </summary>
         private bool parseErrorFlag;
 
         /// <summary>
-        /// Contains the disposed status flag.
+        ///     Contains the disposed status flag.
         /// </summary>
         private bool isDisposed = false;
 
         /// <summary>
-        /// Contains the locking object for multi-threading purpose.
+        ///     Contains the locking object for multi-threading purpose.
         /// </summary>
         private readonly object latch = new object();
 
@@ -246,14 +247,14 @@ namespace Effort.Internal.Csv
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class.
+        ///     Initializes a new instance of the <see cref="CsvReader"/> class.
         /// </summary>
         /// <param name="reader">
-        /// A <see cref="T:TextReader"/> pointing to the CSV file.
+        ///     A <see cref="T:TextReader"/> pointing to the CSV file.
         /// </param>
         /// <param name="hasHeaders">
-        /// <see langword="true"/> if field names are located on the first non commented line, 
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if field names are located on the first non commented 
+        ///     line, otherwise, <see langword="false"/>.
         /// </param>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="reader"/> is a <see langword="null"/>.
@@ -277,17 +278,17 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class.
+        ///     Initializes a new instance of the <see cref="CsvReader"/> class.
         /// </summary>
         /// <param name="reader">
-        /// A <see cref="T:TextReader"/> pointing to the CSV file.
+        ///     A <see cref="T:TextReader"/> pointing to the CSV file.
         /// </param>
         /// <param name="hasHeaders">
-        /// <see langword="true"/> if field names are located on the first non commented line,
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if field names are located on the first non commented 
+        ///     line, otherwise, <see langword="false"/>.
         /// </param>
         /// <param name="bufferSize">
-        /// The buffer size in bytes.
+        ///     The buffer size in bytes.
         /// </param>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="reader"/> is a <see langword="null"/>.
@@ -312,17 +313,17 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class.
+        ///     Initializes a new instance of the <see cref="CsvReader"/> class.
         /// </summary>
         /// <param name="reader">
-        /// A <see cref="T:TextReader"/> pointing to the CSV file.
+        ///     A <see cref="T:TextReader"/> pointing to the CSV file.
         /// </param>
         /// <param name="hasHeaders">
-        /// <see langword="true"/> if field names are located on the first non commented line, 
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if field names are located on the first non commented 
+        ///     line, otherwise, <see langword="false"/>.
         /// </param>
         /// <param name="delimiter">
-        /// The delimiter character separating each field (default is ',').
+        ///     The delimiter character separating each field (default is ',').
         /// </param>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="reader"/> is a <see langword="null"/>.
@@ -347,20 +348,20 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class.
+        ///     Initializes a new instance of the <see cref="CsvReader"/> class.
         /// </summary>
         /// <param name="reader">
-        /// A <see cref="T:TextReader"/> pointing to the CSV file.
+        ///     A <see cref="T:TextReader"/> pointing to the CSV file.
         /// </param>
         /// <param name="hasHeaders">
-        /// <see langword="true"/> if field names are located on the first non commented line,
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if field names are located on the first non commented
+        ///     line, otherwise, <see langword="false"/>.
         /// </param>
         /// <param name="delimiter">
-        /// The delimiter character separating each field (default is ',').
+        ///     The delimiter character separating each field (default is ',').
         /// </param>
         /// <param name="bufferSize">
-        /// The buffer size in bytes.
+        ///     The buffer size in bytes.
         /// </param>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="reader"/> is a <see langword="null"/>.
@@ -386,31 +387,31 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class.
+        ///     Initializes a new instance of the <see cref="CsvReader"/> class.
         /// </summary>
         /// <param name="reader">
-        /// A <see cref="T:TextReader"/> pointing to the CSV file.
+        ///     A <see cref="T:TextReader"/> pointing to the CSV file.
         /// </param>
         /// <param name="hasHeaders">
-        /// <see langword="true"/> if field names are located on the first non commented line,
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if field names are located on the first non commented 
+        ///     line, otherwise, <see langword="false"/>.
         /// </param>
         /// <param name="delimiter">
-        /// The delimiter character separating each field (default is ',').
+        ///     The delimiter character separating each field (default is ',').
         /// </param>
         /// <param name="quote">
-        /// The quotation character wrapping every field (default is ''').
+        ///     The quotation character wrapping every field (default is ''').
         /// </param>
         /// <param name="escape">
-        /// The escape character letting insert quotation characters inside a quoted field 
-        /// (default is '\').
-        /// If no escape character, set to '\0' to gain some performance.
+        ///     The escape character letting insert quotation characters inside a quoted field 
+        ///     (default is '\').
+        ///     If no escape character, set to '\0' to gain some performance.
         /// </param>
         /// <param name="comment">
-        /// The comment character indicating that a line is commented out (default is '#').
+        ///     The comment character indicating that a line is commented out (default is '#').
         /// </param>
         /// <param name="trimmingOptions">
-        /// Determines which values should be trimmed.
+        ///     Determines which values should be trimmed.
         /// </param>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="reader"/> is a <see langword="null"/>.
@@ -439,34 +440,34 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class.
+        ///     Initializes a new instance of the <see cref="CsvReader"/> class.
         /// </summary>
         /// <param name="reader">
-        /// A <see cref="T:TextReader"/> pointing to the CSV file.
+        ///     A <see cref="T:TextReader"/> pointing to the CSV file.
         /// </param>
         /// <param name="hasHeaders">
-        /// <see langword="true"/> if field names are located on the first non commented line,
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if field names are located on the first non commented 
+        ///     line, otherwise, <see langword="false"/>.
         /// </param>
         /// <param name="delimiter">
-        /// The delimiter character separating each field (default is ',').
+        ///     The delimiter character separating each field (default is ',').
         /// </param>
         /// <param name="quote">
-        /// The quotation character wrapping every field (default is ''').
+        ///     The quotation character wrapping every field (default is ''').
         /// </param>
         /// <param name="escape">
-        /// The escape character letting insert quotation characters inside a quoted field 
-        /// (default is '\').
-        /// If no escape character, set to '\0' to gain some performance.
+        ///     The escape character letting insert quotation characters inside a quoted field 
+        ///     (default is '\').
+        ///     If no escape character, set to '\0' to gain some performance.
         /// </param>
         /// <param name="comment">
-        /// The comment character indicating that a line is commented out (default is '#').
+        ///     The comment character indicating that a line is commented out (default is '#').
         /// </param>
         /// <param name="trimmingOptions">
-        /// Determines which values should be trimmed.
+        ///     Determines which values should be trimmed.
         /// </param>
         /// <param name="bufferSize">
-        /// The buffer size in bytes.
+        ///     The buffer size in bytes.
         /// </param>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="reader"/> is a <see langword="null"/>.
@@ -484,7 +485,6 @@ namespace Effort.Internal.Csv
             ValueTrimmingOptions trimmingOptions, 
             int bufferSize)
         {
-
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
@@ -533,15 +533,15 @@ namespace Effort.Internal.Csv
         #region Events
 
         /// <summary>
-        /// Occurs when there is an error while parsing the CSV stream.
+        ///     Occurs when there is an error while parsing the CSV stream.
         /// </summary>
         public event EventHandler<ParseErrorEventArgs> ParseError;
 
         /// <summary>
-        /// Raises the <see cref="M:ParseError"/> event.
+        ///     Raises the <see cref="M:ParseError"/> event.
         /// </summary>
         /// <param name="e">
-        /// The <see cref="ParseErrorEventArgs"/> that contains the event data.
+        ///     The <see cref="ParseErrorEventArgs"/> that contains the event data.
         /// </param>
         protected virtual void OnParseError(ParseErrorEventArgs e)
         {
@@ -558,9 +558,9 @@ namespace Effort.Internal.Csv
         #region Settings
 
         /// <summary>
-        /// Gets the comment character indicating that a line is commented out.
+        ///     Gets the comment character indicating that a line is commented out.
         /// </summary>
-        /// <value>The comment character indicating that a line is commented out.</value>
+        /// <value> The comment character indicating that a line is commented out. </value>
         public char Comment
         {
             get
@@ -570,10 +570,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the escape character letting insert quotation characters inside a quoted field.
+        ///     Gets the escape character letting insert quotation characters inside a quoted
+        ///     field.
         /// </summary>
         /// <value>
-        /// The escape character letting insert quotation characters inside a quoted field.
+        ///     The escape character letting insert quotation characters inside a quoted field.
         /// </value>
         public char Escape
         {
@@ -584,9 +585,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the delimiter character separating each field.
+        ///     Gets the delimiter character separating each field.
         /// </summary>
-        /// <value>The delimiter character separating each field.</value>
+        /// <value>
+        ///     The delimiter character separating each field.
+        /// </value>
         public char Delimiter
         {
             get
@@ -596,9 +599,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the quotation character wrapping every field.
+        ///     Gets the quotation character wrapping every field.
         /// </summary>
-        /// <value>The quotation character wrapping every field.</value>
+        /// <value>
+        ///     The quotation character wrapping every field.
+        /// </value>
         public char Quote
         {
             get
@@ -608,11 +613,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Indicates if field names are located on the first non commented line.
+        ///     Indicates if field names are located on the first non commented line.
         /// </summary>
         /// <value>
-        /// <see langword="true"/> if field names are located on the first non commented line,
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if field names are located on the first non commented
+        ///     line, otherwise, <see langword="false"/>.
         /// </value>
         public bool HasHeaders
         {
@@ -623,11 +628,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Indicates if spaces at the start and end of a field are trimmed.
+        ///     Indicates if spaces at the start and end of a field are trimmed.
         /// </summary>
         /// <value>
-        /// <see langword="true"/> if spaces at the start and end of a field are trimmed, 
-        /// otherwise, <see langword="false"/>.
+        ///     <see langword="true"/> if spaces at the start and end of a field are trimmed, 
+        ///     otherwise, <see langword="false"/>.
         /// </value>
         public ValueTrimmingOptions TrimmingOption
         {
@@ -638,7 +643,7 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the buffer size.
+        ///     Gets the buffer size.
         /// </summary>
         public int BufferSize
         {
@@ -649,15 +654,18 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets or sets the default action to take when a parsing error has occured.
+        ///     Gets or sets the default action to take when a parsing error has occured.
         /// </summary>
-        /// <value>The default action to take when a parsing error has occured.</value>
+        /// <value>
+        ///     The default action to take when a parsing error has occured.
+        /// </value>
         public ParseErrorAction DefaultParseErrorAction
         {
             get
             {
                 return this.defaultParseErrorAction;
             }
+
             set
             {
                 this.defaultParseErrorAction = value;
@@ -665,15 +673,18 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets or sets the action to take when a field is missing.
+        ///     Gets or sets the action to take when a field is missing.
         /// </summary>
-        /// <value>The action to take when a field is missing.</value>
+        /// <value>
+        ///     The action to take when a field is missing.
+        /// </value>
         public MissingFieldAction MissingFieldAction
         {
             get
             {
                 return this.missingFieldAction;
             }
+
             set
             {
                 this.missingFieldAction = value;
@@ -683,13 +694,16 @@ namespace Effort.Internal.Csv
         /// <summary>
         /// Gets or sets a value indicating if the reader supports multiline fields.
         /// </summary>
-        /// <value>A value indicating if the reader supports multiline field.</value>
+        /// <value>
+        /// A value indicating if the reader supports multiline field.
+        /// </value>
         public bool SupportsMultiline
         {
             get
             {
                 return this.supportsMultiline;
             }
+
             set
             {
                 this.supportsMultiline = value;
@@ -697,15 +711,18 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets or sets a value indicating if the reader will skip empty lines.
+        ///     Gets or sets a value indicating if the reader will skip empty lines.
         /// </summary>
-        /// <value>A value indicating if the reader will skip empty lines.</value>
+        /// <value>
+        ///     A value indicating if the reader will skip empty lines.
+        /// </value>
         public bool SkipEmptyLines
         {
             get
             {
                 return this.skipEmptyLines;
             }
+
             set
             {
                 this.skipEmptyLines = value;
@@ -713,25 +730,32 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets or sets the default header name when it is an empty string or only 
-        /// whitespaces.
-        /// The header index will be appended to the specified name.
+        ///     Gets or sets the default header name when it is an empty string or only 
+        ///     whitespaces.
+        ///     The header index will be appended to the specified name.
         /// </summary>
         /// <value>
-        /// The default header name when it is an empty string or only whitespaces.
+        ///     The default header name when it is an empty string or only whitespaces.
         /// </value>
-        public string DefaultHeaderName { get; set; }
+        public string DefaultHeaderName 
+        { 
+            get; 
+            
+            set; 
+        }
 
         #endregion
 
         #region State
 
         /// <summary>
-        /// Gets the maximum number of fields to retrieve for each record.
+        ///     Gets the maximum number of fields to retrieve for each record.
         /// </summary>
-        /// <value>The maximum number of fields to retrieve for each record.</value>
+        /// <value>
+        ///     The maximum number of fields to retrieve for each record.
+        /// </value>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public int FieldCount
         {
@@ -743,12 +767,12 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets a value that indicates whether the current stream position is at the end of
-        /// the stream.
+        ///     Gets a value that indicates whether the current stream position is at the end
+        ///     of the stream.
         /// </summary>
         /// <value>
-        /// <see langword="true"/> if the current stream position is at the end of the stream;
-        /// otherwise <see langword="false"/>.
+        ///     <see langword="true"/> if the current stream position is at the end of the
+        ///     stream; otherwise <see langword="false"/>.
         /// </value>
         public virtual bool EndOfStream
         {
@@ -759,13 +783,13 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the field headers.
+        ///     Gets the field headers.
         /// </summary>
         /// <returns>
-        /// The field headers or an empty array if headers are not supported.
+        ///     The field headers or an empty array if headers are not supported.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public string[] GetFieldHeaders()
         {
@@ -781,9 +805,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the current record index in the CSV file.
+        ///     Gets the current record index in the CSV file.
         /// </summary>
-        /// <value>The current record index in the CSV file.</value>
+        /// <value>
+        ///     The current record index in the CSV file.
+        /// </value>
         public virtual long CurrentRecordIndex
         {
             get
@@ -793,8 +819,8 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Indicates if one or more field are missing for the current record.
-        /// Resets after each successful record read.
+        ///     Indicates if one or more field are missing for the current record.
+        ///     Resets after each successful record read.
         /// </summary>
         public bool MissingFieldFlag
         {
@@ -802,8 +828,8 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Indicates if a parse error occured for the current record.
-        /// Resets after each successful record read.
+        ///     Indicates if a parse error occured for the current record.
+        ///     Resets after each successful record read.
         /// </summary>
         public bool ParseErrorFlag
         {
@@ -817,18 +843,18 @@ namespace Effort.Internal.Csv
         #region Indexers
 
         /// <summary>
-        /// Gets the field with the specified name and record position. 
+        ///     Gets the field with the specified name and record position. 
         /// <see cref="M:hasHeaders"/> must be <see langword="true"/>.
         /// </summary>
         /// <value>
-        /// The field with the specified name and record position.
+        ///     The field with the specified name and record position.
         /// </value>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="field"/> is <see langword="null"/> or an empty string.
         /// </exception>
         /// <exception cref="T:InvalidOperationException">
-        ///	The CSV does not have headers (<see cref="M:HasHeaders"/> property is 
-        ///	<see langword="false"/>).
+        ///	    The CSV does not have headers (<see cref="M:HasHeaders"/> property is 
+        ///	    <see langword="false"/>).
         /// </exception>
         /// <exception cref="T:ArgumentException">
         ///		<paramref name="field"/> not found.
@@ -846,29 +872,32 @@ namespace Effort.Internal.Csv
         ///		The CSV appears to be corrupt at the current position.
         /// </exception>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public string this[int record, string field]
         {
             get
             {
                 if (!this.MoveTo(record))
+                {
                     throw new InvalidOperationException(
                         string.Format(
-                            CultureInfo.InvariantCulture, 
-                            ExceptionMessages.CannotReadRecordAtIndex, 
+                            CultureInfo.InvariantCulture,
+                            ExceptionMessages.CannotReadRecordAtIndex,
                             record));
+                }
 
                 return this[field];
             }
         }
 
         /// <summary>
-        /// Gets the field at the specified index and record position.
+        ///     Gets the field at the specified index and record position.
         /// </summary>
         /// <value>
-        /// The field at the specified index and record position.
-        /// A <see langword="null"/> is returned if the field cannot be found for the record.
+        ///     The field at the specified index and record position.
+        ///     A <see langword="null"/> is returned if the field cannot be found for the 
+        ///     record.
         /// </value>
         /// <exception cref="T:ArgumentOutOfRangeException">
         ///		<paramref name="field"/> must be included in [0, <see cref="M:FieldCount"/>[.
@@ -886,36 +915,38 @@ namespace Effort.Internal.Csv
         ///		The CSV appears to be corrupt at the current position.
         /// </exception>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public string this[int record, int field]
         {
             get
             {
                 if (!this.MoveTo(record))
+                {
                     throw new InvalidOperationException(
                         string.Format(
-                            CultureInfo.InvariantCulture, 
-                            ExceptionMessages.CannotReadRecordAtIndex, 
+                            CultureInfo.InvariantCulture,
+                            ExceptionMessages.CannotReadRecordAtIndex,
                             record));
+                }
 
                 return this[field];
             }
         }
 
         /// <summary>
-        /// Gets the field with the specified name. <see cref="M:hasHeaders"/> must be 
-        /// <see langword="true"/>.
+        ///     Gets the field with the specified name. <see cref="M:hasHeaders"/> must be 
+        ///     <see langword="true"/>.
         /// </summary>
         /// <value>
-        /// The field with the specified name.
+        ///     The field with the specified name.
         /// </value>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="field"/> is <see langword="null"/> or an empty string.
         /// </exception>
         /// <exception cref="T:InvalidOperationException">
-        ///	The CSV does not have headers (<see cref="M:HasHeaders"/> property is 
-        ///	<see langword="false"/>).
+        ///	    The CSV does not have headers (<see cref="M:HasHeaders"/> property is 
+        ///	    <see langword="false"/>).
         /// </exception>
         /// <exception cref="T:ArgumentException">
         ///		<paramref name="field"/> not found.
@@ -924,7 +955,7 @@ namespace Effort.Internal.Csv
         ///		The CSV appears to be corrupt at the current position.
         /// </exception>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public string this[string field]
         {
@@ -956,9 +987,11 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Gets the field at the specified index.
+        ///     Gets the field at the specified index.
         /// </summary>
-        /// <value>The field at the specified index.</value>
+        /// <value>
+        ///     The field at the specified index.
+        /// </value>
         /// <exception cref="T:ArgumentOutOfRangeException">
         ///		<paramref name="field"/> must be included in [0, <see cref="M:FieldCount"/>[.
         /// </exception>
@@ -969,7 +1002,7 @@ namespace Effort.Internal.Csv
         ///		The CSV appears to be corrupt at the current position.
         /// </exception>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public virtual string this[int field]
         {
@@ -986,7 +1019,7 @@ namespace Effort.Internal.Csv
         #region EnsureInitialize
 
         /// <summary>
-        /// Ensures that the reader is initialized.
+        ///     Ensures that the reader is initialized.
         /// </summary>
         private void EnsureInitialize()
         {
@@ -1006,12 +1039,16 @@ namespace Effort.Internal.Csv
         #region GetFieldIndex
 
         /// <summary>
-        /// Gets the field index for the provided header.
+        ///     Gets the field index for the provided header.
         /// </summary>
-        /// <param name="header">The header to look for.</param>
-        /// <returns>The field index for the provided header. -1 if not found.</returns>
+        /// <param name="header">
+        ///     The header to look for.
+        /// </param>
+        /// <returns>
+        ///     The field index for the provided header. -1 if not found.
+        /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public int GetFieldIndex(string header)
         {
@@ -1035,15 +1072,15 @@ namespace Effort.Internal.Csv
         #region CopyCurrentRecordTo
 
         /// <summary>
-        /// Copies the field array of the current record to a one-dimensional array, starting 
-        /// at the beginning of the target array.
+        ///     Copies the field array of the current record to a one-dimensional array,
+        ///     starting at the beginning of the target array.
         /// </summary>
         /// <param name="array"> 
-        /// The one-dimensional <see cref="T:Array"/> that is the destination of the fields 
-        /// of the current record.
+        ///     The one-dimensional <see cref="T:Array"/> that is the destination of the fields 
+        ///     of the current record.
         /// </param>
         /// <param name="index">
-        /// The zero-based index in <paramref name="array"/> at which copying begins.
+        ///     The zero-based index in <paramref name="array"/> at which copying begins.
         /// </param>
         /// <exception cref="T:ArgumentNullException">
         ///		<paramref name="array"/> is <see langword="null"/>.
@@ -1053,7 +1090,7 @@ namespace Effort.Internal.Csv
         ///		length <paramref name="array"/>. 
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        ///	No current record.
+        ///	    No current record.
         /// </exception>
         /// <exception cref="ArgumentException">
         ///		The number of fields in the record is greater than the available space from 
@@ -1099,10 +1136,10 @@ namespace Effort.Internal.Csv
         #region GetCurrentRawData
 
         /// <summary>
-        /// Gets the current raw CSV data.
+        ///     Gets the current raw CSV data.
         /// </summary>
-        /// <remarks>Used for exception handling purpose.</remarks>
-        /// <returns>The current raw CSV data.</returns>
+        /// <remarks> Used for exception handling purpose. </remarks>
+        /// <returns> The current raw CSV data. </returns>
         public string GetCurrentRawData()
         {
             if (this.buffer != null && this.bufferLength > 0)
@@ -1120,9 +1157,12 @@ namespace Effort.Internal.Csv
         #region IsWhiteSpace
 
         /// <summary>
-        /// Indicates whether the specified Unicode character is categorized as white space.
+        ///     Indicates whether the specified Unicode character is categorized as white 
+        ///     space.
         /// </summary>
-        /// <param name="c">A Unicode character.</param>
+        /// <param name="c">
+        ///     A Unicode character.
+        /// </param>
         /// <returns>
         ///     <see langword="true"/> if <paramref name="c"/> is white space; otherwise, 
         ///     <see langword="false"/>.
@@ -1149,14 +1189,16 @@ namespace Effort.Internal.Csv
         #region MoveTo
 
         /// <summary>
-        /// Moves to the specified record index.
+        ///     Moves to the specified record index.
         /// </summary>
-        /// <param name="record">The record index.</param>
+        /// <param name="record">
+        ///     The record index.
+        /// </param>
         /// <returns>
         ///     <c>true</c> if the operation was successful; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public virtual bool MoveTo(long record)
         {
@@ -1184,17 +1226,17 @@ namespace Effort.Internal.Csv
         #region ParseNewLine
 
         /// <summary>
-        /// Parses a new line delimiter.
+        ///     Parses a new line delimiter.
         /// </summary>
         /// <param name="pos">
-        /// The starting position of the parsing. Will contain the resulting end position.
+        ///     The starting position of the parsing. Will contain the resulting end position.
         /// </param>
         /// <returns>
         ///     <see langword="true"/> if a new line delimiter was found; otherwise, 
         ///     <see langword="false"/>.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         private bool ParseNewLine(ref int pos)
         {
@@ -1268,9 +1310,12 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Determines whether the character at the specified position is a new line delimiter.
+        ///     Determines whether the character at the specified position is a new line
+        ///     delimiter.
         /// </summary>
-        /// <param name="pos">The position of the character to verify.</param>
+        /// <param name="pos">
+        ///     The position of the character to verify.
+        /// </param>
         /// <returns>
         /// 	<see langword="true"/> if the character at the specified position is a new line
         /// 	delimiter; otherwise, <see langword="false"/>.
@@ -1300,13 +1345,13 @@ namespace Effort.Internal.Csv
         #region ReadBuffer
 
         /// <summary>
-        /// Fills the buffer with data from the reader.
+        ///     Fills the buffer with data from the reader.
         /// </summary>
         /// <returns>
         ///     <see langword="true"/> if data was successfully read; otherwise, 
         ///     <see langword="false"/>.</returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         private bool ReadBuffer()
         {
@@ -1335,23 +1380,23 @@ namespace Effort.Internal.Csv
         #region ReadField
 
         /// <summary>
-        /// Reads the field at the specified index.
-        /// Any unread fields with an inferior index will also be read as part of the required
-        /// parsing.
+        ///     Reads the field at the specified index.
+        ///     Any unread fields with an inferior index will also be read as part of the
+        ///     required parsing.
         /// </summary>
         /// <param name="field">
-        /// The field index.
+        ///     The field index.
         /// </param>
         /// <param name="initializing">
-        /// Indicates if the reader is currently initializing.
+        ///     Indicates if the reader is currently initializing.
         /// </param>
         /// <param name="discardValue">
-        /// Indicates if the value(s) are discarded.
+        ///     Indicates if the value(s) are discarded.
         /// </param>
         /// <returns>
-        /// The field at the specified index. 
-        /// A <see langword="null"/> indicates that an error occured or that the last field has
-        /// been reached during initialization.
+        ///     The field at the specified index. 
+        ///     A <see langword="null"/> indicates that an error occured or that the last field
+        ///     has been reached during initialization.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
         ///		<paramref name="field"/> is out of range.
@@ -1781,13 +1826,13 @@ namespace Effort.Internal.Csv
         #region ReadNextRecord
 
         /// <summary>
-        /// Reads the next record.
+        ///     Reads the next record.
         /// </summary>
         /// <returns>
         ///     <see langword="true"/> if a record has been successfully reads; otherwise, 
         ///     <see langword="false"/>.</returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public bool ReadNextRecord()
         {
@@ -1795,24 +1840,25 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Reads the next record.
+        ///     Reads the next record.
         /// </summary>
         /// <param name="onlyReadHeaders">
-        /// Indicates if the reader will proceed to the next record after having read headers.
-        /// <see langword="true"/> if it stops after having read headers; otherwise, 
-        /// <see langword="false"/>.
+        ///     Indicates if the reader will proceed to the next record after having read 
+        ///     headers.
+        ///     <see langword="true"/> if it stops after having read headers; otherwise, 
+        ///     <see langword="false"/>.
         /// </param>
         /// <param name="skipToNextLine">
-        /// Indicates if the reader will skip directly to the next line without parsing the 
-        /// current one. 
-        /// To be used when an error occurs.
+        ///     Indicates if the reader will skip directly to the next line without parsing the 
+        ///     current one. 
+        ///     To be used when an error occurs.
         /// </param>
         /// <returns>
-        /// <see langword="true"/> if a record has been successfully reads; otherwise, 
-        /// <see langword="false"/>.
+        ///     <see langword="true"/> if a record has been successfully reads; otherwise, 
+        ///     <see langword="false"/>.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         protected virtual bool ReadNextRecord(bool onlyReadHeaders, bool skipToNextLine)
         {
@@ -2006,20 +2052,20 @@ namespace Effort.Internal.Csv
         #region SkipEmptyAndCommentedLines
 
         /// <summary>
-        /// Skips empty and commented lines.
-        /// If the end of the buffer is reached, its content be discarded and filled again from
-        /// the reader.
+        ///     Skips empty and commented lines.
+        ///     If the end of the buffer is reached, its content be discarded and filled again
+        ///     from the reader.
         /// </summary>
         /// <param name="pos">
-        /// The position in the buffer where to start parsing. 
-        /// Will contains the resulting position after the operation.
+        ///     The position in the buffer where to start parsing. 
+        ///     Will contains the resulting position after the operation.
         /// </param>
         /// <returns>
-        /// <see langword="true"/> if the end of the reader has not been reached; otherwise, 
-        /// <see langword="false"/>.
+        ///     <see langword="true"/> if the end of the reader has not been reached; 
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         private bool SkipEmptyAndCommentedLines(ref int pos)
         {
@@ -2045,15 +2091,15 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// <para>Worker method.</para>
-        /// <para>Skips empty and commented lines.</para>
+        ///     <para>Worker method.</para>
+        ///     <para>Skips empty and commented lines.</para>
         /// </summary>
         /// <param name="pos">
-        /// The position in the buffer where to start parsing. 
-        /// Will contains the resulting position after the operation.
+        ///     The position in the buffer where to start parsing. 
+        ///     Will contains the resulting position after the operation.
         /// </param>
-        /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///     <exception cref="T:System.ComponentModel.ObjectDisposedException">
+        ///	    The instance has been disposed of.
         /// </exception>
         private void DoSkipEmptyAndCommentedLines(ref int pos)
         {
@@ -2080,16 +2126,16 @@ namespace Effort.Internal.Csv
         #region SkipWhiteSpaces
 
         /// <summary>
-        /// Skips whitespace characters.
+        ///     Skips whitespace characters.
         /// </summary>
         /// <param name="pos">
-        /// The starting position of the parsing. Will contain the resulting end position.
+        ///     The starting position of the parsing. Will contain the resulting end position.
         /// </param>
         /// <returns>
         ///     <see langword="true"/> if the end of the reader has not been reached; 
         ///     otherwise, <see langword="false"/>.</returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         private bool SkipWhiteSpaces(ref int pos)
         {
@@ -2123,20 +2169,20 @@ namespace Effort.Internal.Csv
         #region SkipToNextLine
 
         /// <summary>
-        /// Skips ahead to the next NewLine character.
-        /// If the end of the buffer is reached, its content be discarded and filled again 
-        /// from the reader.
+        ///     Skips ahead to the next NewLine character.
+        ///     If the end of the buffer is reached, its content be discarded and filled again 
+        ///     from the reader.
         /// </summary>
         /// <param name="pos">
-        /// The position in the buffer where to start parsing. 
-        /// Will contains the resulting position after the operation.
+        ///     The position in the buffer where to start parsing. 
+        ///     Will contains the resulting position after the operation.
         /// </param>
         /// <returns>
-        /// <see langword="true"/> if the end of the reader has not been reached; otherwise, 
-        /// <see langword="false"/>.
+        ///     <see langword="true"/> if the end of the reader has not been reached; 
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         private bool SkipToNextLine(ref int pos)
         {
@@ -2154,12 +2200,16 @@ namespace Effort.Internal.Csv
         #region HandleParseError
 
         /// <summary>
-        /// Handles a parsing error.
+        ///     Handles a parsing error.
         /// </summary>
-        /// <param name="error">The parsing error that occured.</param>
-        /// <param name="pos">The current position in the buffer.</param>
+        /// <param name="error">
+        ///     The parsing error that occured.
+        /// </param>
+        /// <param name="pos">
+        ///     The current position in the buffer.
+        /// </param>
         /// <exception cref="ArgumentNullException">
-        ///	<paramref name="error"/> is <see langword="null"/>.
+        ///	    <paramref name="error"/> is <see langword="null"/>.
         /// </exception>
         private void HandleParseError(MalformedCsvException error, ref int pos)
         {
@@ -2223,22 +2273,34 @@ namespace Effort.Internal.Csv
         #region HandleMissingField
 
         /// <summary>
-        /// Handles a missing field error.
+        ///     Handles a missing field error.
         /// </summary>
-        /// <param name="value">The partially parsed value, if available.</param>
-        /// <param name="fieldIndex">The missing field index.</param>
-        /// <param name="currentPosition">The current position in the raw data.</param>
+        /// <param name="value">
+        ///     The partially parsed value, if available.
+        /// </param>
+        /// <param name="fieldIndex">
+        ///     The missing field index.
+        /// </param>
+        /// <param name="currentPosition">
+        ///     The current position in the raw data.
+        /// </param>
         /// <returns>
-        /// The resulting value according to <see cref="M:MissingFieldAction"/>.
-        /// If the action is set to <see cref="T:MissingFieldAction.TreatAsParseError"/>,
-        /// then the parse error will be handled according to 
-        /// <see cref="DefaultParseErrorAction"/>.
+        ///     The resulting value according to <see cref="M:MissingFieldAction"/>.
+        ///     If the action is set to <see cref="T:MissingFieldAction.TreatAsParseError"/>,
+        ///     then the parse error will be handled according to 
+        ///     <see cref="DefaultParseErrorAction"/>.
         /// </returns>
         private FieldValue HandleMissingField(FieldValue value, int fieldIndex, ref int currentPosition)
         {
             if (fieldIndex < 0 || fieldIndex >= this.fieldCount)
             {
-                throw new ArgumentOutOfRangeException("fieldIndex", fieldIndex, string.Format(CultureInfo.InvariantCulture, ExceptionMessages.FieldIndexOutOfRange, fieldIndex));
+                throw new ArgumentOutOfRangeException(
+                    "fieldIndex", 
+                    fieldIndex, 
+                    string.Format(
+                        CultureInfo.InvariantCulture, 
+                        ExceptionMessages.FieldIndexOutOfRange, 
+                        fieldIndex));
             }
 
             this.missingFieldFlag = true;
@@ -2257,7 +2319,14 @@ namespace Effort.Internal.Csv
                 switch (this.missingFieldAction)
                 {
                     case MissingFieldAction.ParseError:
-                        HandleParseError(new MissingFieldCsvException(GetCurrentRawData(), currentPosition, Math.Max(0, this.currentRecordIndex), fieldIndex), ref currentPosition);
+                        HandleParseError(
+                            new MissingFieldCsvException(
+                                GetCurrentRawData(),
+                                currentPosition, 
+                                Math.Max(0, this.currentRecordIndex), 
+                                fieldIndex), 
+                            ref currentPosition);
+
                         return FieldValue.Missing;
 
                     case MissingFieldAction.ReplaceByEmpty:
@@ -2267,7 +2336,11 @@ namespace Effort.Internal.Csv
                         return null;
 
                     default:
-                        throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, ExceptionMessages.MissingFieldActionNotSupported, this.missingFieldAction));
+                        throw new NotSupportedException(
+                            string.Format(
+                                CultureInfo.InvariantCulture, 
+                                ExceptionMessages.MissingFieldActionNotSupported, 
+                                this.missingFieldAction));
                 }
             }
         }
@@ -2279,14 +2352,16 @@ namespace Effort.Internal.Csv
         #region IDataReader support methods
 
         /// <summary>
-        /// Validates the state of the data reader.
+        ///     Validates the state of the data reader.
         /// </summary>
-        /// <param name="validations">The validations to accomplish.</param>
+        /// <param name="validations">
+        ///     The validations to accomplish.
+        /// </param>
         /// <exception cref="InvalidOperationException">
-        ///	No current record.
+        ///	    No current record.
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        ///	This operation is invalid when the reader is closed.
+        ///	    This operation is invalid when the reader is closed.
         /// </exception>
         private void ValidateDataReader(DataReaderValidations validations)
         {
@@ -2302,24 +2377,26 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Copy the value of the specified field to an array.
+        ///     Copy the value of the specified field to an array.
         /// </summary>
         /// <param name="field">
-        /// The index of the field.
+        ///     The index of the field.
         /// </param>
         /// <param name="fieldOffset">
-        /// The offset in the field value.
+        ///     The offset in the field value.
         /// </param>
         /// <param name="destinationArray">
-        /// The destination array where the field value will be copied.
+        ///     The destination array where the field value will be copied.
         /// </param>
         /// <param name="destinationOffset">
-        /// The destination array offset.
+        ///     The destination array offset.
         /// </param>
         /// <param name="length">
-        /// The number of characters to copy from the field value.
+        ///     The number of characters to copy from the field value.
         /// </param>
-        /// <returns></returns>
+        /// <returns>
+        ///     The length.
+        /// </returns>
         private long CopyFieldToArray(
             int field, 
             long fieldOffset, 
@@ -2833,13 +2910,14 @@ namespace Effort.Internal.Csv
         #region IEnumerable<string[]> Members
 
         /// <summary>
-        /// Returns an <see cref="T:RecordEnumerator"/>  that can iterate through CSV records.
+        ///     Returns an <see cref="T:RecordEnumerator"/>  that can iterate through CSV 
+        ///     records.
         /// </summary>
         /// <returns>
-        /// An <see cref="T:RecordEnumerator"/>  that can iterate through CSV records.
+        ///     An <see cref="T:RecordEnumerator"/>  that can iterate through CSV records.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         public CsvReader.RecordEnumerator GetEnumerator()
         {
@@ -2847,15 +2925,15 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Returns an <see cref="T:System.Collections.Generics.IEnumerator"/>  that can 
-        /// iterate through CSV records.
+        ///     Returns an <see cref="T:System.Collections.Generics.IEnumerator"/>  that can 
+        ///     iterate through CSV records.
         /// </summary>
         /// <returns>
-        /// An <see cref="T:System.Collections.Generics.IEnumerator"/>  that can iterate 
-        /// through CSV records.
+        ///     An <see cref="T:System.Collections.Generics.IEnumerator"/>  that can iterate 
+        ///     through CSV records.
         /// </returns>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
-        ///	The instance has been disposed of.
+        ///	    The instance has been disposed of.
         /// </exception>
         IEnumerator<string[]> IEnumerable<string[]>.GetEnumerator()
         {
@@ -2883,7 +2961,7 @@ namespace Effort.Internal.Csv
         #region IDisposable members
 
         /// <summary>
-        /// Gets a value indicating whether the instance has been disposed of.
+        ///     Gets a value indicating whether the instance has been disposed of.
         /// </summary>
         /// <value>
         /// 	<see langword="true"/> if the instance has been disposed of; otherwise, 
@@ -2896,8 +2974,9 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Checks if the instance has been disposed of, and if it has, throws an 
-        /// <see cref="T:System.ComponentModel.ObjectDisposedException"/>; otherwise, does nothing.
+        ///     Checks if the instance has been disposed of, and if it has, throws an 
+        ///     <see cref="T:System.ComponentModel.ObjectDisposedException"/>; otherwise, does
+        ///     nothing.
         /// </summary>
         /// <exception cref="T:System.ComponentModel.ObjectDisposedException">
         /// 	The instance has been disposed of.
@@ -2916,7 +2995,7 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Releases all resources used by the instance.
+        ///     Releases all resources used by the instance.
         /// </summary>
         /// <remarks>
         /// 	Calls <see cref="M:Dispose(Boolean)"/> with the disposing parameter set to 
@@ -2932,8 +3011,8 @@ namespace Effort.Internal.Csv
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by this instance and optionally releases the
-        /// managed resources.
+        ///     Releases the unmanaged resources used by this instance and optionally releases
+        ///     the managed resources.
         /// </summary>
         /// <param name="disposing">
         /// 	<see langword="true"/> to release both managed and unmanaged resources; 

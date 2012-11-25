@@ -25,33 +25,33 @@
 namespace Effort.DataLoaders
 {
     /// <summary>
-    /// Represents a data loader that reads data from CSV files.
+    ///     Represents a data loader that reads data from CSV files.
     /// </summary>
     public class CsvDataLoader : IDataLoader
     {
         private string path;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CsvDataLoader" /> class.
+        ///     Initializes a new instance of the <see cref="CsvDataLoader" /> class.
         /// </summary>
         public CsvDataLoader()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CsvDataLoader" /> class.
+        ///     Initializes a new instance of the <see cref="CsvDataLoader" /> class.
         /// </summary>
-        /// <param name="path">The path of the folder that contains the CSV files.</param>
+        /// <param name="path"> The path of the folder that contains the CSV files. </param>
         public CsvDataLoader(string path)
         {
             this.path = path;
         }
 
         /// <summary>
-        /// Gets path of the folder that contains the CSV files.
+        ///     Gets path of the folder that contains the CSV files.
         /// </summary>
         /// <value>
-        /// The path of the folder.
+        ///     The path of the folder.
         /// </value>
         public string ContainerFolderPath
         {
@@ -62,11 +62,11 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Gets or sets the argument that contains the path of the folder where the CSV
-        /// files are located.
+        ///     Gets or sets the argument that contains the path of the folder where the CSV
+        ///     files are located.
         /// </summary>
         /// <value>
-        /// The argument.
+        ///     The argument.
         /// </value>
         string IDataLoader.Argument
         {
@@ -82,10 +82,10 @@ namespace Effort.DataLoaders
         }
 
         /// <summary>
-        /// Creates a <see cref="CsvTableDataLoaderFactory" /> instance.
+        ///     Creates a <see cref="CsvTableDataLoaderFactory" /> instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="CsvTableDataLoaderFactory" /> instance.
+        ///     A <see cref="CsvTableDataLoaderFactory" /> instance.
         /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {

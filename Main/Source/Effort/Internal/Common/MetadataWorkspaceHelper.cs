@@ -40,7 +40,7 @@ namespace Effort.Internal.Common
     internal static class MetadataWorkspaceHelper
     {
         //// Code from:
-        //// http://efwrappers.codeplex.com/SourceControl/changeset/view/a7c12167e801#Source%2fEFProviderWrapperToolkit%2fEntityConnectionWrapperUtils.cs
+        //// http://bit.ly/TX9EMX
 
         private static byte[] systemPublicKeyToken = { 0xB0, 0x3F, 0x5F, 0x7F, 0x11, 0xD5, 0x0A, 0x3A };
         private static Regex resRegex = new Regex(@"^res://(?<assembly>.*)/(?<resource>.*)$");

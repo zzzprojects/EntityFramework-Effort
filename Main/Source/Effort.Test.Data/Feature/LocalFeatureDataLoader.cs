@@ -28,19 +28,21 @@ namespace Effort.Test.Data.Feature
     using System.IO;
     using Effort.DataLoaders;
 
-    public class FeatureLocalDataLoader : CsvDataLoader
+    public class FeatureLocalDataLoader : CachingDataLoader
     {
         public FeatureLocalDataLoader()
-            : base(FindFeatureContent())
+            : base(CreateCsvLoader())
         {
 
         }
 
-        private static string FindFeatureContent()
+        private static IDataLoader CreateCsvLoader()
         {
-            return Path.Combine(
+            string path = Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
                 ".\\..\\..\\..\\Effort.Test.Data\\Feature\\Content");
+
+            return new CsvDataLoader(path);
         }
     }
 }

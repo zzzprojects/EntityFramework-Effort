@@ -34,21 +34,31 @@ namespace Effort.Provider
     /// </summary>
     public static class EffortProviderConfiguration
     {
+        /// <summary>
+        /// The provider invariant name of the Effort provider.
+        /// </summary>
         public static readonly string ProviderInvariantName = "EffortProvider";
 
-        private static bool registered = false;
-        private static object sync = new object();
+        /// <summary>
+        /// Indicates if the Effort provider is registered.
+        /// </summary>
+        private static bool isRegistered = false;
+
+        /// <summary>
+        /// Latch object that is used to avoid double registration.
+        /// </summary>
+        private static object latch = new object();
 
         /// <summary>
         /// Registers the provider factory.
         /// </summary>
         public static void RegisterProvider()
         {
-            if (!registered)
+            if (!isRegistered)
             {
-                lock (sync)
+                lock (latch)
                 {
-                    if (!registered)
+                    if (!isRegistered)
                     {
                         RegisterProvider(
                             "Effort Provider", 
@@ -56,7 +66,7 @@ namespace Effort.Provider
                             typeof(EffortProviderFactory));
 
                         Thread.MemoryBarrier();
-                        registered = true;
+                        isRegistered = true;
                     }
                 }
             }

@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="LocalNorthwindDataLoader.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="DataLoaderConfigurationLatchMock.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,28 +20,40 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Northwind
+namespace Effort.Test.Internal.Fakes
 {
-    using System;
-    using System.IO;
     using Effort.DataLoaders;
 
-    public class NorthwindLocalDataLoader : CachingDataLoader
+    public class DataLoaderConfigurationLatchMock : IDataLoaderConfigurationLatch
     {
-        public NorthwindLocalDataLoader()
-            : base(CreateCsvLoader())
+        public DataLoaderConfigurationLatchMock()
         {
+            this.AcquireCallCount = 0;
+            this.ReleaseCallCount = 0;
         }
 
-        private static IDataLoader CreateCsvLoader()
-        {
-            string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Northwind\\Content");
+        public int AcquireCallCount 
+        { 
+            get; 
+            set; 
+        }
 
-            return new CsvDataLoader(path);
+        public int ReleaseCallCount 
+        { 
+            get; 
+            set; 
+        }
+
+        public void Acquire()
+        {
+            this.AcquireCallCount++;
+        }
+
+        public void Release()
+        {
+            this.ReleaseCallCount++;
         }
     }
 }

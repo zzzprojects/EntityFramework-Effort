@@ -28,6 +28,9 @@ namespace Effort.Provider
     using System.Data;
     using System.Data.Common;
 
+    /// <summary>
+    /// Represents a parameter to a <see cref="T:EffortCommand"/>.
+    /// </summary>
     public class EffortParameter : DbParameter
     {
         /// <summary>

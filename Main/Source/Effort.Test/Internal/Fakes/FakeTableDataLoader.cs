@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="LocalNorthwindDataLoader.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="FakeTableDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,28 +20,23 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Northwind
+namespace Effort.Test.Internal.Fakes
 {
-    using System;
-    using System.IO;
+    using System.Collections.Generic;
     using Effort.DataLoaders;
 
-    public class NorthwindLocalDataLoader : CachingDataLoader
+    public class FakeTableDataLoader : ITableDataLoader
     {
-        public NorthwindLocalDataLoader()
-            : base(CreateCsvLoader())
-        {
-        }
+        private static object[] element1 = new object[] { 1, "2", new byte[] { 3 } };
+        private static object[] element2 = new object[] { 4, "5", new byte[] { 6 } };
 
-        private static IDataLoader CreateCsvLoader()
+        public IEnumerable<object[]> GetData()
         {
-            string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Northwind\\Content");
+            yield return element1;
 
-            return new CsvDataLoader(path);
+            yield return element2;
         }
     }
 }

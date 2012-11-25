@@ -34,6 +34,9 @@ namespace Effort.Provider
     /// </summary>
     public class EffortProviderFactory : DbProviderFactory, IServiceProvider
     {
+        /// <summary>
+        /// Provides a singleton instance of the <see cref="EffortProviderFactory"/> class.
+        /// </summary>
         public static readonly EffortProviderFactory Instance = new EffortProviderFactory();
 
         /// <summary>

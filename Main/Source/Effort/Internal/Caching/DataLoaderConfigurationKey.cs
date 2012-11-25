@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="CachingTableDataLoader.cs" company="Effort Team">
+// <copyright file="DataLoaderConfigurationKey.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,34 +22,47 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.DataLoaders
+namespace Effort.Internal.Caching
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using System;
+    using Effort.DataLoaders;
 
-    public class CachingTableDataLoader : ITableDataLoader
+    internal class DataLoaderConfigurationKey : IEquatable<DataLoaderConfigurationKey>
     {
-        private object[][] data;
+        private Type type;
+        private string argument;
 
-        public CachingTableDataLoader(ITableDataLoader wrappedTableDataLoader)
+        public DataLoaderConfigurationKey(IDataLoader loader)
         {
-            IEnumerable<object[]> data;
-
-            if (wrappedTableDataLoader != null)
+            if (loader == null)
             {
-                data = wrappedTableDataLoader.GetData();
-            }
-            else
-            {
-                data = Enumerable.Empty<object[]>();
+                throw new ArgumentNullException("loader");
             }
 
-            this.data = data.ToArray();
+            this.type = loader.GetType();
+            this.argument = loader.Argument ?? string.Empty;
         }
 
-        public IEnumerable<object[]> GetData()
+        public bool Equals(DataLoaderConfigurationKey other)
         {
-            return this.data;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return
+                this.type.Equals(other.type) &&
+                this.argument.Equals(other.argument, StringComparison.InvariantCulture);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj as DataLoaderConfigurationKey);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.type.GetHashCode() % this.argument.GetHashCode();
         }
     }
 }

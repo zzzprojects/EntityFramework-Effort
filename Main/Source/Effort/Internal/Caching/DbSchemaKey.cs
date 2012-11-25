@@ -32,7 +32,7 @@ namespace Effort.Internal.Caching
     using Effort.Internal.Common;
 
     /// <summary>
-    /// Represents a key that identifies <see cref="DbSchema"/> objects.
+    /// Represents a key that identifies <see cref="T:DbSchema"/> objects.
     /// </summary>
     internal class DbSchemaKey : IEquatable<DbSchemaKey>
     {
@@ -45,7 +45,7 @@ namespace Effort.Internal.Caching
         /// Initializes a new instance of the <see cref="DbSchemaKey" /> class.
         /// </summary>
         /// <param name="storeItemCollection">
-        /// The store item collection that the corresponding <see cref="DbSchema"/> is based
+        /// The store item collection that the corresponding <see cref="T:DbSchema"/> is based
         /// on.
         /// </param>
         public DbSchemaKey(StoreItemCollection storeItemCollection)
@@ -100,10 +100,10 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
-        /// Instantiates a <see cref="DbSchema"/> based on the specified string.
+        /// Creates a <see cref="DbSchemaKey"/> object based on the specified string.
         /// </summary>
         /// <param name="value">The string.</param>
-        /// <returns>The <see cref="DbSchema"/> object.</returns>
+        /// <returns>The <see cref="DbSchemaKey"/> object.</returns>
         public static DbSchemaKey FromString(string value)
         {
             DbSchemaKey result = new DbSchemaKey();

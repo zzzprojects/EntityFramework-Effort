@@ -32,6 +32,10 @@ namespace Effort.Provider
     using Effort.Internal.DbManagement;
     using Effort.Internal.DbManagement.Schema;
 
+    /// <summary>
+    /// The factory for building command definitions; use the type of this object as the 
+    /// argument to the IServiceProvider.GetService method on the provider factory; 
+    /// </summary>
     public class EffortProviderServices : DbProviderServices
     {
         /// <summary>

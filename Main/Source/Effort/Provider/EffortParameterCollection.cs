@@ -353,6 +353,17 @@ namespace Effort.Provider
             throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// Sets the <see cref="T:System.Data.Common.DbParameter" /> object at the specified 
+        /// index to a new value.
+        /// </summary>
+        /// <param name="index">
+        /// The index where the <see cref="T:System.Data.Common.DbParameter" /> object is 
+        /// located.
+        /// </param>
+        /// <param name="value">
+        /// The new <see cref="T:System.Data.Common.DbParameter" /> value.
+        /// </param>
         protected override void SetParameter(int index, DbParameter value)
         {
             throw new NotSupportedException();

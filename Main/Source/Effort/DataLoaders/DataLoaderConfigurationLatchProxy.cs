@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="CachingTableDataLoader.cs" company="Effort Team">
+// <copyright file="DataLoaderConfigurationLatchProxy.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,32 +24,66 @@
 
 namespace Effort.DataLoaders
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using System;
+    using Effort.Internal.Caching;
 
-    public class CachingTableDataLoader : ITableDataLoader
+    internal sealed class DataLoaderConfigurationLatchProxy : 
+        IDataLoaderConfigurationLatch, 
+        IDisposable
     {
-        private object[][] data;
+        private bool aquired;
+        private DataLoaderConfigurationKey key;
+        private DataLoaderConfigurationLatch latch;
 
-        public CachingTableDataLoader(ITableDataLoader wrappedTableDataLoader)
+        public DataLoaderConfigurationLatchProxy(DataLoaderConfigurationKey key)
         {
-            IEnumerable<object[]> data;
-
-            if (wrappedTableDataLoader != null)
-            {
-                data = wrappedTableDataLoader.GetData();
-            }
-            else
-            {
-                data = Enumerable.Empty<object[]>();
-            }
-
-            this.data = data.ToArray();
+            this.aquired = false;
+            this.key = key;
         }
 
-        public IEnumerable<object[]> GetData()
+        ~DataLoaderConfigurationLatchProxy()
         {
-            return this.data;
+            GC.SuppressFinalize(this);
+            this.Dispose(false);
+        }
+
+        public void Acquire()
+        {
+            if (this.aquired)
+            {
+                return;
+            }
+
+            if (this.latch == null)
+            {
+                this.latch = DataLoaderConfigurationLatchStore.GetLatch(this.key);
+            }
+
+            this.latch.Acquire();
+            this.aquired = true;
+        }
+
+        public void Release()
+        {
+            if (!this.aquired)
+            {
+                return;
+            }
+
+            this.latch.Release();
+            this.aquired = false;
+
+            // The latch is not removed from the cache
+        }
+
+        void IDisposable.Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            this.Release();
         }
     }
 }

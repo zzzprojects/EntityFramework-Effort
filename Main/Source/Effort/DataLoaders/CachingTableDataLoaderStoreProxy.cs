@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="LocalNorthwindDataLoader.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="CachingTableDataLoaderStoreProxy.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,28 +20,25 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Northwind
+namespace Effort.DataLoaders
 {
     using System;
-    using System.IO;
-    using Effort.DataLoaders;
+    using Effort.Internal.Caching;
 
-    public class NorthwindLocalDataLoader : CachingDataLoader
+    internal class CachingTableDataLoaderStoreProxy : ICachingTableDataLoaderStoreProxy
     {
-        public NorthwindLocalDataLoader()
-            : base(CreateCsvLoader())
+        public CachingTableDataLoader GetCachedData(
+            CachingTableDataLoaderKey key,
+            Func<CachingTableDataLoader> factoryMethod)
         {
+            return CachingTableDataLoaderStore.GetCachedData(key, factoryMethod);
         }
 
-        private static IDataLoader CreateCsvLoader()
+        public bool Contains(CachingTableDataLoaderKey key)
         {
-            string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Northwind\\Content");
-
-            return new CsvDataLoader(path);
+            return CachingTableDataLoaderStore.Contains(key);
         }
     }
 }

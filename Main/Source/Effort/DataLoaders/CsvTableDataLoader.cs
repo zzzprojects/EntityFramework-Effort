@@ -80,7 +80,11 @@ namespace Effort.DataLoaders
         /// </returns>
         protected override IDataReader CreateDataReader()
         {
-            return new CsvReader(new StreamReader(this.file.OpenRead()), true);
+            FileStream file = this.file.OpenRead();
+
+            TextReader reader = new StreamReader(file);
+
+            return new CsvReader(reader, true);
         }
 
         /// <summary>
@@ -116,10 +120,7 @@ namespace Effort.DataLoaders
                 // Everything that is empty is null
                 value = null;
             }
-            else if (
-                type == typeof(byte[]) ||
-                type == typeof(NMemory.Data.Binary) ||
-                type == typeof(NMemory.Data.Timestamp))
+            else if (type == typeof(byte[]))
             {
                 value = Convert.FromBase64String(val);
             }

@@ -25,26 +25,59 @@
 namespace Effort.DataLoaders
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using Effort.Internal.Caching;
 
     public class CachingTableDataLoaderFactory : ITableDataLoaderFactory
     {
         private IDataLoader wrappedDataLoader;
         private ITableDataLoaderFactory wrappedTableDataLoaderFactory;
+        private IDataLoaderConfigurationLatch latch;
+        private ICachingTableDataLoaderStoreProxy dataStoreProxy;
 
         public CachingTableDataLoaderFactory(IDataLoader wrappedDataLoader)
+            : this(
+                wrappedDataLoader, 
+                CreateLatch(wrappedDataLoader),
+                new CachingTableDataLoaderStoreProxy())
         {
+        }
+
+        internal CachingTableDataLoaderFactory(
+            IDataLoader wrappedDataLoader,
+            IDataLoaderConfigurationLatch latch,
+            ICachingTableDataLoaderStoreProxy dataStoreProxy)
+        {
+            if (wrappedDataLoader == null)
+            {
+                throw new ArgumentNullException("wrappedDataLoader");
+            }
+
+            if (dataStoreProxy == null)
+            {
+                throw new ArgumentNullException("dataStoreProxy");
+            }
+
             this.wrappedDataLoader = wrappedDataLoader;
+            this.latch = latch;
+            this.dataStoreProxy = dataStoreProxy;
         }
 
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
-            return CachingTableDataLoaderStore.GetCachedData(
-                this.wrappedDataLoader,
-                table.Name,
-                () => CreateCachedData(table));
+            CachingTableDataLoaderKey key =
+                new CachingTableDataLoaderKey(
+                    new DataLoaderConfigurationKey(this.wrappedDataLoader), 
+                    table.Name);
+
+            if (latch != null)
+            {
+                if (!this.dataStoreProxy.Contains(key))
+                {
+                    latch.Acquire();
+                }
+            }
+
+            return this.dataStoreProxy.GetCachedData(key, () => CreateCachedData(table));
         }
 
         public void Dispose()
@@ -53,16 +86,25 @@ namespace Effort.DataLoaders
             {
                 this.wrappedTableDataLoaderFactory.Dispose();
 
-                // TODO: Release this data loader configuration
+                // Release the data loader latch
+                if (this.latch != null)
+                {
+                    this.latch.Release();
+                }
             }
+        }
+
+        private static IDataLoaderConfigurationLatch CreateLatch(IDataLoader dataLoader)
+        {
+            DataLoaderConfigurationKey key = new DataLoaderConfigurationKey(dataLoader);
+
+            return new DataLoaderConfigurationLatchProxy(key);
         }
 
         private CachingTableDataLoader CreateCachedData(TableDescription table)
         {
             if (this.wrappedTableDataLoaderFactory == null)
             {
-                // TODO: Lock this data loader configuration
-
                 this.wrappedTableDataLoaderFactory =
                     this.wrappedDataLoader.CreateTableDataLoaderFactory();
             }

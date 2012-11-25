@@ -48,8 +48,7 @@ namespace Effort.Internal.Common
             Type entityType,
             IKeyInfo primaryKeyInfo,
             PropertyInfo identityField,
-            object[] constraints,
-            IEnumerable<object> initialEntities)
+            object[] constraints)
         {
             object identity = null;
 
@@ -68,9 +67,17 @@ namespace Effort.Internal.Common
                 typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("CreateTable")
                 .MakeGenericMethod(entityType, primaryKeyInfo.KeyType)
-                .Invoke(null, new object[] { database, primaryKeyInfo, identity, initialEntities, constraints });
+                .Invoke(null, new object[] { database, primaryKeyInfo, identity, constraints });
 
             return table as ITable;
+        }
+
+        public static void InitializeTableData(ITable table, IEnumerable<object> entities)
+        {
+            typeof(DatabaseReflectionHelper.WrapperMethods)
+                .GetMethod("InitializeTableData")
+                .MakeGenericMethod(table.EntityType)
+                .Invoke(null, new object[] { table, entities });
         }
 
         public static void InsertEntity(ITable table, object entity, Transaction transaction)
@@ -249,8 +256,7 @@ namespace Effort.Internal.Common
             public static Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
                 Database database,
                 IKeyInfo<TEntity, TPrimaryKey> primaryKeyInfo,
-                Expression<Func<TEntity, long>> identity,
-                IEnumerable<object> initialEntities, 
+                Expression<Func<TEntity, long>> identity, 
                 object[] constraints)
 
                 where TEntity : class
@@ -259,7 +265,7 @@ namespace Effort.Internal.Common
                     primaryKeyInfo,
                     identity != null ? new IdentitySpecification<TEntity>(identity) : null);
 
-                ((IInitializableTable<TEntity>)table).Initialize(initialEntities.Cast<TEntity>());
+                
 
                 foreach (var constraint in constraints.Cast<NMemory.Constraints.IConstraint<TEntity>>())
                 {
@@ -267,6 +273,15 @@ namespace Effort.Internal.Common
                 }
 
                 return table;
+            }
+
+            public static void InitializeTableData<TEntity>(
+               ITable<TEntity> table,
+               IEnumerable<object> entities)
+
+               where TEntity : class
+            {
+                ((IInitializableTable<TEntity>)table).Initialize(entities.Cast<TEntity>());
             }
 
             public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, IKeyInfo<TEntity, TForeignKey> foreignKeyinfo)

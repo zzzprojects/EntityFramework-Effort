@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="CachingTableDataLoaderStore.cs" company="Effort Team">
+// <copyright file="DataLoaderConfigurationLatchStore.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,58 +22,41 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.DataLoaders
+namespace Effort.Internal.Caching
 {
-    using System;
-    using Effort.Internal.Caching;
-
     /// <summary>
-    /// Represents a cache that stores <see cref="CachedDataLoaderData"/> objects.
+    /// Represents a cache that stores <see cref="T:DataLoaderConfigurationLatch"/> objects.
     /// </summary>
-    internal static class CachingTableDataLoaderStore
+    internal static class DataLoaderConfigurationLatchStore
     {
         /// <summary>
         /// Internal collection.
         /// </summary>
         private static ConcurrentCache<
-            CachingTableDataLoaderKey, 
-            CachingTableDataLoader> store;
+            DataLoaderConfigurationKey,
+            DataLoaderConfigurationLatch> store;
 
         /// <summary>
-        /// Initializes static members of the the <see cref="CachingTableDataLoaderStore" /> 
+        /// Initializes static members of the the 
+        /// <see cref="DataLoaderConfigurationLatchStore" /> 
         /// class.
         /// </summary>
-        static CachingTableDataLoaderStore()
+        static DataLoaderConfigurationLatchStore()
         {
             store = new ConcurrentCache<
-                CachingTableDataLoaderKey,
-                CachingTableDataLoader>();
+                DataLoaderConfigurationKey,
+                DataLoaderConfigurationLatch>();
         }
 
         /// <summary>
-        /// Returns a <see cref="CachedDataLoaderData"/> object that satisfies the specified 
-        /// arguments. If no such element exists the provided factory method is used to create 
-        /// one.
+        /// Return the latch associated to specified data loader configuration
         /// </summary>
-        /// <param name="loader">
-        /// The data loader that fetches the data.
-        /// </param>
-        /// <param name="tableName">
-        /// Name of the table.
-        /// </param>
-        /// <param name="factoryMethod">
-        /// The factory method that instatiates the desired CachedDataLoaderTableData object.
-        /// </param>
-        /// <returns></returns>
-        public static CachingTableDataLoader GetCachedData(
-            IDataLoader loader,
-            string tableName,
-            Func<CachingTableDataLoader> factoryMethod)
+        /// <param name="key">Identifies the data loader configuration.</param>
+        /// <returns>The configuration latch.</returns>
+        public static DataLoaderConfigurationLatch GetLatch(
+            DataLoaderConfigurationKey key)
         {
-            CachingTableDataLoaderKey key =
-                new CachingTableDataLoaderKey(loader.GetType(), loader.Argument, tableName);
-
-            return store.Get(key, factoryMethod);
+            return store.Get(key, () => new DataLoaderConfigurationLatch());
         }
     }
 }

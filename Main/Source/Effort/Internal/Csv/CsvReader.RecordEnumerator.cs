@@ -109,7 +109,7 @@ namespace Effort.Internal.Csv
                 {
                     this.current = new string[this.reader.fieldCount];
 
-                    this.reader.CopyCurrentRecordTo(this.current);
+                    this.reader.CopyCurrentRecordTo(this.current, 0);
                     this.currentRecordIndex = this.reader.currentRecordIndex;
 
                     return true;

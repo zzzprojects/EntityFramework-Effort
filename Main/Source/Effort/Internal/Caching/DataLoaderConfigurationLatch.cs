@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="LocalNorthwindDataLoader.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="DataLoaderConfigurationLatch.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,28 +20,33 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Northwind
+namespace Effort.Internal.Caching
 {
     using System;
-    using System.IO;
+    using System.Threading;
     using Effort.DataLoaders;
 
-    public class NorthwindLocalDataLoader : CachingDataLoader
+    internal class DataLoaderConfigurationLatch : IDataLoaderConfigurationLatch
     {
-        public NorthwindLocalDataLoader()
-            : base(CreateCsvLoader())
+        private Guid guid;
+        private SemaphoreSlim semaphore;
+
+        public DataLoaderConfigurationLatch()
         {
+            this.guid = Guid.NewGuid();
+            this.semaphore = new SemaphoreSlim(1);
         }
 
-        private static IDataLoader CreateCsvLoader()
+        public void Acquire()
         {
-            string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Northwind\\Content");
+            this.semaphore.Wait();
+        }
 
-            return new CsvDataLoader(path);
+        public void Release()
+        {
+            this.semaphore.Release();
         }
     }
 }

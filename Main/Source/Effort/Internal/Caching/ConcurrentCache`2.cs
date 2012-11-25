@@ -77,6 +77,18 @@ namespace Effort.Internal.Caching
         }
 
         /// <summary>
+        /// Determines whether the store containes an element associated to the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>
+        ///   <c>true</c> if it contains the appropriate element otherwise, <c>false</c>.
+        /// </returns>
+        public bool Contains(TKey key)
+        {
+            return this.store.ContainsKey(key);
+        }
+
+        /// <summary>
         /// Removes the element associate to the specified key.
         /// </summary>
         /// <param name="key">The key.</param>

@@ -26,23 +26,21 @@ namespace Effort.DataLoaders
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq.Expressions;
     using System.Reflection;
-    using Effort.Internal.Common;
     using Effort.Internal.DbManagement.Schema;
 
     internal static class ObjectLoader
     {
         public static IEnumerable<object> Load(
             ITableDataLoaderFactory loaderFactory, 
-            DbTableInformation table, 
-            Type entityType)
+            DbTableInformation table)
         {
             List<ColumnDescription> columns = new List<ColumnDescription>();
-            PropertyInfo[] properties = entityType.GetProperties();
+            PropertyInfo[] properties = table.EntityType.GetProperties();
 
             foreach (PropertyInfo property in properties)
             {
+                string name = property.Name;
                 Type type = property.PropertyType;
 
                 // TODO: external 
@@ -52,32 +50,37 @@ namespace Effort.DataLoaders
                     type = typeof(byte[]);
                 }
 
-                columns.Add(new ColumnDescription(property.Name, property.PropertyType));
+                ColumnDescription column = new ColumnDescription(name, type);
+                columns.Add(column);
             }
 
             TableDescription tableDescription = 
                 new TableDescription(table.TableName, columns);
 
-            ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);       
+            ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
 
             foreach (object[] data in loader.GetData())
             {
+                object[] entityProperties = new object[data.Length];
+
                 for (int i = 0; i < columns.Count; i++)
                 {
                     // TODO: external
                     if (properties[i].PropertyType == typeof(NMemory.Data.Timestamp))
                     {
-                        data[i] = (NMemory.Data.Timestamp)(byte[])data[i];
+                        entityProperties[i] = (NMemory.Data.Timestamp)(byte[])data[i];
                     }
                     else if (properties[i].PropertyType == typeof(NMemory.Data.Binary))
                     {
-                        data[i] = (NMemory.Data.Binary)(byte[])data[i];
+                        entityProperties[i] = (NMemory.Data.Binary)(byte[])data[i];
+                    }
+                    else
+                    {
+                        entityProperties[i] = data[i];
                     }
                 }
-
-                object entity = table.EntityInitializer.DynamicInvoke(data);
-
-                yield return entity;
+                
+                yield return table.EntityInitializer.DynamicInvoke(entityProperties);
             }
         }
     }

@@ -72,7 +72,7 @@ namespace Effort.Internal.Caching
         /// Determines whether the specified <see cref="ObjectContextTypeKey" /> is equal to 
         /// this instance.
         /// </summary>
-        /// <param name="obj">
+        /// <param name="other">
         /// The <see cref="ObjectContextTypeKey" /> to compare with this instance.
         /// </param>
         /// <returns>

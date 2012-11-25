@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="LocalNorthwindDataLoader.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="FakeDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,28 +20,45 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Northwind
+namespace Effort.Test.Internal.Fakes
 {
-    using System;
-    using System.IO;
     using Effort.DataLoaders;
+    using System.Collections.Generic;
 
-    public class NorthwindLocalDataLoader : CachingDataLoader
+    public class FakeDataLoader : IDataLoader, ITableDataLoaderFactory
     {
-        public NorthwindLocalDataLoader()
-            : base(CreateCsvLoader())
+        public FakeDataLoader()
         {
+            this.CreateTableDataLoaderCallCount = 0;
         }
 
-        private static IDataLoader CreateCsvLoader()
+        public int CreateTableDataLoaderCallCount
         {
-            string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Northwind\\Content");
+            get;
+            set;
+        }
 
-            return new CsvDataLoader(path);
+        public string Argument
+        {
+            get;
+            set;
+        }
+
+        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+        {
+            return this;
+        }
+
+        public ITableDataLoader CreateTableDataLoader(TableDescription table)
+        {
+            this.CreateTableDataLoaderCallCount++;
+            return new FakeTableDataLoader();
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

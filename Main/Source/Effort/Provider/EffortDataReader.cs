@@ -166,8 +166,8 @@ namespace Effort.Provider
 
         /// <summary>
         /// Reads a stream of characters from the specified column, starting at location 
-        /// indicated by <paramref name="dataIndex" />, into the buffer, starting at the 
-        /// location indicated by <paramref name="bufferIndex" />.
+        /// indicated by <paramref name="dataOffset" />, into the buffer, starting at the 
+        /// location indicated by <paramref name="bufferOffset" />.
         /// </summary>
         /// <param name="ordinal">
         /// The zero-based column ordinal.
@@ -270,6 +270,13 @@ namespace Effort.Provider
             return (float)this.GetValue(ordinal);
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a globally-unique identifier (GUID).
+        /// </summary>
+        /// <param name="ordinal">The zero-based column ordinal.</param>
+        /// <returns>
+        /// The value of the specified column.
+        /// </returns>
         public override Guid GetGuid(int ordinal)
         {
             return (Guid)this.GetValue(ordinal);

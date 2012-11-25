@@ -28,18 +28,20 @@ namespace Effort.Test.Data.Staff
     using System.IO;
     using Effort.DataLoaders;
 
-    public class LocalStaffDataLoader : CsvDataLoader
+    public class LocalStaffDataLoader : CachingDataLoader
     {
         public LocalStaffDataLoader()
-            : base(FindStaffContent())
+            : base(CreateCsvLoader())
         {
         }
 
-        private static string FindStaffContent()
+        private static IDataLoader CreateCsvLoader()
         {
-            return Path.Combine(
+            string path = Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
                 ".\\..\\..\\..\\Effort.Test.Data\\Staff\\Content");
+
+            return new CsvDataLoader(path);
         }
     }
 }

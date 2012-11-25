@@ -22,7 +22,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.DataLoaders
+namespace Effort.Internal.Caching
 {
     using System;
 
@@ -32,14 +32,9 @@ namespace Effort.DataLoaders
     internal class CachingTableDataLoaderKey : IEquatable<CachingTableDataLoaderKey>
     {
         /// <summary>
-        /// The type of the data loader.
+        /// Identifies the data loader configuration
         /// </summary>
-        private Type loaderType;
-
-        /// <summary>
-        /// The argument that represent the state of the data loader.
-        /// </summary>
-        private string loaderArg;
+        private DataLoaderConfigurationKey loaderConfiguration;
 
         /// <summary>
         /// The name of the table.
@@ -49,27 +44,35 @@ namespace Effort.DataLoaders
         /// <summary>
         /// Initializes a new instance of the <see cref="CachingTableDataLoaderKey" /> class.
         /// </summary>
-        /// <param name="loaderType">
-        /// The type of the data loader.
-        /// </param>
-        /// <param name="loaderArg">
-        /// The argument that represent the state of the data loader.
+        /// <param name="loaderConfiguration">
+        /// Identifies the data loader configuration.
         /// </param>
         /// <param name="tableName">
         /// The name of the table.
         /// </param>
-        public CachingTableDataLoaderKey(Type loaderType, string loaderArg, string tableName)
+        public CachingTableDataLoaderKey(
+            DataLoaderConfigurationKey loaderConfiguration, 
+            string tableName)
         {
-            this.loaderType = loaderType;
-            this.loaderArg = loaderArg ?? string.Empty;
-            this.tableName = tableName ?? string.Empty;
+            if (loaderConfiguration == null)
+            {
+                throw new ArgumentNullException("loaderConfiguration");
+            }
+
+            if (string.IsNullOrEmpty(tableName))
+            {
+                throw new ArgumentNullException("tableName");
+            }
+
+            this.loaderConfiguration = loaderConfiguration;
+            this.tableName = tableName;
         }
 
         /// <summary>
         /// Determines whether the specified <see cref="CachingTableDataLoaderKey" /> is equal to 
         /// this instance.
         /// </summary>
-        /// <param name="obj">
+        /// <param name="other">
         /// The <see cref="CachingTableDataLoaderKey" /> to compare with this instance.
         /// </param>
         /// <returns>
@@ -78,16 +81,14 @@ namespace Effort.DataLoaders
         /// </returns>
         public bool Equals(CachingTableDataLoaderKey other)
         {
+            if (other == null)
+            {
+                return false;
+            }
+
             return
-                this.loaderType.Equals(other.loaderType) &&
-                string.Equals(
-                    this.loaderArg,
-                    other.loaderArg,
-                    StringComparison.InvariantCultureIgnoreCase) &&
-                string.Equals(
-                    this.tableName,
-                    other.tableName,
-                    StringComparison.InvariantCultureIgnoreCase);
+                this.loaderConfiguration.Equals(other.loaderConfiguration) &&
+                this.tableName.Equals(other.tableName, StringComparison.InvariantCulture);
         }
 
         /// <summary>
@@ -103,14 +104,7 @@ namespace Effort.DataLoaders
         /// </returns>
         public override bool Equals(object obj)
         {
-            CachingTableDataLoaderKey other = obj as CachingTableDataLoaderKey;
-
-            if (other == null)
-            {
-                return false;
-            }
-
-            return this.Equals(other);
+            return this.Equals(obj as CachingTableDataLoaderKey);
         }
 
         /// <summary>
@@ -122,10 +116,7 @@ namespace Effort.DataLoaders
         /// </returns>
         public override int GetHashCode()
         {
-            return
-                this.loaderType.GetHashCode() %
-                this.loaderArg.GetHashCode() %
-                this.tableName.GetHashCode();
+            return this.loaderConfiguration.GetHashCode() % this.tableName.GetHashCode();
         }
     }
 }

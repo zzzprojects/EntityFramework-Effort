@@ -24,7 +24,6 @@
 
 namespace Effort.Internal.DbManagement
 {
-    using System;
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -43,6 +42,7 @@ namespace Effort.Internal.DbManagement
     using NMemory.Indexes;
     using NMemory.Modularity;
     using NMemory.StoredProcedures;
+    using NMemory.Tables;
 
     internal class DbContainer : ITableProvider
     {
@@ -117,7 +117,10 @@ namespace Effort.Internal.DbManagement
                 return;
             }
 
-            DbSchema schema = DbSchemaStore.GetDbSchema(edmStoreSchema, DbSchemaFactory.CreateDbSchema);
+            DbSchema schema = 
+                DbSchemaStore.GetDbSchema(
+                    edmStoreSchema, 
+                    sic => DbSchemaFactory.CreateDbSchema(sic));
 
             this.Initialize(schema);
         }
@@ -125,42 +128,73 @@ namespace Effort.Internal.DbManagement
         public void Initialize(DbSchema schema)
         {
             // TODO: locking
-            Stopwatch databaseCreationMeasure = Stopwatch.StartNew();
+            Stopwatch fullTime = Stopwatch.StartNew();
+            Stopwatch partialTime = Stopwatch.StartNew();
+
+            this.Logger.Write("Database creation started...");
 
             this.EnsureInitializedDatabase();
 
+            // Temporary dictionary
+            Dictionary<string, ITable> tables = new Dictionary<string,ITable>();
+
+            this.Logger.Write("Creating tables...");
+            partialTime.Restart();
+
+            // Create tables
+            foreach (DbTableInformation tableInfo in schema.Tables)
+            {
+                ITable table = DatabaseReflectionHelper.CreateTable(
+                    this.database,
+                    tableInfo.EntityType,
+                    (IKeyInfo)tableInfo.PrimaryKeyInfo,
+                    tableInfo.IdentityField,
+                    tableInfo.Constraints);
+
+                tables.Add(tableInfo.TableName, table);
+            }
+
+            this.Logger.Write(
+                "Tables created in {0:0.0} ms", 
+                partialTime.Elapsed.TotalMilliseconds);
+
+            this.Logger.Write("Adding initial data...");
+            partialTime.Restart();
+            
+            // Add initial data to the tables
             using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())
             {
                 foreach (DbTableInformation tableInfo in schema.Tables)
-                {
-                    Stopwatch tableCreationMeasure = Stopwatch.StartNew();
+                { 
+                    // Get the table reference from the temporary dictionary
+                    ITable table = tables[tableInfo.TableName];
 
-                    IEnumerable<object> initialData = this.GetInitialData(loaderFactory, tableInfo);
+                    // Return initial entity data and materialize them
+                    IEnumerable<object> data = ObjectLoader.Load(loaderFactory, tableInfo);
 
-                    // Initialize the table
-                    DatabaseReflectionHelper.CreateTable(
-                        this.database,
-                        tableInfo.EntityType,
-                        (IKeyInfo)tableInfo.PrimaryKeyInfo,
-                        tableInfo.IdentityField,
-                        tableInfo.Constraints,
-                        initialData);
-
-                    tableCreationMeasure.Stop();
-
-                    this.Logger.Write("{1} created in {0:0.0} ms", tableCreationMeasure.Elapsed.TotalMilliseconds, tableInfo.TableName);
+                    DatabaseReflectionHelper.InitializeTableData(table, data);
                 }
             }
 
-            this.Logger.Write("Setting up assocations...");
+            this.Logger.Write(
+                "Initial data added in {0:0.0} ms",
+                partialTime.Elapsed.TotalMilliseconds);
+
+            this.Logger.Write("Creating and verifying associations...");
+            partialTime.Restart();
 
             foreach (DbRelationInformation relation in schema.Relations)
             {
                 DatabaseReflectionHelper.CreateAssociation(this.database, relation);
             }
 
-            databaseCreationMeasure.Stop();
-            this.Logger.Write("Database buildup finished in {0:0.0} ms", databaseCreationMeasure.Elapsed.TotalMilliseconds);
+            this.Logger.Write(
+               "Associations created and verfied in {0:0.0} ms",
+               partialTime.Elapsed.TotalMilliseconds);
+
+            this.Logger.Write(
+                "Database creation finished in {0:0.0} ms", 
+                fullTime.Elapsed.TotalMilliseconds);
         }
 
         private void EnsureInitializedDatabase()
@@ -190,13 +224,6 @@ namespace Effort.Internal.DbManagement
             }
 
             return this.parameters.DataLoader.CreateTableDataLoaderFactory();
-        }
-
-        private IEnumerable<object> GetInitialData(
-            ITableDataLoaderFactory loaderFactory,
-            DbTableInformation tableInfo)
-        {
-            return ObjectLoader.Load(loaderFactory, tableInfo, tableInfo.EntityType);
         }
     }
 }

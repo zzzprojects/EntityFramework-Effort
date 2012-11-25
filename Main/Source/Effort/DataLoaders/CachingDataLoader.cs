@@ -25,9 +25,6 @@
 namespace Effort.DataLoaders
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Data.Common;
 
     /// <summary>
@@ -46,6 +43,11 @@ namespace Effort.DataLoaders
 
         public CachingDataLoader(IDataLoader wrappedDataLoader)
         {
+            if (wrappedDataLoader == null)
+            {
+                throw new ArgumentNullException("wrappedDataLoader");
+            }
+
             this.wrappedDataLoader = wrappedDataLoader;
         }
 
@@ -91,7 +93,7 @@ namespace Effort.DataLoaders
 
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
-            throw new NotImplementedException();
+            return new CachingTableDataLoaderFactory(this.wrappedDataLoader);
         }
     }
 }

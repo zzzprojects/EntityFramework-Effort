@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="CachingTableDataLoader.cs" company="Effort Team">
+// <copyright file="FakeCachingTableDataLoaderStoreProxy.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,34 +22,54 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.DataLoaders
+namespace Effort.Test.Internal.Fakes
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using Effort.DataLoaders;
+    using Effort.Internal.Caching;
 
-    public class CachingTableDataLoader : ITableDataLoader
+    internal class FakeCachingTableDataLoaderStoreProxy : ICachingTableDataLoaderStoreProxy
     {
-        private object[][] data;
+        private Dictionary<CachingTableDataLoaderKey, CachingTableDataLoader> simpleCache;
 
-        public CachingTableDataLoader(ITableDataLoader wrappedTableDataLoader)
+        public FakeCachingTableDataLoaderStoreProxy()
         {
-            IEnumerable<object[]> data;
+            this.simpleCache = 
+                new Dictionary<CachingTableDataLoaderKey, CachingTableDataLoader>();
 
-            if (wrappedTableDataLoader != null)
+            this.CachedItemReturnCount = 0;
+        }
+
+        public int CachedItemReturnCount 
+        { 
+            get; 
+            set; 
+        }
+
+        public CachingTableDataLoader GetCachedData(
+            CachingTableDataLoaderKey key,
+            Func<CachingTableDataLoader> factoryMethod)
+        {
+            CachingTableDataLoader result = null;
+
+            if (!this.simpleCache.TryGetValue(key, out result))
             {
-                data = wrappedTableDataLoader.GetData();
+                result = factoryMethod.Invoke();
+                this.simpleCache.Add(key, result);
             }
             else
             {
-                data = Enumerable.Empty<object[]>();
+                this.CachedItemReturnCount++;
             }
 
-            this.data = data.ToArray();
+            return result;
         }
 
-        public IEnumerable<object[]> GetData()
+
+        public bool Contains(CachingTableDataLoaderKey key)
         {
-            return this.data;
+            return this.simpleCache.ContainsKey(key);
         }
     }
 }

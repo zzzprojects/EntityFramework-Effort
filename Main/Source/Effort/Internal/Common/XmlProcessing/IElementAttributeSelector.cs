@@ -26,7 +26,7 @@ namespace Effort.Internal.Common.XmlProcessing
 {
     using System.Xml.Linq;
 
-    public interface IElementAttributeSelector
+    internal interface IElementAttributeSelector
     {
         XAttribute SelectAttribute(XElement element);
     }

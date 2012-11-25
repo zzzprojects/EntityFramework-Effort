@@ -31,6 +31,9 @@ namespace Effort.Provider
     using Effort.Internal.Caching;
     using Effort.Internal.DbManagement;
 
+    /// <summary>
+    /// Represents a virtual connection towards an in-memory fake database.
+    /// </summary>
     public class EffortConnection : DbConnection
     {
         private Guid identifier;

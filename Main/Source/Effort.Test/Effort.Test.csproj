@@ -94,6 +94,10 @@
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Internal\Fakes\FakeCachingTableDataLoaderStoreProxy.cs" />
+    <Compile Include="Internal\Fakes\DataLoaderConfigurationLatchMock.cs" />
+    <Compile Include="Internal\Fakes\FakeDataLoader.cs" />
+    <Compile Include="Internal\Fakes\FakeTableDataLoader.cs" />
     <Compile Include="Internal\PlatformDetector.cs" />
     <Compile Include="Internal\Fakes\ResultSetComposerMock.cs" />
     <Compile Include="Internal\Queries\Correctness.cs" />

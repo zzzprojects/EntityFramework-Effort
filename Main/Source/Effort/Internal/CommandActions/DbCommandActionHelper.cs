@@ -97,7 +97,6 @@ namespace Effort.Internal.CommandActions
         public static Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, DbContainer container, out ITable table)
         {
             TransformVisitor visitor = new TransformVisitor(container.TypeConverter);
-            visitor.SetParameters(commandTree.Parameters.ToArray());
             visitor.TableProvider = container;
 
             // Get the source expression
@@ -127,16 +126,7 @@ namespace Effort.Internal.CommandActions
                 // Create Where expression
                 LinqMethodExpressionBuilder queryMethodBuilder = new LinqMethodExpressionBuilder();
 
-                Expression result = queryMethodBuilder.Where(source, predicateExpression);
-
-                ParameterExpression[] parameterExpressions = visitor.GetParameterExpressions();
-
-                if (parameterExpressions.Length > 0)
-                {
-                    result = Expression.Lambda(result, parameterExpressions);
-                }
-
-                return result;
+                return queryMethodBuilder.Where(source, predicateExpression);
             }
         }
 

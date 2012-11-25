@@ -28,26 +28,27 @@ namespace Effort.Internal.DbCommandTreeTransformation
     using System.Data.Common.CommandTrees;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Reflection;
 
     internal partial class TransformVisitor
     {
         public override Expression Visit(DbParameterReferenceExpression expression)
         {
-            //object value = this.parameterValues[expression.ParameterName].Value;
-
-            //typeConverter.Convert(this.parameters[expression.ParameterName]);
-
             Type type = edmTypeConverter.Convert(expression.ResultType);
 
-            var parameterPlaceholderConstructor = typeof(NMemory.StoredProcedures.Parameter<>)
-                .MakeGenericType(type)
-                .GetConstructors()
-                .Single(c => c.GetParameters().Count() == 1);
+            ConstructorInfo parameterPlaceholderConstructor = 
+                typeof(NMemory.StoredProcedures.Parameter<>)
+                    .MakeGenericType(type)
+                    .GetConstructors()
+                    .Single(c => c.GetParameters().Count() == 1);
 
-            var parameter = Expression.New(parameterPlaceholderConstructor, Expression.Constant(expression.ParameterName));
-            var convertedParameter = Expression.Convert(parameter, type);
+            NewExpression parameter = 
+                Expression.New(
+                    parameterPlaceholderConstructor, 
+                    Expression.Constant(expression.ParameterName));
 
-            return convertedParameter;
+            // Add implicit conversion
+            return Expression.Convert(parameter, type);
         }
     }
 }

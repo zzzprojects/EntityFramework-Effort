@@ -36,7 +36,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
     internal partial class TransformVisitor : DbExpressionVisitor<Expression>
     {
         private Dictionary<string, Tuple<TypeUsage, int>> parameters;
-        private ParameterExpression[] parameterExpressions;
 
         private ITableProvider tableProvider;
         private IDbMethodProvider methodProvider;
@@ -72,28 +71,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             set { this.methodProvider = value; }
             get { return this.methodProvider; }
-        }
-
-        public void SetParameters(KeyValuePair<string, TypeUsage>[] parameters)
-        {
-            this.parameters.Clear();
-
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                this.parameters.Add(parameters[i].Key, new Tuple<TypeUsage, int>(parameters[i].Value, i));
-            }
-
-            this.parameterExpressions = new ParameterExpression[parameters.Length];
-        }
-
-        public ParameterExpression[] GetParameterExpressions()
-        {
-            if (this.parameterExpressions == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            return this.parameterExpressions.ToArray();
         }
 
         #region Context management

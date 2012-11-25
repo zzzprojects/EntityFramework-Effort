@@ -50,16 +50,19 @@ namespace Effort.Internal.CommandActions
         public DbDataReader ExecuteDataReader(ActionContext context)
         {
             TransformVisitor visitor = new TransformVisitor(context.DbContainer.TypeConverter);
-            visitor.SetParameters(this.commandTree.Parameters.ToArray());
+            //visitor.SetParameters(this.commandTree.Parameters.ToArray());
             visitor.TableProvider = context.DbContainer;
 
             // Transform command tree
-            Expression expr = visitor.Visit(this.commandTree.Query);
+            Expression queryExpression = 
+                visitor.Visit(this.commandTree.Query);
 
-            LambdaExpression query = Expression.Lambda(expr, Expression.Parameter(typeof(IDatabase)));
+            LambdaExpression query = 
+                Expression.Lambda(queryExpression, Expression.Parameter(typeof(IDatabase)));
 
             // Create a stored procedure from the expression
-            ISharedStoredProcedure procedure = DatabaseReflectionHelper.CreateSharedStoredProcedure(query);
+            ISharedStoredProcedure procedure =
+                DatabaseReflectionHelper.CreateSharedStoredProcedure(query);
 
             // Determine parameter values
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -70,10 +73,14 @@ namespace Effort.Internal.CommandActions
                 object value = param.Value;
 
                 // Find the description of the parameter
-                ParameterDescription expectedParam = procedure.Parameters.FirstOrDefault(p => p.Name == param.Name);
+                ParameterDescription expectedParam = 
+                    procedure.Parameters.FirstOrDefault(p => p.Name == param.Name);
 
                 // Custom conversion
-                value = context.DbContainer.TypeConverter.ConvertClrObject(value, expectedParam.Type);
+                value = context
+                    .DbContainer
+                    .TypeConverter
+                    .ConvertClrObject(value, expectedParam.Type);
 
                 parameters.Add(name, value);
             }
@@ -82,11 +89,16 @@ namespace Effort.Internal.CommandActions
 
             if (context.Transaction != null)
             {
-                result = procedure.Execute(context.DbContainer.Internal, parameters, context.Transaction);
+                result = procedure.Execute(
+                    context.DbContainer.Internal, 
+                    parameters, 
+                    context.Transaction);
             }
             else
             {
-                result = procedure.Execute(context.DbContainer.Internal, parameters);
+                result = procedure.Execute(
+                    context.DbContainer.Internal, 
+                    parameters);
             }
 
             List<FieldDescription> fields = GetReturningFields(this.commandTree);
@@ -104,16 +116,22 @@ namespace Effort.Internal.CommandActions
             throw new NotSupportedException();
         }
 
-        private static List<FieldDescription> GetReturningFields(DbQueryCommandTree commandTree)
+        private static List<FieldDescription> GetReturningFields(
+            DbQueryCommandTree commandTree)
         {
             List<FieldDescription> fields = new List<FieldDescription>();
 
-            CollectionType collectionType = commandTree.Query.ResultType.EdmType as CollectionType;
-            RowType rowType = collectionType.TypeUsage.EdmType as RowType;
+            CollectionType collectionType = 
+                commandTree.Query.ResultType.EdmType as CollectionType;
+
+            RowType rowType =
+                collectionType.TypeUsage.EdmType as RowType;
 
             foreach (EdmMember member in rowType.Members)
             {
-                PrimitiveType memberType = member.TypeUsage.EdmType as PrimitiveType;
+                PrimitiveType memberType = 
+                    member.TypeUsage.EdmType as PrimitiveType;
+
                 fields.Add(new FieldDescription(member.Name, memberType.ClrEquivalentType));
             }
 

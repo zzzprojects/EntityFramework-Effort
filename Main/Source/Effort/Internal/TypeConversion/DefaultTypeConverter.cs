@@ -31,6 +31,11 @@ namespace Effort.Internal.TypeConversion
     {
         public object ConvertClrObject(object obj, Type type)
         {
+            if (obj is DBNull)
+            {
+                return null;
+            }
+
             if (type == typeof(NMemory.Data.Binary))
             {
                 return (NMemory.Data.Binary)(byte[])obj;

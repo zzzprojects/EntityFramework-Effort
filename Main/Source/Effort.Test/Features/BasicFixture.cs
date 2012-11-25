@@ -129,6 +129,23 @@ namespace Effort.Test.Features
         }
 
         [TestMethod]
+        public void NullableQueryParameter()
+        {
+            string expected = "[]";
+
+            int? id = null;
+
+            ICorrectness result = this.tester.TestQuery(
+                context =>
+                    from product in context.Products
+                    where product.ProductID == id
+                    select product,
+                expected);
+
+            Assert.IsTrue(result.Check());
+        }
+
+        [TestMethod]
         public void QueryParameterChange()
         {
             List<string> expected = new List<string>();

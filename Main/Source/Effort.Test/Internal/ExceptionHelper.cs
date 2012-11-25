@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TransientDatabaseComponentFactory.cs" company="Effort Team">
+// <copyright file="ExceptionHelper.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,17 +22,35 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+namespace Effort.Test.Internal
 {
-    using NMemory.Execution;
-    using NMemory.Modularity;
-    using NMemory.Concurrency;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
 
-    internal class TransientDatabaseComponentFactory : DatabaseComponentFactory
+    internal static class ExceptionHelper
     {
-        public override IConcurrencyManager CreateConcurrencyManager()
+        public static bool ContainsException(Exception exception, string exceptionType)
         {
-            return new ChaosConcurrencyManager();
+            while (exception != null)
+            {
+                bool found = exception
+                    .GetType()
+                    .FullName
+                    .Equals(
+                        exceptionType,
+                        StringComparison.InvariantCulture);
+
+                if (found)
+                {
+                    return true;
+                }
+
+                exception = exception.InnerException;
+            }
+
+            return false;
         }
     }
 }

@@ -64,7 +64,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NMemory.1.0.0-beta3\lib\net40\NMemory.dll</HintPath>
+      <HintPath>..\packages\NMemory.1.0.0-beta4\lib\net40\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

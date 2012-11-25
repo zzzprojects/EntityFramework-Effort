@@ -56,9 +56,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Imports\NMemory.dll</HintPath>
-    </Reference>
     <Reference Include="SoftwareApproach.TestingExtensions">
       <HintPath>..\packages\VisualStudioTestingExtensions.1.2.0.0\lib\net40\SoftwareApproach.TestingExtensions.dll</HintPath>
     </Reference>
@@ -94,6 +91,7 @@
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Internal\ExceptionHelper.cs" />
     <Compile Include="Internal\Fakes\FakeCachingTableDataLoaderStoreProxy.cs" />
     <Compile Include="Internal\Fakes\DataLoaderConfigurationLatchMock.cs" />
     <Compile Include="Internal\Fakes\FakeDataLoader.cs" />

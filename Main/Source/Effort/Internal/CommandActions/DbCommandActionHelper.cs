@@ -37,7 +37,8 @@ namespace Effort.Internal.CommandActions
 
     internal static class DbCommandActionHelper
     {
-        public static FieldDescription[] GetReturningFields(DbExpression returning)
+        public static FieldDescription[] GetReturningFields(
+            DbExpression returning)
         {
             // Find the returning properties
             DbNewInstanceExpression returnExpression = returning as DbNewInstanceExpression;
@@ -52,7 +53,8 @@ namespace Effort.Internal.CommandActions
             // Add the returning property names
             foreach (DbPropertyExpression propertyExpression in returnExpression.Arguments)
             {
-                PrimitiveType propertyType = propertyExpression.ResultType.EdmType as PrimitiveType;
+                PrimitiveType propertyType = 
+                    propertyExpression.ResultType.EdmType as PrimitiveType;
 
                 string name = propertyExpression.Property.GetColumnName();
                 Type type = propertyType.ClrEquivalentType;
@@ -63,7 +65,9 @@ namespace Effort.Internal.CommandActions
             return result.ToArray();
         }
 
-        public static ITable GetTable(DbModificationCommandTree commandTree, DbContainer container)
+        public static ITable GetTable(
+            DbModificationCommandTree commandTree, 
+            DbContainer container)
         {
             DbScanExpression source = commandTree.Target.Expression as DbScanExpression;
 
@@ -75,7 +79,8 @@ namespace Effort.Internal.CommandActions
             return container.Internal.GetTable(source.Target.GetTableName());
         }
 
-        public static IDictionary<string, DbExpression> GetSetClauseExpressions(IList<DbModificationClause> clauses)
+        public static IDictionary<string, DbExpression> GetSetClauseExpressions(
+            IList<DbModificationClause> clauses)
         {
             IDictionary<string, DbExpression> result = new Dictionary<string, DbExpression>();
 
@@ -94,7 +99,11 @@ namespace Effort.Internal.CommandActions
             return result;
         }
 
-        public static Expression GetEnumeratorExpression(DbExpression predicate, DbModificationCommandTree commandTree, DbContainer container, out ITable table)
+        public static Expression GetEnumeratorExpression(
+            DbExpression predicate, 
+            DbModificationCommandTree commandTree, 
+            DbContainer container, 
+            out ITable table)
         {
             TransformVisitor visitor = new TransformVisitor(container.TypeConverter);
             visitor.TableProvider = container;
@@ -130,7 +139,10 @@ namespace Effort.Internal.CommandActions
             }
         }
 
-        public static Dictionary<string, object> CreateReturningEntity(ActionContext context, FieldDescription[] returningFields, object entity)
+        public static Dictionary<string, object> CreateReturningEntity(
+            ActionContext context, 
+            FieldDescription[] returningFields, 
+            object entity)
         {
             Dictionary<string, object> entityReturningValues = new Dictionary<string, object>();
 

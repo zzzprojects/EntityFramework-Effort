@@ -30,6 +30,7 @@ namespace Effort.Test.Features
     using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
+    using Effort.Test.Internal;
 
     [TestClass]
     public class AssociationFixture
@@ -48,8 +49,6 @@ namespace Effort.Test.Features
                     RegionID = 0
                 });
 
-            bool found = false;
-
             try
             {
                 // The new region addition must fail
@@ -60,19 +59,11 @@ namespace Effort.Test.Features
             catch (Exception ex)
             {
                 // Search for ForeignKeyViolationException exception
-                while (ex != null)
-                {
-                    if (ex is NMemory.Exceptions.ForeignKeyViolationException)
-                    {
-                        found = true;
-                        break;
-                    }
-
-                    ex = ex.InnerException;
-                }
+                Assert.IsTrue(
+                    ExceptionHelper.ContainsException(
+                        ex,
+                        "NMemory.Exceptions.ForeignKeyViolationException"));
             }
-
-            Assert.IsTrue(found);
         }
 
         [TestMethod]
@@ -88,8 +79,6 @@ namespace Effort.Test.Features
                     ID = 1
                 });
 
-            bool found = false;
-
             try
             {
                 // The new region addition must fail
@@ -100,19 +89,11 @@ namespace Effort.Test.Features
             catch (Exception ex)
             {
                 // Search for ForeignKeyViolationException exception
-                while (ex != null)
-                {
-                    if (ex is NMemory.Exceptions.ForeignKeyViolationException)
-                    {
-                        found = true;
-                        break;
-                    }
-
-                    ex = ex.InnerException;
-                }
+                Assert.IsTrue(
+                    ExceptionHelper.ContainsException(
+                        ex,
+                        "NMemory.Exceptions.ForeignKeyViolationException"));
             }
-
-            Assert.IsTrue(found);
         }
 
         [TestMethod]

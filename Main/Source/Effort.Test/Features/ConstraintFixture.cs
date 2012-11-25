@@ -30,6 +30,7 @@ namespace Effort.Test.Features
     using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
+    using Effort.Test.Internal;
 
     [TestClass]
     public class ConstraintFixture
@@ -55,7 +56,10 @@ namespace Effort.Test.Features
             }
             catch (Exception ex)
             {
-                ex.InnerException.InnerException.ShouldBeOfType(typeof(NMemory.Exceptions.ConstraintException));
+                Assert.IsTrue(
+                    ExceptionHelper.ContainsException(
+                        ex, 
+                        "NMemory.Exceptions.ConstraintException"));
             }
         }
 
@@ -79,7 +83,10 @@ namespace Effort.Test.Features
             }
             catch (Exception ex)
             {
-                ex.InnerException.InnerException.ShouldBeOfType(typeof(NMemory.Exceptions.ConstraintException));
+                Assert.IsTrue(
+                    ExceptionHelper.ContainsException(
+                        ex,
+                        "NMemory.Exceptions.ConstraintException"));
             }
         }
 

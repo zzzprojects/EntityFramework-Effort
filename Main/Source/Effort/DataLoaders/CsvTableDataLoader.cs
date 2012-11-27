@@ -62,12 +62,9 @@ namespace Effort.DataLoaders
                 yield break;
             }
 
-            using (new CultureScope(CultureInfo.InvariantCulture))
+            foreach (object[] record in base.GetData())
             {
-                foreach (object[] record in base.GetData())
-                {
-                    yield return record;
-                }
+                yield return record;
             }
         }
 
@@ -131,13 +128,25 @@ namespace Effort.DataLoaders
             else
             {
                 // Make the type not nullable
-                if (type.IsGenericType && 
+                if (type.IsValueType &&
+                    type.IsGenericType && 
                     type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
                     type = type.GetGenericArguments()[0];
                 }
 
-                value = Convert.ChangeType(value, type);
+                if (type == typeof(TimeSpan))
+                {
+                    value = TimeSpan.Parse(val, CultureInfo.InvariantCulture);
+                }
+                else if (type == typeof(DateTimeOffset))
+                {
+                    value = DateTimeOffset.Parse(val, CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    value = Convert.ChangeType(val, type, CultureInfo.InvariantCulture);
+                }
             }
             
             return base.ConvertValue(value, type);

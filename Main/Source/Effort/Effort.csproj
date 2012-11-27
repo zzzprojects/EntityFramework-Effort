@@ -210,7 +210,6 @@
     <Compile Include="Internal\DbManagement\Engine\DatabaseComponentFactory.cs" />
     <Compile Include="Internal\DbManagement\Engine\TransientDatabaseComponentFactory.cs" />
     <Compile Include="Internal\Diagnostics\ILogger.cs" />
-    <Compile Include="Internal\Common\CultureScope.cs" />
     <Compile Include="Internal\Common\ExpressionHelper.cs" />
     <Compile Include="Internal\Common\LambdaExpressionHelper.cs" />
     <Compile Include="Internal\Common\MetadataWorkspaceHelper.cs" />

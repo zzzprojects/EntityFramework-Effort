@@ -25,24 +25,40 @@
 namespace Effort.Test.Data.Feature
 {
     using System.Data.EntityClient;
+    using Effort.DataLoaders;
 
     public class LocalFeatureObjectContext : FeatureObjectContext
     {
         public LocalFeatureObjectContext()
             : this(FeatureObjectContext.DefaultConnectionString)
         {
- 
+        }
+
+        public LocalFeatureObjectContext(bool useDataLoader)
+            : this(FeatureObjectContext.DefaultConnectionString, useDataLoader)
+        {
         }
 
         public LocalFeatureObjectContext(string connectionString)
-            : base(CreateEntityConnection(connectionString))
+            : this(connectionString, true)
         {
-
         }
 
-        private static EntityConnection CreateEntityConnection(string connectionString)
+        public LocalFeatureObjectContext(string connectionString, bool useDataLoader)
+            : base(CreateEntityConnection(connectionString, useDataLoader))
         {
-            return EntityConnectionFactory.CreateTransient(connectionString, new FeatureLocalDataLoader());
+        }
+
+        private static EntityConnection CreateEntityConnection(string connectionString, bool useDataLoader)
+        {
+            IDataLoader loader = null;
+
+            if (useDataLoader)
+            {
+                loader = new FeatureLocalDataLoader();
+            }
+
+            return EntityConnectionFactory.CreateTransient(connectionString, loader);
         }
     }
 }

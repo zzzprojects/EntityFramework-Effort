@@ -27,7 +27,6 @@ namespace Effort.Test.Features
     using System;
     using System.Linq;
     using Effort.Test.Data.Feature;
-    using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
     using Effort.Test.Internal;
@@ -35,18 +34,22 @@ namespace Effort.Test.Features
     [TestClass]
     public class ConstraintFixture
     {
+        private FeatureObjectContext context;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            // Do not use data loader
+            this.context = new LocalFeatureObjectContext(false);
+        }
+
         [TestMethod]
         public void String_NotNullableConstraint()
         {
-            // This context is initialized from the csv files in Effort.Test.Data/Northwind/Content
-            NorthwindObjectContext context  = new LocalNorthwindObjectContext();
-            context.Products.AddObject(
-                new Product
+            this.context.ConstraintSupports.AddObject(
+                new ConstraintSupport
                 {
-                    UnitPrice = -250,
-
-                    // Cannot be null
-                    ProductName = null 
+                    NotNull = null 
                 });
 
             try
@@ -66,15 +69,12 @@ namespace Effort.Test.Features
         [TestMethod]
         public void NVarCharConstraintThrowsError()
         {
-            FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(
-                new PrimaryEntity
+            // Max lenght is 10, this has a lenght of 11
+            this.context.ConstraintSupports.AddObject(
+                new ConstraintSupport
                 {
-                    ID1 = 100,
-                    ID2 = 200,
-
-                    // Max lenght is 20, this has a lenght of 21
-                    PrimaryData = "ABCDEABCDEABCDEABCDEA" 
+                    NotNull = "",
+                    MaxLength = "12345678901"
                 });
             try
             {
@@ -93,49 +93,32 @@ namespace Effort.Test.Features
         [TestMethod]
         public void NVarCharConstraintLetsDataThrough()
         {
-            FeatureObjectContext context = new LocalFeatureObjectContext();
-            context.PrimaryEntities.AddObject(
-                new PrimaryEntity
+            // Max lenght is 10, this has a lenght of 9
+            this.context.ConstraintSupports.AddObject(
+                new ConstraintSupport
                 {
-                    ID1 = 100,
-                    ID2 = 200,
-
-                    // Max lenght is 20, this has a lenght of 19
-                    PrimaryData = "ABCDEABCDEABCDEABCD"
+                    NotNull = "",
+                    MaxLength = "123456789"
                 });
             context.SaveChanges();
 
-            context.PrimaryEntities.Select(x => x.PrimaryData).ShouldContain("ABCDEABCDEABCDEABCD");
+            context.ConstraintSupports.Select(x => x.MaxLength).ShouldContain("123456789");
         }
 
         [TestMethod]
-        [Ignore]
         public void NCharConstraintAppendsData()
         {
-            // The NChar with 20 length is saved to NMemory
-            // The NChar with 20 length is read back from NMemory to Effort. It can be even be found in QueryCommandAction.ExecuteDataReaderAction (result variable)
-            // Still somehow the trailing empty space that was added by the NConstraint is gone...
-            FeatureObjectContext context = new LocalFeatureObjectContext();
-
-            context.PrimaryEntities.AddObject(
-                new PrimaryEntity
+            // Max lenght is 10, this has a lenght of 9
+            this.context.ConstraintSupports.AddObject(
+                new ConstraintSupport
                 {
-                    ID1 = 1,
-                    ID2 = 1,
-                    PrimaryData = "ABCDEABCDEABCDEABCD"
+                    NotNull = "",
+                    FixedLength = "123456789"
                 });
-
-            context.ForeignEntities.AddObject(
-                new ForeignEntity
-                {
-                    ID = 1,
-                    FID1 = 1,
-                    FID2 = 1,                
-                    ForeignData = "12345 " // Fixed to length of 20
-                });
-
             context.SaveChanges();
-            context.ForeignEntities.First(x => x.FID1 == 1).ForeignData.Length.ShouldEqual(20);
+
+            context.ConstraintSupports.First();
+            context.ConstraintSupports.Select(x => x.FixedLength).ShouldContain("123456789 ");
         }
     }
 }

@@ -7,8 +7,9 @@
     <Schema Namespace="FeatureModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="FeatureModelStoreContainer">
           <EntitySet Name="TimestampSupport" EntityType="FeatureModel.Store.TimestampSupport" store:Type="Tables" Schema="dbo" />
-		      <EntitySet Name="PrimaryEntities" EntityType="FeatureModel.Store.PrimaryEntities" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="ForeignEntities" EntityType="FeatureModel.Store.ForeignEntities" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PrimaryEntities" EntityType="FeatureModel.Store.PrimaryEntities" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ForeignEntities" EntityType="FeatureModel.Store.ForeignEntities" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ConstraintSupport" EntityType="FeatureModel.Store.ConstraintSupport" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="PrimaryEntityForeignEntity" Association="FeatureModel.Store.PrimaryEntityForeignEntity">
       <End Role="PrimaryEntity" EntitySet="PrimaryEntities" />
       <End Role="ForeignEntity" EntitySet="ForeignEntities" />
@@ -22,7 +23,16 @@
           <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="Timestamp" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
         </EntityType>
-		 <EntityType Name="PrimaryEntities">
+      <EntityType Name="ConstraintSupport">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+        <Property Name="FixedLength" Nullable="true" Type="nchar" MaxLength="10" />
+        <Property Name="MaxLength" Nullable="true" Type="nvarchar" MaxLength="10" />
+        <Property Name="NotNull" Nullable="false" Type="nvarchar" MaxLength="10" />
+      </EntityType>
+     <EntityType Name="PrimaryEntities">
     <Key>
       <PropertyRef Name="ID1" />
       <PropertyRef Name="ID2" />
@@ -30,7 +40,7 @@
     <Property Name="ID1" Type="int" Nullable="false" />
     <Property Name="ID2" Type="int" Nullable="false" />
     <Property Name="PrimaryData" Type="nvarchar" MaxLength="20" Nullable="false" />
-	<Property Name="offset" Type="datetimeoffset" Nullable="true" />
+  <Property Name="offset" Type="datetimeoffset" Nullable="true" />
   </EntityType>
   <EntityType Name="ForeignEntities">
     <Key>
@@ -39,7 +49,7 @@
     <Property Name="FID1" Type="int" Nullable="false" />
     <Property Name="FID2" Type="int" Nullable="false" />
     <Property Name="ID" Type="int" Nullable="false" />
-	<Property Name="ForeignData" Type="nchar" MaxLength="20" Nullable="true" />
+  <Property Name="ForeignData" Type="nchar" MaxLength="20" Nullable="true" />
   </EntityType>
   <Association Name="PrimaryEntityForeignEntity">
     <End Role="PrimaryEntity" Type="FeatureModel.Store.PrimaryEntities" Multiplicity="1" />
@@ -63,6 +73,7 @@
           <EntitySet Name="TimestampSupports" EntityType="FeatureModel.TimestampSupport" />
           <EntitySet Name="PrimaryEntities" EntityType="FeatureModel.PrimaryEntity" />
           <EntitySet Name="ForeignEntities" EntityType="FeatureModel.ForeignEntity" />
+          <EntitySet Name="ConstraintSupports" EntityType="FeatureModel.ConstraintSupport" />
           <AssociationSet Name="PrimaryEntityForeignEntity" Association="FeatureModel.PrimaryEntityForeignEntity">
             <End Role="PrimaryEntity" EntitySet="PrimaryEntities" />
             <End Role="ForeignEntity" EntitySet="ForeignEntities" />
@@ -75,6 +86,15 @@
           <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Description" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Binary" Name="Timestamp" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" ConcurrencyMode="Fixed" />
+        </EntityType>
+        <EntityType Name="ConstraintSupport">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id"  Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="FixedLength" Nullable="true" FixedLength="true" MaxLength="10" />
+          <Property Type="String" Name="MaxLength" Nullable="true" FixedLength="false" MaxLength="10" />
+          <Property Type="String" Name="NotNull" Nullable="false" MaxLength="10" />
         </EntityType>
         <EntityType Name="PrimaryEntity" >
           <Key>
@@ -94,7 +114,7 @@
           <Property Type="Int32" Name="ID" Nullable="false" />
           <Property Type="Int32" Name="FID1" Nullable="false" />
           <Property Type="Int32" Name="FID2" Nullable="false" />
-		  
+      
           <NavigationProperty Name="PrimaryEntity" Relationship="FeatureModel.PrimaryEntityForeignEntity" FromRole="ForeignEntity" ToRole="PrimaryEntity" />
           <Property Type="String" Name="ForeignData" Nullable="true" MaxLength="20" FixedLength="true" />
         </EntityType>
@@ -124,6 +144,16 @@
                 <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ConstraintSupports">
+            <EntityTypeMapping TypeName="FeatureModel.ConstraintSupport">
+              <MappingFragment StoreEntitySet="ConstraintSupport">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FixedLength" ColumnName="FixedLength" />
+                <ScalarProperty Name="MaxLength" ColumnName="MaxLength" />
+                <ScalarProperty Name="NotNull" ColumnName="NotNull" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -176,6 +206,7 @@
           <ConnectorPoint PointX="4.75" PointY="2.3651432291666667" />
           <ConnectorPoint PointX="6.5" PointY="2.3651432291666667" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="FeatureModel.ConstraintSupport" Width="1.5" PointX="0.875" PointY="3.625" Height="1.7879850260416674" />
       </Diagram>
     </Diagrams>
   </Designer>

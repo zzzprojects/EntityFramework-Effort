@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Feature\ConstraintSupport.cs">
+      <DependentUpon>Feature.tt</DependentUpon>
+    </Compile>
     <Compile Include="Feature\ForeignEntity.cs">
       <DependentUpon>Feature.tt</DependentUpon>
     </Compile>

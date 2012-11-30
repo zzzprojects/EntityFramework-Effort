@@ -54,6 +54,12 @@ namespace Effort.Test.Data.Feature
             get { return _foreignEntities  ?? (_foreignEntities = CreateObjectSet<ForeignEntity>("ForeignEntities")); }
         }
         private ObjectSet<ForeignEntity> _foreignEntities;
+    
+        public ObjectSet<ConstraintSupport> ConstraintSupports
+        {
+            get { return _constraintSupports  ?? (_constraintSupports = CreateObjectSet<ConstraintSupport>("ConstraintSupports")); }
+        }
+        private ObjectSet<ConstraintSupport> _constraintSupports;
 
         #endregion
     

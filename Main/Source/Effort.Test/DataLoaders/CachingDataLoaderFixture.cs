@@ -149,7 +149,6 @@ namespace Effort.Test.DataLoaders
 
             // The latch should not have been invoked
             Assert.AreEqual(0, latchMock.AcquireCallCount);
-            Assert.AreEqual(0, latchMock.ReleaseCallCount);
         }
 
         [TestMethod]

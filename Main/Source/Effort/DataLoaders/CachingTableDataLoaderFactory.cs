@@ -58,11 +58,32 @@ namespace Effort.DataLoaders
         ///     Initializes a new instance of the <see cref="CachingTableDataLoaderFactory" /> 
         ///     class.
         /// </summary>
-        /// <param name="wrappedDataLoader"> The wrapped data loader. </param>
+        /// <param name="wrappedDataLoader"> 
+        ///     The wrapped data loader.
+        /// </param>
         public CachingTableDataLoaderFactory(IDataLoader wrappedDataLoader)
+            : this(wrappedDataLoader, false)
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CachingTableDataLoaderFactory" /> 
+        ///     class. 
+        ///     Enabling the <paramref name="locking"/> flag makes the caching factory 
+        ///     instances to work in a cooperative way. They ensure that only one of wrapped
+        ///     factory objects initialized with the same configuration is utilized at the same
+        ///     time. 
+        /// </summary>
+        /// <param name="wrappedDataLoader"> 
+        ///     The wrapped data loader. 
+        /// </param>
+        /// <param name="locking"> 
+        ///     Indicates if the wrapped data loader should be used only once at the same time.
+        /// </param>
+        public CachingTableDataLoaderFactory(IDataLoader wrappedDataLoader, bool locking)
             : this(
-                wrappedDataLoader, 
-                CreateLatch(wrappedDataLoader),
+                wrappedDataLoader,
+                locking ? CreateLatch(wrappedDataLoader) : null,
                 new CachingTableDataLoaderStoreProxy())
         {
         }
@@ -112,7 +133,14 @@ namespace Effort.DataLoaders
             // should be locked
             if (latch != null && !this.dataStore.Contains(key))
             {
+                // Wait for the lock, this could take some time
                 latch.Acquire();
+
+                // Check if the data was created since the waiting
+                if (this.dataStore.Contains(key))
+                {
+                    latch.Release();
+                }
             }
             
             // It does not matter if the table data cache was created during the waiting,
@@ -126,15 +154,16 @@ namespace Effort.DataLoaders
         /// </summary>
         public void Dispose()
         {
+            // Release the wrapped table loader factory
             if (this.wrappedTableDataLoaderFactory != null)
             {
                 this.wrappedTableDataLoaderFactory.Dispose();
+            }
 
-                // Release the data loader latch
-                if (this.latch != null)
-                {
-                    this.latch.Release();
-                }
+            // Release the data loader latch
+            if (this.latch != null)
+            {
+                this.latch.Release();
             }
         }
 

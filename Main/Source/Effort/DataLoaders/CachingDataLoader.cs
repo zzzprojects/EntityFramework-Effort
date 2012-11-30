@@ -49,6 +49,11 @@ namespace Effort.DataLoaders
         private IDataLoader wrappedDataLoader;
 
         /// <summary>
+        ///     Indicates if the wrapped data loader should be used only once at the same time.
+        /// </summary>
+        private bool locking;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="CachingDataLoader" /> class.
         /// </summary>
         public CachingDataLoader()
@@ -58,7 +63,9 @@ namespace Effort.DataLoaders
         /// <summary>
         ///     Initializes a new instance of the <see cref="CachingDataLoader" /> class.
         /// </summary>
-        /// <param name="wrappedDataLoader"> The wrapped data loader. </param>
+        /// <param name="wrappedDataLoader"> 
+        ///     The wrapped data loader. 
+        /// </param>
         public CachingDataLoader(IDataLoader wrappedDataLoader)
         {
             if (wrappedDataLoader == null)
@@ -67,6 +74,30 @@ namespace Effort.DataLoaders
             }
 
             this.wrappedDataLoader = wrappedDataLoader;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CachingDataLoader" /> class.
+        ///     Enabling the <paramref name="locking"/> flag makes the caching data loader 
+        ///     instances to work in a cooperative way. They ensure that only one of wrapped
+        ///     data loaders initialized with the same configuration is utilized at the same
+        ///     time. 
+        /// </summary>
+        /// <param name="wrappedDataLoader"> 
+        ///     The wrapped data loader. 
+        /// </param>
+        /// <param name="locking">
+        ///     Indicates if the wrapped data loader should be used only once at the same time.
+        /// </param>
+        public CachingDataLoader(IDataLoader wrappedDataLoader, bool locking)
+        {
+            if (wrappedDataLoader == null)
+            {
+                throw new ArgumentNullException("wrappedDataLoader");
+            }
+
+            this.wrappedDataLoader = wrappedDataLoader;
+            this.locking = locking;
         }
 
         /// <summary>
@@ -129,7 +160,7 @@ namespace Effort.DataLoaders
         /// </returns>
         public ITableDataLoaderFactory CreateTableDataLoaderFactory()
         {
-            return new CachingTableDataLoaderFactory(this.wrappedDataLoader);
+            return new CachingTableDataLoaderFactory(this.wrappedDataLoader, this.locking);
         }
     }
 }

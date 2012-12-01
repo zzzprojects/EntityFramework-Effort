@@ -183,9 +183,10 @@ namespace Effort.Provider
             int? commandTimeout, 
             StoreItemCollection storeItemCollection)
         {
-            EffortConnectionStringBuilder connectionString =new EffortConnectionStringBuilder(connection.ConnectionString);
+            EffortConnectionStringBuilder connectionString =
+                new EffortConnectionStringBuilder(connection.ConnectionString);
+
             DbContainerStore.RemoveDbContainer(connectionString.InstanceId);
-            connection.Dispose();
         }
 
         /// <summary>

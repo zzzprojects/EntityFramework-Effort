@@ -183,11 +183,9 @@ namespace Effort.Provider
             int? commandTimeout, 
             StoreItemCollection storeItemCollection)
         {
-            DbContainer container = GetDbContainer(connection);
-
-            //// TODO: Delete database
-
-            base.DbDeleteDatabase(connection, commandTimeout, storeItemCollection);
+            EffortConnectionStringBuilder connectionString =new EffortConnectionStringBuilder(connection.ConnectionString);
+            DbContainerStore.RemoveDbContainer(connectionString.InstanceId);
+            connection.Dispose();
         }
 
         /// <summary>

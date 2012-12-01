@@ -198,8 +198,8 @@ namespace Effort.Internal.DbManagement.Schema
 
                 ReferentialConstraint constraint = constraints[0];
 
-                string fromTableName = GetTableName(constraint.FromRole);
-                string toTableName = GetTableName(constraint.ToRole);
+                string fromTableName = GetTableName(constraint.FromRole, entityContainer);
+                string toTableName = GetTableName(constraint.ToRole, entityContainer);
 
                 // entityType is the primary table, toTable is the foreign table...
                 DbTableInformation fromTable = schema.GetTable(fromTableName);
@@ -272,10 +272,10 @@ namespace Effort.Internal.DbManagement.Schema
             return result;
         }
 
-        private static string GetTableName(RelationshipEndMember relationEndpoint)
+        private static string GetTableName(RelationshipEndMember relationEndpoint, EntityContainer entityContainer)
         {
             RefType refType = relationEndpoint.TypeUsage.EdmType as RefType;
-            return refType.ElementType.Name;
+            return entityContainer.BaseEntitySets.First(m => m.ElementType.Name == refType.ElementType.Name).GetTableName();
         }
 
         private static PropertyInfo[] GetRelationProperties(ReadOnlyMetadataCollection<EdmProperty> properties, DbTableInformation table)

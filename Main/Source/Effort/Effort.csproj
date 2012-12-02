@@ -134,6 +134,7 @@
     <Compile Include="Internal\Csv\ParseErrorAction.cs" />
     <Compile Include="Internal\Csv\ValueTrimmingOptions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\DbFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\MethodInfoGroup.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Null.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Apply.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.And.cs" />

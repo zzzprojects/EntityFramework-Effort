@@ -34,7 +34,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
     internal class LinqMethodProvider
     {
-        public static readonly LinqMethodProvider Instance = new LinqMethodProvider();
+        public static readonly LinqMethodProvider Instance =
+            new LinqMethodProvider();
+
+        private static readonly LazyThreadSafetyMode Safety = 
+            LazyThreadSafetyMode.PublicationOnly;
 
         private Lazy<MethodInfo> select;
         private Lazy<MethodInfo> selectMany;
@@ -63,41 +67,91 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Lazy<MethodInfo> union;
         private Lazy<MethodInfo> concat;
 
+        private MethodInfoGroup sum;
+        private MethodInfoGroup min;
+        private MethodInfoGroup max;
+        private MethodInfoGroup average;
+
         /// <summary>
         /// Prevents a default instance of the <see cref="LinqMethodProvider" /> class from
         /// being created.
         /// </summary>
         private LinqMethodProvider()
         {
-            LazyThreadSafetyMode safety = LazyThreadSafetyMode.PublicationOnly;
+            this.select = CreateLazy(CreateSelect);
+            this.selectMany = CreateLazy(CreateSelectMany);
+            this.selectManyWithResultSelector = CreateLazy(CreateSelectManyWithResultSelector);
 
-            this.select = new Lazy<MethodInfo>(CreateSelect, safety);
-            this.selectMany = new Lazy<MethodInfo>(CreateSelectMany, safety);
-            this.selectManyWithResultSelector = 
-                new Lazy<MethodInfo>(CreateSelectManyWithResultSelector, safety);
+            this.count = CreateLazy(CreateCount);
+            this.where = CreateLazy(CreateWhere);
+            this.take = CreateLazy(CreateTake);
+            this.skip = CreateLazy(CreateSkip);
+            this.groupBy = CreateLazy(CreateGroupBy);
 
-            this.count = new Lazy<MethodInfo>(CreateCount, safety);
-            this.where = new Lazy<MethodInfo>(CreateWhere, safety);
-            this.take = new Lazy<MethodInfo>(CreateTake, safety);
-            this.skip = new Lazy<MethodInfo>(CreateSkip, safety);
-            this.groupBy = new Lazy<MethodInfo>(CreateGroupBy, safety);
+            this.orderBy = CreateLazy(CreateOrderBy);
+            this.orderByDescending = CreateLazy(CreateOrderByDescending);
+            this.thenBy = CreateLazy(CreateThenBy);
+            this.thenByDescending = CreateLazy(CreateThenByDescending);
 
-            this.orderBy = new Lazy<MethodInfo>(CreateOrderBy, safety);
-            this.orderByDescending = new Lazy<MethodInfo>(CreateOrderByDescending, safety);
-            this.thenBy = new Lazy<MethodInfo>(CreateThenBy, safety);
-            this.thenByDescending = new Lazy<MethodInfo>(CreateThenByDescending, safety);
+            this.first = CreateLazy(CreateFirst);
+            this.firstOrDefault = CreateLazy(CreateFirstOrDefault);
+            this.any = CreateLazy(CreateAny);
+            this.defaultIfEmpty = CreateLazy(CreateDefaultIfEmpty);
+            this.asQueryable = CreateLazy(CreateAsQueryable);
 
-            this.first = new Lazy<MethodInfo>(CreateFirst, safety);
-            this.firstOrDefault = new Lazy<MethodInfo>(CreateFirstOrDefault, safety);
-            this.any = new Lazy<MethodInfo>(CreateAny, safety);
-            this.defaultIfEmpty = new Lazy<MethodInfo>(CreateDefaultIfEmpty, safety);
-            this.asQueryable = new Lazy<MethodInfo>(CreateAsQueryable, safety);
+            this.distinct = CreateLazy(CreateDistinct);
+            this.except = CreateLazy(CreateExcept);
+            this.intersect = CreateLazy(CreateIntersect);
+            this.union = CreateLazy(CreateUnion);
+            this.concat = CreateLazy(CreateConcat);
 
-            this.distinct = new Lazy<MethodInfo>(CreateDistinct, safety);
-            this.except = new Lazy<MethodInfo>(CreateExcept, safety);
-            this.intersect = new Lazy<MethodInfo>(CreateIntersect, safety);
-            this.union = new Lazy<MethodInfo>(CreateUnion, safety);
-            this.concat = new Lazy<MethodInfo>(CreateConcat, safety);
+            this.sum = new MethodInfoGroup(
+                Tuple.Create(typeof(int), CreateLazy(CreateSumInt)),
+                Tuple.Create(typeof(int?), CreateLazy(CreateSumNInt)),
+                Tuple.Create(typeof(long), CreateLazy(CreateSumLong)),
+                Tuple.Create(typeof(long?), CreateLazy(CreateSumNLong)),
+                Tuple.Create(typeof(float), CreateLazy(CreateSumFloat)),
+                Tuple.Create(typeof(float?), CreateLazy(CreateSumNFloat)),
+                Tuple.Create(typeof(double), CreateLazy(CreateSumDouble)),
+                Tuple.Create(typeof(double?), CreateLazy(CreateSumNDouble)),
+                Tuple.Create(typeof(decimal), CreateLazy(CreateSumDecimal)),
+                Tuple.Create(typeof(decimal?), CreateLazy(CreateSumNDecimal)));
+
+            this.min = new MethodInfoGroup(
+                Tuple.Create(typeof(int), CreateLazy(CreateMinInt)),
+                Tuple.Create(typeof(int?), CreateLazy(CreateMinNInt)),
+                Tuple.Create(typeof(long), CreateLazy(CreateMinLong)),
+                Tuple.Create(typeof(long?), CreateLazy(CreateMinNLong)),
+                Tuple.Create(typeof(float), CreateLazy(CreateMinFloat)),
+                Tuple.Create(typeof(float?), CreateLazy(CreateMinNFloat)),
+                Tuple.Create(typeof(double), CreateLazy(CreateMinDouble)),
+                Tuple.Create(typeof(double?), CreateLazy(CreateMinNDouble)),
+                Tuple.Create(typeof(decimal), CreateLazy(CreateMinDecimal)),
+                Tuple.Create(typeof(decimal?), CreateLazy(CreateMinNDecimal)));
+
+            this.max = new MethodInfoGroup(
+                Tuple.Create(typeof(int), CreateLazy(CreateMaxInt)),
+                Tuple.Create(typeof(int?), CreateLazy(CreateMaxNInt)),
+                Tuple.Create(typeof(long), CreateLazy(CreateMaxLong)),
+                Tuple.Create(typeof(long?), CreateLazy(CreateMaxNLong)),
+                Tuple.Create(typeof(float), CreateLazy(CreateMaxFloat)),
+                Tuple.Create(typeof(float?), CreateLazy(CreateMaxNFloat)),
+                Tuple.Create(typeof(double), CreateLazy(CreateMaxDouble)),
+                Tuple.Create(typeof(double?), CreateLazy(CreateMaxNDouble)),
+                Tuple.Create(typeof(decimal), CreateLazy(CreateMaxDecimal)),
+                Tuple.Create(typeof(decimal?), CreateLazy(CreateMaxNDecimal)));
+
+            this.average = new MethodInfoGroup(
+                Tuple.Create(typeof(int), CreateLazy(CreateAvgInt)),
+                Tuple.Create(typeof(int?), CreateLazy(CreateAvgNInt)),
+                Tuple.Create(typeof(long), CreateLazy(CreateAvgLong)),
+                Tuple.Create(typeof(long?), CreateLazy(CreateAvgNLong)),
+                Tuple.Create(typeof(float), CreateLazy(CreateAvgFloat)),
+                Tuple.Create(typeof(float?), CreateLazy(CreateAvgNFloat)),
+                Tuple.Create(typeof(double), CreateLazy(CreateAvgDouble)),
+                Tuple.Create(typeof(double?), CreateLazy(CreateAvgNDouble)),
+                Tuple.Create(typeof(decimal), CreateLazy(CreateAvgDecimal)),
+                Tuple.Create(typeof(decimal?), CreateLazy(CreateAvgNDecimal)));
         }
 
         #region MethodInfo provider properties
@@ -212,23 +266,30 @@ namespace Effort.Internal.DbCommandTreeTransformation
             get { return this.concat.Value; }
         }
 
+        public MethodInfoGroup Sum
+        {
+            get { return this.sum; }
+        }
+
+        public MethodInfoGroup Min
+        {
+            get { return this.min; }
+        }
+
+        public MethodInfoGroup Max
+        {
+            get { return this.max; }
+        }
+
+        public MethodInfoGroup Average
+        {
+            get { return this.average; }
+        }
+
+
         #endregion
 
-        #region MethodInfo factory methods
-
-        private static MethodInfo GetMethod<T>(Expression<Func<IQueryable<object>, T>> function)
-        {
-            MethodInfo result = ReflectionHelper.GetMethodInfo<IQueryable<object>, T>(function);
-
-            return result.GetGenericMethodDefinition();
-        }
-
-        private static MethodInfo GetOrderedMethod<T>(Expression<Func<IOrderedQueryable<object>, T>> function)
-        {
-            MethodInfo result = ReflectionHelper.GetMethodInfo<IOrderedQueryable<object>, T>(function);
-
-            return result.GetGenericMethodDefinition();
-        }
+        #region MethodInfo factories
 
         private static MethodInfo CreateSelect()
         {
@@ -352,6 +413,233 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private static MethodInfo CreateIntersect()
         {
             return GetMethod(x => x.Intersect(Enumerable.Empty<object>()));
+        }
+
+        #endregion
+
+        #region Aggregation method info factories
+
+        private static MethodInfo CreateSumInt()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (int)_));
+        }
+
+        private static MethodInfo CreateSumNInt()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (int?)_));
+        }
+
+        private static MethodInfo CreateSumLong()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (long)_));
+        }
+
+        private static MethodInfo CreateSumNLong()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (long?)_));
+        }
+
+        private static MethodInfo CreateSumFloat()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (float)_));
+        }
+
+        private static MethodInfo CreateSumNFloat()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (float?)_));
+        }
+
+        private static MethodInfo CreateSumDouble()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (double)_));
+        }
+
+        private static MethodInfo CreateSumNDouble()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (double?)_));
+        }
+
+        private static MethodInfo CreateSumDecimal()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (decimal)_));
+        }
+
+        private static MethodInfo CreateSumNDecimal()
+        {
+            return GetMethod(x => Enumerable.Sum<object>(x, _ => (decimal?)_));
+        }
+
+        private static MethodInfo CreateMinInt()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (int)_));
+        }
+
+        private static MethodInfo CreateMinNInt()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (int?)_));
+        }
+
+        private static MethodInfo CreateMinLong()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (long)_));
+        }
+
+        private static MethodInfo CreateMinNLong()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (long?)_));
+        }
+
+        private static MethodInfo CreateMinFloat()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (float)_));
+        }
+
+        private static MethodInfo CreateMinNFloat()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (float?)_));
+        }
+
+        private static MethodInfo CreateMinDouble()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (double)_));
+        }
+
+        private static MethodInfo CreateMinNDouble()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (double?)_));
+        }
+
+        private static MethodInfo CreateMinDecimal()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (decimal)_));
+        }
+
+        private static MethodInfo CreateMinNDecimal()
+        {
+            return GetMethod(x => Enumerable.Min<object>(x, _ => (decimal?)_));
+        }
+
+        private static MethodInfo CreateMaxInt()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (int)_));
+        }
+
+        private static MethodInfo CreateMaxNInt()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (int?)_));
+        }
+
+        private static MethodInfo CreateMaxLong()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (long)_));
+        }
+
+        private static MethodInfo CreateMaxNLong()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (long?)_));
+        }
+
+        private static MethodInfo CreateMaxFloat()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (float)_));
+        }
+
+        private static MethodInfo CreateMaxNFloat()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (float?)_));
+        }
+
+        private static MethodInfo CreateMaxDouble()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (double)_));
+        }
+
+        private static MethodInfo CreateMaxNDouble()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (double?)_));
+        }
+
+        private static MethodInfo CreateMaxDecimal()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (decimal)_));
+        }
+
+        private static MethodInfo CreateMaxNDecimal()
+        {
+            return GetMethod(x => Enumerable.Max<object>(x, _ => (decimal?)_));
+        }
+
+        private static MethodInfo CreateAvgInt()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (int)_));
+        }
+
+        private static MethodInfo CreateAvgNInt()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (int?)_));
+        }
+
+        private static MethodInfo CreateAvgLong()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (long)_));
+        }
+
+        private static MethodInfo CreateAvgNLong()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (long?)_));
+        }
+
+        private static MethodInfo CreateAvgFloat()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (float)_));
+        }
+
+        private static MethodInfo CreateAvgNFloat()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (float?)_));
+        }
+
+        private static MethodInfo CreateAvgDouble()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (double)_));
+        }
+
+        private static MethodInfo CreateAvgNDouble()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (double?)_));
+        }
+
+        private static MethodInfo CreateAvgDecimal()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (decimal)_));
+        }
+
+        private static MethodInfo CreateAvgNDecimal()
+        {
+            return GetMethod(x => Enumerable.Average<object>(x, _ => (decimal?)_));
+        }
+
+        #endregion
+
+        #region MethodInfo factory helpers
+
+        private static Lazy<MethodInfo> CreateLazy(Func<MethodInfo> factory)
+        {
+            return new Lazy<MethodInfo>(factory, Safety);
+        }
+
+        private static MethodInfo GetMethod<T>(Expression<Func<IQueryable<object>, T>> function)
+        {
+            MethodInfo result = ReflectionHelper.GetMethodInfo<IQueryable<object>, T>(function);
+
+            return result.GetGenericMethodDefinition();
+        }
+
+        private static MethodInfo GetOrderedMethod<T>(Expression<Func<IOrderedQueryable<object>, T>> function)
+        {
+            MethodInfo result = ReflectionHelper.GetMethodInfo<IOrderedQueryable<object>, T>(function);
+
+            return result.GetGenericMethodDefinition();
         }
 
         #endregion

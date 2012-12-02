@@ -46,7 +46,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             get
             {
-                return this.methods[type].Value;
+                Lazy<MethodInfo> result = null;
+
+                if (this.methods.TryGetValue(type, out result))
+                {
+                    return result.Value;
+                }
+
+                return null;
             }
         }
     }

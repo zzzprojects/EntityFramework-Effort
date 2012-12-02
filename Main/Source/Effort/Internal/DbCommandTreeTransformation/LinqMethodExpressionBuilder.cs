@@ -45,9 +45,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public Expression Select(Expression source, LambdaExpression selector)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.Select;
-            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selectorType);
 
             return Expression.Call(method, source, Expression.Quote(selector));
         }
@@ -55,11 +56,34 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public Expression SelectMany(Expression source, LambdaExpression selector)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.SelectMany;
-            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selectorType);
 
             return Expression.Call(method, source, Expression.Quote(selector));
+        }
+
+        public Expression SelectMany(
+            Expression first,
+            LambdaExpression collectionSelector,
+            LambdaExpression resultSelector)
+        {
+            Type firstType = TypeHelper.GetElementType(first.Type);
+            Type collectionType = TypeHelper.GetElementType(collectionSelector.Body.Type);
+
+            Type resultType = resultSelector.Body.Type;
+
+            MethodInfo genericMethod = this.queryMethods.SelectManyWithResultSelector;
+
+            MethodInfo method =
+                genericMethod.MakeGenericMethod(firstType, collectionType, resultType);
+
+            return Expression.Call(
+                method,
+                first,
+                Expression.Quote(collectionSelector),
+                Expression.Quote(resultSelector));
         }
 
         public Expression Where(Expression source, LambdaExpression predicate)
@@ -95,9 +119,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public Expression OrderBy(Expression source, LambdaExpression selector)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.OrderBy;
-            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selectorType);
 
             return Expression.Call(method, source, Expression.Quote(selector));
         }
@@ -105,9 +130,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public Expression OrderByDescending(Expression source, LambdaExpression selector)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.OrderByDescending;
-            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selectorType);
 
             return Expression.Call(method, source, Expression.Quote(selector));
         }
@@ -115,9 +141,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public Expression ThenBy(Expression source, LambdaExpression selector)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.ThenBy;
-            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selectorType);
 
             return Expression.Call(method, source, Expression.Quote(selector));
         }
@@ -125,9 +152,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public Expression ThenByDescending(Expression source, LambdaExpression selector)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.ThenByDescending;
-            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selectorType);
 
             return Expression.Call(method, source, Expression.Quote(selector));
         }
@@ -135,9 +163,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public Expression GroupBy(Expression source, LambdaExpression selector)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
 
             MethodInfo genericMethod = this.queryMethods.GroupBy;
-            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selector.Body.Type);
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType, selectorType);
 
             return Expression.Call(method, source, Expression.Quote(selector));
         }
@@ -242,8 +271,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return Expression.Call(method, first, second);
         }
 
-        #region Aggregation
-
         public Expression Count(Expression source)
         {
             Type sourceType = TypeHelper.GetElementType(source.Type);
@@ -256,112 +283,66 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         public Expression Max(Expression source, LambdaExpression selector)
         {
-            return this.Aggregate(source, selector, "Max");
-        }
+            MethodInfoGroup group = this.queryMethods.Max;
+            Func<MethodInfo> generic = () => this.queryMethods.MaxGeneric;
 
-        public Expression Min(Expression source, LambdaExpression selector)
-        {
-            return this.Aggregate(source, selector, "Min");
-        }
-
-        public Expression Average(Expression source, LambdaExpression selector)
-        {
-            return this.Aggregate(source, selector, "Average");
-        }
-
-        public Expression Sum(Expression source, LambdaExpression selector)
-        {
-            return this.Aggregate(source, selector, "Sum");
-        }
-
-        private Expression Aggregate(Expression source, LambdaExpression selector, string name)
-        {
-            Type[] aggregateNativeTypes = new Type[] { typeof(int), typeof(long), typeof(double), typeof(float), typeof(decimal) };
-
-            Type sourceType = TypeHelper.GetElementType(source.Type);
-            Type selectorType = selector.Body.Type;
-
-            // Native means, that Enumerable contains aggregate method for a specific type
-            bool isNative = false;
-
-            // Nullable types need special consideration
-            if (TypeHelper.IsNullable(selectorType))
-            {
-                isNative = aggregateNativeTypes.Contains(selectorType.GetGenericArguments()[0]);
-            }
-            else
-            {
-                isNative = aggregateNativeTypes.Contains(selectorType);
-            }
-
-            MethodInfo method = null;
-
-            if (isNative)
-            {
-                // Aggregator methods does not have generic definitions, so we have to search for each type
-
-                // Search for "selectorType Enumerable.'name'<TSource>(IEnumerable<TSource> source, Func<TSource, selectorType> selector)"
-                MethodInfo genericMethod = typeof(Enumerable)
-                    .GetMethods()
-                    .Where(mi =>
-
-                        // The method name
-                        mi.Name == name &&
-
-                        // The method has single generic argument
-                        // <TSource>
-                        mi.GetGenericArguments().Length == 1 &&
-
-                        // Two parameters
-                        // (source, selectorType)
-                        mi.GetParameters().Length == 2 &&
-
-                        // The type of the second parameter has two generic arguments
-                        // Func<TSource, selectorType>
-                        mi.GetParameters()[1].ParameterType.GetGenericArguments().Length == 2 &&
-
-                        // selectorType match
-                        mi.GetParameters()[1].ParameterType.GetGenericArguments()[1] == selectorType)
-                    .Single();
-
-                method = genericMethod.MakeGenericMethod(sourceType);
-            }
-            else
-            {
-                // Search for "TResult Enumerable.'name'<TSource, TResult>(IEnumerable<TSource>, Func<TSource, TResult>)"
-                MethodInfo genericMethod = typeof(Enumerable).GetMethods()
-                    .Where(mi =>
-                        mi.Name == name &&
-                        mi.GetGenericArguments().Length == 2)
-                    .Single();
-                method = genericMethod.MakeGenericMethod(sourceType, selectorType);
-            }
+            MethodInfo method = GetAggregationMethod(source, selector, group, generic);
 
             return Expression.Call(method, source, selector);
         }
 
-        #endregion
-
-        public Expression SelectMany(
-            Expression first,
-            LambdaExpression collectionSelector,
-            LambdaExpression resultSelector)
+        public Expression Min(Expression source, LambdaExpression selector)
         {
-            Type firstType = TypeHelper.GetElementType(first.Type);
-            Type collectionType = TypeHelper.GetElementType(collectionSelector.Body.Type);
+            MethodInfoGroup group = this.queryMethods.Min;
+            Func<MethodInfo> generic = () => this.queryMethods.MinGeneric;
 
-            Type resultType = resultSelector.Body.Type;
+            MethodInfo method = GetAggregationMethod(source, selector, group, generic);
 
-            MethodInfo genericMethod = this.queryMethods.SelectManyWithResultSelector;
+            return Expression.Call(method, source, selector);
+        }
 
-            MethodInfo method =
-                genericMethod.MakeGenericMethod(firstType, collectionType, resultType);
+        public Expression Average(Expression source, LambdaExpression selector)
+        {
+            MethodInfoGroup group = this.queryMethods.Average;
+            Func<MethodInfo> generic = () => this.queryMethods.AverageGeneric;
 
-            return Expression.Call(
-                method,
-                first,
-                Expression.Quote(collectionSelector),
-                Expression.Quote(resultSelector));
+            MethodInfo method = GetAggregationMethod(source, selector, group, generic);
+
+            return Expression.Call(method, source, selector);
+        }
+
+        public Expression Sum(Expression source, LambdaExpression selector)
+        {
+            MethodInfoGroup group = this.queryMethods.Sum;
+
+            MethodInfo method = GetAggregationMethod(source, selector, group, null);
+
+            return Expression.Call(method, source, selector);
+        }
+
+        private static MethodInfo GetAggregationMethod(
+            Expression source,
+            LambdaExpression selector,
+            MethodInfoGroup group,
+            Func<MethodInfo> generic)
+        {
+            Type sourceType = TypeHelper.GetElementType(source.Type);
+            Type selectorType = selector.Body.Type;
+
+            MethodInfo genericMethod = group[selectorType];
+            MethodInfo method = null;
+
+            if (genericMethod == null)
+            {
+                genericMethod = generic.Invoke();
+                method = genericMethod.MakeGenericMethod(sourceType, selectorType);
+            }
+            else
+            {
+                method = genericMethod.MakeGenericMethod(sourceType);
+            }
+
+            return method;
         }
     }
 }

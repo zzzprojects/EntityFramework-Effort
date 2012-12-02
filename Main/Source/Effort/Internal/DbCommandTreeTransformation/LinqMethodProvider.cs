@@ -72,6 +72,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private MethodInfoGroup max;
         private MethodInfoGroup average;
 
+        private Lazy<MethodInfo> minGeneric;
+        private Lazy<MethodInfo> maxGeneric;
+        private Lazy<MethodInfo> averageGeneric;
+
         /// <summary>
         /// Prevents a default instance of the <see cref="LinqMethodProvider" /> class from
         /// being created.
@@ -152,6 +156,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 Tuple.Create(typeof(double?), CreateLazy(CreateAvgNDouble)),
                 Tuple.Create(typeof(decimal), CreateLazy(CreateAvgDecimal)),
                 Tuple.Create(typeof(decimal?), CreateLazy(CreateAvgNDecimal)));
+
+            this.minGeneric = CreateLazy(CreateMinGeneric);
+            this.maxGeneric = CreateLazy(CreateMaxGeneric);
+            this.averageGeneric = CreateLazy(CreateAvgGeneric);
+
         }
 
         #region MethodInfo provider properties
@@ -286,6 +295,21 @@ namespace Effort.Internal.DbCommandTreeTransformation
             get { return this.average; }
         }
 
+        public MethodInfo MinGeneric
+        {
+            get { return this.minGeneric.Value; }
+        }
+
+        public MethodInfo MaxGeneric
+        {
+            get { return this.maxGeneric.Value; }
+        }
+
+        public MethodInfo AverageGeneric
+        {
+            get { return this.averageGeneric.Value; }
+        }
+
 
         #endregion
 
@@ -417,7 +441,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         #endregion
 
-        #region Aggregation method info factories
+        #region Aggregation MethodInfo factories
 
         private static MethodInfo CreateSumInt()
         {
@@ -467,6 +491,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private static MethodInfo CreateSumNDecimal()
         {
             return GetMethod(x => Enumerable.Sum<object>(x, _ => (decimal?)_));
+        }
+
+        private static MethodInfo CreateMinGeneric()
+        {
+            return GetMethod(x => Enumerable.Min<object, object>(x, _ => null));
         }
 
         private static MethodInfo CreateMinInt()
@@ -519,6 +548,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return GetMethod(x => Enumerable.Min<object>(x, _ => (decimal?)_));
         }
 
+        private static MethodInfo CreateMaxGeneric()
+        {
+            return GetMethod(x => Enumerable.Max<object, object>(x, _ => null));
+        }
+
         private static MethodInfo CreateMaxInt()
         {
             return GetMethod(x => Enumerable.Max<object>(x, _ => (int)_));
@@ -567,6 +601,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private static MethodInfo CreateMaxNDecimal()
         {
             return GetMethod(x => Enumerable.Max<object>(x, _ => (decimal?)_));
+        }
+
+        private static MethodInfo CreateAvgGeneric()
+        {
+            return GetMethod(x => Enumerable.Max<object, object>(x, _ => null));
         }
 
         private static MethodInfo CreateAvgInt()

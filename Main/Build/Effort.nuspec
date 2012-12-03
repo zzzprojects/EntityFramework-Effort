@@ -12,7 +12,7 @@
         <description>Effort is basicly an ADO.NET provider that executes all the data operations on a lightweight in-process main memory database instead of a traditional external database. It provides some intuitive helper methods too that make really easy to use this provider with existing ObjectContext or DbContext classes. A simple addition to existing code might be enough to create data driven unit tests that can be run without the presence of the external database.</description>
         <summary>Effort is a powerful tool that enables a convenient way to create unit tests for Entity Framework based applications.</summary>
         <dependencies>
-            <dependency id="NMemory" version="[1.0.0-beta3]" />
+            <dependency id="NMemory" version="[1.0.0-beta4]" />
         </dependencies>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System.Data.Entity" targetFramework="" />
@@ -20,8 +20,8 @@
     </metadata>
     <files>
         <file src="lib\net40\Effort.dll" target="lib\net40\Effort.dll" />
-		<file src="lib\net40\Effort.dll" target="lib\net40\Effort.xml" />
+		<file src="lib\net40\Effort.xml" target="lib\net40\Effort.xml" />
         <file src="lib\net45\Effort.dll" target="lib\net45\Effort.dll" />
-		<file src="lib\net45\Effort.dll" target="lib\net45\Effort.xml" />
+		<file src="lib\net45\Effort.xml" target="lib\net45\Effort.xml" />
     </files>
 </package>

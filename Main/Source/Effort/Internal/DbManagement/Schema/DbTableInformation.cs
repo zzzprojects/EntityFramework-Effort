@@ -25,14 +25,14 @@
 namespace Effort.Internal.DbManagement.Schema
 {
     using System;
-    using System.Reflection;
-    using NMemory.Indexes;
     using System.Linq.Expressions;
+    using System.Reflection;
     using Effort.Internal.Common;
+    using NMemory.Indexes;
 
     internal class DbTableInformation
     {
-        private Lazy<Delegate> initializer;
+        private FastLazy<Delegate> initializer;
 
         public DbTableInformation(
             string tableName, 
@@ -51,7 +51,7 @@ namespace Effort.Internal.DbManagement.Schema
             this.Constraints = constraints;
             this.PrimaryKeyInfo = primaryKeyInfo;
 
-            this.initializer = new Lazy<Delegate>(CreateEntityInitializer, true);
+            this.initializer = new FastLazy<Delegate>(CreateEntityInitializer);
         }
 
         public string TableName { get; set; }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="MethodInfoGroup.cs" company="Effort Team">
+// <copyright file="FastLazy`1.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,39 +22,32 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation
+namespace Effort.Internal.Common
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using Effort.Internal.Common;
 
-    internal sealed class MethodInfoGroup
+    internal sealed class FastLazy<T> 
+        where T : class
     {
-        private Dictionary<Type, FastLazy<MethodInfo>> methods;
+        private Func<T> factory;
+        private T value;
 
-        public MethodInfoGroup(params Tuple<Type, FastLazy<MethodInfo>>[] methods)
+        public FastLazy(Func<T> factory)
         {
-            this.methods = new Dictionary<Type, FastLazy<MethodInfo>>();
-
-            for (int i = 0; i < methods.Length; i++)
-            {
-                this.methods.Add(methods[i].Item1, methods[i].Item2);
-            }
+            this.factory = factory;
+            this.value = null;
         }
 
-        public MethodInfo this[Type type]
+        public T Value
         {
             get
             {
-                FastLazy<MethodInfo> result = null;
-
-                if (this.methods.TryGetValue(type, out result))
+                if (this.value == null)
                 {
-                    return result.Value;
+                    this.value = this.factory.Invoke();
                 }
 
-                return null;
+                return this.value;
             }
         }
     }

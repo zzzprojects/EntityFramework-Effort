@@ -37,44 +37,42 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public static readonly LinqMethodProvider Instance =
             new LinqMethodProvider();
 
-        private static readonly LazyThreadSafetyMode Safety = 
-            LazyThreadSafetyMode.PublicationOnly;
 
-        private Lazy<MethodInfo> select;
-        private Lazy<MethodInfo> selectMany;
-        private Lazy<MethodInfo> selectManyWithResultSelector;
+        private FastLazy<MethodInfo> select;
+        private FastLazy<MethodInfo> selectMany;
+        private FastLazy<MethodInfo> selectManyWithResultSelector;
 
-        private Lazy<MethodInfo> count;
-        private Lazy<MethodInfo> where;
-        private Lazy<MethodInfo> take;
-        private Lazy<MethodInfo> skip;
-        private Lazy<MethodInfo> groupBy;
+        private FastLazy<MethodInfo> count;
+        private FastLazy<MethodInfo> where;
+        private FastLazy<MethodInfo> take;
+        private FastLazy<MethodInfo> skip;
+        private FastLazy<MethodInfo> groupBy;
 
-        private Lazy<MethodInfo> orderBy;
-        private Lazy<MethodInfo> orderByDescending;
-        private Lazy<MethodInfo> thenBy;
-        private Lazy<MethodInfo> thenByDescending;
+        private FastLazy<MethodInfo> orderBy;
+        private FastLazy<MethodInfo> orderByDescending;
+        private FastLazy<MethodInfo> thenBy;
+        private FastLazy<MethodInfo> thenByDescending;
 
-        private Lazy<MethodInfo> firstOrDefault;
-        private Lazy<MethodInfo> first;
-        private Lazy<MethodInfo> any;
-        private Lazy<MethodInfo> defaultIfEmpty;
-        private Lazy<MethodInfo> asQueryable;
+        private FastLazy<MethodInfo> firstOrDefault;
+        private FastLazy<MethodInfo> first;
+        private FastLazy<MethodInfo> any;
+        private FastLazy<MethodInfo> defaultIfEmpty;
+        private FastLazy<MethodInfo> asQueryable;
 
-        private Lazy<MethodInfo> distinct;
-        private Lazy<MethodInfo> except;
-        private Lazy<MethodInfo> intersect;
-        private Lazy<MethodInfo> union;
-        private Lazy<MethodInfo> concat;
+        private FastLazy<MethodInfo> distinct;
+        private FastLazy<MethodInfo> except;
+        private FastLazy<MethodInfo> intersect;
+        private FastLazy<MethodInfo> union;
+        private FastLazy<MethodInfo> concat;
 
         private MethodInfoGroup sum;
         private MethodInfoGroup min;
         private MethodInfoGroup max;
         private MethodInfoGroup average;
 
-        private Lazy<MethodInfo> minGeneric;
-        private Lazy<MethodInfo> maxGeneric;
-        private Lazy<MethodInfo> averageGeneric;
+        private FastLazy<MethodInfo> minGeneric;
+        private FastLazy<MethodInfo> maxGeneric;
+        private FastLazy<MethodInfo> averageGeneric;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="LinqMethodProvider" /> class from
@@ -160,7 +158,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.minGeneric = CreateLazy(CreateMinGeneric);
             this.maxGeneric = CreateLazy(CreateMaxGeneric);
             this.averageGeneric = CreateLazy(CreateAvgGeneric);
-
         }
 
         #region MethodInfo provider properties
@@ -662,21 +659,24 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         #region MethodInfo factory helpers
 
-        private static Lazy<MethodInfo> CreateLazy(Func<MethodInfo> factory)
+        private static FastLazy<MethodInfo> CreateLazy(
+            Func<MethodInfo> factory)
         {
-            return new Lazy<MethodInfo>(factory, Safety);
+            return new FastLazy<MethodInfo>(factory);
         }
 
-        private static MethodInfo GetMethod<T>(Expression<Func<IQueryable<object>, T>> function)
+        private static MethodInfo GetMethod<T>(
+            Expression<Func<IQueryable<object>, T>> function)
         {
-            MethodInfo result = ReflectionHelper.GetMethodInfo<IQueryable<object>, T>(function);
+            MethodInfo result = ReflectionHelper.GetMethodInfo(function);
 
             return result.GetGenericMethodDefinition();
         }
 
-        private static MethodInfo GetOrderedMethod<T>(Expression<Func<IOrderedQueryable<object>, T>> function)
+        private static MethodInfo GetOrderedMethod<T>(
+            Expression<Func<IOrderedQueryable<object>, T>> function)
         {
-            MethodInfo result = ReflectionHelper.GetMethodInfo<IOrderedQueryable<object>, T>(function);
+            MethodInfo result = ReflectionHelper.GetMethodInfo(function);
 
             return result.GetGenericMethodDefinition();
         }

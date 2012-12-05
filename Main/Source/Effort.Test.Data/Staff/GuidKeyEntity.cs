@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="StaffDbContext.cs" company="Effort Team">
+// <copyright file="GuidKeyEntity.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,17 +24,16 @@
 
 namespace Effort.Test.Data.Staff
 {
-    using System.Data.Common;
-    using System.Data.Entity;
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    public class StaffDbContext : DbContext
+    public class GuidKeyEntity
     {
-        public StaffDbContext(DbConnection connection) : base(connection, true)
-        {
-        }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
-        public IDbSet<Person> People { get; set; }
-
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; } 
+        public string Data { get; set; }
     }
 }

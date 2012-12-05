@@ -73,6 +73,7 @@
     <Compile Include="Northwind\Supplier.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
+    <Compile Include="Staff\GuidKeyEntity.cs" />
     <Compile Include="Staff\LocalStaffDataLoader.cs" />
     <Compile Include="Staff\Person.cs" />
     <Compile Include="Staff\StaffDbContext.cs" />

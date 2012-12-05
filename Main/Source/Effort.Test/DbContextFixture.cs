@@ -32,7 +32,6 @@ namespace Effort.Test
     [TestClass]
     public class DbContextFixture
     {
-
         [TestMethod]
         public void DbContext_Create()
         {

@@ -183,6 +183,7 @@
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedQueryCompiler.cs" />
+    <Compile Include="Internal\DbManagement\Engine\GeneratedGuidConstraint.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbRelationInformation.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchemaFactory.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchema.cs" />

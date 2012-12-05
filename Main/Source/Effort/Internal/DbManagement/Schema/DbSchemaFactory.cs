@@ -37,6 +37,8 @@ namespace Effort.Internal.DbManagement.Schema
     using Effort.Internal.TypeGeneration;
     using NMemory.Indexes;
     using NMemory.Tables;
+    using Effort.Internal.DbManagement.Engine;
+    using NMemory.Constraints;
 
     internal static class DbSchemaFactory
     {
@@ -70,6 +72,7 @@ namespace Effort.Internal.DbManagement.Schema
                 List<string> primaryKeyFieldNames = new List<string>();
                 List<string> identityFieldNames = new List<string>();
                 List<string> notNullableFields = new List<string>();
+                List<string> generatedGuidFields = new List<string>();
                 Dictionary<string, int> maxLenghtNVarcharFields = new Dictionary<string, int>();
                 Dictionary<string, int> maxLenghtNCharFields = new Dictionary<string, int>();
 
@@ -90,9 +93,14 @@ namespace Effort.Internal.DbManagement.Schema
                     }
 
                     // Register identity field
-                    if (facets.Identity)
+                    if (facets.Identity && typeof(long).IsAssignableFrom(fieldType))
                     {
                         identityFieldNames.Add(propBuilder.Name);
+                    }
+
+                    if (facets.Identity && fieldType == typeof(Guid))
+                    {
+                        generatedGuidFields.Add(propBuilder.Name);
                     }
 
                     // Register nullable field
@@ -121,7 +129,7 @@ namespace Effort.Internal.DbManagement.Schema
 
                 Type entityType = entityTypeBuilder.CreateType();
 
-                var listInstanceOfConstraints = new List<object>();
+                List<object> constraint = new List<object>();
 
                 foreach (PropertyInfo prop in entityType.GetProperties())
                 {
@@ -140,19 +148,19 @@ namespace Effort.Internal.DbManagement.Schema
                     if (notNullableFields.Contains(prop.Name))
                     {
                         var param = Expression.Parameter(entityType, "x");
-                        listInstanceOfConstraints.Add(
-                            typeof(NMemory.Constraints.NotNullableConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                        constraint.Add(
+                            typeof(NotNullableConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
                             new object[] 
                             {
-                                    Expression.Lambda(Expression.Convert(Expression.PropertyOrField(param, prop.Name), typeof(object)), param)
+                                Expression.Lambda(Expression.Convert(Expression.PropertyOrField(param, prop.Name), typeof(object)), param)
                             }));
                     }
 
                     if (maxLenghtNVarcharFields.Keys.Contains(prop.Name))
                     {
                         var param = Expression.Parameter(entityType, "x");
-                        listInstanceOfConstraints.Add(
-                            typeof(NMemory.Constraints.NVarCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                        constraint.Add(
+                            typeof(NVarCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
                             new object[] 
                             {
                                 Expression.Lambda(Expression.PropertyOrField(param, prop.Name), param), maxLenghtNVarcharFields[prop.Name]
@@ -162,11 +170,22 @@ namespace Effort.Internal.DbManagement.Schema
                     if (maxLenghtNCharFields.Keys.Contains(prop.Name))
                     {
                         var param = Expression.Parameter(entityType, "x");
-                        listInstanceOfConstraints.Add(
-                            typeof(NMemory.Constraints.NCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                        constraint.Add(
+                            typeof(NCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
                             new object[] 
                             {
                                 Expression.Lambda(Expression.PropertyOrField(param, prop.Name), param), maxLenghtNCharFields[prop.Name]
+                            }));
+                    }
+
+                    if (generatedGuidFields.Contains(prop.Name))
+                    {
+                        var param = Expression.Parameter(entityType, "x");
+                        constraint.Add(
+                            typeof(GeneratedGuidConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
+                            new object[] 
+                            {
+                                    Expression.Lambda(Expression.PropertyOrField(param, prop.Name), param)
                             }));
                     }
                 }
@@ -183,7 +202,7 @@ namespace Effort.Internal.DbManagement.Schema
                         primaryKeyFields.ToArray(),
                         identityFields.SingleOrDefault(),
                         properties.ToArray(),
-                        listInstanceOfConstraints.ToArray(),
+                        constraint.ToArray(),
                         primaryKeyInfo));
             }
 

@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="StaffDbContext.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="GeneratedGuidConstraint.cs" company="Effort Team">
 //     Copyright (C) 2012 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,21 +20,31 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Internal.DbManagement.Engine
 {
-    using System.Data.Common;
-    using System.Data.Entity;
+    using System;
+    using System.Linq.Expressions;
+    using NMemory.Constraints;
 
-    public class StaffDbContext : DbContext
+    internal class GeneratedGuidConstraint<T> : ConstraintBase<T, Guid>
     {
-        public StaffDbContext(DbConnection connection) : base(connection, true)
+        public GeneratedGuidConstraint(Expression<Func<T, Guid>> field)
+            : base(field)
         {
         }
 
-        public IDbSet<Person> People { get; set; }
-
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; } 
+        protected override Guid Apply(Guid value)
+        {
+            if (value == Guid.Empty)
+            {
+                return Guid.NewGuid();
+            }
+            else
+            {
+                return value;
+            }
+        }
     }
 }

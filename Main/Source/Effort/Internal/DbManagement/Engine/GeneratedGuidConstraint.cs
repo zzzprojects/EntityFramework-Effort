@@ -37,6 +37,8 @@ namespace Effort.Internal.DbManagement.Engine
 
         protected override Guid Apply(Guid value)
         {
+            // Workaround: Check if the current value is empty
+            // Solution: extend NMemory, IConstaintContext parameter
             if (value == Guid.Empty)
             {
                 return Guid.NewGuid();

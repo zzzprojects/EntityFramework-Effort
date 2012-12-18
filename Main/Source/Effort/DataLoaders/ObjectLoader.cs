@@ -25,6 +25,7 @@
 namespace Effort.DataLoaders
 {
     using System;
+    using System.Linq;
     using System.Collections.Generic;
     using System.Reflection;
     using Effort.Internal.DbManagement.Schema;
@@ -47,20 +48,26 @@ namespace Effort.DataLoaders
         {
             List<ColumnDescription> columns = new List<ColumnDescription>();
             PropertyInfo[] properties = table.EntityType.GetProperties();
+            Func<object, object>[] converters = new Func<object,object>[properties.Length];
 
-            foreach (PropertyInfo property in properties)
+            for (int i = 0; i < properties.Length; i++)
             {
-                string name = property.Name;
+                PropertyInfo property = properties[i];
                 Type type = property.PropertyType;
 
                 // TODO: external 
-                if (type == typeof(NMemory.Data.Timestamp) || 
-                    type == typeof(NMemory.Data.Binary))
+                if (type == typeof(NMemory.Data.Timestamp))
                 {
+                    converters[i] = ConvertTimestamp;
+                    type = typeof(byte[]);
+                }
+                else if (type == typeof(NMemory.Data.Binary))
+                {
+                    converters[i] = ConvertBinary;
                     type = typeof(byte[]);
                 }
 
-                ColumnDescription column = new ColumnDescription(name, type);
+                ColumnDescription column = new ColumnDescription(property.Name, type);
                 columns.Add(column);
             }
 
@@ -69,29 +76,35 @@ namespace Effort.DataLoaders
 
             ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
 
-            foreach (object[] data in loader.GetData())
+            foreach (object[] data in loader.GetData().ToList())
             {
                 object[] entityProperties = new object[data.Length];
 
                 for (int i = 0; i < columns.Count; i++)
                 {
-                    // TODO: external
-                    if (properties[i].PropertyType == typeof(NMemory.Data.Timestamp))
+                    object propertyValue = data[i];
+                    Func<object, object> converter = converters[i];
+
+                    if (converter != null)
                     {
-                        entityProperties[i] = (NMemory.Data.Timestamp)(byte[])data[i];
+                        propertyValue = converter.Invoke(propertyValue);
                     }
-                    else if (properties[i].PropertyType == typeof(NMemory.Data.Binary))
-                    {
-                        entityProperties[i] = (NMemory.Data.Binary)(byte[])data[i];
-                    }
-                    else
-                    {
-                        entityProperties[i] = data[i];
-                    }
+
+                    entityProperties[i] = propertyValue;
                 }
                 
                 yield return table.EntityInitializer.DynamicInvoke(entityProperties);
             }
+        }
+
+        private static object ConvertTimestamp(object obj)
+        {
+            return (NMemory.Data.Timestamp)(byte[])obj;
+        }
+
+        private static object ConvertBinary(object obj)
+        {
+            return (NMemory.Data.Binary)(byte[])obj;
         }
     }
 }

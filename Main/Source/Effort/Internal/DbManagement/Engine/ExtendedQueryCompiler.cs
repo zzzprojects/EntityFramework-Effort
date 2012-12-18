@@ -24,17 +24,19 @@
 
 namespace Effort.Internal.DbManagement.Engine
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using NMemory.Execution;
-    using System.Linq.Expressions;
-    using NMemory.Execution.Optimization;
     using Effort.Internal.DbManagement.Engine.Modifiers;
+    using NMemory.Execution;
+    using NMemory.Execution.Optimization;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
 
     internal class ExtendedQueryCompiler : QueryCompiler
     {
+        public ExtendedQueryCompiler()
+        {
+            this.EnableOptimization = true;
+        }
+
         protected override Expression PostprocessExpression(
             Expression expression, 
             TransformationContext context)

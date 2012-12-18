@@ -73,7 +73,6 @@ namespace Effort.Internal.DbManagement.Schema
         public Func<object[], object> EntityInitializer
         {
             get { return this.initializer.Value; }
-
         }
 
         private Func<object[], object> CreateEntityInitializer()

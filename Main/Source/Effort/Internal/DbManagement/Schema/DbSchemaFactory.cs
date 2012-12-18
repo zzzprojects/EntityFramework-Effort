@@ -93,7 +93,7 @@ namespace Effort.Internal.DbManagement.Schema
                     }
 
                     // Register identity field
-                    if (facets.Identity && typeof(long).IsAssignableFrom(fieldType))
+                    if (facets.Identity && IsIdentityType(fieldType))
                     {
                         identityFieldNames.Add(propBuilder.Name);
                     }
@@ -274,6 +274,18 @@ namespace Effort.Internal.DbManagement.Schema
             }
 
             return schema;
+        }
+
+        private static bool IsIdentityType(Type fieldType)
+        {
+            return
+                fieldType == typeof(byte) ||
+                fieldType == typeof(sbyte) ||
+                fieldType == typeof(short) ||
+                fieldType == typeof(ushort) ||
+                fieldType == typeof(int) ||
+                fieldType == typeof(uint) ||
+                fieldType == typeof(long);
         }
 
         private static IKeyInfo CreateKeyInfo(LambdaExpression selector)

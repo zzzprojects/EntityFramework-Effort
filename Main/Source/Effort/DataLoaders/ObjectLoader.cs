@@ -76,15 +76,27 @@ namespace Effort.DataLoaders
 
             ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
 
+            // Prefetch require info/object to increase performance
+            Func<object[], object> initializer = table.EntityInitializer;
+            int columnCount = columns.Count;
+
+            // Single array to spare GC
+            object[] entityProperties = null;
+
             foreach (object[] data in loader.GetData())
             {
-                object[] entityProperties = new object[data.Length];
+                if (entityProperties == null)
+                {
+                    // Initialize at the first element
+                    entityProperties = new object[data.Length];
+                }
 
-                for (int i = 0; i < columns.Count; i++)
+                for (int i = 0; i < columnCount; i++)
                 {
                     object propertyValue = data[i];
-                    Func<object, object> converter = converters[i];
 
+                    // Use converter if required
+                    Func<object, object> converter = converters[i];
                     if (converter != null)
                     {
                         propertyValue = converter.Invoke(propertyValue);
@@ -93,7 +105,7 @@ namespace Effort.DataLoaders
                     entityProperties[i] = propertyValue;
                 }
 
-                yield return table.EntityInitializer.Invoke(entityProperties);
+                yield return initializer.Invoke(entityProperties);
             }
         }
 

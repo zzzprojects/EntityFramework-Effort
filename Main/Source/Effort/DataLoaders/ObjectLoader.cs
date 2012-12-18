@@ -76,7 +76,7 @@ namespace Effort.DataLoaders
 
             ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
 
-            foreach (object[] data in loader.GetData().ToList())
+            foreach (object[] data in loader.GetData())
             {
                 object[] entityProperties = new object[data.Length];
 

@@ -92,8 +92,8 @@ namespace Effort.DataLoaders
 
                     entityProperties[i] = propertyValue;
                 }
-                
-                yield return table.EntityInitializer.DynamicInvoke(entityProperties);
+
+                yield return table.EntityInitializer.Invoke(entityProperties);
             }
         }
 

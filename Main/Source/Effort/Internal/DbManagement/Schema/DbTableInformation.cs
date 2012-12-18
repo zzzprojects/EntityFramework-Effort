@@ -29,10 +29,11 @@ namespace Effort.Internal.DbManagement.Schema
     using System.Reflection;
     using Effort.Internal.Common;
     using NMemory.Indexes;
+    using System.Collections.Generic;
 
     internal class DbTableInformation
     {
-        private FastLazy<Delegate> initializer;
+        private FastLazy<Func<object[], object>> initializer;
 
         public DbTableInformation(
             string tableName, 
@@ -51,7 +52,7 @@ namespace Effort.Internal.DbManagement.Schema
             this.Constraints = constraints;
             this.PrimaryKeyInfo = primaryKeyInfo;
 
-            this.initializer = new FastLazy<Delegate>(CreateEntityInitializer);
+            this.initializer = new FastLazy<Func<object[], object>>(CreateEntityInitializer);
         }
 
         public string TableName { get; set; }
@@ -69,18 +70,40 @@ namespace Effort.Internal.DbManagement.Schema
 
         public IKeyInfo PrimaryKeyInfo { get; private set; }
 
-        public Delegate EntityInitializer
+        public Func<object[], object> EntityInitializer
         {
             get { return this.initializer.Value; }
 
         }
 
-        private Delegate CreateEntityInitializer()
+        private Func<object[], object> CreateEntityInitializer()
         {
-            LambdaExpression initializerExpression =
-                LambdaExpressionHelper.CreateInitializerExpression(EntityType, Properties);
+            ParameterExpression parameter = Expression.Parameter(typeof(object[]));
 
-            return initializerExpression.Compile();
+            ParameterExpression result = Expression.Variable(this.EntityType);
+            List<Expression> blockElements = new List<Expression>();
+
+            blockElements.Add(Expression.Assign(result, Expression.New(this.EntityType)));
+
+            for (int i = 0; i < this.Properties.Length; i++)
+            {
+                blockElements.Add(
+                    Expression.Assign(
+                        Expression.Property(result, this.Properties[i]),
+                        Expression.Convert(
+                            Expression.ArrayIndex(parameter, Expression.Constant(i)),
+                            this.Properties[i].PropertyType)));
+            }
+
+            blockElements.Add(result);
+
+            Expression body =
+                Expression.Block(
+                    this.EntityType,
+                    new ParameterExpression[] { result },
+                    blockElements.ToArray());
+
+            return Expression.Lambda<Func<object[], object>>(body, parameter).Compile();
         }
     }
 }

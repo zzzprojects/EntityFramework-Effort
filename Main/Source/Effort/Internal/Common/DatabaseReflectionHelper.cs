@@ -32,6 +32,8 @@ namespace Effort.Internal.Common
     using System.Linq.Expressions;
     using System.Reflection;
     using Effort.Internal.DbManagement;
+    using Effort.Internal.DbManagement.Engine;
+    using Effort.Internal.DbManagement.Schema;
     using NMemory;
     using NMemory.Indexes;
     using NMemory.Linq;
@@ -39,7 +41,6 @@ namespace Effort.Internal.Common
     using NMemory.StoredProcedures;
     using NMemory.Tables;
     using NMemory.Transactions;
-    using Effort.Internal.DbManagement.Schema;
 
     internal static class DatabaseReflectionHelper
     {
@@ -265,8 +266,6 @@ namespace Effort.Internal.Common
                     primaryKeyInfo,
                     identity != null ? new IdentitySpecification<TEntity>(identity) : null);
 
-                
-
                 foreach (var constraint in constraints.Cast<NMemory.Constraints.IConstraint<TEntity>>())
                 {
                     table.AddConstraint(constraint);
@@ -281,7 +280,12 @@ namespace Effort.Internal.Common
 
                where TEntity : class
             {
-                ((IInitializableTable<TEntity>)table).Initialize(entities.Cast<TEntity>());
+                IExtendedTable<TEntity> exTable = table as IExtendedTable<TEntity>;
+
+                if (exTable != null)
+                {
+                    exTable.Initialize(entities.Cast<TEntity>());
+                }
             }
 
             public static IIndex CreateForeignKeyIndex<TEntity, TPrimaryKey, TForeignKey>(Table<TEntity, TPrimaryKey> table, IKeyInfo<TEntity, TForeignKey> foreignKeyinfo)

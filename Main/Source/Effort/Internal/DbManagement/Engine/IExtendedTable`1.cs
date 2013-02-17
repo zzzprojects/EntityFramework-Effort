@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DatabaseComponentFactory.cs" company="Effort Team">
+// <copyright file="IExtendedTable`1.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,18 +24,14 @@
 
 namespace Effort.Internal.DbManagement.Engine
 {
-    using NMemory.Modularity;
+    using System.Collections.Generic;
+    using NMemory.Tables;
 
-    internal class DatabaseComponentFactory : DefaultDatabaseComponentFactory
+    internal interface IExtendedTable<TEntity> : 
+        ITable<TEntity>, 
+        IExtendedTable
+        where TEntity : class
     {
-        public override IQueryCompiler CreateQueryCompiler()
-        {
-            return new ExtendedQueryCompiler();
-        }
-
-        public override ITableFactory CreateTableFactory()
-        {
-            return new ExtendedTableFactory();
-        }
+        void Initialize(IEnumerable<TEntity> entities);
     }
 }

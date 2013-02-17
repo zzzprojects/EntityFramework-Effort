@@ -24,11 +24,11 @@
 
 namespace Effort.Internal.DbManagement.Engine
 {
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
     using Effort.Internal.DbManagement.Engine.Modifiers;
     using NMemory.Execution;
     using NMemory.Execution.Optimization;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
 
     internal class ExtendedQueryCompiler : QueryCompiler
     {
@@ -39,7 +39,7 @@ namespace Effort.Internal.DbManagement.Engine
 
         protected override Expression PostprocessExpression(
             Expression expression, 
-            TransformationContext context)
+            ITransformationContext context)
         {
             expression = base.PostprocessExpression(expression, context);
 
@@ -56,7 +56,7 @@ namespace Effort.Internal.DbManagement.Engine
 
         protected override IEnumerable<IExpressionRewriter> GetRewriters(
             Expression expression, 
-            TransformationContext context)
+            ITransformationContext context)
         {
             foreach (IExpressionRewriter rewriter in base.GetRewriters(expression, context))
             {
@@ -68,7 +68,7 @@ namespace Effort.Internal.DbManagement.Engine
 
         protected virtual IEnumerable<IExpressionRewriter> GetPostprocessingRewriters(
              Expression expression, 
-             TransformationContext context)
+             ITransformationContext context)
         {
             yield return new SumTransformerVisitor();
 

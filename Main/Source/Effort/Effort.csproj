@@ -23,7 +23,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NMemory.1.0.0-beta5\lib\net40\NMemory.dll</HintPath>
+      <HintPath>..\packages\NMemory.1.0.0-beta7\lib\net40\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -141,7 +141,11 @@
     <Compile Include="Internal\DbCommandTreeTransformation\TraversalVisitor.cs" />
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
+    <Compile Include="Internal\DbManagement\Engine\ExtendedTableFactory.cs" />
+    <Compile Include="Internal\DbManagement\Engine\ExtendedTable`2.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedQueryCompiler.cs" />
+    <Compile Include="Internal\DbManagement\Engine\IExtendedTable.cs" />
+    <Compile Include="Internal\DbManagement\Engine\IExtendedTable`1.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbRelationInformation.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchemaFactory.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchema.cs" />

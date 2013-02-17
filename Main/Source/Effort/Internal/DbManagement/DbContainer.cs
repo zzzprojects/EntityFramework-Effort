@@ -87,6 +87,14 @@ namespace Effort.Internal.DbManagement
             return this.database.GetTable(name);
         }
 
+        public void SetIdentityFields(bool enabled)
+        {
+            foreach (IExtendedTable table in this.database.Tables.GetAllTables())
+            {
+                table.IsIdentityFieldEnabled = enabled;
+            }
+        }
+
         public bool IsInitialized(StoreItemCollection edmStoreSchema)
         {
             // TODO: Lock

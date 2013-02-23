@@ -24,17 +24,53 @@
 
 namespace Effort.Test.Data.Staff
 {
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Common;
     using System.Data.Entity;
 
     public class StaffDbContext : DbContext
     {
-        public StaffDbContext(DbConnection connection) : base(connection, true)
+        private bool disableIdentity;
+
+        public StaffDbContext(DbConnection connection) 
+            : base(connection, false)
         {
         }
 
         public IDbSet<Person> People { get; set; }
 
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; } 
+        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<Person>()
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+        }
     }
+
+    public class StaffDbContextNoIdentity : DbContext
+    {
+        private bool disableIdentity;
+
+        public StaffDbContextNoIdentity(DbConnection connection)
+            : base(connection, false)
+        {
+        }
+
+        public IDbSet<Person> People { get; set; }
+
+        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<Person>()
+                .Property(p => p.Id)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="IExtendedTable.cs" company="Effort Team">
+// <copyright file="IDbConfiguration.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+namespace Effort.Provider
 {
-    using NMemory.Tables;
-
-    internal interface IExtendedTable : ITable
+    public interface IDbConfiguration
     {
-        bool IsIdentityFieldEnabled { get; set; }
+        void SetIdentityFields(bool enabled);
 
-        void Clear();
+        void ClearMigrationHistory();
     }
 }

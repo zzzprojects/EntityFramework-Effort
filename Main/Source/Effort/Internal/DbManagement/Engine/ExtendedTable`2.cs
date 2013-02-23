@@ -93,6 +93,11 @@ namespace Effort.Internal.DbManagement.Engine
             this.CalculateIdentityFeed();
         }
 
+        public void Clear()
+        {
+            NMemory.Linq.QueryableEx.Delete(this);
+        }
+
         protected override void InsertCore(TEntity entity, Transaction transaction)
         {
             base.InsertCore(entity, transaction);
@@ -110,5 +115,8 @@ namespace Effort.Internal.DbManagement.Engine
                 base.GenerateIdentityFieldValue(entity);
             }
         }
+
+
+
     }
 }

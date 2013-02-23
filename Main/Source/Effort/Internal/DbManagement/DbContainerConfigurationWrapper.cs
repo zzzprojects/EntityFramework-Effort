@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="IExtendedTable.cs" company="Effort Team">
+// <copyright file="DbContainerConfigurationWrapper.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,31 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+namespace Effort.Internal.DbManagement
 {
-    using NMemory.Tables;
+    using Effort.Internal.DbManagement.Engine;
+    using Effort.Provider;
 
-    internal interface IExtendedTable : ITable
+    internal class DbContainerConfigurationWrapper : IDbConfiguration
     {
-        bool IsIdentityFieldEnabled { get; set; }
+        private DbContainer container;
 
-        void Clear();
+        public DbContainerConfigurationWrapper(DbContainer container)
+        {
+            this.container = container;
+        }
+
+        public void SetIdentityFields(bool enabled)
+        {
+            this.container.SetIdentityFields(enabled);
+        }
+
+        public void ClearMigrationHistory()
+        {
+            IExtendedTable table = 
+                this.container.GetTable("__MigrationHistory") as IExtendedTable;
+
+            table.Clear();
+        }
     }
 }

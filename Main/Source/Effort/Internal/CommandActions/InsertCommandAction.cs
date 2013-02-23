@@ -97,7 +97,8 @@ namespace Effort.Internal.CommandActions
             ITable table = DbCommandActionHelper.GetTable(this.commandTree, context.DbContainer);
 
             // Collect the SetClause DbExpressions into a dictionary
-            IDictionary<string, DbExpression> setClauses = DbCommandActionHelper.GetSetClauseExpressions(this.commandTree.SetClauses);
+            IDictionary<string, DbExpression> setClauses = 
+                DbCommandActionHelper.GetSetClauseExpressions(this.commandTree.SetClauses);
 
             // Collection for collection member bindings
             IList<MemberBinding> memberBindings = new List<MemberBinding>();

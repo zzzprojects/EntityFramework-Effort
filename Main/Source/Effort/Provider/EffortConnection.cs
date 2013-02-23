@@ -36,9 +36,12 @@ namespace Effort.Provider
     /// </summary>
     public class EffortConnection : DbConnection
     {
+        private string lastContainerId;
+        private DbContainerConfigurationWrapper containerConfiguration;
+        private DbContainer container;
+
         private Guid identifier;
         private ConnectionState state;
-        private DbContainer container;
         private bool isPrimaryTransient;
 
         /// <summary>
@@ -171,6 +174,26 @@ namespace Effort.Provider
         }
 
         /// <summary>
+        ///     Gets the configuration object that allows to alter the current configuration
+        ///     of the database.
+        /// </summary>
+        /// <returns>
+        ///     The configuration object.
+        /// </returns>
+        public IDbConfiguration DbConfiguration
+        {
+            get
+            {
+                if (this.state != ConnectionState.Open)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return this.containerConfiguration;
+            }
+        }
+
+        /// <summary>
         ///     Opens a database connection with the settings specified by the 
         ///     <see cref="P:System.Data.Common.DbConnection.ConnectionString" />.
         /// </summary>
@@ -179,10 +202,18 @@ namespace Effort.Provider
             EffortConnectionStringBuilder connectionString = 
                 new EffortConnectionStringBuilder(this.ConnectionString);
 
+            string instanceId = connectionString.InstanceId;
+
+            if (this.lastContainerId == instanceId)
+            {
+                // The id was not changed, so the appropriate container is associated
+                return;
+            }
+
             this.container = 
-                DbContainerStore.GetDbContainer(
-                    connectionString.InstanceId, 
-                    this.CreateDbContainer);
+                DbContainerStore.GetDbContainer(instanceId, this.CreateDbContainer);
+
+            this.containerConfiguration = new DbContainerConfigurationWrapper(this.container);
             
             this.state = ConnectionState.Open;
         }

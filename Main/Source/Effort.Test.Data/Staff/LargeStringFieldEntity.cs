@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="StaffDbContext.cs" company="Effort Team">
+// <copyright file="LargeStringFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,28 +24,13 @@
 
 namespace Effort.Test.Data.Staff
 {
-    using System.Data.Common;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
+    using System.ComponentModel.DataAnnotations;
 
-    public class StaffDbContext : DbContext
+    public class LargeStringFieldEntity
     {
-        public StaffDbContext(DbConnection connection)
-            : this(connection, CompiledModels.DefaultModel)
-        { 
-        }
+        public int Id { get; set; }
 
-        public StaffDbContext(DbConnection connection, DbCompiledModel model) 
-            : base(connection, model, false)
-        {
-        }
-
-        public IDbSet<Person> People { get; set; }
-
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
-
-        public IDbSet<DateFieldEntity> DateFieldEntities { get; set; }
-
-        public IDbSet<LargeStringFieldEntity> LargeStringFieldEntities { get; set; }
+        [MaxLength(int.MaxValue)]
+        public string StringField { get; set; }
     }
 }

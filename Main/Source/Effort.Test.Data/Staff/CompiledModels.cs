@@ -40,8 +40,9 @@ namespace Effort.Test.Data.Staff
         private static Lazy<DbCompiledModel> defaultModel;
         private static Lazy<DbCompiledModel> dateFieldModel;
         private static Lazy<DbCompiledModel> guidKeyModel;
+        private static Lazy<DbCompiledModel> largeStringFieldModel;
         private static Lazy<DbCompiledModel> disabledIdentityModel;
-
+        
         static CompiledModels()
         {
             FindEntityTypes();
@@ -50,7 +51,7 @@ namespace Effort.Test.Data.Staff
 
             defaultModel =
                 new Lazy<DbCompiledModel>(
-                    () => CreateSimpleModel(null),
+                    () => CreateSimpleModel(typeof(Person)),
                     mode);
 
             dateFieldModel =
@@ -61,6 +62,11 @@ namespace Effort.Test.Data.Staff
             guidKeyModel =
                 new Lazy<DbCompiledModel>(
                     () => CreateSimpleModel(typeof(GuidKeyEntity)),
+                    mode);
+
+            largeStringFieldModel =
+                new Lazy<DbCompiledModel>(
+                    () => CreateSimpleModel(typeof(LargeStringFieldEntity)),
                     mode);
 
             disabledIdentityModel =
@@ -90,6 +96,14 @@ namespace Effort.Test.Data.Staff
             get
             {
                 return guidKeyModel.Value;
+            }
+        }
+
+        public static DbCompiledModel LargeStringFieldModel
+        {
+            get
+            {
+                return largeStringFieldModel.Value;
             }
         }
 

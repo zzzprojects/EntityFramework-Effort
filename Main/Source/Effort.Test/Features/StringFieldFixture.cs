@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="StaffDbContext.cs" company="Effort Team">
+// <copyright file="StringFieldFixture.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,30 +22,24 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Features
 {
     using System.Data.Common;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
+    using Effort.Test.Data.Staff;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    public class StaffDbContext : DbContext
+    [TestClass]
+    public class StringFieldFixture
     {
-        public StaffDbContext(DbConnection connection)
-            : this(connection, CompiledModels.DefaultModel)
-        { 
-        }
-
-        public StaffDbContext(DbConnection connection, DbCompiledModel model) 
-            : base(connection, model, false)
+        [TestMethod]
+        public void StringFieldFixture_LargeStringFieldCreation()
         {
+            DbConnection connection =
+                Effort.DbConnectionFactory.CreateTransient();
+            StaffDbContext context =
+                new StaffDbContext(connection, CompiledModels.LargeStringFieldModel);
+
+            context.Database.Initialize(true);
         }
-
-        public IDbSet<Person> People { get; set; }
-
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
-
-        public IDbSet<DateFieldEntity> DateFieldEntities { get; set; }
-
-        public IDbSet<LargeStringFieldEntity> LargeStringFieldEntities { get; set; }
     }
 }

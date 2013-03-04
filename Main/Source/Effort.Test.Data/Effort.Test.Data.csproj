@@ -59,6 +59,7 @@
     <Compile Include="Staff\CompiledModels.cs" />
     <Compile Include="Staff\DateFieldEntity.cs" />
     <Compile Include="Staff\GuidKeyEntity.cs" />
+    <Compile Include="Staff\LargeStringFieldEntity.cs" />
     <Compile Include="Staff\LocalStaffDataLoader.cs" />
     <Compile Include="Staff\Person.cs" />
     <Compile Include="Staff\StaffDbContext.cs" />

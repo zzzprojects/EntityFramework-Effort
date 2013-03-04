@@ -62,8 +62,8 @@
     </Type>
     <Type Name="string" PrimitiveTypeKind="String">
       <FacetDescriptions>
-        <MaxLength DefaultValue="1073741823" Constant="false" 
-                   Minimum="0" Maximum="1073741823" />
+        <MaxLength DefaultValue="2147483647" Constant="false" 
+                   Minimum="0" Maximum="2147483647" />
         <Unicode DefaultValue="true" Constant="false" />
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>

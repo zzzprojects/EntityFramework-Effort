@@ -75,6 +75,7 @@
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Features\DateFieldFixture.cs" />
     <Compile Include="Features\GuidKeyFixture.cs" />
     <Compile Include="Internal\ExceptionHelper.cs" />
     <Compile Include="Internal\Fakes\FakeCachingTableDataLoaderStoreProxy.cs" />

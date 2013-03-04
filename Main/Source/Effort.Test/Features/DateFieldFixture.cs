@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="GuidKeyFixture.cs" company="Effort Team">
+// <copyright file="DateFieldFixture.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,13 +24,12 @@
 
 namespace Effort.Test.Features
 {
-    using System;
     using System.Data.Common;
     using Effort.Test.Data.Staff;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class GuidKeyFixture
+    public class DateFieldFixture
     {
         private StaffDbContext context;
 
@@ -38,7 +37,7 @@ namespace Effort.Test.Features
         public void Initialize()
         {
             DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
-            this.context = new StaffDbContext(connection, CompiledModels.GuidKeyModel);
+            this.context = new StaffDbContext(connection, CompiledModels.DateFieldModel);
         }
 
         [TestCleanup]
@@ -48,29 +47,12 @@ namespace Effort.Test.Features
         }
 
         [TestMethod]
-        public void GuidKey_InsertGeneratesNewGuid()
+        public void DateFieldFixture_CreateDateField()
         {
-            GuidKeyEntity entity = new GuidKeyEntity();
+            // Column(TypeName=date) attribute is currently disable
+            // Does Effort really need to support it?
 
-            this.context.GuidKeyEntities.Add(entity);
-            this.context.SaveChanges();
-
-            Assert.AreNotEqual(Guid.Empty, entity.Id);
-        }
-
-        [TestMethod]
-        public void GuidKey_UpdateKeepsGuid()
-        {
-            GuidKeyEntity entity = new GuidKeyEntity();
-
-            this.context.GuidKeyEntities.Add(entity);
-            this.context.SaveChanges();
-
-            Guid guid = entity.Id;
-            entity.Data = "Changed data";
-            this.context.SaveChanges();
-
-            Assert.AreEqual(guid, entity.Id);
+            this.context.Database.Initialize(true);
         }
     }
 }

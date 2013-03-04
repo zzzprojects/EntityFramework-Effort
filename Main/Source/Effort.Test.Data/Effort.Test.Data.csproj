@@ -14,7 +14,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\BuildConfigurations.targets"/>
+  <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
   <ItemGroup>
     <Reference Include="EntityFramework">
       <HintPath>$(SolutionDir)\packages\EntityFramework.5.0.0\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
@@ -56,6 +56,8 @@
     <Compile Include="Northwind\Supplier.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
+    <Compile Include="Staff\CompiledModels.cs" />
+    <Compile Include="Staff\DateFieldEntity.cs" />
     <Compile Include="Staff\GuidKeyEntity.cs" />
     <Compile Include="Staff\LocalStaffDataLoader.cs" />
     <Compile Include="Staff\Person.cs" />

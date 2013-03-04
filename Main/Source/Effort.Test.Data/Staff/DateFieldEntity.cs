@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="GuidKeyFixture.cs" company="Effort Team">
+// <copyright file="DateFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,55 +22,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Features
+namespace Effort.Test.Data.Staff
 {
     using System;
-    using System.Data.Common;
-    using Effort.Test.Data.Staff;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    [TestClass]
-    public class GuidKeyFixture
+    public class DateFieldEntity
     {
-        private StaffDbContext context;
+        public int Id { get; set; }
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
-            this.context = new StaffDbContext(connection, CompiledModels.GuidKeyModel);
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            this.context.Dispose();
-        }
-
-        [TestMethod]
-        public void GuidKey_InsertGeneratesNewGuid()
-        {
-            GuidKeyEntity entity = new GuidKeyEntity();
-
-            this.context.GuidKeyEntities.Add(entity);
-            this.context.SaveChanges();
-
-            Assert.AreNotEqual(Guid.Empty, entity.Id);
-        }
-
-        [TestMethod]
-        public void GuidKey_UpdateKeepsGuid()
-        {
-            GuidKeyEntity entity = new GuidKeyEntity();
-
-            this.context.GuidKeyEntities.Add(entity);
-            this.context.SaveChanges();
-
-            Guid guid = entity.Id;
-            entity.Data = "Changed data";
-            this.context.SaveChanges();
-
-            Assert.AreEqual(guid, entity.Id);
-        }
+        //[Column(TypeName="date")]
+        public DateTime Date { get; set; } 
     }
 }

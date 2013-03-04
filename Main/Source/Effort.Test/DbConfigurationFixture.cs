@@ -44,8 +44,8 @@ namespace Effort.Test
             {
                 // Create a separate context for initializing the data (schema without 
                 // identity field)
-                StaffDbContextNoIdentity dataInitContext = 
-                    new StaffDbContextNoIdentity(connection);
+                StaffDbContext dataInitContext = 
+                    new StaffDbContext(connection, CompiledModels.DisabledIdentityModel);
 
                 // DbConfiguration require open connection
                 connection.Open();

@@ -39,6 +39,8 @@ namespace Effort.DataLoaders
     {
         private FileInfo file;
 
+        private IValueConverter valueConverter;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="CsvTableDataLoader" /> class.
         /// </summary>
@@ -46,6 +48,9 @@ namespace Effort.DataLoaders
         /// <param name="table"> The metadata of the requested table. </param>
         public CsvTableDataLoader(string path, TableDescription table) : base(table)
         {
+            // TODO: Constructor injection
+            this.valueConverter = new CsvValueConverter();
+
             this.file = new FileInfo(path);
         }
 
@@ -101,111 +106,9 @@ namespace Effort.DataLoaders
         /// </exception>
         protected override object ConvertValue(object value, Type type)
         {
-            string val = value as string;
-
-            if (type == typeof(string))
-            {
-                // String handles null values in a separate way
-                // null is null, empty is empty
-                if (val == null)
-                {
-                    value = null;
-                }
-                else
-                {
-                    value = ResolveEscapeCharacters(val);
-                } 
-            }
-            else if (string.IsNullOrEmpty(val))
-            {
-                // Everything that is empty is null
-                value = null;
-            }
-            else if (type == typeof(byte[]))
-            {
-                value = Convert.FromBase64String(val);
-            }
-            else
-            {
-                // Make the type not nullable
-                if (type.IsValueType &&
-                    type.IsGenericType && 
-                    type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                {
-                    type = type.GetGenericArguments()[0];
-                }
-
-                if (type == typeof(TimeSpan))
-                {
-                    value = TimeSpan.Parse(val, CultureInfo.InvariantCulture);
-                }
-                else if (type == typeof(DateTimeOffset))
-                {
-                    value = DateTimeOffset.Parse(val, CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    value = Convert.ChangeType(val, type, CultureInfo.InvariantCulture);
-                }
-            }
+            value = this.valueConverter.ConvertValue(value, type);
             
             return base.ConvertValue(value, type);
-        }
-
-        private static string ResolveEscapeCharacters(string value)
-        {
-            char[] chars = value.ToCharArray();
-
-            StringWriter writer = new StringWriter();
-
-            bool escaped = false;
-
-            for (int i = 0; i < chars.Length; i++)
-            {
-                char c = chars[i];
-
-                if (escaped)
-                {
-                    escaped = false;
-                    switch (c)
-                    {
-                        case '\\':
-                            writer.Write('\\');
-                            break;
-                        case 'n':
-                            writer.Write('\n');
-                            break;
-                        case 'r':
-                            writer.Write('\r');
-                            break;
-                        default:
-                            throw new FormatException(
-                                string.Format(
-                                    "\"{0}\" is an invalid string, " + 
-                                    "it contains an invalid escaped character", 
-                                    value));
-                    }
-                }
-                else if (c == '\\')
-                {
-                    escaped = true;
-                }
-                else
-                {
-                    writer.Write(c);
-                }
-            }
-
-            if (escaped)
-            {
-                throw new FormatException(
-                    string.Format(
-                        "\"{0}\" is an invalid string, " +
-                        "it contains an invalid escaped character", 
-                        value));
-            }
-
-            return writer.ToString();
         }
     }
 }

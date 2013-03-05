@@ -40,11 +40,13 @@
     <Compile Include="DataLoaders\ColumnDescription.cs" />
     <Compile Include="DataLoaders\CachingTableDataLoaderStoreProxy.cs" />
     <Compile Include="DataLoaders\CsvDataLoader.cs" />
+    <Compile Include="DataLoaders\CsvValueConverter.cs" />
     <Compile Include="DataLoaders\DataLoaderConfigurationLatchProxy.cs" />
     <Compile Include="DataLoaders\EmptyDataLoader.cs" />
     <Compile Include="DataLoaders\EntityDataLoader.cs" />
     <Compile Include="DataLoaders\IDataLoaderConfigurationLatch.cs" />
     <Compile Include="DataLoaders\ICachingTableDataLoaderStore.cs" />
+    <Compile Include="DataLoaders\IValueConverter.cs" />
     <Compile Include="DataLoaders\ObjectLoader.cs" />
     <Compile Include="DataLoaders\TableDataLoaderBase.cs" />
     <Compile Include="DataLoaders\IDataLoader.cs" />

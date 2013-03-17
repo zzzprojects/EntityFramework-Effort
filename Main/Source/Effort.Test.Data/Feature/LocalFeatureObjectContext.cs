@@ -24,7 +24,11 @@
 
 namespace Effort.Test.Data.Feature
 {
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+#else
     using System.Data.EntityClient;
+#endif
     using Effort.DataLoaders;
 
     public class LocalFeatureObjectContext : FeatureObjectContext

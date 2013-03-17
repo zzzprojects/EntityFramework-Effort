@@ -26,8 +26,13 @@ namespace Effort.Internal.CommandActions
 {
     using System;
     using System.Collections.Generic;
+#if !EFOLD
+    using System.Data.Entity.Core.Common.CommandTrees;
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Common.CommandTrees;
     using System.Data.Metadata.Edm;
+#endif
     using System.Linq;
     using System.Linq.Expressions;
     using Effort.Internal.Common;

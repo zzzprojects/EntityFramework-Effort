@@ -24,7 +24,11 @@
 
 namespace Effort.Provider
 {
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+#else
     using System.Data.Common;
+#endif
 
     /// <summary>
     ///     Defines a cacheable command plan.

@@ -25,7 +25,12 @@
 namespace Effort.Test.Features
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Objects;
+    using System.Data.Entity;
+#else
     using System.Data.Objects;
+#endif
     using System.Linq;
     using Effort.Test.Data.Feature;
     using Effort.Test.Data.Northwind;
@@ -544,39 +549,100 @@ namespace Effort.Test.Features
             });
             context.SaveChanges();
 
-
             date = date.AddMilliseconds(-1);
-            var query = context.Orders.Where(x => x.OrderDate.HasValue && DateTime.Compare(x.OrderDate.Value, EntityFunctions.AddMilliseconds(date, 1).Value) == 0);
+#if !EFOLD
+            var query =
+                context.Orders.Where(x =>
+                    x.OrderDate == DbFunctions.AddMilliseconds(date, 1));
+#else
+            var query = 
+                context.Orders.Where(x => 
+                    x.OrderDate == EntityFunctions.AddMilliseconds(date, 1));
+#endif
             var orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
             date = date.AddMilliseconds(1).AddSeconds(-1);
-            query = context.Orders.Where(x => x.OrderDate.HasValue && DateTime.Compare(x.OrderDate.Value, EntityFunctions.AddSeconds(date, 1).Value) == 0);
+#if !EFOLD
+            query = 
+                context.Orders.Where(x => 
+                    x.OrderDate == DbFunctions.AddSeconds(date, 1));
+#else
+            query = 
+                context.Orders.Where(x => 
+                    x.OrderDate == EntityFunctions.AddSeconds(date, 1));
+#endif
             orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
 
             date = date.AddSeconds(1).AddMinutes(-1);
-            query = context.Orders.Where(x => x.OrderDate.HasValue && DateTime.Compare(x.OrderDate.Value, EntityFunctions.AddMinutes(date, 1).Value) == 0);
+#if !EFOLD
+            query =
+                context.Orders.Where(x =>
+                    x.OrderDate == DbFunctions.AddMinutes(date, 1));
+#else
+            query = 
+                context.Orders.Where(x => 
+                    x.OrderDate == EntityFunctions.AddMinutes(date, 1));
+#endif
             orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
-            date = date.AddMinutes(1).AddDays(-1);            
-            query = context.Orders.Where(x => x.OrderDate.HasValue && DateTime.Compare(x.OrderDate.Value, EntityFunctions.AddDays(date, 1).Value) == 0);
+
+            date = date.AddMinutes(1).AddDays(-1);
+#if !EFOLD
+            query =
+                context.Orders.Where(x =>
+                    x.OrderDate == DbFunctions.AddDays(date, 1));
+#else
+            query =
+                context.Orders.Where(x =>
+                    x.OrderDate == EntityFunctions.AddDays(date, 1));
+#endif
             orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
-            date = date.AddDays(1).AddMonths(-1);            
-            query = context.Orders.Where(x => x.OrderDate.HasValue && DateTime.Compare(x.OrderDate.Value, EntityFunctions.AddMonths(date, 1).Value) == 0);
+
+            date = date.AddDays(1).AddMonths(-1);
+#if !EFOLD
+            query =
+                context.Orders.Where(x =>
+                    x.OrderDate == DbFunctions.AddMonths(date, 1));
+#else
+            query =
+                context.Orders.Where(x =>
+                    x.OrderDate == EntityFunctions.AddMonths(date, 1));
+#endif
             orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
+
 
             date = date.AddMonths(1).AddYears(-1);
-            query = context.Orders.Where(x => x.OrderDate.HasValue && DateTime.Compare(x.OrderDate.Value, EntityFunctions.AddYears(date, 1).Value) == 0);
+#if !EFOLD
+            query =
+                context.Orders.Where(x =>
+                    x.OrderDate == DbFunctions.AddMonths(date, 1));
+#else
+            query =
+            context.Orders.Where(x =>
+                x.OrderDate == EntityFunctions.AddYears(date, 1));
+#endif
+
             orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 
+
             date = date.AddYears(1).Date;
-            query = context.Orders.Where(x => x.OrderDate.HasValue && DateTime.Compare(EntityFunctions.TruncateTime(x.OrderDate.Value).Value, date) == 0);
+#if !EFOLD
+            query =
+               context.Orders.Where(x =>
+                   DbFunctions.TruncateTime(x.OrderDate) == date);
+#else
+            query =
+               context.Orders.Where(x =>
+                   EntityFunctions.TruncateTime(x.OrderDate) == date);
+#endif
             orders = query.ToList();
             orders.FirstOrDefault(x => x.ShipName == "SuperShip").ShouldNotBeNull();
 

@@ -25,7 +25,11 @@
 namespace Effort.Internal.TypeConversion
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
 
     internal interface ITypeConverter
     {

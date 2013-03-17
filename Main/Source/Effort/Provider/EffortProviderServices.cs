@@ -26,8 +26,14 @@ namespace Effort.Provider
 {
     using System;
     using System.Data.Common;
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Core.Common.CommandTrees;
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Common.CommandTrees;
     using System.Data.Metadata.Edm;
+#endif
     using Effort.Internal.Caching;
     using Effort.Internal.DbManagement;
     using Effort.Internal.DbManagement.Schema;

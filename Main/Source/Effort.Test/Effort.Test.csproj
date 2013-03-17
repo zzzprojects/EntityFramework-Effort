@@ -25,13 +25,20 @@
     </SccProvider>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
+  <Choose>
+    <When Condition="$(ExternalEntityFramework) == 'false'">
+      <ItemGroup>
+        <Reference Include="System.Data.Entity" />
+      </ItemGroup>
+    </When>
+  </Choose>
   <ItemGroup>
     <Reference Include="EFProviderWrapperToolkit, Version=1.0.0.0, Culture=neutral, PublicKeyToken=def642f226e0e59b, processorArchitecture=MSIL">
       <HintPath>..\packages\CommunityEFProviderWrappers.EFProviderWrapperToolkit.1.0.0\lib\net40-Client\EFProviderWrapperToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="EntityFramework">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SolutionDir)\packages\EntityFramework.5.0.0\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -49,7 +56,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Transactions" />

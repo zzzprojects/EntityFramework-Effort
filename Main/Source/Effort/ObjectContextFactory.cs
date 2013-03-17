@@ -27,8 +27,13 @@ namespace Effort
     using System;
     using System.ComponentModel;
     using System.Configuration;
-    using System.Data.EntityClient;
+#if !EFOLD
+    using System.Data.Entity.Core.Objects;
+    using System.Data.Entity.Core.EntityClient;
+#else
     using System.Data.Objects;
+    using System.Data.EntityClient;
+#endif
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Threading;

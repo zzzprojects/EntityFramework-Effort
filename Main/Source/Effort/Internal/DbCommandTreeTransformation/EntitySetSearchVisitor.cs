@@ -25,8 +25,13 @@
 namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System.Collections.Generic;
+#if !EFOLD
+    using System.Data.Entity.Core.Common.CommandTrees;
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Common.CommandTrees;
     using System.Data.Metadata.Edm;
+#endif
 
     internal class EntitySetSearchVisitor : TraversalVisitor
     {

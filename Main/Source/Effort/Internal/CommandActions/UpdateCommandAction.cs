@@ -27,7 +27,11 @@ namespace Effort.Internal.CommandActions
     using System;
     using System.Collections.Generic;
     using System.Data.Common;
+#if !EFOLD
+    using System.Data.Entity.Core.Common.CommandTrees;
+#else
     using System.Data.Common.CommandTrees;
+#endif
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;

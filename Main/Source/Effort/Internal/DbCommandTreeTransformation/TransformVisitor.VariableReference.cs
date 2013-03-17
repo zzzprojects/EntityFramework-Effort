@@ -24,7 +24,12 @@
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
+#if !EFOLD
+    using System.Data.Entity.Core.Common.CommandTrees;
+#else
     using System.Data.Common.CommandTrees;
+#endif
+
     using System.Linq.Expressions;
 
     internal partial class TransformVisitor

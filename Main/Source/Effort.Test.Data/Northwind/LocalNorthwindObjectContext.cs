@@ -24,7 +24,11 @@
 
 namespace Effort.Test.Data.Northwind
 {
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+#else
     using System.Data.EntityClient;
+#endif
 
     public class LocalNorthwindObjectContext : NorthwindObjectContext
     {

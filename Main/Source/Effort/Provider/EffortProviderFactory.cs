@@ -27,6 +27,9 @@ namespace Effort.Provider
     using System;
     using System.Data;
     using System.Data.Common;
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+#endif
 
     /// <summary>
     ///     Represents a set of methods for creating instances of the 

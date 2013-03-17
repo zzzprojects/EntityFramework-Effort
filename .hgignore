@@ -3,8 +3,8 @@ bin/**
 obj/**
 *.suo
 *.user
-TestResults/**
-Effort - Entity Framework Unit Testing Tool.url
 *.orig
 StyleCop.Cache
 Main/Build/Packages/**
+Main/Source/packages/**
+Main/Source/TestResults/**

@@ -25,8 +25,13 @@
 namespace Effort.Test
 {
     using System.Configuration;
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.EntityClient;
     using System.Data.Metadata.Edm;
+#endif
     using System.IO;
     using System.Reflection;
     using System.Xml;

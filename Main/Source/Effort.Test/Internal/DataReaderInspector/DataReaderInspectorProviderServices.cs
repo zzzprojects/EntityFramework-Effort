@@ -24,11 +24,18 @@
 
 namespace Effort.Test.Internal.DataReaderInspector
 {
+    using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Core.Common.CommandTrees;
+#else
     using System.Data.Common;
     using System.Data.Common.CommandTrees;
+#endif
     using Effort.Provider;
     using EFProviderWrapperToolkit;
 
+#if EFOLD
     internal class DataReaderInspectorProviderServices : DbProviderServicesBase
     {
         protected override string DefaultWrappedProviderName
@@ -49,4 +56,5 @@ namespace Effort.Test.Internal.DataReaderInspector
                 (tree, definition) => new DataReaderInspectorCommand(tree, definition));
         }
     }
+#endif
 }

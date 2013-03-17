@@ -24,7 +24,11 @@
 
 namespace Effort.Internal.StorageSchema
 {
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+#else
     using System.Data.Common;
+#endif
     using Effort.Internal.Common;
 
     internal class ProviderInformation : IProviderInformation

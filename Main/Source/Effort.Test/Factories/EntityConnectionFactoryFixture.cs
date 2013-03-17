@@ -24,8 +24,13 @@
 
 namespace Effort.Test.Factories
 {
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+    using System.Data.Entity.Core.Objects;
+#else
     using System.Data.EntityClient;
     using System.Data.Objects;
+#endif
     using System.Linq;
     using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

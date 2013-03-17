@@ -25,7 +25,11 @@
 namespace Effort.Internal.Caching
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
 
     /// <summary>
     ///     Represents a cache that stores <see cref="MetadataWorkspace"/> object.

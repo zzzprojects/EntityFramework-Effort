@@ -42,6 +42,9 @@ namespace Effort.Test.Internal.DataReaderInspector
                 {
                     if (!registered)
                     {
+#if !EFOLD
+                        throw new System.NotImplementedException();
+#else
                         DbProviderFactoryBase.RegisterProvider(
                             "Data Reader Inspector Provider", 
                             ProviderInvariantName, 
@@ -50,6 +53,7 @@ namespace Effort.Test.Internal.DataReaderInspector
 
                         Thread.MemoryBarrier();
                         registered = true;
+#endif
                     }
                 }
             }

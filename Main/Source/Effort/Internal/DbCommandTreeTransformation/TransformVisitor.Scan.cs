@@ -26,7 +26,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
     using Effort.Internal.Common;
+#if !EFOLD
+    using System.Data.Entity.Core.Common.CommandTrees;
+#else
     using System.Data.Common.CommandTrees;
+#endif
     using System.Linq.Expressions;
     using NMemory.Tables;
 

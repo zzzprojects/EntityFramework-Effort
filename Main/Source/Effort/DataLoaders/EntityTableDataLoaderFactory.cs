@@ -25,7 +25,11 @@
 namespace Effort.DataLoaders
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+#else
     using System.Data.EntityClient;
+#endif
 
     /// <summary>
     ///     Represents a table data loader factory that creates 

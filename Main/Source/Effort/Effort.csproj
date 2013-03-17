@@ -20,15 +20,29 @@
     <StartupObject />
   </PropertyGroup>
   <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
+  <Choose>
+	<When Condition="$(ExternalEntityFramework) == 'false'">
+      <ItemGroup>
+	    <Reference Include="System.Data.Entity" />
+	  </ItemGroup>
+	</When>
+	<When Condition="$(ExternalEntityFramework) == 'true'">
+	  <ItemGroup>
+	    <Reference Include="EntityFramework">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
+        </Reference>
+	  </ItemGroup>
+	</When>
+  </Choose>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NMemory.1.0.0-beta7\lib\net40\NMemory.dll</HintPath>
+      <HintPath>..\packages\NMemory.1.0.0-beta7\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -97,6 +111,7 @@
     <Compile Include="Internal\Csv\ValueTrimmingOptions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\DbFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\MethodInfoGroup.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.In.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Null.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Apply.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.And.cs" />

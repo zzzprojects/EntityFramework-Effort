@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TransformVisitor.Case.cs" company="Effort Team">
+// <copyright file="TransformVisitor.In.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,31 +24,21 @@
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
-    using System.Collections.Generic;
+    using System;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
 #else
     using System.Data.Common.CommandTrees;
 #endif
-    using System.Linq;
     using System.Linq.Expressions;
 
     internal partial class TransformVisitor
     {
-        public override Expression Visit(DbCaseExpression expression)
+#if !EFOLD
+        public override Expression Visit(DbInExpression expression)
         {
-            List<Expression> cases = new List<Expression>() { this.Visit(expression.Else) };
-
-            for (int i = expression.When.Count - 1; i >= 0; i--)
-            {
-                cases.Add(
-                    Expression.Condition(
-                        this.Visit(expression.When[i]),
-                        this.Visit(expression.Then[i]),
-                        cases.Last()));
-            }
-
-            return cases.Last();
+            throw new NotImplementedException();
         }
+#endif
     }
 }

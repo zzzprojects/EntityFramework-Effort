@@ -24,7 +24,11 @@
 
 namespace Effort.Internal.StorageSchema
 {
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+#else
     using System.Data.Common;
+#endif
 
     internal interface IProviderInformation
     {

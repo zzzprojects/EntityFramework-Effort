@@ -25,10 +25,16 @@
 namespace Effort.Internal.Common
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Generic; 
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Core.Mapping;
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Common;
     using System.Data.Mapping;
     using System.Data.Metadata.Edm;
+#endif
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -89,10 +95,19 @@ namespace Effort.Internal.Common
             StorageMappingItemCollection smic = new StorageMappingItemCollection(eic, sic, msl.Select(c => c.CreateReader()));
 
             // and create metadata workspace based on them.
+#if !EFOLD
+            MetadataWorkspace workspace =
+                new MetadataWorkspace(
+                    () => eic,
+                    () => sic,
+                    () => smic);
+#else
+            // Obsolete API
             MetadataWorkspace workspace = new MetadataWorkspace();
             workspace.RegisterItemCollection(eic);
             workspace.RegisterItemCollection(sic);
             workspace.RegisterItemCollection(smic);
+#endif
             return workspace;
         }
 

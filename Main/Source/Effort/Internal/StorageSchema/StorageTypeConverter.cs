@@ -25,7 +25,11 @@
 namespace Effort.Internal.StorageSchema
 {
     using System.Collections.Generic;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using System.Linq;
 
     internal class StorageTypeConverter

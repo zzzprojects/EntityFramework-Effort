@@ -15,14 +15,21 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
+  <Choose>
+	<When Condition="$(ExternalEntityFramework) == 'false'">
+      <ItemGroup>
+	    <Reference Include="System.Data.Entity" />
+	  </ItemGroup>
+	</When>
+  </Choose>
   <ItemGroup>
     <Reference Include="EntityFramework">
-      <HintPath>$(SolutionDir)\packages\EntityFramework.5.0.0\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
+	  <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SolutionDir)\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />

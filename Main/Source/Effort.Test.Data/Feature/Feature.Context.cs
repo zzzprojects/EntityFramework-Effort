@@ -8,8 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
-using System.Data.Objects;
-using System.Data.EntityClient;
+#if !EFOLD
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Entity.Core.Objects;
+#else
+    using System.Data.EntityClient;
+    using System.Data.Objects;
+#endif
 
 namespace Effort.Test.Data.Feature
 {

@@ -24,7 +24,11 @@
 
 namespace Effort.DataLoaders
 {
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+#else
     using System.Data.EntityClient;
+#endif
 
     /// <summary>
     ///     Represents a data loader that loads data from a database that has an Entity 

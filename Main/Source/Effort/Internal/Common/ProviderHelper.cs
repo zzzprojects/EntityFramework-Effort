@@ -27,6 +27,10 @@ namespace Effort.Internal.Common
     using System;
     using System.Data;
     using System.Data.Common;
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Core;
+#endif
 
     internal class ProviderHelper
     {

@@ -24,7 +24,11 @@
 
 namespace Effort.Internal.Common
 {
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using System.Linq;
 
     /// <summary>

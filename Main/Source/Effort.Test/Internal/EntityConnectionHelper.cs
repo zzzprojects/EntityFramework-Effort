@@ -27,9 +27,15 @@ namespace Effort.Test.Internal
     using System.Collections.Generic;
     using System.Configuration;
     using System.Data.Common;
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+    using System.Data.Entity.Core.Metadata.Edm;
+    using System.Data.Entity.Core.Objects;
+#else
     using System.Data.EntityClient;
     using System.Data.Metadata.Edm;
     using System.Data.Objects;
+#endif
     using System.Xml.Linq;
     using Effort.DataLoaders;
     using Effort.Internal.Common;

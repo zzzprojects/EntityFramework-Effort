@@ -26,7 +26,11 @@ namespace Effort.Internal.StorageSchema
 {
     using System;
     using System.Collections.Generic;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using System.Linq;
     using System.Xml.Linq;
     using Effort.Internal.Common.XmlProcessing;

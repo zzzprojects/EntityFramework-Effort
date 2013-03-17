@@ -25,7 +25,11 @@
 namespace Effort.Internal.CommandActions
 {
     using System.Data.Common;
+#if !EFOLD
+    using System.Data.Entity.Core.Common.CommandTrees;
+#else
     using System.Data.Common.CommandTrees;
+#endif
 
     internal interface ICommandAction
     {

@@ -24,7 +24,11 @@
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
+#if !EFOLD
+    using System.Data.Entity.Core.Common.CommandTrees;
+#else
     using System.Data.Common.CommandTrees;
+#endif
 
     internal class TraversalVisitor : DbExpressionVisitor<object>
     {
@@ -318,6 +322,13 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             return null;
         }
+
+#if !EFOLD
+        public override object Visit(DbInExpression expression)
+        {
+            throw new System.NotImplementedException();
+        }
+#endif
 
         public override object Visit(DbExpression expression)
         {

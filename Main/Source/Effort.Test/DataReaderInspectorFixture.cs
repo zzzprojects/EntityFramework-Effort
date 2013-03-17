@@ -24,7 +24,11 @@
 
 namespace Effort.Test
 {
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+#else
     using System.Data.EntityClient;
+#endif
     using System.Linq;
     using Effort.DataLoaders;
     using Effort.Test.Data.Northwind;

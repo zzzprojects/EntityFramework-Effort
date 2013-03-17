@@ -25,7 +25,11 @@
 namespace Effort.Test.Internal.Queries
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Objects;
+#else
     using System.Data.Objects;
+#endif
     using Effort.Test.Internal.ResultSets;
 
     internal interface IQueryTester<TObjectContext> 

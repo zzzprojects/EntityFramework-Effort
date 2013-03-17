@@ -24,8 +24,13 @@
 
 using System;
 using System.Collections;
-using System.Data.EntityClient;
-using System.Data.Objects;
+#if !EFOLD
+    using System.Data.Entity.Core.EntityClient;
+    using System.Data.Entity.Core.Objects;
+#else
+    using System.Data.EntityClient;
+    using System.Data.Objects;
+#endif
 using Effort.DataLoaders;
 using Effort.Test.Internal.ResultSets;
 

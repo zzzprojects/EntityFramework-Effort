@@ -25,8 +25,13 @@
 namespace Effort.Provider
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Common;
     using System.Data.Metadata.Edm;
+#endif
     using System.IO;
     using System.Reflection;
     using System.Xml;

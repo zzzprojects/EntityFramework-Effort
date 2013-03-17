@@ -27,6 +27,7 @@ namespace Effort.Test.Internal.DataReaderInspector
     using System.Data.Common;
     using EFProviderWrapperToolkit;
 
+#if EFOLD
     public class DataReaderInspectorProviderFactory : DbProviderFactoryBase
     {
         public static readonly DataReaderInspectorProviderFactory Instance = new DataReaderInspectorProviderFactory();
@@ -40,4 +41,5 @@ namespace Effort.Test.Internal.DataReaderInspector
             return new DataReaderInspectorConnection(null);
         }
     }
+#endif
 }

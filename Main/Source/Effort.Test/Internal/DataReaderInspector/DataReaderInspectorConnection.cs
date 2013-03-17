@@ -58,7 +58,11 @@ namespace Effort.Test.Internal.DataReaderInspector
         {
             get
             {
+#if !EFOLD
+                throw new System.NotImplementedException();
+#else
                 return DataReaderInspectorProviderFactory.Instance;
+#endif
             }
         }
     }

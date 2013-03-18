@@ -1,32 +1,71 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0" DefaultTargets="default">
   <PropertyGroup>
     <BaseDir>$(MSBuildProjectDirectory)\..</BaseDir>
-    <Configuration Condition="'$(Configuration)'==''" >Release</Configuration>
     <PackageDir>$(MSBuildProjectDirectory)\Packages</PackageDir>
 	<SolutionDir>$(BaseDir)\Source</SolutionDir>
     <SolutionFile>$(SolutionDir)\Effort.sln</SolutionFile>
+	<EffortNugetPackageDir>EffortNuget</EffortNugetPackageDir>
+	<EffortZipPackageDir>EffortZip</EffortZipPackageDir>
+	<RunTests Condition="$(RunTests) == ''">False</RunTests>
   </PropertyGroup>
- 
-  <Target Name="default" DependsOnTargets="Compile; Package" />
- 
-  <Target Name="Compile">
-	<RemoveDir Directories="$(SolutionDir)\Effort\bin\$(Configuration)\" />
-    <MSBuild Projects="$(SolutionFile)" Properties="Configuration=$(Configuration)"  />
-  </Target>
- 
-  <Target Name="Package">
-	<RemoveDir Directories="$(PackageDir)" />
   
-    <ItemGroup>
-      <MainBinaries Include="$(SolutionDir)\Effort\bin\$(Configuration)\**\*.*" />
-    </ItemGroup>
+  <ItemGroup>
+    <CompileConfig Include="Release(pre-ef6,net40)">
+	  <NugetDir>lib\net40</NugetDir>
+	  <ZipDir>.NET 4.0\Entity Framework 1-5</ZipDir>
+    </CompileConfig>
+	<CompileConfig Include="Release(pre-ef6,net45)">
+	  <NugetDir>lib\net45</NugetDir>
+	  <ZipDir>.NET 4.5\Entity Framework 1-5</ZipDir>
+    </CompileConfig>
+	<CompileConfig Include="Release(ef6,net40)">
+	  <NugetDir></NugetDir>
+	  <ZipDir>.NET 4.0\Entity Framework 6</ZipDir>
+    </CompileConfig>
+	<CompileConfig Include="Release(ef6,net45)">
+	  <NugetDir></NugetDir>
+	  <ZipDir>.NET 4.5\Entity Framework 6</ZipDir>
+    </CompileConfig>
+  </ItemGroup>
  
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\Effort.nuspec" DestinationFolder="$(PackageDir)\Effort" />
+  <Target Name="default" DependsOnTargets="Initialize; Compile; Collect; NugetPackage; " />
  
-    <Copy SourceFiles="@(MainBinaries)" DestinationFolder="$(PackageDir)\Effort\lib\net40\%(RecursiveDir)" />
-	<Copy SourceFiles="@(MainBinaries)" DestinationFolder="$(PackageDir)\Effort\lib\net45\%(RecursiveDir)" />
- 
-    <Exec WorkingDirectory="$(PackageDir)\Effort" 
-          Command="$(SolutionDir)\.nuget\nuget.exe pack $(PackageDir)\Effort\Effort.nuspec" />
+  <Target Name="Initialize">
+	<RemoveDir Directories="$(PackageDir)" />
   </Target>
+ 
+  <Target Name="Compile" Outputs="%(CompileConfig.Identity)">
+	<Message Text="Build task with &quot;%(CompileConfig.Identity)&quot; configuration" />
+	<RemoveDir Directories="$(SolutionDir)\Effort\bin\%(CompileConfig.Identity)\" />
+	<MSBuild Projects="$(SolutionFile)" Properties="Configuration=%(CompileConfig.Identity);Platform=Any CPU"  />
+  </Target>
+ 
+  <Target Name="Collect" Outputs="%(CompileConfig.Identity)">
+    <PropertyGroup>
+	   <SourceDir>$(SolutionDir)\Effort\bin\%(CompileConfig.Identity)</SourceDir>
+	   <DestinationDir1>$(PackageDir)\$(EffortNugetPackageDir)\%(CompileConfig.NugetDir)</DestinationDir1>
+	   <DestinationDir2>$(PackageDir)\$(EffortZipPackageDir)\%(CompileConfig.ZipDir)</DestinationDir2>
+	</PropertyGroup>
+	<ItemGroup>
+	   <SourceFiles Include="$(SourceDir)\Effort.dll"/>
+	   <SourceFiles Include="$(SourceDir)\Effort.xml"/>
+	</ItemGroup>
+    <Copy 
+	  Condition="%(CompileConfig.NugetDir) != ''"
+	  SourceFiles="@(SourceFiles)" 
+	  DestinationFolder="$(DestinationDir1)" />
+	<Copy
+      Condition="%(CompileConfig.ZipDir) != ''"
+	  SourceFiles="@(SourceFiles)" 
+	  DestinationFolder="$(DestinationDir2)" />
+  </Target>
+  
+  <Target Name="NugetPackage">
+	<Copy SourceFiles="$(MSBuildProjectDirectory)\Effort.nuspec" 
+	      DestinationFolder="$(PackageDir)\$(EffortNugetPackageDir)" />
+		  
+	<Exec WorkingDirectory="$(PackageDir)\$(EffortNugetPackageDir)" 
+          Command="$(SolutionDir)\.nuget\nuget.exe pack $(PackageDir)\$(EffortNugetPackageDir)\Effort.nuspec" />
+  </Target>
+ 
 </Project>

@@ -24,10 +24,23 @@
 
 namespace Effort.Provider
 {
+    /// <summary>
+    ///     Provides functionality for configuring the database.
+    /// </summary>
     public interface IDbConfiguration
     {
+        /// <summary>
+        ///     Enables or disables all the identity fields in the database.
+        /// </summary>
+        /// <param name="enabled">
+        ///     if set to <c>true</c> the identity fields will be disabled.
+        /// </param>
         void SetIdentityFields(bool enabled);
 
+        /// <summary>
+        ///     Clears Entity Framework migration history by deleting all records from the 
+        ///     appropriate tables.
+        /// </summary>
         void ClearMigrationHistory();
     }
 }

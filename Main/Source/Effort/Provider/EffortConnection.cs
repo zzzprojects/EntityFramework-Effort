@@ -210,6 +210,8 @@ namespace Effort.Provider
                 return;
             }
 
+            this.lastContainerId = instanceId;
+
             this.container = 
                 DbContainerStore.GetDbContainer(instanceId, this.CreateDbContainer);
 

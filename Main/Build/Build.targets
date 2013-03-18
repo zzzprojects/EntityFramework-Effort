@@ -1,11 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0" DefaultTargets="default">
     <PropertyGroup>
         <BaseDir>$(MSBuildProjectDirectory)\..</BaseDir>
+        <TempDir>$(MSBuildProjectDirectory)\_temp</TempDir>
         <PackageDir>$(MSBuildProjectDirectory)\Packages</PackageDir>
         <SolutionDir>$(BaseDir)\Source</SolutionDir>
         <SolutionFile>$(SolutionDir)\Effort.sln</SolutionFile>
         <EffortNugetPackageDir>EffortNuget</EffortNugetPackageDir>
         <EffortZipPackageDir>EffortZip</EffortZipPackageDir>
+        
         <RunTests Condition="$(RunTests) == ''">False</RunTests>
     </PropertyGroup>
   
@@ -28,10 +30,12 @@
         </CompileConfig>
     </ItemGroup>
  
-    <Target Name="default" DependsOnTargets="Initialize; Compile; Collect; NugetPackage; " />
- 
+    <Target Name="default" DependsOnTargets="Initialize; Compile; Collect; NugetPackage; ZipPackage; Cleanup" />
+    
     <Target Name="Initialize">
+        <RemoveDir Directories="$(TempDir)" />
         <RemoveDir Directories="$(PackageDir)" />
+        <MakeDir Directories="$(PackageDir)" />
     </Target>
  
     <Target Name="Compile" Outputs="%(CompileConfig.Identity)">
@@ -43,8 +47,8 @@
     <Target Name="Collect" Outputs="%(CompileConfig.Identity)">
         <PropertyGroup>
             <SourceDir>$(SolutionDir)\Effort\bin\%(CompileConfig.Identity)</SourceDir>
-            <DestinationDir1>$(PackageDir)\$(EffortNugetPackageDir)\%(CompileConfig.NugetDir)</DestinationDir1>
-            <DestinationDir2>$(PackageDir)\$(EffortZipPackageDir)\%(CompileConfig.ZipDir)</DestinationDir2>
+            <DestinationDir1>$(TempDir)\$(EffortNugetPackageDir)\%(CompileConfig.NugetDir)</DestinationDir1>
+            <DestinationDir2>$(TempDir)\$(EffortZipPackageDir)\%(CompileConfig.ZipDir)</DestinationDir2>
         </PropertyGroup>
         <ItemGroup>
             <SourceFiles Include="$(SourceDir)\Effort.dll"/>
@@ -63,10 +67,62 @@
     <Target Name="NugetPackage">
         <Copy 
             SourceFiles="$(MSBuildProjectDirectory)\Effort.nuspec" 
-            DestinationFolder="$(PackageDir)\$(EffortNugetPackageDir)" />
-		  
+            DestinationFolder="$(TempDir)\$(EffortNugetPackageDir)" />
+
         <Exec 
-            WorkingDirectory="$(PackageDir)\$(EffortNugetPackageDir)" 
-            Command="$(SolutionDir)\.nuget\nuget.exe pack $(PackageDir)\$(EffortNugetPackageDir)\Effort.nuspec" />
+            WorkingDirectory="$(TempDir)\$(EffortNugetPackageDir)" 
+            Command="$(SolutionDir)\.nuget\nuget.exe pack $(TempDir)\$(EffortNugetPackageDir)\Effort.nuspec" />
+            
+        <ItemGroup>
+            <NugetPackage Include="$(TempDir)\$(EffortNugetPackageDir)\*.nupkg"/>
+        </ItemGroup>
+        <Message Text="@(NugetPackage)" Importance="High" />
+        <Move 
+            SourceFiles="@(NugetPackage)"
+            DestinationFolder="$(PackageDir)" />
     </Target>
+    
+    <Target Name="ZipPackage">
+        <CreateZip
+            InputDirectory="$(TempDir)\$(EffortZipPackageDir)"
+            OutputFile="$(PackageDir)\Library.zip" />
+    </Target>
+    
+    <Target Name="Cleanup">
+        <RemoveDir Directories="$(TempDir)" />
+    </Target>
+    
+    <UsingTask TaskName="CreateZip" 
+        TaskFactory="CodeTaskFactory" 
+        AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+        <ParameterGroup>
+            <InputDirectory ParameterType="System.String" Required="true" />
+            <OutputFile ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Reference Include="System.Core" />
+            <Reference Include="System.IO.Compression.FileSystem" />
+            <Using Namespace="System" />
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.IO.Compression" />
+            <Using Namespace="Microsoft.Build.Framework" />
+            <Using Namespace="Microsoft.Build.Utilities" />
+            <Code Type="Fragment" Language="cs">
+            <![CDATA[
+                try {
+                    InputDirectory = Path.GetFullPath(InputDirectory);
+                    OutputFile = Path.GetFullPath(OutputFile);
+                    
+                    ZipFile.CreateFromDirectory(InputDirectory, OutputFile);
+                    
+                    return true;
+                }
+                catch (Exception ex) {
+                    Log.LogErrorFromException(ex);
+                    return false;
+                }
+            ]]>
+            </Code>
+        </Task>
+    </UsingTask>
 </Project>

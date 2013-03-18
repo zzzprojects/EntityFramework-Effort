@@ -35,6 +35,7 @@ namespace Effort.Test.Internal
     using System.Data.EntityClient;
     using System.Data.Metadata.Edm;
     using System.Data.Objects;
+    using System.Reflection;
 #endif
     using System.Xml.Linq;
     using Effort.DataLoaders;
@@ -113,7 +114,21 @@ namespace Effort.Test.Internal
             DbConnectionWrapper inspectorConnection = new DataReaderInspectorConnection(resultSetComposer);
             inspectorConnection.WrappedConnection = storeConnection;
 
-            EntityConnection entityConnection = new EntityConnection(convertedWorkspace, inspectorConnection);
+#if !EFOLD
+            EntityConnection entityConnection =
+                new EntityConnection(convertedWorkspace, inspectorConnection, true);
+#else
+            EntityConnection entityConnection = 
+                new EntityConnection(convertedWorkspace, inspectorConnection);
+
+            FieldInfo owned = 
+                typeof(EntityConnection)
+                .GetField(
+                    "_userOwnsStoreConnection", 
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+
+            owned.SetValue(entityConnection, false);
+#endif
 
             if (createFake)
             {

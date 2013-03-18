@@ -35,8 +35,8 @@ namespace Effort
     using System.Data.EntityClient;
     using System.Data.Metadata.Edm;
     using System.Data.Objects;
-#endif
     using System.Reflection;
+#endif
     using Effort.DataLoaders;
     using Effort.Internal.Caching;
     using Effort.Internal.Common;
@@ -257,7 +257,13 @@ namespace Effort
             MetadataWorkspace metadata, 
             DbConnection connection)
         {
-            EntityConnection entityConnection = new EntityConnection(metadata, connection);
+
+#if !EFOLD
+            EntityConnection entityConnection = 
+                new EntityConnection(metadata, connection, true);
+#else
+            EntityConnection entityConnection = 
+                new EntityConnection(metadata, connection);
 
             FieldInfo owned = 
                 typeof(EntityConnection)
@@ -266,6 +272,7 @@ namespace Effort
                     BindingFlags.Instance | BindingFlags.NonPublic);
 
             owned.SetValue(entityConnection, false);
+#endif
 
             using (ObjectContext objectContext = new ObjectContext(entityConnection))
             {

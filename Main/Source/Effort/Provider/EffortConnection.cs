@@ -207,16 +207,16 @@ namespace Effort.Provider
             if (this.lastContainerId == instanceId)
             {
                 // The id was not changed, so the appropriate container is associated
+                this.state = ConnectionState.Open;
                 return;
             }
-
-            this.lastContainerId = instanceId;
 
             this.container = 
                 DbContainerStore.GetDbContainer(instanceId, this.CreateDbContainer);
 
             this.containerConfiguration = new DbContainerConfigurationWrapper(this.container);
-            
+
+            this.lastContainerId = instanceId;
             this.state = ConnectionState.Open;
         }
 

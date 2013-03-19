@@ -47,21 +47,26 @@
     <Target Name="Collect" Outputs="%(CompileConfig.Identity)">
         <PropertyGroup>
             <SourceDir>$(SolutionDir)\Effort\bin\%(CompileConfig.Identity)</SourceDir>
-            <DestinationDir1>$(TempDir)\$(EffortNugetPackageDir)\%(CompileConfig.NugetDir)</DestinationDir1>
-            <DestinationDir2>$(TempDir)\$(EffortZipPackageDir)\%(CompileConfig.ZipDir)</DestinationDir2>
+            <DestinationDirNuget>$(TempDir)\$(EffortNugetPackageDir)\%(CompileConfig.NugetDir)</DestinationDirNuget>
+            <DestinationDirZip>$(TempDir)\$(EffortZipPackageDir)\%(CompileConfig.ZipDir)</DestinationDirZip>
         </PropertyGroup>
         <ItemGroup>
-            <SourceFiles Include="$(SourceDir)\Effort.dll"/>
-            <SourceFiles Include="$(SourceDir)\Effort.xml"/>
+            <SourceFilesCommon Include="$(SourceDir)\Effort.dll"/>
+            <SourceFilesCommon Include="$(SourceDir)\Effort.xml"/>
+            <SourceFilesZip Include="$(SourceDir)\NMemory.dll"/>
         </ItemGroup>
         <Copy 
             Condition="%(CompileConfig.NugetDir) != ''"
-            SourceFiles="@(SourceFiles)" 
-            DestinationFolder="$(DestinationDir1)" />
+            SourceFiles="@(SourceFilesCommon)" 
+            DestinationFolder="$(DestinationDirNuget)" />
         <Copy 
             Condition="%(CompileConfig.ZipDir) != ''"
-            SourceFiles="@(SourceFiles)" 
-            DestinationFolder="$(DestinationDir2)" />
+            SourceFiles="@(SourceFilesCommon)" 
+            DestinationFolder="$(DestinationDirZip)" />
+        <Copy 
+            Condition="%(CompileConfig.ZipDir) != ''"
+            SourceFiles="@(SourceFilesZip)" 
+            DestinationFolder="$(DestinationDirZip)" />
     </Target>
   
     <Target Name="NugetPackage">

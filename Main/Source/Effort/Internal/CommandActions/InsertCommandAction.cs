@@ -92,7 +92,11 @@ namespace Effort.Internal.CommandActions
             Dictionary<string, object> entityReturningValues = DbCommandActionHelper.CreateReturningEntity(context, returningFields, entity);
             returningValues.Add(entityReturningValues);
 
-            return new EffortDataReader(returningValues.ToArray(), returningFields, context.DbContainer);
+            return new EffortDataReader(
+                returningValues.ToArray(),
+                1,
+                returningFields, 
+                context.DbContainer);
         }
 
         public int ExecuteNonQuery(ActionContext context)

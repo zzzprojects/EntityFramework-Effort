@@ -40,6 +40,7 @@ namespace Effort.Provider
     public class EffortDataReader : DbDataReader
     {
         private IEnumerator enumerator;
+        private int recordsAffected;
 
         private FieldDescription[] fields;
         private object[] currentValues;
@@ -48,12 +49,14 @@ namespace Effort.Provider
 
         internal EffortDataReader(
             IEnumerable result, 
+            int recordsAffected,
             FieldDescription[] fields, 
             DbContainer container)
         {
-            this.fields = fields;
             this.enumerator = result.GetEnumerator();
+            this.recordsAffected = recordsAffected;
 
+            this.fields = fields;
             this.container = container;
         }
 
@@ -75,7 +78,7 @@ namespace Effort.Provider
         /// </returns>
         public override int RecordsAffected
         {
-            get { throw new NotImplementedException(); }
+            get { return this.recordsAffected; }
         }
 
         /// <summary>
@@ -218,7 +221,7 @@ namespace Effort.Provider
         /// </returns>
         public override string GetDataTypeName(int ordinal)
         {
-            throw new NotImplementedException();
+            return this.fields[ordinal].Type.Name;
         }
 
         /// <summary>
@@ -277,7 +280,7 @@ namespace Effort.Provider
         /// </returns>
         public override Type GetFieldType(int ordinal)
         {
-            return this.GetValue(ordinal).GetType();
+            return this.fields[ordinal].Type;
         }
 
         /// <summary>
@@ -461,7 +464,14 @@ namespace Effort.Provider
         /// </returns>
         public override int GetValues(object[] values)
         {
-            throw new NotImplementedException();
+            int size = this.fields.Length;
+
+            for (int i = 0; i < size; i++)
+            {
+                values[i] = GetValue(i);
+            }
+
+            return size;
         }
 
         /// <summary>

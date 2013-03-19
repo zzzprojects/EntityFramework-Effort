@@ -75,7 +75,7 @@ namespace Effort.Provider
         {
             if (serviceType == typeof(DbProviderServices))
             {
-                return new EffortProviderServices();
+                return EffortProviderServices.Instance;
             }
 
             return null;

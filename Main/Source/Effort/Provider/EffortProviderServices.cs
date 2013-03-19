@@ -45,6 +45,12 @@ namespace Effort.Provider
     public class EffortProviderServices : DbProviderServices
     {
         /// <summary>
+        ///     Provides a singleton instance of the <see cref="EffortProviderServices"/> 
+        ///     class.
+        /// </summary>
+        public static readonly EffortProviderServices Instance = new EffortProviderServices();
+
+        /// <summary>
         ///     Creates a <see cref="T:System.Data.Common.DbCommandDefinition" /> that uses the 
         ///     specified <see cref="T:System.Data.Common.DbCommand" />.
         /// </summary>

@@ -101,15 +101,22 @@ namespace Effort.Internal.CommandActions
                     param);
 
             IEnumerable<object> updatedEntities = DatabaseReflectionHelper.UpdateEntities(entitiesToUpdate, updater, context.Transaction);
+            int affectedRecords = 0;
 
             foreach (object entity in updatedEntities)
             {
-                Dictionary<string, object> returningEntity = DbCommandActionHelper.CreateReturningEntity(context, returningFields, entity);
+                affectedRecords++;
+                Dictionary<string, object> returningEntity = 
+                    DbCommandActionHelper.CreateReturningEntity(context, returningFields, entity);
 
                 returningEntities.Add(returningEntity);
             }
 
-            return new EffortDataReader(returningEntities, returningFields, context.DbContainer);
+            return new EffortDataReader(
+                returningEntities,
+                affectedRecords,
+                returningFields, 
+                context.DbContainer);
         }
 
         public int ExecuteNonQuery(ActionContext context)

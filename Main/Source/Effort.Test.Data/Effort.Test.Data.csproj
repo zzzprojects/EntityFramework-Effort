@@ -16,15 +16,15 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
   <Choose>
-	<When Condition="$(ExternalEntityFramework) == 'false'">
+    <When Condition="$(ExternalEntityFramework) == 'false'">
       <ItemGroup>
-	    <Reference Include="System.Data.Entity" />
-	  </ItemGroup>
-	</When>
+        <Reference Include="System.Data.Entity" />
+      </ItemGroup>
+    </When>
   </Choose>
   <ItemGroup>
     <Reference Include="EntityFramework">
-	  <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SolutionDir)\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -128,7 +128,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Feature\Content\TimestampSupport.csv" />
     <None Include="Feature\Feature.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

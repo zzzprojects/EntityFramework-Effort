@@ -184,7 +184,7 @@ namespace Effort.Provider
         {
             get
             {
-                if (this.state != ConnectionState.Open)
+                if (this.State != ConnectionState.Open)
                 {
                     throw new InvalidOperationException();
                 }
@@ -207,7 +207,7 @@ namespace Effort.Provider
             if (this.lastContainerId == instanceId)
             {
                 // The id was not changed, so the appropriate container is associated
-                this.state = ConnectionState.Open;
+                this.ChangeConnectionState(ConnectionState.Open);
                 return;
             }
 
@@ -217,7 +217,7 @@ namespace Effort.Provider
             this.containerConfiguration = new DbContainerConfigurationWrapper(this.container);
 
             this.lastContainerId = instanceId;
-            this.state = ConnectionState.Open;
+            this.ChangeConnectionState(ConnectionState.Open);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Effort.Provider
         /// </summary>
         public override void Close()
         {
-            this.state = ConnectionState.Closed;
+            this.ChangeConnectionState(ConnectionState.Closed);
         }
 
         /// <summary>
@@ -295,6 +295,19 @@ namespace Effort.Provider
             }
 
             base.Dispose(disposing);
+        }
+
+        private void ChangeConnectionState(ConnectionState state)
+        {
+            ConnectionState oldState = this.state;
+
+            if (oldState != state)
+            {
+                this.state = state;
+
+                this.OnStateChange(
+                    new StateChangeEventArgs(oldState, this.state));
+            }
         }
 
         private DbContainer CreateDbContainer()

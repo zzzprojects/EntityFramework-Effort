@@ -107,7 +107,11 @@ namespace Effort.Internal.CommandActions
 
             List<FieldDescription> fields = GetReturningFields(this.commandTree);
 
-            return new EffortDataReader(result, fields.ToArray(), context.DbContainer);
+            return new EffortDataReader(
+                result,
+                -1,
+                fields.ToArray(), 
+                context.DbContainer);
         }
 
         public object ExecuteScalar(ActionContext context)

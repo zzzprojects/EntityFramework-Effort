@@ -21,22 +21,22 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
   <PropertyGroup>
-	<DocumentationFile>$(OutputPath)\Effort.xml</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\Effort.xml</DocumentationFile>
   </PropertyGroup>
   <Choose>
-	<When Condition="$(ExternalEntityFramework) == 'false'">
+    <When Condition="$(ExternalEntityFramework) == 'false'">
       <ItemGroup>
-	    <Reference Include="System.Data.Entity" />
-	  </ItemGroup>
-	</When>
-	<When Condition="$(ExternalEntityFramework) == 'true'">
-	  <ItemGroup>
-	    <Reference Include="EntityFramework">
+        <Reference Include="System.Data.Entity" />
+      </ItemGroup>
+    </When>
+    <When Condition="$(ExternalEntityFramework) == 'true'">
+      <ItemGroup>
+        <Reference Include="EntityFramework">
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
         </Reference>
-	  </ItemGroup>
-	</When>
+      </ItemGroup>
+    </When>
   </Choose>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -271,6 +271,7 @@
     <Compile Include="Provider\EffortVersion.cs" />
     <Compile Include="Provider\EffortProviderManifestTokens.cs" />
     <Compile Include="Provider\IDbConfiguration.cs" />
+    <Compile Include="Provider\EffortProviderInvariantName.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Internal\Csv\ExceptionMessages.resx">

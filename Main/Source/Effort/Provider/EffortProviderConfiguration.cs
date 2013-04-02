@@ -27,6 +27,11 @@ namespace Effort.Provider
     using System;
     using System.Configuration;
     using System.Data;
+#if !EFOLD
+    using System.Data.Entity.Config;
+    using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Infrastructure;
+#endif
     using System.Threading;
 
     /// <summary>
@@ -37,7 +42,7 @@ namespace Effort.Provider
         /// <summary>
         ///     The provider invariant name of the Effort provider.
         /// </summary>
-        public static readonly string ProviderInvariantName = "EffortProvider";
+        public static readonly string ProviderInvariantName = "Effort.Provider";
 
         /// <summary>
         ///     Indicates if the Effort provider is registered.
@@ -64,6 +69,10 @@ namespace Effort.Provider
                             "Effort Provider", 
                             ProviderInvariantName, 
                             typeof(EffortProviderFactory));
+
+#if !EFOLD
+                        RegisterDbConfigurationEventHandler();
+#endif
 
                         Thread.MemoryBarrier();
                         isRegistered = true;
@@ -99,5 +108,27 @@ namespace Effort.Provider
 
             providerFactories.Rows.Add(name, name, invariantName, assemblyName);
         }
+
+#if !EFOLD
+        private static void RegisterDbConfigurationEventHandler()
+        {
+            DbConfiguration.OnLockingConfiguration += OnLockingConfiguration;
+        }
+
+        private static void OnLockingConfiguration(object sender, DbConfigurationEventArgs e)
+        {
+            e.AddDependencyResolver(
+                new SingletonDependencyResolver<DbProviderServices>(
+                        EffortProviderServices.Instance,
+                        ProviderInvariantName),
+                false);
+
+            e.AddDependencyResolver(
+                new SingletonDependencyResolver<IProviderInvariantName>(
+                        EffortProviderInvariantName.Instance,
+                        EffortProviderFactory.Instance),
+                false);
+        }
+#endif
     }
 }

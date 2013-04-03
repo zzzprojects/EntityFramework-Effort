@@ -137,7 +137,7 @@ namespace Effort.Provider
 
                     if (!TypeUsageHelper.TryGetPrecision(original, out precision))
                     {
-                        precision = 1;
+                        precision = 7;
                     }
 
                     return TypeUsage.CreateDateTimeTypeUsage(goal, precision);
@@ -146,7 +146,7 @@ namespace Effort.Provider
 
                     if (!TypeUsageHelper.TryGetPrecision(original, out precision))
                     {
-                        precision = 1;
+                        precision = 7;
                     }
 
                     return TypeUsage.CreateDateTimeOffsetTypeUsage(goal, precision);
@@ -155,7 +155,7 @@ namespace Effort.Provider
 
                     if (!TypeUsageHelper.TryGetPrecision(original, out precision))
                     {
-                        precision = 1;
+                        precision = 7;
                     }
 
                     return TypeUsage.CreateTimeTypeUsage(goal, precision);
@@ -164,7 +164,7 @@ namespace Effort.Provider
 
                     if (!TypeUsageHelper.TryGetPrecision(original, out precision))
                     {
-                        precision = 1;
+                        precision = 18;
                     }
 
                     if (!TypeUsageHelper.TryGetScale(original, out scale))

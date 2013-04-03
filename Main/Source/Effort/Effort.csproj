@@ -86,6 +86,7 @@
     <Compile Include="Internal\Common\FastLazy`1.cs" />
     <Compile Include="Internal\Common\FieldDescription.cs" />
     <Compile Include="Internal\Common\ProviderHelper.cs" />
+    <Compile Include="Internal\Common\TypeUsageHelper.cs" />
     <Compile Include="Internal\Common\XmlProcessing\IElementVisitor`1.cs" />
     <Compile Include="Internal\Common\XmlProcessing\ModificationContext.cs" />
     <Compile Include="Internal\Common\XmlProcessing\SelfElementSelector.cs" />

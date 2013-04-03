@@ -35,6 +35,7 @@ namespace Effort.Provider
     using System.IO;
     using System.Reflection;
     using System.Xml;
+    using Effort.Internal.Common;
 
     /// <summary>
     ///     Metadata interface for all CLR types types.
@@ -54,8 +55,8 @@ namespace Effort.Provider
         }
 
         /// <summary>
-        ///     When overridden in a derived class, this method maps the specified storage type
-        ///     and a set of facets for that type to an EDM type.
+        ///     This method maps the specified storage type and a set of facets for that type
+        ///     to an EDM type.
         /// </summary>
         /// <param name="storeType">
         ///     The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes
@@ -69,13 +70,14 @@ namespace Effort.Provider
         {
             string name = storeType.EdmType.Name.ToLowerInvariant();
 
-            PrimitiveType typeKind = this.StoreTypeNameToEdmPrimitiveType[name];
-            return TypeUsage.CreateDefaultTypeUsage(typeKind);
+            PrimitiveType edmType = this.StoreTypeNameToEdmPrimitiveType[name];
+
+            return ConvertTypeUsage(storeType, edmType);
         }
 
         /// <summary>
-        ///     When overridden in a derived class, this method maps the specified EDM type and
-        ///     a set of facets for that type to a storage type.
+        ///     This method maps the specified EDM type and a set of facets for that type to a
+        ///     storage type.
         /// </summary>
         /// <param name="edmType">
         ///     The <see cref="T:System.Data.Metadata.Edm.TypeUsage" /> instance that describes
@@ -87,11 +89,14 @@ namespace Effort.Provider
         /// </returns>
         public override TypeUsage GetStoreType(TypeUsage edmType)
         {
+            // Effort store types are named after the corresponding EDM primitive types.
+            // Determine the primitive type name
             string name = edmType.EdmType.Name.ToLowerInvariant();
 
-            PrimitiveType typeKind = this.StoreTypeNameToStorePrimitiveType[name];
-            
-            return TypeUsage.CreateDefaultTypeUsage(typeKind);
+            // The primitive type name identifies the appropriate store type
+            PrimitiveType storeType = this.StoreTypeNameToStorePrimitiveType[name];
+
+            return ConvertTypeUsage(edmType, storeType);
         }
 
         /// <summary>
@@ -116,6 +121,107 @@ namespace Effort.Provider
             Stream stream = effortAssembly.GetManifestResourceStream(MetadataResource);
 
             return XmlReader.Create(stream);
+        }
+
+        private static TypeUsage ConvertTypeUsage(TypeUsage original, PrimitiveType goal)
+        {
+            byte precision;
+            byte scale;
+            bool isUnicode;
+            bool isFixed;
+            int maxLength;
+
+            switch (goal.PrimitiveTypeKind)
+            {
+                case PrimitiveTypeKind.DateTime:
+
+                    if (!TypeUsageHelper.TryGetPrecision(original, out precision))
+                    {
+                        precision = 1;
+                    }
+
+                    return TypeUsage.CreateDateTimeTypeUsage(goal, precision);
+
+                case PrimitiveTypeKind.DateTimeOffset:
+
+                    if (!TypeUsageHelper.TryGetPrecision(original, out precision))
+                    {
+                        precision = 1;
+                    }
+
+                    return TypeUsage.CreateDateTimeOffsetTypeUsage(goal, precision);
+
+                case PrimitiveTypeKind.Time:
+
+                    if (!TypeUsageHelper.TryGetPrecision(original, out precision))
+                    {
+                        precision = 1;
+                    }
+
+                    return TypeUsage.CreateTimeTypeUsage(goal, precision);
+
+                case PrimitiveTypeKind.Decimal:
+
+                    if (!TypeUsageHelper.TryGetPrecision(original, out precision))
+                    {
+                        precision = 1;
+                    }
+
+                    if (!TypeUsageHelper.TryGetScale(original, out scale))
+                    {
+                        scale = 0;
+                    }
+
+                    return TypeUsage.CreateDecimalTypeUsage(goal, precision, scale);
+
+                case PrimitiveTypeKind.Binary:
+
+                    if (!TypeUsageHelper.TryGetIsFixedLength(original, out isFixed))
+                    {
+                        isFixed = false;
+                    }
+
+                    if (TypeUsageHelper.TryGetMaxLength(original, out maxLength))
+                    {
+                        return TypeUsage.CreateBinaryTypeUsage(goal, isFixed, maxLength);
+                    }
+                    else
+                    {
+                        return TypeUsage.CreateBinaryTypeUsage(goal, isFixed);
+                    }
+
+                case PrimitiveTypeKind.String:
+
+                    if (!TypeUsageHelper.TryGetIsFixedLength(original, out isFixed))
+                    {
+                        isFixed = false;
+                    }
+
+                    if (!TypeUsageHelper.TryGetIsUnicode(original, out isUnicode))
+                    {
+                        isUnicode = true;
+                    }
+
+                    if (TypeUsageHelper.TryGetMaxLength(original, out maxLength))
+                    {
+                        return
+                            TypeUsage.CreateStringTypeUsage(
+                                goal,
+                                isUnicode,
+                                isFixed,
+                                maxLength);
+                    }
+                    else
+                    {
+                        return
+                            TypeUsage.CreateStringTypeUsage(
+                                goal,
+                                isUnicode,
+                                isFixed);
+                    }
+            }
+
+            return TypeUsage.CreateDefaultTypeUsage(goal);
         }
     }
 }

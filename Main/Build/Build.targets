@@ -14,11 +14,11 @@
     <ItemGroup>
         <CompileConfig Include="Release(pre-ef6,net40)">
             <NugetDir>lib\net40</NugetDir>
-            <ZipDir>.NET 4.0\Entity Framework 1-5</ZipDir>
+            <ZipDir>.NET 4.0\Entity Framework 4-5</ZipDir>
         </CompileConfig>
         <CompileConfig Include="Release(pre-ef6,net45)">
             <NugetDir>lib\net45</NugetDir>
-            <ZipDir>.NET 4.5\Entity Framework 1-5</ZipDir>
+            <ZipDir>.NET 4.5\Entity Framework 4-5</ZipDir>
         </CompileConfig>
         <CompileConfig Include="Release(ef6,net40)">
             <NugetDir></NugetDir>

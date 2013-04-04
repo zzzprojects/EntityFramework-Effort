@@ -298,6 +298,8 @@ namespace Effort
         private static MetadataWorkspace GetEffortCompatibleMetadataWorkspace(
             ref string entityConnectionString)
         {
+            EffortProviderConfiguration.VerifyProvider();
+
             entityConnectionString = GetFullEntityConnectionString(entityConnectionString);
 
             EntityConnectionStringBuilder connectionStringBuilder = 

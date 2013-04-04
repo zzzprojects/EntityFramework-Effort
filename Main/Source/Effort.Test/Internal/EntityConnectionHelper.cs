@@ -87,6 +87,7 @@ namespace Effort.Test.Internal
 
                 if (createFake)
                 {
+                    EffortProviderConfiguration.VerifyProvider();
                     UniversalStorageSchemaModifier.Instance.Modify(ssdlFile, new EffortProviderInformation());
                 }
 

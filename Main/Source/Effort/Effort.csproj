@@ -71,6 +71,8 @@
     <Compile Include="DataLoaders\ITableDataLoaderFactory.cs" />
     <Compile Include="DataLoaders\TableDescription.cs" />
     <Compile Include="DbConnectionFactory.cs" />
+    <Compile Include="Exceptions\EffortException.cs" />
+    <Compile Include="Exceptions\ExceptionMessages.cs" />
     <Compile Include="Internal\Caching\DataLoaderConfigurationLatchStore.cs" />
     <Compile Include="Internal\Caching\DataLoaderConfigurationLatch.cs" />
     <Compile Include="Internal\Caching\DataLoaderConfigurationKey.cs" />
@@ -283,9 +285,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

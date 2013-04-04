@@ -27,12 +27,14 @@ namespace Effort.Provider
     using System;
     using System.Configuration;
     using System.Data;
+    using System.Data.Common;
 #if !EFOLD
     using System.Data.Entity.Config;
     using System.Data.Entity.Core.Common;
     using System.Data.Entity.Infrastructure;
 #endif
     using System.Threading;
+    using Effort.Exceptions;
 
     /// <summary>
     ///     Configuration module for the Effort provider.
@@ -81,6 +83,20 @@ namespace Effort.Provider
             }
         }
 
+        internal static void VerifyProvider()
+        {
+            try
+            {
+                DbProviderFactories.GetFactory(ProviderInvariantName);
+            }
+            catch (Exception ex)
+            {
+                throw new EffortException(
+                    ExceptionMessages.AutomaticRegistrationFailed,
+                    ex);
+            }
+        }
+
         private static void RegisterProvider(
             string name, 
             string invariantName, 
@@ -105,6 +121,20 @@ namespace Effort.Provider
 
             DataSet data = (DataSet)ConfigurationManager.GetSection("system.data");
             DataTable providerFactories = data.Tables["DbProviderFactories"];
+
+            foreach (DataRow providerFactory in providerFactories.Rows)
+            {
+                string providerFactoryInvariantName = 
+                    providerFactory["InvariantName"] as string;
+
+                if (invariantName.Equals(
+                        providerFactoryInvariantName, 
+                        StringComparison.InvariantCulture))
+                {
+                    // Provider is already registered
+                    return;
+                }
+            }
 
             providerFactories.Rows.Add(name, name, invariantName, assemblyName);
         }

@@ -47,5 +47,9 @@ namespace Effort.Test.Data.Staff
         public IDbSet<DateFieldEntity> DateFieldEntities { get; set; }
 
         public IDbSet<LargeStringFieldEntity> LargeStringFieldEntities { get; set; }
+
+        public IDbSet<DateTimeOffsetFieldEntity> DateTimeOffsetFieldEntities { get; set; }
+
+        public IDbSet<DateTimeFieldEntity> DateTimeFieldEntities { get; set; }
     }
 }

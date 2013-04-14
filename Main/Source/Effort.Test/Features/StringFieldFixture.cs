@@ -36,8 +36,11 @@ namespace Effort.Test.Features
         {
             DbConnection connection =
                 Effort.DbConnectionFactory.CreateTransient();
+
             StaffDbContext context =
-                new StaffDbContext(connection, CompiledModels.LargeStringFieldModel);
+                new StaffDbContext(
+                    connection, 
+                    CompiledModels.GetModel<LargeStringFieldEntity>());
 
             context.Database.Initialize(true);
         }

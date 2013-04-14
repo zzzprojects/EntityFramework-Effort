@@ -73,7 +73,10 @@
     <Compile Include="DbConfigurationFixture.cs" />
     <Compile Include="Features\AggregationFixture.cs" />
     <Compile Include="Features\BinaryFixture.cs" />
-    <Compile Include="Features\CanonicalFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\DateTimeFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\DateTimeOffsetFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\MathFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\StringFunctionsFixture.cs" />
     <Compile Include="Features\ConstraintFixture.cs" />
     <Compile Include="Csv\CsvReaderFixture.cs" />
     <Compile Include="Csv\FieldValueFixture.cs" />

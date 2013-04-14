@@ -64,7 +64,9 @@
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
     <Compile Include="Staff\CompiledModels.cs" />
+    <Compile Include="Staff\DateTimeFieldEntity.cs" />
     <Compile Include="Staff\DateFieldEntity.cs" />
+    <Compile Include="Staff\DateTimeOffsetFieldEntity.cs" />
     <Compile Include="Staff\GuidKeyEntity.cs" />
     <Compile Include="Staff\LargeStringFieldEntity.cs" />
     <Compile Include="Staff\LocalStaffDataLoader.cs" />

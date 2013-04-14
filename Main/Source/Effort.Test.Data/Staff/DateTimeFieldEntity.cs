@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DateFieldFixture.cs" company="Effort Team">
+// <copyright file="DateTimeFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,42 +22,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Features
+namespace Effort.Test.Data.Staff
 {
-    using System.Data.Common;
-    using Effort.Test.Data.Staff;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
-    [TestClass]
-    public class DateFieldFixture
+    public class DateTimeFieldEntity
     {
-        private StaffDbContext context;
+        public int Id { get; set; }
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            DbConnection connection = 
-                Effort.DbConnectionFactory.CreateTransient();
-
-            this.context = 
-                new StaffDbContext(
-                    connection, 
-                    CompiledModels.GetModel<DateFieldEntity>());
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            this.context.Dispose();
-        }
-
-        [TestMethod]
-        public void DateFieldFixture_CreateDateField()
-        {
-            // Column(TypeName=date) attribute is currently disable
-            // Does Effort really need to support it?
-
-            this.context.Database.Initialize(true);
-        }
+        public DateTime DateTime { get; set; }
     }
 }

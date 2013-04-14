@@ -37,8 +37,13 @@ namespace Effort.Test.Features
         [TestInitialize]
         public void Initialize()
         {
-            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
-            this.context = new StaffDbContext(connection, CompiledModels.GuidKeyModel);
+            DbConnection connection = 
+                Effort.DbConnectionFactory.CreateTransient();
+
+            this.context = 
+                new StaffDbContext(
+                    connection, 
+                    CompiledModels.GetModel<GuidKeyEntity>());
         }
 
         [TestCleanup]

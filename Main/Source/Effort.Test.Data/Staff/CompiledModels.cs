@@ -25,6 +25,7 @@
 namespace Effort.Test.Data.Staff
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity;
@@ -32,41 +33,28 @@ namespace Effort.Test.Data.Staff
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Threading;
+    using System.Linq;
 
     public static class CompiledModels
     {
         private static Type[] entityTypes;
 
         private static Lazy<DbCompiledModel> defaultModel;
-        private static Lazy<DbCompiledModel> dateFieldModel;
-        private static Lazy<DbCompiledModel> guidKeyModel;
-        private static Lazy<DbCompiledModel> largeStringFieldModel;
         private static Lazy<DbCompiledModel> disabledIdentityModel;
+
+        private static ConcurrentDictionary<string, DbCompiledModel> models;
         
         static CompiledModels()
         {
             FindEntityTypes();
+
+            models = new ConcurrentDictionary<string, DbCompiledModel>(); 
 
             LazyThreadSafetyMode mode = LazyThreadSafetyMode.PublicationOnly;
 
             defaultModel =
                 new Lazy<DbCompiledModel>(
                     () => CreateSimpleModel(typeof(Person)),
-                    mode);
-
-            dateFieldModel =
-                new Lazy<DbCompiledModel>(
-                    () => CreateSimpleModel(typeof(DateFieldEntity)),
-                    mode);
-
-            guidKeyModel =
-                new Lazy<DbCompiledModel>(
-                    () => CreateSimpleModel(typeof(GuidKeyEntity)),
-                    mode);
-
-            largeStringFieldModel =
-                new Lazy<DbCompiledModel>(
-                    () => CreateSimpleModel(typeof(LargeStringFieldEntity)),
                     mode);
 
             disabledIdentityModel =
@@ -83,36 +71,36 @@ namespace Effort.Test.Data.Staff
             }
         }
 
-        public static DbCompiledModel DateFieldModel
-        {
-            get
-            {
-                return dateFieldModel.Value;
-            }
-        }
-
-        public static DbCompiledModel GuidKeyModel
-        {
-            get
-            {
-                return guidKeyModel.Value;
-            }
-        }
-
-        public static DbCompiledModel LargeStringFieldModel
-        {
-            get
-            {
-                return largeStringFieldModel.Value;
-            }
-        }
-
         public static DbCompiledModel DisabledIdentityModel
         {
             get
             {
                 return disabledIdentityModel.Value;
             }
+        }
+
+        public static DbCompiledModel GetModel(params Type[] allowedEntityTypes)
+        {
+            // The following key identifies the entity model
+            string key = 
+                string.Join(
+                    ";", 
+                    allowedEntityTypes
+                        .Select(x => x.FullName)
+                        .OrderBy(x => x));
+
+
+            return models.GetOrAdd(key, _ => CreateSimpleModel(allowedEntityTypes));
+        }
+
+        public static DbCompiledModel GetModel<T1>()
+        {
+            return GetModel(typeof(T1));
+        }
+
+        public static DbCompiledModel GetModel<T1, T2>()
+        {
+            return GetModel(typeof(T1), typeof(T2));
         }
 
         private static DbCompiledModel CreateDisabledIdentityModel()

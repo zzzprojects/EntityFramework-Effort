@@ -45,6 +45,7 @@ namespace Effort.Internal.Common
     using NMemory.StoredProcedures;
     using NMemory.Tables;
     using NMemory.Transactions;
+    using Effort.Exceptions;
 
     internal static class DatabaseReflectionHelper
     {
@@ -88,8 +89,12 @@ namespace Effort.Internal.Common
             }
             catch (TargetInvocationException ex)
             {
-                throw new InvalidOperationException(string.Format("Unhandled exception while trying to initialize table '{0}'",
-                    table), ex);
+                string message =
+                    string.Format(
+                        ExceptionMessages.TableInitializationFailed,
+                        table);
+
+                throw new EffortException(message, ex.InnerException);
             }
         }
 

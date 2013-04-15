@@ -25,11 +25,12 @@
 namespace Effort.Internal.DbManagement.Schema
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Reflection;
+    using Effort.Exceptions;
     using Effort.Internal.Common;
     using NMemory.Indexes;
-    using System.Collections.Generic;
 
     internal class DbTableInformation
     {
@@ -85,7 +86,8 @@ namespace Effort.Internal.DbManagement.Schema
             blockElements.Add(Expression.Assign(result, Expression.New(this.EntityType)));
 
             Expression<Action<Exception, PropertyInfo, object>> handleException =
-                (exception, property, value) => HandleConvertException(exception, property, value);
+                (exception, property, value) => 
+                    HandleConvertException(exception, property, value);
 
             ParameterExpression caught = Expression.Parameter(typeof(Exception));
             var valueExpression = Expression.Variable(typeof(object), "value");
@@ -95,11 +97,24 @@ namespace Effort.Internal.DbManagement.Schema
                 blockElements.Add(
                     Expression.TryCatch(
                         Expression.Block(typeof(void),
-                            Expression.Assign(valueExpression, Expression.ArrayIndex(parameter, Expression.Constant(i))),
-                            Expression.Assign(Expression.Property(result, this.Properties[i]),
-                                Expression.Convert(valueExpression, this.Properties[i].PropertyType))),
-                        Expression.Catch(caught, Expression.Invoke(handleException, caught, Expression.Constant(Properties[i]), valueExpression))));
+                            Expression.Assign(
+                                valueExpression, 
+                                Expression.ArrayIndex(parameter, Expression.Constant(i))),
+                            Expression.Assign(
+                                Expression.Property(
+                                    result, 
+                                    this.Properties[i]),
+                                Expression.Convert(
+                                    valueExpression, 
+                                    this.Properties[i].PropertyType))),
+                        Expression.Catch(
+                            caught, 
+                            Expression.Invoke(
+                                handleException, 
+                                caught, 
+                                Expression.Constant(Properties[i]), valueExpression))));
             }
+
             blockElements.Add(result);
 
             Expression body =
@@ -113,10 +128,15 @@ namespace Effort.Internal.DbManagement.Schema
 
         private void HandleConvertException(Exception exception, PropertyInfo property, object value)
         {
-            throw new InvalidOperationException(string.Format(
-                "An unhandled exception occurred while trying to assign value '{0}' to Property '{1}' "
-                    + "of type '{2}' during entity initialization for table '{3}'",
-                value ?? "(null)", property.PropertyType, property.Name, TableName), exception);
+            string message = 
+                string.Format(
+                    ExceptionMessages.EntityPropertyAssignFailed,
+                    value ?? "[null]",
+                    property.PropertyType,
+                    property.Name,
+                    TableName);
+
+            throw new EffortException(message, exception);
         }
     }
 }

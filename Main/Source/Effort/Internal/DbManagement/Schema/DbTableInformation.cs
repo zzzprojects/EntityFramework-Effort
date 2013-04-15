@@ -84,25 +84,39 @@ namespace Effort.Internal.DbManagement.Schema
 
             blockElements.Add(Expression.Assign(result, Expression.New(this.EntityType)));
 
+            Expression<Action<Exception, PropertyInfo, object>> handleException =
+                (exception, property, value) => HandleConvertException(exception, property, value);
+
+            ParameterExpression caught = Expression.Parameter(typeof(Exception));
+            var valueExpression = Expression.Variable(typeof(object), "value");
+            
             for (int i = 0; i < this.Properties.Length; i++)
             {
                 blockElements.Add(
-                    Expression.Assign(
-                        Expression.Property(result, this.Properties[i]),
-                        Expression.Convert(
-                            Expression.ArrayIndex(parameter, Expression.Constant(i)),
-                            this.Properties[i].PropertyType)));
+                    Expression.TryCatch(
+                        Expression.Block(typeof(void),
+                            Expression.Assign(valueExpression, Expression.ArrayIndex(parameter, Expression.Constant(i))),
+                            Expression.Assign(Expression.Property(result, this.Properties[i]),
+                                Expression.Convert(valueExpression, this.Properties[i].PropertyType))),
+                        Expression.Catch(caught, Expression.Invoke(handleException, caught, Expression.Constant(Properties[i]), valueExpression))));
             }
-
             blockElements.Add(result);
 
             Expression body =
                 Expression.Block(
                     this.EntityType,
-                    new ParameterExpression[] { result },
+                    new ParameterExpression[] { result, valueExpression },
                     blockElements.ToArray());
 
             return Expression.Lambda<Func<object[], object>>(body, parameter).Compile();
+        }
+
+        private void HandleConvertException(Exception exception, PropertyInfo property, object value)
+        {
+            throw new InvalidOperationException(string.Format(
+                "An unhandled exception occurred while trying to assign value '{0}' to Property '{1}' "
+                    + "of type '{2}' during entity initialization for table '{3}'",
+                value ?? "(null)", property.PropertyType, property.Name, TableName), exception);
         }
     }
 }

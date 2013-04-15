@@ -79,10 +79,18 @@ namespace Effort.Internal.Common
 
         public static void InitializeTableData(ITable table, IEnumerable<object> entities)
         {
-            typeof(DatabaseReflectionHelper.WrapperMethods)
-                .GetMethod("InitializeTableData")
-                .MakeGenericMethod(table.EntityType)
-                .Invoke(null, new object[] { table, entities });
+            try
+            {
+                typeof(DatabaseReflectionHelper.WrapperMethods)
+                    .GetMethod("InitializeTableData")
+                    .MakeGenericMethod(table.EntityType)
+                    .Invoke(null, new object[] { table, entities });
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw new InvalidOperationException(string.Format("Unhandled exception while trying to initialize table '{0}'",
+                    table), ex);
+            }
         }
 
         public static void InsertEntity(ITable table, object entity, Transaction transaction)
@@ -348,7 +356,17 @@ namespace Effort.Internal.Common
                 where TPrimary : class
                 where TForeign : class
             {
-                database.Tables.CreateRelation(primaryIndex, foreignIndex, foreignToPrimary, primaryToForeign);
+                try
+                {
+                    database.Tables.CreateRelation(primaryIndex, foreignIndex, foreignToPrimary, primaryToForeign);
+                }
+                catch (NMemory.Exceptions.NMemoryException ex)
+                {
+                    var message = string.Format("An exception has occurred during table initialization while relating "
+                        + "key '{0}' to '{1}'.", primaryIndex, foreignIndex);
+
+                    throw new InvalidOperationException(message, ex);
+                }
             }
         }
     }

@@ -245,8 +245,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddYears(-1);
 #if !EFOLD
-            var query = this.context
-                .Orders
+            var query = this.Entities
                 .Where(x =>
                     DbFunctions.AddYears(x.DateTime, -1) == date);
 #else

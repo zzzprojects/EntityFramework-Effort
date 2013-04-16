@@ -31,11 +31,16 @@
         <Reference Include="System.Data.Entity" />
       </ItemGroup>
     </When>
+    <!-- Temporary, this should be removed -->
+    <When Condition="$(ExternalEntityFramework) == 'true'">
+      <ItemGroup>
+        <Reference Include="EntityFramework.SqlServer">
+          <HintPath>..\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.SqlServer.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
   </Choose>
   <ItemGroup>
-    <Reference Include="EFProviderWrapperToolkit, Version=1.0.0.0, Culture=neutral, PublicKeyToken=def642f226e0e59b, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommunityEFProviderWrappers.EFProviderWrapperToolkit.1.0.0\lib\net40-Client\EFProviderWrapperToolkit.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
@@ -88,6 +93,7 @@
     <Compile Include="Features\StringFieldFixture.cs" />
     <Compile Include="Features\DateFieldFixture.cs" />
     <Compile Include="Features\GuidKeyFixture.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorInvariantName.cs" />
     <Compile Include="Internal\ExceptionHelper.cs" />
     <Compile Include="Internal\Fakes\FakeCachingTableDataLoaderStoreProxy.cs" />
     <Compile Include="Internal\Fakes\DataLoaderConfigurationLatchMock.cs" />
@@ -99,11 +105,24 @@
     <Compile Include="Internal\Queries\ICorrectness.cs" />
     <Compile Include="Internal\Queries\IQueryTester`1.cs" />
     <Compile Include="Internal\Queries\NorthwindQueryTester.cs" />
+    <Compile Include="Internal\Queries\QueryTesterExtensions.cs" />
     <Compile Include="Internal\Queries\ResultSetExtensions.cs" />
     <Compile Include="Features\IncludeFixture.cs" />
     <Compile Include="Features\ComplexQueryFixture.cs" />
     <Compile Include="Features\JoinFixture.cs" />
     <Compile Include="Features\ManipulationFixture.cs" />
+    <Compile Include="Internal\WrapperProviders\DbCommandDefinitionWrapper.cs" />
+    <Compile Include="Internal\WrapperProviders\DbCommandWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\WrapperProviders\DbConnectionWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\WrapperProviders\DbProviderFactoryBase.cs" />
+    <Compile Include="Internal\WrapperProviders\DbProviderManifestWrapper.cs" />
+    <Compile Include="Internal\WrapperProviders\DbProviderServicesBase.cs" />
+    <Compile Include="Internal\WrapperProviders\DbTransactionWrapper.cs" />
+    <Compile Include="Internal\WrapperProviders\EntityConnectionWrapperUtils.cs" />
     <Compile Include="StorageSchemaModifierFixture.cs" />
     <Compile Include="Features\AssociationFixture.cs" />
     <Compile Include="Factories\ObjectContextFactoryFixture.cs" />

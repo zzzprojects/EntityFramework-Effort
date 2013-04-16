@@ -48,8 +48,6 @@ namespace Effort.Test.Features
             customer.CompanyName = "company";
             customer.CustomerID = "CUSTO";
 
-            context.Connection.Open();
-
             using (TransactionScope tran = new TransactionScope())
             {
                 this.context.Customers.AddObject(customer);

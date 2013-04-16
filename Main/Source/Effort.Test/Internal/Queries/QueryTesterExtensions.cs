@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DataReaderInspectorProviderServices.cs" company="Effort Team">
+// <copyright file="ResultSetExtensions.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,40 +22,48 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Internal.DataReaderInspector
+namespace Effort.Test.Internal.Queries
 {
     using System;
 #if !EFOLD
-    using System.Data.Entity.Core.Common;
-    using System.Data.Entity.Core.Common.CommandTrees;
+    using System.Data.Entity.Core.Objects;
 #else
-    using System.Data.Common;
-    using System.Data.Common.CommandTrees;
+    using System.Data.Objects;
 #endif
-    using Effort.Provider;
-    using Effort.Test.Internal.WrapperProviders;
-
-    internal class DataReaderInspectorProviderServices : DbProviderServicesBase
+   
+    internal static class QueryTesterExtensions
     {
-        public static readonly DataReaderInspectorProviderServices Instance =
-            new DataReaderInspectorProviderServices();
-
-        protected override string DefaultWrappedProviderName
+        public static string CreateExpectedJsonCSharpResult<TResult, TObjectContext>(
+            this IQueryTester<TObjectContext> tester,
+            Func<TObjectContext, TResult> queryFactory)
+            where TObjectContext : ObjectContext
         {
-            get { return EffortProviderConfiguration.ProviderInvariantName; }
+            return tester
+                .CreateExpectedResult<TResult>(queryFactory)
+                .ConvertToJsonSerializedCSharpString();
         }
 
-        protected override string ProviderInvariantName
+        public static string CreateExpectedJsonCSharpResult<TResult, TObjectContext>(
+            this IQueryTester<TObjectContext> tester,
+            Func<TObjectContext, TResult> queryFactory,
+            string dummy)
+            where TObjectContext : ObjectContext
         {
-            get { return DataReaderInspectorProviderConfiguration.ProviderInvariantName; }
+            return tester
+                .CreateExpectedResult<TResult>(queryFactory)
+                .ConvertToJsonSerializedCSharpString();
         }
 
-        public override DbCommandDefinitionWrapper CreateCommandDefinitionWrapper(DbCommandDefinition wrappedCommandDefinition, DbCommandTree commandTree)
+        public static string CreateExpectedJsonCSharpResult<TResult, TObjectContext>(
+            this IQueryTester<TObjectContext> tester,
+            Func<TObjectContext, TResult> queryFactory,
+            string dummy1,
+            bool dummy2)
+            where TObjectContext : ObjectContext
         {
-            return new DbCommandDefinitionWrapper(
-                wrappedCommandDefinition,
-                commandTree,
-                (tree, definition) => new DataReaderInspectorCommand(tree, definition));
+            return tester
+                .CreateExpectedResult<TResult>(queryFactory)
+                .ConvertToJsonSerializedCSharpString();
         }
     }
 }

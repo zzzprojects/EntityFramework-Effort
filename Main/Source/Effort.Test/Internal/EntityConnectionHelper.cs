@@ -44,7 +44,7 @@ namespace Effort.Test.Internal
     using Effort.Provider;
     using Effort.Test.Internal.DataReaderInspector;
     using Effort.Test.Internal.ResultSets;
-    using EFProviderWrapperToolkit;
+    using Effort.Test.Internal.WrapperProviders;
 
     internal static class EntityConnectionHelper
     {

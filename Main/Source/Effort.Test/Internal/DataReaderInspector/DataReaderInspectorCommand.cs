@@ -28,9 +28,8 @@ namespace Effort.Test.Internal.DataReaderInspector
     using System.Data;
     using System.Data.Common;
     using Effort.Test.Internal.ResultSets;
-    using EFProviderWrapperToolkit;
+    using Effort.Test.Internal.WrapperProviders;
 
-#if EFOLD
     internal class DataReaderInspectorCommand : DbCommandWrapper
     {
         public DataReaderInspectorCommand(
@@ -59,5 +58,4 @@ namespace Effort.Test.Internal.DataReaderInspector
             return new DataReaderInspectorDataReader(base.ExecuteDbDataReader(behavior), composer);
         }
     }
-#endif
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DataReaderInspectorConnection.cs" company="Effort Team">
+// <copyright file="DataReaderInspectorInvariantName.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,44 +22,25 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+#if !EFOLD
+
 namespace Effort.Test.Internal.DataReaderInspector
 {
-    using System.Data.Common;
-    using Effort.Provider;
-    using Effort.Test.Internal.ResultSets;
-    using Effort.Test.Internal.WrapperProviders;
+    using System.Data.Entity.Infrastructure;
 
-    internal class DataReaderInspectorConnection : DbConnectionWrapper
+    internal class DataReaderInspectorInvariantName : IProviderInvariantName
     {
-        private IResultSetComposer composer;
+        public static readonly DataReaderInspectorInvariantName Instance = 
+            new DataReaderInspectorInvariantName();
 
-        public DataReaderInspectorConnection(IResultSetComposer composer)
-        {
-            this.composer = composer;
-        }
-
-        public IResultSetComposer Composer
-        {
-            get
-            {
-                return this.composer;
-            }
-        }
-
-        protected override string DefaultWrappedProviderName
+        public string Name
         {
             get 
-            { 
-                return EffortProviderConfiguration.ProviderInvariantName; 
-            }
-        }
-
-        protected override DbProviderFactory DbProviderFactory
-        {
-            get
             {
-                return DataReaderInspectorProviderFactory.Instance;
+                return DataReaderInspectorProviderConfiguration.ProviderInvariantName;
             }
         }
     }
 }
+
+#endif

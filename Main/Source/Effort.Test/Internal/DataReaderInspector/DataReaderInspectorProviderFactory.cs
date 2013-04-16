@@ -25,14 +25,15 @@
 namespace Effort.Test.Internal.DataReaderInspector
 {
     using System.Data.Common;
-    using EFProviderWrapperToolkit;
+    using Effort.Test.Internal.WrapperProviders;
 
-#if EFOLD
-    public class DataReaderInspectorProviderFactory : DbProviderFactoryBase
+    internal class DataReaderInspectorProviderFactory : DbProviderFactoryBase
     {
-        public static readonly DataReaderInspectorProviderFactory Instance = new DataReaderInspectorProviderFactory();
+        public static readonly DataReaderInspectorProviderFactory Instance = 
+            new DataReaderInspectorProviderFactory();
 
-        public DataReaderInspectorProviderFactory() : base(new DataReaderInspectorProviderServices())
+        public DataReaderInspectorProviderFactory() 
+            : base(new DataReaderInspectorProviderServices())
         {
         }
 
@@ -41,5 +42,4 @@ namespace Effort.Test.Internal.DataReaderInspector
             return new DataReaderInspectorConnection(null);
         }
     }
-#endif
 }

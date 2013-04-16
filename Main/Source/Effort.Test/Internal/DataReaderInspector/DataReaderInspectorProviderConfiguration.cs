@@ -24,8 +24,14 @@
 
 namespace Effort.Test.Internal.DataReaderInspector
 {
+
+#if !EFOLD
+    using System.Data.Entity.Config;
+    using System.Data.Entity.Core.Common;
+#endif
     using System.Threading;
-    using EFProviderWrapperToolkit;
+    using Effort.Test.Internal.WrapperProviders;
+    using System.Data.Entity.Infrastructure;
 
     internal static class DataReaderInspectorProviderConfiguration
     {
@@ -42,21 +48,43 @@ namespace Effort.Test.Internal.DataReaderInspector
                 {
                     if (!registered)
                     {
-#if !EFOLD
-                        throw new System.NotImplementedException();
-#else
                         DbProviderFactoryBase.RegisterProvider(
                             "Data Reader Inspector Provider", 
                             ProviderInvariantName, 
                             "Inspect DbDataReader result", 
                             typeof(DataReaderInspectorProviderFactory));
 
+                        RegisterEFServices();
+
                         Thread.MemoryBarrier();
                         registered = true;
-#endif
                     }
                 }
             }
         }
+
+        private static void RegisterEFServices()
+        {
+#if !EFOLD
+            DbConfiguration.OnLockingConfiguration += OnLockingConfiguration;
+#endif
+        }
+
+#if !EFOLD
+        private static void OnLockingConfiguration(object sender, DbConfigurationEventArgs e)
+        {
+            e.AddDependencyResolver(
+                new SingletonDependencyResolver<DbProviderServices>(
+                        DataReaderInspectorProviderServices.Instance,
+                        ProviderInvariantName),
+                false);
+
+            e.AddDependencyResolver(
+                new SingletonDependencyResolver<IProviderInvariantName>(
+                        DataReaderInspectorInvariantName.Instance,
+                        DataReaderInspectorProviderFactory.Instance),
+                false);
+        }
+#endif
     }
 }

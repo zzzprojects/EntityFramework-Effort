@@ -57,7 +57,6 @@ namespace Effort.Test.Internal.ResultSets
                     }
                 }
 
-
                 if (!equals)
                 {
                     return false;

@@ -28,6 +28,7 @@ namespace Effort.Internal.Common
     using System.Data;
     using System.Data.Common;
 #if !EFOLD
+    using System.Data.Entity.Config;
     using System.Data.Entity.Core.Common;
     using System.Data.Entity.Core;
 #endif
@@ -38,6 +39,11 @@ namespace Effort.Internal.Common
             string providerInvariantName, 
             string providerManifestToken)
         {
+
+#if !EFOLD
+            DbProviderServices providerServices = 
+                DbConfiguration.GetService<DbProviderServices>(providerInvariantName);
+#else
             IServiceProvider serviceProvider = 
                 DbProviderFactories.GetFactory(providerInvariantName) as IServiceProvider;
 
@@ -53,7 +59,8 @@ namespace Effort.Internal.Common
             {
                 throw new ProviderIncompatibleException();
             }
-            
+#endif
+       
             return providerServices.GetProviderManifest(providerManifestToken);
         }
 

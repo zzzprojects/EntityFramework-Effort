@@ -193,7 +193,14 @@ namespace Effort.Test.Internal.DataReaderInspector
 
         public override int GetValues(object[] values)
         {
-            return this.wrappedDataReader.GetValues(values);
+            int count = this.wrappedDataReader.GetValues(values);
+
+            for (int i = 0; i < count; i++)
+            {
+                this.WriteResultSetComposer(i, values[i]);
+            }
+
+            return count;
         }
 
         public override string GetName(int ordinal)

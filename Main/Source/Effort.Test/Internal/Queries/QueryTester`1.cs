@@ -22,8 +22,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections;
+namespace Effort.Test.Internal.Queries
+{
+    using System;
+    using System.Collections;
 #if !EFOLD
     using System.Data.Entity.Core.EntityClient;
     using System.Data.Entity.Core.Objects;
@@ -31,11 +33,9 @@ using System.Collections;
     using System.Data.EntityClient;
     using System.Data.Objects;
 #endif
-using Effort.DataLoaders;
-using Effort.Test.Internal.ResultSets;
+    using Effort.DataLoaders;
+    using Effort.Test.Internal.ResultSets;
 
-namespace Effort.Test.Internal.Queries
-{
     internal class QueryTester<TObjectContext> :
         IQueryTester<TObjectContext> 
         where TObjectContext : ObjectContext

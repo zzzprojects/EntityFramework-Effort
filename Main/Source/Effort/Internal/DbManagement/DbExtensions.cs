@@ -25,6 +25,7 @@
 namespace Effort.Internal.DbManagement
 {
     using System.Linq;
+    using Effort.Internal.Common;
     using NMemory;
     using NMemory.Tables;
 
@@ -32,19 +33,23 @@ namespace Effort.Internal.DbManagement
     {
         public static ITable GetTable(this Database database, string name)
         {
+            string cliName = TypeHelper.NormalizeForCliTypeName(name);
+
             return database
                 .Tables
                 .GetAllTables()
-                .Where(t => t.EntityType.Name.Equals(name))
+                .Where(t => t.EntityType.Name.Equals(cliName))
                 .First();
         }
 
         public static bool ContainsTable(this Database database, string name)
         {
+            string cliName = TypeHelper.NormalizeForCliTypeName(name);
+
             return database
                 .Tables
                 .GetAllTables()
-                .Any(t => t.EntityType.Name.Equals(name));
+                .Any(t => t.EntityType.Name.Equals(cliName));
         }
     }
 }

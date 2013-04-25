@@ -117,5 +117,10 @@ namespace Effort.Internal.Common
 
             return type.GetMethod("Invoke").ReturnType;
         }
+
+        public static string NormalizeForCliTypeName(string name)
+        {
+            return name.Replace("_", "__").Replace(".", "_");
+        }
     }
 }

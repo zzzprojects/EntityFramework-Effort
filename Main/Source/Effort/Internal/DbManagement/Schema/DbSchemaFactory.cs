@@ -67,7 +67,9 @@ namespace Effort.Internal.DbManagement.Schema
             {
                 EntityType type = entitySet.ElementType;
                 string name = entitySet.GetTableName();
-                TypeBuilder entityTypeBuilder = entityModule.DefineType(name, TypeAttributes.Public);
+                string cliTypeName = TypeHelper.NormalizeForCliTypeName(name);
+
+                TypeBuilder entityTypeBuilder = entityModule.DefineType(cliTypeName, TypeAttributes.Public);
 
                 List<PropertyInfo> primaryKeyFields = new List<PropertyInfo>();
                 List<PropertyInfo> identityFields = new List<PropertyInfo>();

@@ -66,8 +66,8 @@ namespace Effort.Internal.DbManagement.Schema
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
                 EntityType type = entitySet.ElementType;
-                string name = entitySet.GetTableName();
-                string cliTypeName = TypeHelper.NormalizeForCliTypeName(name);
+                string tableName = entitySet.GetTableName();
+                string cliTypeName = TypeHelper.NormalizeForCliTypeName(tableName);
 
                 TypeBuilder entityTypeBuilder = entityModule.DefineType(cliTypeName, TypeAttributes.Public);
 
@@ -203,7 +203,7 @@ namespace Effort.Internal.DbManagement.Schema
 
                 schema.RegisterTable(
                     new DbTableInformation(
-                        entityType.Name,
+                        tableName,
                         entityType,
                         primaryKeyFields.ToArray(),
                         identityFields.SingleOrDefault(),
@@ -223,63 +223,68 @@ namespace Effort.Internal.DbManagement.Schema
 
                 ReferentialConstraint constraint = constraints[0];
 
-                string fromTableName = GetTableName(constraint.FromRole, entityContainer);
-                string toTableName = GetTableName(constraint.ToRole, entityContainer);
-
-                // entityType is the primary table, toTable is the foreign table...
-                DbTableInformation fromTable = schema.GetTable(fromTableName);
-                DbTableInformation toTable = schema.GetTable(toTableName);
-
-                // Creating the parameters for NMemory.Tables.RelationKeyConverterFactory
-                PropertyInfo[] fromTableProperties = GetRelationProperties(constraint.FromProperties, fromTable);
-                PropertyInfo[] toTableProperties = GetRelationProperties(constraint.ToProperties, toTable);
-
-                // Create primary key info 
-                LambdaExpression primaryKeySelector = LambdaExpressionHelper.CreateSelectorExpression(fromTable.EntityType, fromTableProperties);
-                Type primaryKeyType = primaryKeySelector.Body.Type;
-                IKeyInfo primaryKeyInfo = CreateKeyInfo(primaryKeySelector);
-
-                // Create foreign key info
-                LambdaExpression foreignKeySelector = LambdaExpressionHelper.CreateSelectorExpression(toTable.EntityType, toTableProperties);
-                Type foreignKeyType = foreignKeySelector.Body.Type;
-                IKeyInfo foreignKeyInfo = CreateKeyInfo(foreignKeySelector);
-
-                // Create a IRelationContraints for defining relation mapping
-                List<IRelationContraint> relationConstraints = new List<IRelationContraint>();
-
-                for (int i = 0; i < fromTableProperties.Count(); i++)
-                {
-                    // Should not use the generic RelationConstraint here. 
-                    relationConstraints.Add(new RelationConstraint(fromTableProperties[i], toTableProperties[i]));
-                }
-
-                Delegate primaryToForeignConverter =
-                    ReflectionHelper.GetMethodInfo(() => 
-                        RelationKeyConverterFactory.CreatePrimaryToForeignConverter<object, object>(null, null, null))
-                    .GetGenericMethodDefinition()
-                    .MakeGenericMethod(primaryKeyType, foreignKeyType)
-                    .Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() }) as Delegate;
-
-                Delegate foreignToPrimaryConverter =
-                    ReflectionHelper.GetMethodInfo(() =>
-                        RelationKeyConverterFactory.CreateForeignToPrimaryConverter<object, object>(null, null, null))
-                    .GetGenericMethodDefinition()
-                    .MakeGenericMethod(primaryKeyType, foreignKeyType)
-                    .Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() }) as Delegate;
-
-                schema.RegisterRelation(
-                    new DbRelationInformation(
-                        fromTableName, 
-                        fromTableProperties, 
-                        toTableName, 
-                        toTableProperties, 
-                        primaryKeyInfo, 
-                        foreignKeyInfo, 
-                        primaryToForeignConverter, 
-                        foreignToPrimaryConverter));
+                RegisterRelation(schema, entityContainer, constraint);
             }
 
             return schema;
+        }
+
+        private static void RegisterRelation(DbSchema schema, EntityContainer entityContainer, ReferentialConstraint constraint)
+        {
+            string fromTableName = GetTableName(constraint.FromRole, entityContainer);
+            string toTableName = GetTableName(constraint.ToRole, entityContainer);
+
+            // entityType is the primary table, toTable is the foreign table...
+            DbTableInformation fromTable = schema.GetTable(fromTableName);
+            DbTableInformation toTable = schema.GetTable(toTableName);
+
+            // Creating the parameters for NMemory.Tables.RelationKeyConverterFactory
+            PropertyInfo[] fromTableProperties = GetRelationProperties(constraint.FromProperties, fromTable);
+            PropertyInfo[] toTableProperties = GetRelationProperties(constraint.ToProperties, toTable);
+
+            // Create primary key info 
+            LambdaExpression primaryKeySelector = LambdaExpressionHelper.CreateSelectorExpression(fromTable.EntityType, fromTableProperties);
+            Type primaryKeyType = primaryKeySelector.Body.Type;
+            IKeyInfo primaryKeyInfo = CreateKeyInfo(primaryKeySelector);
+
+            // Create foreign key info
+            LambdaExpression foreignKeySelector = LambdaExpressionHelper.CreateSelectorExpression(toTable.EntityType, toTableProperties);
+            Type foreignKeyType = foreignKeySelector.Body.Type;
+            IKeyInfo foreignKeyInfo = CreateKeyInfo(foreignKeySelector);
+
+            // Create a IRelationContraints for defining relation mapping
+            List<IRelationContraint> relationConstraints = new List<IRelationContraint>();
+
+            for (int i = 0; i < fromTableProperties.Count(); i++)
+            {
+                // Should not use the generic RelationConstraint here. 
+                relationConstraints.Add(new RelationConstraint(fromTableProperties[i], toTableProperties[i]));
+            }
+
+            Delegate primaryToForeignConverter =
+                ReflectionHelper.GetMethodInfo(() =>
+                    RelationKeyConverterFactory.CreatePrimaryToForeignConverter<object, object>(null, null, null))
+                .GetGenericMethodDefinition()
+                .MakeGenericMethod(primaryKeyType, foreignKeyType)
+                .Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() }) as Delegate;
+
+            Delegate foreignToPrimaryConverter =
+                ReflectionHelper.GetMethodInfo(() =>
+                    RelationKeyConverterFactory.CreateForeignToPrimaryConverter<object, object>(null, null, null))
+                .GetGenericMethodDefinition()
+                .MakeGenericMethod(primaryKeyType, foreignKeyType)
+                .Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() }) as Delegate;
+
+            schema.RegisterRelation(
+                new DbRelationInformation(
+                    fromTableName,
+                    fromTableProperties,
+                    toTableName,
+                    toTableProperties,
+                    primaryKeyInfo,
+                    foreignKeyInfo,
+                    primaryToForeignConverter,
+                    foreignToPrimaryConverter));
         }
 
         private static bool IsIdentityType(Type fieldType)

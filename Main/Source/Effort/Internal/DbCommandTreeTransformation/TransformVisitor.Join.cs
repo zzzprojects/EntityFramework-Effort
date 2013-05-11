@@ -63,11 +63,12 @@ namespace Effort.Internal.DbCommandTreeTransformation
                         this.Visit(expression.JoinCondition),
                         rightParam);
 
-                // TODO: Try to build Join expression
+                // The Where expression represents the join condition
+                // The NMemory query compiler will optimize this into a Join expression
 
                 Expression innerExpression =
                     this.queryMethodExpressionBuilder.Where(right, joinCondition);
-
+                
                 if (expression.ExpressionKind == DbExpressionKind.LeftOuterJoin)
                 {
                     innerExpression =

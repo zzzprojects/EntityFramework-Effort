@@ -165,5 +165,28 @@ namespace Effort.Test.Features
 
             Assert.IsTrue(result.Check());
         }
+
+        [TestMethod]
+        public void OuterApply()
+        {
+            string expected = "[{\"EmployeeID\":3,\"FirstName\":\"Janet\"},{\"EmployeeID\":4,\"FirstName\":\"Margaret\"},{\"EmployeeID\":8,\"FirstName\":\"Laura\"},{\"EmployeeID\":1,\"FirstName\":\"Nancy\"},{\"EmployeeID\":2,\"FirstName\":\"Andrew\"},{\"EmployeeID\":6,\"FirstName\":\"Michael\"},{\"EmployeeID\":7,\"FirstName\":\"Robert\"},{\"EmployeeID\":5,\"FirstName\":\"Steven\"},{\"EmployeeID\":9,\"FirstName\":\"Anne\"}]";
+#if EF6
+            expected = "[{\"EmployeeID\":3,\"C1\":\"Janet\"},{\"EmployeeID\":4,\"C1\":\"Margaret\"},{\"EmployeeID\":8,\"C1\":\"Laura\"},{\"EmployeeID\":1,\"C1\":\"Nancy\"},{\"EmployeeID\":2,\"C1\":\"Andrew\"},{\"EmployeeID\":6,\"C1\":\"Michael\"},{\"EmployeeID\":7,\"C1\":\"Robert\"},{\"EmployeeID\":5,\"C1\":\"Steven\"},{\"EmployeeID\":9,\"C1\":\"Anne\"}]";
+#endif
+            // TODO: EF6 does not use Apply in this query, a better test case is required
+
+            ICorrectness result = this.tester.TestQuery(
+                context => context.Employees
+                    .GroupBy(e => e.EmployeeID) 
+                    .Select(n => new { Id = n.Key, Date = n.FirstOrDefault().FirstName }),
+                expected);
+
+            Assert.IsTrue(result.Check());
+        }
+
+        [TestMethod]
+        public void CrossApply()
+        {
+        }
     }
 }

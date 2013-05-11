@@ -25,18 +25,67 @@
 namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
+    using System.Collections.Generic;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
 #else
     using System.Data.Common.CommandTrees;
 #endif
     using System.Linq.Expressions;
+    using Effort.Internal.Common;
 
     internal partial class TransformVisitor
     {
         public override Expression Visit(DbApplyExpression expression)
         {
-            throw new NotImplementedException();
+            bool outer = false;
+
+            switch (expression.ExpressionKind)
+            {
+                case DbExpressionKind.OuterApply:
+                    outer = true;
+                    break;
+                case DbExpressionKind.CrossApply:
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            Expression input = this.Visit(expression.Input.Expression);
+            Type inputType = TypeHelper.GetElementType(input.Type);
+
+            ParameterExpression inputParam =
+                Expression.Parameter(inputType, expression.Input.VariableName);
+
+            using (this.CreateVariable(inputParam, expression.Input.VariableName))
+            {
+                // Apply expression might contain reference to the Input element,
+                // so do the transformation in the variable scope
+                Expression apply = this.Visit(expression.Apply.Expression);
+                Type applyType = TypeHelper.GetElementType(apply.Type);
+
+                if (outer)
+                {
+                    apply = this.queryMethodExpressionBuilder.DefaultIfEmpty(apply);
+                }
+
+                // Collection expression for the SelectMany
+                LambdaExpression collectionSelector =
+                    Expression.Lambda(
+                        Expression.Convert(
+                            apply,
+                            typeof(IEnumerable<>).MakeGenericType(applyType)),
+                    inputParam);
+
+                // Create the SelectMany expression
+                Expression result = this.CreateCrossJoin(
+                    input,
+                    collectionSelector,
+                    expression.Input.VariableName,
+                    expression.Apply.VariableName);
+
+                return result;
+            }
         }
     }
 }

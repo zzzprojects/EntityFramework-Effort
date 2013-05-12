@@ -38,15 +38,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             Expression source = this.Visit(expression.Argument);
 
-            // zsvarnai:
-            // mivel nalunk az ideiglenes sorok nem mind nullable tipusuak, ezert elofordulhat olyan, 
-            // hogy nem nullable elemen hivodik DbIsNull
-            // Ez ilyenkor nem hasonlitja, hanem hamissal ter vissza
-            // Azt azert majd le kell tesztelni, hogy logikailag jo nem okozunk-e ezzel gondot
-
-            // tamasflamich:
-            // okoztunk :(
-
             if (source.Type.IsValueType && !TypeHelper.IsNullable(source.Type))
             {
                 return Expression.Constant(false);

@@ -31,12 +31,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
     using System.Data.Common.CommandTrees;
 #endif
     using System.Linq.Expressions;
+    using Effort.Exceptions;
 
     internal partial class TransformVisitor
     {
         public override Expression Visit(DbDerefExpression expression)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(
+                string.Format(
+                    ExceptionMessages.DbExpressionTransformationNotImplemented,
+                    typeof(DbDerefExpression).Name));
         }
     }
 }

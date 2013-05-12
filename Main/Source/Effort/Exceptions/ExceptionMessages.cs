@@ -73,5 +73,8 @@ namespace Effort.Exceptions
 
         public static readonly string TableInitializationFailed =
             "Unhandled exception while trying to initialize the content of '{0}' table";
+
+        public static readonly string DbExpressionTransformationNotImplemented =
+            "Transformation of {0} expression is not implemented";
     }
 }

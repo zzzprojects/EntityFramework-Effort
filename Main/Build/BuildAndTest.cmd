@@ -1,0 +1,1 @@
+Build.cmd /p:RunTests=True %*

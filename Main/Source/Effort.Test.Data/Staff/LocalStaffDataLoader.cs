@@ -38,8 +38,7 @@ namespace Effort.Test.Data.Staff
         private static IDataLoader CreateCsvLoader()
         {
             string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Staff\\Content");
+                AppDomain.CurrentDomain.BaseDirectory, "Staff\\Content");
 
             return new CsvDataLoader(path);
         }

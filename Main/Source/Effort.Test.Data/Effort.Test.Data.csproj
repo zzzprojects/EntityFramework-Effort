@@ -133,7 +133,9 @@
     <None Include="App.Config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Feature\Content\TimestampSupport.csv" />
+    <None Include="Feature\Content\TimestampSupport.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Feature\Feature.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Feature.Context.cs</LastGenOutput>
@@ -146,19 +148,45 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Feature.cs</LastGenOutput>
     </None>
-    <None Include="Northwind\Content\Categories.csv" />
-    <None Include="Northwind\Content\CustomerCustomerDemo.csv" />
-    <None Include="Northwind\Content\CustomerDemographics.csv" />
-    <None Include="Northwind\Content\Customers.csv" />
-    <None Include="Northwind\Content\Employees.csv" />
-    <None Include="Northwind\Content\EmployeeTerritories.csv" />
-    <None Include="Northwind\Content\Order Details.csv" />
-    <None Include="Northwind\Content\Orders.csv" />
-    <None Include="Northwind\Content\Products.csv" />
-    <None Include="Northwind\Content\Region.csv" />
-    <None Include="Northwind\Content\Shippers.csv" />
-    <None Include="Northwind\Content\Suppliers.csv" />
-    <None Include="Northwind\Content\Territories.csv" />
+    <None Include="Northwind\Content\Categories.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\CustomerCustomerDemo.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\CustomerDemographics.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Customers.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Employees.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\EmployeeTerritories.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Order Details.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Orders.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Products.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Region.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Shippers.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Suppliers.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Content\Territories.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Northwind\Northwind.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Northwind.Context.cs</LastGenOutput>
@@ -172,6 +200,9 @@
       <LastGenOutput>Northwind.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <None Include="Staff\Content\People.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Effort\Effort.csproj">
@@ -182,9 +213,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Staff\Content\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Northwind\Content\Northwind.sql" />
   </ItemGroup>

@@ -30,8 +30,8 @@
         </CompileConfig>
     </ItemGroup>
  
-    <Target Name="default" DependsOnTargets="Initialize; Compile; Collect; NugetPackage; ZipPackage; Cleanup" />
-    
+	<Target Name="default" DependsOnTargets="Initialize; Compile; RunTests; Collect; NugetPackage; ZipPackage; Cleanup" /> 
+
     <Target Name="Initialize">
         <RemoveDir Directories="$(TempDir)" />
         <RemoveDir Directories="$(PackageDir)" />
@@ -43,6 +43,17 @@
         <RemoveDir Directories="$(SolutionDir)\Effort\bin\%(CompileConfig.Identity)\" />
         <MSBuild Projects="$(SolutionFile)" Properties="Configuration=%(CompileConfig.Identity);Platform=Any CPU"  />
     </Target>
+	
+	<Target Name="RunTests" Condition="$(RunTests)=='True'" Outputs="%(CompileConfig.Identity)">
+		<PropertyGroup>
+			<TestSuccess>1</TestSuccess>
+		</PropertyGroup>
+		<Message Text="Run tests" />
+		<Exec Command="&quot;$(VS110COMNTOOLS)..\IDE\mstest.exe&quot; /testcontainer:&quot;$(SolutionDir)\Effort.Test\bin\%(CompileConfig.Identity)\Effort.Test.dll&quot; /testsettings:&quot;$(SolutionDir)\Local.testsettings&quot;">
+			 <Output TaskParameter="ExitCode" PropertyName="TestSuccess"/>
+		</Exec>
+		<Error Text="One or more tests failed" Condition="'$(TestSuccess)'!='0'" />
+	</Target>
  
     <Target Name="Collect" Outputs="%(CompileConfig.Identity)">
         <PropertyGroup>

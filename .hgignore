@@ -6,5 +6,6 @@ obj/**
 *.orig
 StyleCop.Cache
 Main/Build/Packages/**
+Main/Build/TestResults/**
 Main/Source/packages/**
 Main/Source/TestResults/**

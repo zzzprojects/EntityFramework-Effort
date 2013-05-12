@@ -47,7 +47,9 @@ namespace Effort.DataLoaders
 
             if (!this.source.Exists)
             {
-                throw new ArgumentException("", "path");
+                throw new ArgumentException(
+                    string.Format("Path \"{0}\" does not exists", path), 
+                    "path");
             }
         }
 

@@ -38,8 +38,7 @@ namespace Effort.Test.Data.Northwind
         private static IDataLoader CreateCsvLoader()
         {
             string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Northwind\\Content");
+                AppDomain.CurrentDomain.BaseDirectory, "Northwind\\Content");
 
             return new CsvDataLoader(path);
         }

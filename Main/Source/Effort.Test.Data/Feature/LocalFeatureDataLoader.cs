@@ -39,8 +39,7 @@ namespace Effort.Test.Data.Feature
         private static IDataLoader CreateCsvLoader()
         {
             string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".\\..\\..\\..\\Effort.Test.Data\\Feature\\Content");
+                AppDomain.CurrentDomain.BaseDirectory, "Feature\\Content");
 
             return new CsvDataLoader(path);
         }

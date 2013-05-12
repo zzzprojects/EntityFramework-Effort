@@ -169,16 +169,19 @@ namespace Effort.Test.Features
         [TestMethod]
         public void OuterApply()
         {
-            string expected = "[{\"EmployeeID\":3,\"FirstName\":\"Janet\"},{\"EmployeeID\":4,\"FirstName\":\"Margaret\"},{\"EmployeeID\":8,\"FirstName\":\"Laura\"},{\"EmployeeID\":1,\"FirstName\":\"Nancy\"},{\"EmployeeID\":2,\"FirstName\":\"Andrew\"},{\"EmployeeID\":6,\"FirstName\":\"Michael\"},{\"EmployeeID\":7,\"FirstName\":\"Robert\"},{\"EmployeeID\":5,\"FirstName\":\"Steven\"},{\"EmployeeID\":9,\"FirstName\":\"Anne\"}]";
+            string expected = "[{\"FirstName\":\"Nancy\",\"FirstName1\":\"Michael\"},{\"FirstName\":\"Andrew\",\"FirstName1\":\"Robert\"},{\"FirstName\":\"Janet\",\"FirstName1\":\"Laura\"},{\"FirstName\":\"Margaret\",\"FirstName1\":\"Anne\"},{\"FirstName\":\"Steven\",\"FirstName1\":null},{\"FirstName\":\"Michael\",\"FirstName1\":null},{\"FirstName\":\"Robert\",\"FirstName1\":null},{\"FirstName\":\"Laura\",\"FirstName1\":null},{\"FirstName\":\"Anne\",\"FirstName1\":null}]";
 #if EF6
-            expected = "[{\"EmployeeID\":3,\"C1\":\"Janet\"},{\"EmployeeID\":4,\"C1\":\"Margaret\"},{\"EmployeeID\":8,\"C1\":\"Laura\"},{\"EmployeeID\":1,\"C1\":\"Nancy\"},{\"EmployeeID\":2,\"C1\":\"Andrew\"},{\"EmployeeID\":6,\"C1\":\"Michael\"},{\"EmployeeID\":7,\"C1\":\"Robert\"},{\"EmployeeID\":5,\"C1\":\"Steven\"},{\"EmployeeID\":9,\"C1\":\"Anne\"}]";
+            expected = "[{\"EmployeeID\":1,\"FirstName\":\"Nancy\",\"FirstName1\":\"Michael\"},{\"EmployeeID\":2,\"FirstName\":\"Andrew\",\"FirstName1\":\"Robert\"},{\"EmployeeID\":3,\"FirstName\":\"Janet\",\"FirstName1\":\"Laura\"},{\"EmployeeID\":4,\"FirstName\":\"Margaret\",\"FirstName1\":\"Anne\"},{\"EmployeeID\":5,\"FirstName\":\"Steven\",\"FirstName1\":null},{\"EmployeeID\":6,\"FirstName\":\"Michael\",\"FirstName1\":null},{\"EmployeeID\":7,\"FirstName\":\"Robert\",\"FirstName1\":null},{\"EmployeeID\":8,\"FirstName\":\"Laura\",\"FirstName1\":null},{\"EmployeeID\":9,\"FirstName\":\"Anne\",\"FirstName1\":null}]";
 #endif
-            // TODO: EF6 does not use Apply in this query, a better test case is required
 
             ICorrectness result = this.tester.TestQuery(
-                context => context.Employees
-                    .GroupBy(e => e.EmployeeID) 
-                    .Select(n => new { Id = n.Key, Date = n.FirstOrDefault().FirstName }),
+                context =>
+                    from emp1 in context.Employees
+                    from emp2 in context.Employees
+                        .Where(e => e.EmployeeID == emp1.EmployeeID + 5)
+                        .Take(2)
+                        .DefaultIfEmpty()
+                    select new { e1 = emp1.FirstName, e2 = emp2.FirstName },
                 expected);
 
             Assert.IsTrue(result.Check());
@@ -187,6 +190,21 @@ namespace Effort.Test.Features
         [TestMethod]
         public void CrossApply()
         {
+            string expected = "[{\"FirstName\":\"Nancy\",\"FirstName1\":\"Michael\"},{\"FirstName\":\"Andrew\",\"FirstName1\":\"Robert\"},{\"FirstName\":\"Janet\",\"FirstName1\":\"Laura\"},{\"FirstName\":\"Margaret\",\"FirstName1\":\"Anne\"}]";
+#if EF6
+            expected = "[{\"EmployeeID\":1,\"FirstName\":\"Nancy\",\"FirstName1\":\"Michael\"},{\"EmployeeID\":2,\"FirstName\":\"Andrew\",\"FirstName1\":\"Robert\"},{\"EmployeeID\":3,\"FirstName\":\"Janet\",\"FirstName1\":\"Laura\"},{\"EmployeeID\":4,\"FirstName\":\"Margaret\",\"FirstName1\":\"Anne\"}]";
+#endif
+
+            ICorrectness result = this.tester.TestQuery(
+                context =>
+                    from emp1 in context.Employees
+                    from emp2 in context.Employees
+                        .Where(e => e.EmployeeID == emp1.EmployeeID + 5)
+                        .Take(2)
+                    select new { e1 = emp1.FirstName, e2 = emp2.FirstName },
+                expected);
+
+            Assert.IsTrue(result.Check());
         }
     }
 }

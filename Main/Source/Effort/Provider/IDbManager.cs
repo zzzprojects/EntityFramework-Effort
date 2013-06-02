@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DbContainerConfigurationWrapper.cs" company="Effort Team">
+// <copyright file="IDbManager.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,31 +22,25 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement
+namespace Effort.Provider
 {
-    using Effort.Internal.DbManagement.Engine;
-    using Effort.Provider;
-
-    internal class DbContainerConfigurationWrapper : IDbConfiguration
+    /// <summary>
+    ///     Provides functionality for managing the database.
+    /// </summary>
+    public interface IDbManager
     {
-        private DbContainer container;
+        /// <summary>
+        ///     Enables or disables all the identity fields in the database.
+        /// </summary>
+        /// <param name="enabled">
+        ///     if set to <c>true</c> the identity fields will be disabled.
+        /// </param>
+        void SetIdentityFields(bool enabled);
 
-        public DbContainerConfigurationWrapper(DbContainer container)
-        {
-            this.container = container;
-        }
-
-        public void SetIdentityFields(bool enabled)
-        {
-            this.container.SetIdentityFields(enabled);
-        }
-
-        public void ClearMigrationHistory()
-        {
-            IExtendedTable table = 
-                this.container.GetTable("__MigrationHistory") as IExtendedTable;
-
-            table.Clear();
-        }
+        /// <summary>
+        ///     Clears Entity Framework migration history by deleting all records from the 
+        ///     appropriate tables.
+        /// </summary>
+        void ClearMigrationHistory();
     }
 }

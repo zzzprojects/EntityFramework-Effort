@@ -162,7 +162,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.UnionAll.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.VariableReference.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TraversalVisitor.cs" />
-    <Compile Include="Internal\DbManagement\DbContainerConfigurationWrapper.cs" />
+    <Compile Include="Internal\DbManagement\DbContainerManagerWrapper.cs" />
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedTableFactory.cs" />
@@ -273,7 +273,7 @@
     <Compile Include="Provider\EffortTransaction.cs" />
     <Compile Include="Provider\EffortVersion.cs" />
     <Compile Include="Provider\EffortProviderManifestTokens.cs" />
-    <Compile Include="Provider\IDbConfiguration.cs" />
+    <Compile Include="Provider\IDbManager.cs" />
     <Compile Include="Provider\EffortProviderInvariantName.cs" />
   </ItemGroup>
   <ItemGroup>

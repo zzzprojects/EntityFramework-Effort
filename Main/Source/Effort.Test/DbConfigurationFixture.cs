@@ -50,9 +50,9 @@ namespace Effort.Test
                 // DbConfiguration require open connection
                 connection.Open();
                 // Disable identity fields
-                connection.DbConfiguration.SetIdentityFields(false);
+                connection.DbManager.SetIdentityFields(false);
                 // Clear migration history to avoid exception
-                connection.DbConfiguration.ClearMigrationHistory();
+                connection.DbManager.ClearMigrationHistory();
                 // EF cannot handle open connection (fixed in EF6)
                 connection.Close();
 
@@ -67,7 +67,7 @@ namespace Effort.Test
 
                 // Enable identity field
                 connection.Open();
-                connection.DbConfiguration.SetIdentityFields(true);
+                connection.DbManager.SetIdentityFields(true);
                 connection.Close();
             }
 

@@ -37,7 +37,7 @@ namespace Effort.Provider
     public class EffortConnection : DbConnection
     {
         private string lastContainerId;
-        private DbContainerConfigurationWrapper containerConfiguration;
+        private DbContainerManagerWrapper containerConfiguration;
         private DbContainer container;
 
         private Guid identifier;
@@ -180,7 +180,7 @@ namespace Effort.Provider
         /// <returns>
         ///     The configuration object.
         /// </returns>
-        public IDbConfiguration DbConfiguration
+        public IDbManager DbManager
         {
             get
             {
@@ -214,7 +214,7 @@ namespace Effort.Provider
             this.container = 
                 DbContainerStore.GetDbContainer(instanceId, this.CreateDbContainer);
 
-            this.containerConfiguration = new DbContainerConfigurationWrapper(this.container);
+            this.containerConfiguration = new DbContainerManagerWrapper(this.container);
 
             this.lastContainerId = instanceId;
             this.ChangeConnectionState(ConnectionState.Open);

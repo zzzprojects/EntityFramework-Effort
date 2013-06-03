@@ -7,7 +7,8 @@
         <SolutionFile>$(SolutionDir)\Effort.sln</SolutionFile>
         <EffortNugetPackageDir>EffortNuget</EffortNugetPackageDir>
         <EffortZipPackageDir>EffortZip</EffortZipPackageDir>
-        
+    
+    <SignAssembly Condition="$(SignAssembly) == ''">False</SignAssembly>
         <RunTests Condition="$(RunTests) == ''">False</RunTests>
     </PropertyGroup>
   
@@ -30,7 +31,7 @@
         </CompileConfig>
     </ItemGroup>
  
-	<Target Name="default" DependsOnTargets="Initialize; Compile; RunTests; Collect; NugetPackage; ZipPackage; Cleanup" /> 
+  <Target Name="default" DependsOnTargets="Initialize; Compile; RunTests; Collect; NugetPackage; ZipPackage; Cleanup" /> 
 
     <Target Name="Initialize">
         <RemoveDir Directories="$(TempDir)" />
@@ -39,21 +40,43 @@
     </Target>
  
     <Target Name="Compile" Outputs="%(CompileConfig.Identity)">
-        <Message Text="Build task with &quot;%(CompileConfig.Identity)&quot; configuration" />
+    <PropertyGroup>
+      <SigningKeyDir>$(BaseDir)\Build</SigningKeyDir>
+      <PublicKey>$(SigningKeyDir)\PublicKey.snk</PublicKey>
+      <KeyPair>$(SigningKeyDir)\KeyPair.snk</KeyPair>
+      <KeyPairAvailable>False</KeyPairAvailable>
+      <KeyPairAvailable Condition="Exists('$(KeyPair)')">True</KeyPairAvailable>
+      <KeyFile Condition="$(KeyPairAvailable)">$(KeyPair)</KeyFile>
+      <KeyFile Condition="!$(KeyPairAvailable)">$(PublicKey)</KeyFile>
+      <DelaySign>True</DelaySign>
+      <DelaySign Condition="$(KeyPairAvailable)">False</DelaySign>
+    </PropertyGroup>
+  
         <RemoveDir Directories="$(SolutionDir)\Effort\bin\%(CompileConfig.Identity)\" />
-        <MSBuild Projects="$(SolutionFile)" Properties="Configuration=%(CompileConfig.Identity);Platform=Any CPU"  />
+    <Message Text="Build task with &quot;%(CompileConfig.Identity)&quot; configuration" />
+    <Message Importance="High" Text="Code signing is enabled" Condition="$(SignAssembly)" />
+    <Message Importance="High" Text="Key pair was not found, executing delayed signing" Condition="$(SignAssembly) And ! $(KeyPairAvailable)" />
+    
+        <MSBuild 
+      Projects="$(SolutionFile)" 
+      Properties="
+        Configuration=%(CompileConfig.Identity);
+        Platform=Any CPU;
+        SignAssembly=$(SignAssembly);
+        DelaySign=$(DelaySign);
+        AssemblyOriginatorKeyFile=$(KeyFile)"  />
     </Target>
-	
-	<Target Name="RunTests" Condition="$(RunTests)=='True'" Outputs="%(CompileConfig.Identity)">
-		<PropertyGroup>
-			<TestSuccess>1</TestSuccess>
-		</PropertyGroup>
-		<Message Text="Run tests" />
-		<Exec Command="&quot;$(VS110COMNTOOLS)..\IDE\mstest.exe&quot; /testcontainer:&quot;$(SolutionDir)\Effort.Test\bin\%(CompileConfig.Identity)\Effort.Test.dll&quot; /testsettings:&quot;$(SolutionDir)\Local.testsettings&quot;">
-			 <Output TaskParameter="ExitCode" PropertyName="TestSuccess"/>
-		</Exec>
-		<Error Text="One or more tests failed" Condition="'$(TestSuccess)'!='0'" />
-	</Target>
+  
+  <Target Name="RunTests" Condition="$(RunTests)=='True'" Outputs="%(CompileConfig.Identity)">
+    <PropertyGroup>
+      <TestSuccess>1</TestSuccess>
+    </PropertyGroup>
+    <Message Text="Run tests" />
+    <Exec Command="&quot;$(VS110COMNTOOLS)..\IDE\mstest.exe&quot; /testcontainer:&quot;$(SolutionDir)\Effort.Test\bin\%(CompileConfig.Identity)\Effort.Test.dll&quot; /testsettings:&quot;$(SolutionDir)\Local.testsettings&quot;">
+       <Output TaskParameter="ExitCode" PropertyName="TestSuccess"/>
+    </Exec>
+    <Error Text="One or more tests failed" Condition="'$(TestSuccess)'!='0'" />
+  </Target>
  
     <Target Name="Collect" Outputs="%(CompileConfig.Identity)">
         <PropertyGroup>

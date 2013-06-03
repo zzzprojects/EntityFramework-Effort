@@ -1,0 +1,1 @@
+Build.cmd /p:SignAssembly=True %*

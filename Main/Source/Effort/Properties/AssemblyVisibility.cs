@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="AssemblyInfo.cs" company="Effort Team">
+// <copyright file="AssemblyVisibility.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,26 +22,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Effort")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Effort")]
-[assembly: AssemblyCopyright("")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+#if SIGN_ASSEMBLY
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: InternalsVisibleTo("Effort.Test, PublicKey=0024000004800000940000000602000000240000525341310004000001000100f189e6dad4bfd30224bd153091a88a16eb0505aa2e8504b9bb7e675ec47652056a56e4f8467681d7d7959a2b6653551bbf72397c316de6ba7818e799c29f319528e7e7a91b510b2a309c41393ef9b508a44655c58856e7fee994127cf91a7e75e72b294e3bee58939d8a107ff4544aa12e19e37d561860ec0627ad9c4be5aba4")]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9e2c7c0c-4134-48b4-93c9-9bb075d991e5")]
+#else
+
+[assembly: InternalsVisibleTo("Effort.Test")]
+
+#endif

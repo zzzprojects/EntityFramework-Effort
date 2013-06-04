@@ -19,8 +19,8 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
-  <Import Project="$(SolutionDir)\AssemblySigning.targets" />
+  <Import Project="..\BuildConfigurations.targets" />
+  <Import Project="..\AssemblySigning.targets" />
   <PropertyGroup>
     <DocumentationFile>$(OutputPath)\Effort.xml</DocumentationFile>
   </PropertyGroup>

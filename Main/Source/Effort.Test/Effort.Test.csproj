@@ -24,7 +24,7 @@
     <SccProvider>
     </SccProvider>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
+  <Import Project="..\BuildConfigurations.targets" />
   <Choose>
     <When Condition="$(ExternalEntityFramework) == 'false'">
       <ItemGroup>

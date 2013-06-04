@@ -14,7 +14,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\BuildConfigurations.targets" />
+  <Import Project="..\BuildConfigurations.targets" />
   <Choose>
     <When Condition="$(ExternalEntityFramework) == 'false'">
       <ItemGroup>

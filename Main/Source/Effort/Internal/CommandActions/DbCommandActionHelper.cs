@@ -39,6 +39,8 @@ namespace Effort.Internal.CommandActions
     using Effort.Internal.DbCommandTreeTransformation;
     using Effort.Internal.DbManagement;
     using NMemory.Tables;
+    using Effort.Internal.TypeConversion;
+    using NMemory.StoredProcedures;
 
     internal static class DbCommandActionHelper
     {
@@ -50,7 +52,8 @@ namespace Effort.Internal.CommandActions
 
             if (returnExpression == null)
             {
-                throw new NotSupportedException("The type of the Returning properties is not DbNewInstanceExpression");
+                throw new NotSupportedException(
+                    "The type of the Returning properties is not DbNewInstanceExpression");
             }
 
             List<FieldDescription> result = new List<FieldDescription>();
@@ -78,7 +81,8 @@ namespace Effort.Internal.CommandActions
 
             if (source == null)
             {
-                throw new NotSupportedException("The type of the Target property is not DbScanExpression");
+                throw new NotSupportedException(
+                    "The type of the Target property is not DbScanExpression");
             }
 
             return container.Internal.GetTable(source.Target.GetTableName());
@@ -95,7 +99,8 @@ namespace Effort.Internal.CommandActions
 
                 if (property == null)
                 {
-                    throw new NotSupportedException(setClause.Property.ExpressionKind.ToString() + " is not supported");
+                    throw new NotSupportedException(
+                        setClause.Property.ExpressionKind.ToString() + " is not supported");
                 }
 
                 result.Add(property.Property.GetColumnName(), setClause.Value);
@@ -114,7 +119,8 @@ namespace Effort.Internal.CommandActions
             visitor.TableProvider = container;
 
             // Get the source expression
-            ConstantExpression source = visitor.Visit(commandTree.Target.Expression) as ConstantExpression;
+            ConstantExpression source = 
+                visitor.Visit(commandTree.Target.Expression) as ConstantExpression;
 
             // This should be a constant expression
             if (source == null)
@@ -138,7 +144,8 @@ namespace Effort.Internal.CommandActions
                         context);
 
                 // Create Where expression
-                LinqMethodExpressionBuilder queryMethodBuilder = new LinqMethodExpressionBuilder();
+                LinqMethodExpressionBuilder queryMethodBuilder = 
+                    new LinqMethodExpressionBuilder();
 
                 return queryMethodBuilder.Where(source, predicateExpression);
             }
@@ -157,10 +164,39 @@ namespace Effort.Internal.CommandActions
 
                 object value = entity.GetType().GetProperty(property).GetValue(entity, null);
 
-                entityReturningValues[property] = context.DbContainer.TypeConverter.ConvertClrObject(value, returningFields[i].Type);
+                entityReturningValues[property] = context
+                    .DbContainer
+                    .TypeConverter
+                    .ConvertClrObject(value, returningFields[i].Type);
             }
 
             return entityReturningValues;
+        }
+
+        public static IDictionary<string, object> FormatParameters(
+            IList<CommandActionParameter> source,
+            IList<ParameterDescription> description,
+            ITypeConverter converter)
+        {
+            // Determine parameter values
+            Dictionary<string, object> result = new Dictionary<string, object>();
+
+            foreach (CommandActionParameter param in source)
+            {
+                string name = param.Name;
+                object value = param.Value;
+
+                // Find the description of the parameter
+                ParameterDescription expectedParam =
+                    description.FirstOrDefault(p => p.Name == name);
+
+                // Custom conversion
+                value = converter.ConvertClrObject(value, expectedParam.Type);
+
+                result.Add(name, value);
+            }
+
+            return result;
         }
     }
 }

@@ -68,26 +68,12 @@ namespace Effort.Internal.CommandActions
             ISharedStoredProcedure procedure =
                 DatabaseReflectionHelper.CreateSharedStoredProcedure(query);
 
-            // Determine parameter values
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-
-            foreach (CommandActionParameter param in context.Parameters)
-            {
-                string name = param.Name;
-                object value = param.Value;
-
-                // Find the description of the parameter
-                ParameterDescription expectedParam = 
-                    procedure.Parameters.FirstOrDefault(p => p.Name == param.Name);
-
-                // Custom conversion
-                value = context
-                    .DbContainer
-                    .TypeConverter
-                    .ConvertClrObject(value, expectedParam.Type);
-
-                parameters.Add(name, value);
-            }
+            // Format the parameter values
+            IDictionary<string, object> parameters =
+                DbCommandActionHelper.FormatParameters(
+                    context.Parameters,
+                    procedure.Parameters,
+                    context.DbContainer.TypeConverter);
 
             IEnumerable result = null;
 

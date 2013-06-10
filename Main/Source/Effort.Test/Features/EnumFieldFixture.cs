@@ -25,13 +25,16 @@
 namespace Effort.Test.Features
 {
     using System.Data.Common;
+    using System.Data.Entity.Infrastructure;
+#if !EFOLD
+    using System.Data.Entity.Core.Objects;
+#else
+    using System.Data.Objects;
+#endif
     using System.Linq;
     using Effort.Test.Data.Staff;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
-    using System.Data.Entity.Infrastructure;
-    using System.Data.Objects;
-    using System.Collections.Generic;
 
 #if NET45
     [TestClass]

@@ -140,8 +140,23 @@ namespace Effort.Provider
             // Store parameters in the context
             foreach (DbParameter parameter in this.Parameters)
             {
+                string name = parameter.ParameterName;
+                object value = parameter.Value;
+
+                if (value != null)
+                {
+                    Type originalType = value.GetType();
+
+                    // Resolve enum types
+                    if (originalType.IsEnum)
+                    {
+                        Type primitive = Enum.GetUnderlyingType(originalType);
+                        value = Convert.ChangeType(value, primitive);
+                    }
+                }
+
                 CommandActionParameter commandActionParameter =
-                    new CommandActionParameter(parameter.ParameterName, parameter.Value);
+                    new CommandActionParameter(name, value);
 
                 context.Parameters.Add(commandActionParameter);
             }

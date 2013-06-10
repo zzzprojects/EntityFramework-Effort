@@ -90,6 +90,7 @@
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Features\EnumFieldFixture.cs" />
     <Compile Include="Features\StringFieldFixture.cs" />
     <Compile Include="Features\DateFieldFixture.cs" />
     <Compile Include="Features\GuidKeyFixture.cs" />

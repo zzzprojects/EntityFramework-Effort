@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="StaffDbContext.cs" company="Effort Team">
+// <copyright file="EnumFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,38 +20,17 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 
 namespace Effort.Test.Data.Staff
 {
-    using System.Data.Common;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
+    using System.ComponentModel.DataAnnotations;
 
-    public class StaffDbContext : DbContext
+    public class EnumFieldEntity
     {
-        public StaffDbContext(DbConnection connection)
-            : this(connection, CompiledModels.DefaultModel)
-        { 
-        }
+        [Key]
+        public int Id { get; set; }
 
-        public StaffDbContext(DbConnection connection, DbCompiledModel model) 
-            : base(connection, model, false)
-        {
-        }
-
-        public IDbSet<Person> People { get; set; }
-
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
-
-        public IDbSet<DateFieldEntity> DateFieldEntities { get; set; }
-
-        public IDbSet<LargeStringFieldEntity> LargeStringFieldEntities { get; set; }
-
-        public IDbSet<DateTimeOffsetFieldEntity> DateTimeOffsetFieldEntities { get; set; }
-
-        public IDbSet<DateTimeFieldEntity> DateTimeFieldEntities { get; set; }
-
-        public IDbSet<EnumFieldEntity> EnumFieldEntities { get; set; }
+        public EnumFieldType Value { get; set; }
     }
 }

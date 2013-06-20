@@ -133,7 +133,7 @@
           DestinationFolder="$(TempDir)\$(EffortNugetPackageDir)" />
 
     <Exec WorkingDirectory="$(TempDir)\$(EffortNugetPackageDir)"
-          Command="$(SolutionDir)\.nuget\nuget.exe pack $(TempDir)\$(EffortNugetPackageDir)\Effort.nuspec" />
+          Command="&quot;$(SolutionDir)\.nuget\nuget.exe&quot; pack &quot;$(TempDir)\$(EffortNugetPackageDir)\Effort.nuspec&quot;" />
 
     <ItemGroup>
       <NugetPackage Include="$(TempDir)\$(EffortNugetPackageDir)\*.nupkg"/>

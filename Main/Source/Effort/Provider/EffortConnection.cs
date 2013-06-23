@@ -36,6 +36,8 @@ namespace Effort.Provider
     /// </summary>
     public class EffortConnection : DbConnection
     {
+        private string connectionString;
+
         private string lastContainerId;
         private DbContainerManagerWrapper containerConfiguration;
         private DbContainer container;
@@ -63,8 +65,28 @@ namespace Effort.Provider
         /// </returns>
         public override string ConnectionString
         {
-            get;
-            set;
+            get
+            {
+                return this.connectionString;
+            }
+
+            set
+            {
+                var builder = new EffortConnectionStringBuilder(value);
+
+                // Read the transient information now, because it is removed in the setter
+                // This is required because EF clones the connection string and these should
+                // not receive the IsTransient flag
+                if (builder.IsTransient)
+                {
+                    this.isPrimaryTransient = builder.IsTransient;	 
+                }
+
+                // Remove informations that should not inherit
+                builder.Normalize();
+
+                this.connectionString = builder.ConnectionString;
+            }
         }
 
         /// <summary>
@@ -288,13 +310,17 @@ namespace Effort.Provider
         {
             if (this.isPrimaryTransient)
             {
-                EffortConnectionStringBuilder connectionString = 
-                    new EffortConnectionStringBuilder(this.ConnectionString);
-
-                DbContainerStore.RemoveDbContainer(connectionString.InstanceId);
+                this.UnregisterContainer();
             }
 
             base.Dispose(disposing);
+        }
+
+        internal virtual void UnregisterContainer()
+        {
+            var builder = new EffortConnectionStringBuilder(this.ConnectionString);
+
+            DbContainerStore.RemoveDbContainer(builder.InstanceId);
         }
 
         private void ChangeConnectionState(ConnectionState state)

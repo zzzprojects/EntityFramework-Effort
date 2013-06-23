@@ -76,6 +76,7 @@
     <Compile Include="DataLoaders\CachingDataLoaderFixture.cs" />
     <Compile Include="DataLoaders\CsvDataLoaderFixture.cs" />
     <Compile Include="DbConfigurationFixture.cs" />
+    <Compile Include="EffortConnectionFixture.cs" />
     <Compile Include="Features\AggregationFixture.cs" />
     <Compile Include="Features\BinaryFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\DateTimeFunctionsFixture.cs" />
@@ -96,6 +97,9 @@
     <Compile Include="Features\GuidKeyFixture.cs" />
     <Compile Include="Internal\DataReaderInspector\DataReaderInspectorInvariantName.cs" />
     <Compile Include="Internal\ExceptionHelper.cs" />
+    <Compile Include="Internal\Fakes\EffortConnectionMock.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Internal\Fakes\FakeCachingTableDataLoaderStoreProxy.cs" />
     <Compile Include="Internal\Fakes\DataLoaderConfigurationLatchMock.cs" />
     <Compile Include="Internal\Fakes\FakeDataLoader.cs" />

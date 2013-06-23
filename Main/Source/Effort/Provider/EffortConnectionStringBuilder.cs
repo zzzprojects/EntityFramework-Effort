@@ -37,6 +37,7 @@ namespace Effort.Provider
         private static readonly string InstanceIdKey = "InstanceId";
         private static readonly string DataLoaderTypeKey = "DataLoaderType";
         private static readonly string DataLoaderArgKey = "DataLoaderArg";
+        private static readonly string IsTransientKey = "IsTransient";
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortConnectionStringBuilder" /> 
@@ -80,6 +81,40 @@ namespace Effort.Provider
             set
             {
                 this[InstanceIdKey] = value;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the value indicating whether the database instance should be
+        ///     transient. Transient databases live only during the lifetime of the connection
+        ///     object.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the database instance is transient; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsTransient
+        {
+            get
+            {
+                if (!this.ContainsKey(IsTransientKey))
+                {
+                    return false;
+                }
+
+                string valueString = this[IsTransientKey] as string;
+                bool value;
+
+                if (!bool.TryParse(valueString, out value)) 
+                {
+                    return false;
+                }
+
+                return value;
+            }
+
+            set
+            {
+                this[IsTransientKey] = value ? "True" : "False";
             }
         }
 
@@ -155,5 +190,21 @@ namespace Effort.Provider
                 this[DataLoaderArgKey] = value;
             }
         }
+
+        internal void Normalize()
+        {
+            // Ensure instance id for transient connection
+            if (this.IsTransient && string.IsNullOrEmpty(this.InstanceId))
+            {
+                this.InstanceId = Guid.NewGuid().ToString();
+            }
+
+            // Remove the transient information
+            if (this.ContainsKey(IsTransientKey))
+            {
+                this.Remove(IsTransientKey);
+            }
+        }
+        
     }
 }

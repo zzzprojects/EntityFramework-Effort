@@ -26,6 +26,7 @@ namespace Effort.Test
 {
     using Effort.Provider;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
     [TestClass]
     public class EffortConnectionStringBuilderFixture
@@ -33,10 +34,10 @@ namespace Effort.Test
         [TestMethod]
         public void EffortConnectionStringBuilder_InstanceId()
         {
-            EffortConnectionStringBuilder writer = new EffortConnectionStringBuilder();
+            var writer = new EffortConnectionStringBuilder();
             writer.InstanceId = "InstanceId";
 
-            EffortConnectionStringBuilder reader = new EffortConnectionStringBuilder(writer.ConnectionString);
+            var reader = new EffortConnectionStringBuilder(writer.ConnectionString);
 
             Assert.AreEqual("InstanceId", reader.InstanceId);
         }
@@ -44,10 +45,10 @@ namespace Effort.Test
         [TestMethod]
         public void EffortConnectionStringBuilder_DataLoaderArgument()
         {
-            EffortConnectionStringBuilder writer = new EffortConnectionStringBuilder();
+            var writer = new EffortConnectionStringBuilder();
             writer.DataLoaderArgument = "LoaderArgument";
 
-            EffortConnectionStringBuilder reader = new EffortConnectionStringBuilder(writer.ConnectionString);
+            var reader = new EffortConnectionStringBuilder(writer.ConnectionString);
 
             Assert.AreEqual("LoaderArgument", reader.DataLoaderArgument);
         }
@@ -55,12 +56,36 @@ namespace Effort.Test
         [TestMethod]
         public void EffortConnectionStringBuilder_DataLoaderType()
         {
-            EffortConnectionStringBuilder writer = new EffortConnectionStringBuilder();
+            var writer = new EffortConnectionStringBuilder();
             writer.DataLoaderType = typeof(Effort.DataLoaders.EmptyDataLoader);
 
-            EffortConnectionStringBuilder reader = new EffortConnectionStringBuilder(writer.ConnectionString);
+            var reader = new EffortConnectionStringBuilder(writer.ConnectionString);
 
             Assert.AreEqual(typeof(Effort.DataLoaders.EmptyDataLoader), reader.DataLoaderType);
+        }
+
+        [TestMethod]
+        public void EffortConnectionStringBuilder_IsTransient()
+        {
+            var writer = new EffortConnectionStringBuilder();
+            writer.IsTransient = true;
+
+            var reader = new EffortConnectionStringBuilder(writer.ConnectionString);
+
+            Assert.IsTrue(reader.IsTransient);
+        }
+
+        [TestMethod]
+        public void EffortConnectionStringBuilder_Normalize()
+        {
+            var builder = new EffortConnectionStringBuilder();
+            builder.IsTransient = true;
+
+            builder.Normalize();
+
+            Assert.IsFalse(builder.IsTransient);
+            Guid value;
+            Assert.IsTrue(Guid.TryParse(builder.InstanceId, out value));
         }
     }
 }

@@ -25,7 +25,7 @@
 namespace Effort.Test.Features
 {
     using System.Data.Common;
-    using Effort.Test.Data.Staff;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -37,8 +37,8 @@ namespace Effort.Test.Features
             DbConnection connection =
                 Effort.DbConnectionFactory.CreateTransient();
 
-            StaffDbContext context =
-                new StaffDbContext(
+            FeatureDbContext context =
+                new FeatureDbContext(
                     connection, 
                     CompiledModels.GetModel<LargeStringFieldEntity>());
 

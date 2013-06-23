@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="FeatureLocalDataLoader.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="TimeStampFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,28 +20,20 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Feature
+namespace Effort.Test.Data.Features
 {
-    using System;
-    using System.IO;
-    using Effort.DataLoaders;
+    using System.ComponentModel.DataAnnotations;
 
-    public class FeatureLocalDataLoader : CachingDataLoader
+    public class TimestampFieldEntity
     {
-        public FeatureLocalDataLoader()
-            : base(CreateCsvLoader())
-        {
+        [Key]
+        public int Id { get; set; }
 
-        }
+        public string Data { get; set; }
 
-        private static IDataLoader CreateCsvLoader()
-        {
-            string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "Feature\\Content");
-
-            return new CsvDataLoader(path);
-        }
+        [Timestamp]
+        public byte[] Timestamp { get; set; }
     }
 }

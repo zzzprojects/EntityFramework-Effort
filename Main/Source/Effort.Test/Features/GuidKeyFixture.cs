@@ -26,13 +26,13 @@ namespace Effort.Test.Features
 {
     using System;
     using System.Data.Common;
-    using Effort.Test.Data.Staff;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class GuidKeyFixture
     {
-        private StaffDbContext context;
+        private FeatureDbContext context;
 
         [TestInitialize]
         public void Initialize()
@@ -41,7 +41,7 @@ namespace Effort.Test.Features
                 Effort.DbConnectionFactory.CreateTransient();
 
             this.context = 
-                new StaffDbContext(
+                new FeatureDbContext(
                     connection, 
                     CompiledModels.GetModel<GuidKeyEntity>());
         }

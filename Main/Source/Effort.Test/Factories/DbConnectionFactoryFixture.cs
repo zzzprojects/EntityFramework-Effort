@@ -28,7 +28,7 @@ namespace Effort.Test.Factories
     using System.Linq;
     using Effort.DataLoaders;
     using Effort.Provider;
-    using Effort.Test.Data.Staff;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

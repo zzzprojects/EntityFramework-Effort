@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="LocalStaffDataLoader.cs" company="Effort Team">
+// <copyright file="StringFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,25 +22,15 @@
 // </copyright>
 // ----------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
-    using System;
-    using System.IO;
-    using Effort.DataLoaders;
+    using System.ComponentModel.DataAnnotations;
 
-    public class LocalStaffDataLoader : CachingDataLoader
+    public class StringFieldEntity
     {
-        public LocalStaffDataLoader()
-            : base(CreateCsvLoader())
-        {
-        }
+        [Key]
+        public int Id { get; set; }
 
-        private static IDataLoader CreateCsvLoader()
-        {
-            string path = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "Staff\\Content");
-
-            return new CsvDataLoader(path);
-        }
+        public string Value { get; set; }
     }
 }

@@ -22,7 +22,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
     using System;
 

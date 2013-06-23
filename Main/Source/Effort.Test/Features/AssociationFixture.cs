@@ -26,7 +26,6 @@ namespace Effort.Test.Features
 {
     using System;
     using System.Linq;
-    using Effort.Test.Data.Feature;
     using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
@@ -47,36 +46,6 @@ namespace Effort.Test.Features
                     TerritoryID = "0000",
                     TerritoryDescription = "New territory",
                     RegionID = 0
-                });
-
-            try
-            {
-                // The new region addition must fail
-                context.SaveChanges();
-
-                Assert.Fail();
-            }
-            catch (Exception ex)
-            {
-                // Search for ForeignKeyViolationException exception
-                Assert.IsTrue(
-                    ExceptionHelper.ContainsException(
-                        ex,
-                        "NMemory.Exceptions.ForeignKeyViolationException"));
-            }
-        }
-
-        [TestMethod]
-        public void MultiFieldAssociationViolation()
-        {
-            FeatureObjectContext context = new LocalFeatureObjectContext();
-
-            context.ForeignEntities.AddObject(
-                new ForeignEntity
-                {
-                    FID1 = 1,
-                    FID2 = 10,
-                    ID = 1
                 });
 
             try

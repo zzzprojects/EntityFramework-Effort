@@ -25,36 +25,30 @@
 namespace Effort.Test.Features
 {
     using System.Linq;
-    using Effort.Test.Data.Feature;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class TimestampFixture
     {
-        private FeatureObjectContext context;
+        private FeatureDbContext context;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.context = new LocalFeatureObjectContext();
-        }
-
-        [TestMethod]
-        public void TimestampQuery()
-        {
-            TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
-
-            Assert.IsNotNull(timestamp);
-            Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
+            this.context = 
+                new FeatureDbContext(
+                    Effort.DbConnectionFactory.CreateTransient(),
+                    CompiledModels.GetModel<TimestampFieldEntity>());
         }
 
         [TestMethod]
         public void TimestampInsert()
         {
-            TimestampSupport timestamp = new TimestampSupport();
-            timestamp.Description = "New record";
+            TimestampFieldEntity timestamp = new TimestampFieldEntity();
+            timestamp.Data = "New record";
             
-            context.TimestampSupports.AddObject(timestamp);
+            context.TimestampFieldEntities.Add(timestamp);
             context.SaveChanges();
 
             Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
@@ -63,11 +57,15 @@ namespace Effort.Test.Features
         [TestMethod]
         public void TimestampUpdate()
         {
-            TimestampSupport timestamp = context.TimestampSupports.FirstOrDefault();
+            TimestampFieldEntity timestamp = new TimestampFieldEntity();
+            timestamp.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp);
+            context.SaveChanges();
+
             byte[] currentValue = timestamp.Timestamp;
 
-            timestamp.Description += "(updated)";
-            
+            timestamp.Data += "(updated)"; 
             context.SaveChanges();
 
             Assert.IsTrue(timestamp.Timestamp.Select((v, i) => v != currentValue[i]).Any(x => x));

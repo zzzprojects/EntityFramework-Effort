@@ -1,5 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
-// <copyright file="Person.cs" company="Effort Team">
+﻿// --------------------------------------------------------------------------------------------
+// <copyright file="GuidKeyEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,20 +20,20 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ----------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Person
+    public class GuidKeyEntity
     {
         [Key]
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
+        public string Data { get; set; }
     }
 }

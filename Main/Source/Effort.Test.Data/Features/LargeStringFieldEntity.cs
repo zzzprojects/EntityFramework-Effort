@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EnumFieldType.cs" company="Effort Team">
+// <copyright file="LargeStringFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,13 +20,17 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// -------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
-    public enum EnumFieldType
+    using System.ComponentModel.DataAnnotations;
+
+    public class LargeStringFieldEntity
     {
-        EnumValue1,
-        EnumValue2
+        public int Id { get; set; }
+
+        [MaxLength(int.MaxValue)]
+        public string StringField { get; set; }
     }
 }

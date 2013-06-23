@@ -34,19 +34,19 @@ namespace Effort.Test.Features.CanonicalFunctions
     using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
-    using Effort.Test.Data.Staff;
+    using Effort.Test.Data.Features;
 
     [TestClass]
     public class DateTimeFunctionsFixture
     {
-        private StaffDbContext context;
+        private FeatureDbContext context;
         private static readonly DateTime storedDate = new DateTime(2012, 1, 2, 3, 4, 5, 100);
 
         [TestInitialize]
         public void Initialize()
         {
             this.context =
-                new StaffDbContext(
+                new FeatureDbContext(
                     Effort.DbConnectionFactory.CreateTransient(),
                     CompiledModels.GetModel<DateTimeFieldEntity>());
 

@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="LocalFeatureObjectContext.cs" company="Effort Team">
+// <copyright file="LocalFeatureDataLoader.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,47 +22,25 @@
 // </copyright>
 // ----------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Feature
+namespace Effort.Test.Data.Features
 {
-#if !EFOLD
-    using System.Data.Entity.Core.EntityClient;
-#else
-    using System.Data.EntityClient;
-#endif
+    using System;
+    using System.IO;
     using Effort.DataLoaders;
 
-    public class LocalFeatureObjectContext : FeatureObjectContext
+    public class LocalFeatureDataLoader : CachingDataLoader
     {
-        public LocalFeatureObjectContext()
-            : this(FeatureObjectContext.DefaultConnectionString)
+        public LocalFeatureDataLoader()
+            : base(CreateCsvLoader())
         {
         }
 
-        public LocalFeatureObjectContext(bool useDataLoader)
-            : this(FeatureObjectContext.DefaultConnectionString, useDataLoader)
+        private static IDataLoader CreateCsvLoader()
         {
-        }
+            string path = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory, "Features\\Content");
 
-        public LocalFeatureObjectContext(string connectionString)
-            : this(connectionString, true)
-        {
-        }
-
-        public LocalFeatureObjectContext(string connectionString, bool useDataLoader)
-            : base(CreateEntityConnection(connectionString, useDataLoader))
-        {
-        }
-
-        private static EntityConnection CreateEntityConnection(string connectionString, bool useDataLoader)
-        {
-            IDataLoader loader = null;
-
-            if (useDataLoader)
-            {
-                loader = new FeatureLocalDataLoader();
-            }
-
-            return EntityConnectionFactory.CreateTransient(connectionString, loader);
+            return new CsvDataLoader(path);
         }
     }
 }

@@ -26,20 +26,20 @@ namespace Effort.Test.Features.CanonicalFunctions
 {
     using System;
     using System.Linq;
-    using Effort.Test.Data.Staff;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
 
     [TestClass]
     public class DateTimeOffsetFunctionsFixture
     {
-        private StaffDbContext context;
+        private FeatureDbContext context;
 
         [TestInitialize]
         public void Initialize()
         {
             this.context = 
-                new StaffDbContext(
+                new FeatureDbContext(
                     Effort.DbConnectionFactory.CreateTransient(),
                     CompiledModels.GetModel<DateTimeOffsetFieldEntity>());
 

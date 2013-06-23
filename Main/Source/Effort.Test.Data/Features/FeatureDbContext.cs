@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="LargeStringFieldEntity.cs" company="Effort Team">
+// <copyright file="FeatureDbContext.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,15 +22,38 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
-    using System.ComponentModel.DataAnnotations;
+    using System.Data.Common;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
 
-    public class LargeStringFieldEntity
+    public class FeatureDbContext : DbContext
     {
-        public int Id { get; set; }
+        public FeatureDbContext(DbConnection connection)
+            : this(connection, CompiledModels.DefaultModel)
+        { 
+        }
 
-        [MaxLength(int.MaxValue)]
-        public string StringField { get; set; }
+        public FeatureDbContext(DbConnection connection, DbCompiledModel model) 
+            : base(connection, model, true)
+        {
+        }
+
+        public IDbSet<StringFieldEntity> StringFieldEntities { get; set; }
+
+        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
+
+        public IDbSet<DateFieldEntity> DateFieldEntities { get; set; }
+
+        public IDbSet<LargeStringFieldEntity> LargeStringFieldEntities { get; set; }
+
+        public IDbSet<DateTimeOffsetFieldEntity> DateTimeOffsetFieldEntities { get; set; }
+
+        public IDbSet<DateTimeFieldEntity> DateTimeFieldEntities { get; set; }
+
+        public IDbSet<EnumFieldEntity> EnumFieldEntities { get; set; }
+
+        public IDbSet<TimestampFieldEntity> TimestampFieldEntities { get; set; }
     }
 }

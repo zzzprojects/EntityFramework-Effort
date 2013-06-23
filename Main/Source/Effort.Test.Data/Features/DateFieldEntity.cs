@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DateTimeFieldEntity.cs" company="Effort Team">
+// <copyright file="DateFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    public class DateTimeFieldEntity
+    public class DateFieldEntity
     {
         public int Id { get; set; }
 
-        public DateTime DateTime { get; set; }
+        //[Column(TypeName="date")]
+        public DateTime Date { get; set; } 
     }
 }

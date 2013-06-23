@@ -22,7 +22,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
     using System;
     using System.Collections.Concurrent;
@@ -30,10 +30,10 @@ namespace Effort.Test.Data.Staff
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Threading;
-    using System.Linq;
 
     public static class CompiledModels
     {
@@ -41,6 +41,7 @@ namespace Effort.Test.Data.Staff
 
         private static Lazy<DbCompiledModel> defaultModel;
         private static Lazy<DbCompiledModel> disabledIdentityModel;
+        private static Lazy<DbCompiledModel> tableNameModel;
 
         private static ConcurrentDictionary<string, DbCompiledModel> models;
         
@@ -54,12 +55,17 @@ namespace Effort.Test.Data.Staff
 
             defaultModel =
                 new Lazy<DbCompiledModel>(
-                    () => CreateSimpleModel(typeof(Person)),
+                    () => CreateSimpleModel(typeof(StringFieldEntity)),
                     mode);
 
             disabledIdentityModel =
                 new Lazy<DbCompiledModel>(
                     () => CreateDisabledIdentityModel(),
+                    mode);
+
+            tableNameModel =
+                new Lazy<DbCompiledModel>(
+                    () => CreateTableNameModel(),
                     mode);
         }
 
@@ -76,6 +82,14 @@ namespace Effort.Test.Data.Staff
             get
             {
                 return disabledIdentityModel.Value;
+            }
+        }
+
+        public static DbCompiledModel TableNameModel
+        {
+            get
+            {
+                return tableNameModel.Value;
             }
         }
 
@@ -110,9 +124,22 @@ namespace Effort.Test.Data.Staff
             RegisterEntityTypes(modelBuilder, null);
 
             modelBuilder
-                .Entity<Person>()
+                .Entity<StringFieldEntity>()
                 .Property(p => p.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+
+            return CompileModel(modelBuilder);
+        }
+
+        private static DbCompiledModel CreateTableNameModel()
+        {
+            DbModelBuilder modelBuilder = new DbModelBuilder();
+
+            RegisterEntityTypes(modelBuilder, null);
+
+            modelBuilder
+                .Entity<StringFieldEntity>()
+                .ToTable("Foo");
 
             return CompileModel(modelBuilder);
         }
@@ -128,7 +155,7 @@ namespace Effort.Test.Data.Staff
 
         private static void FindEntityTypes()
         {
-            PropertyInfo[] props = typeof(StaffDbContext).GetProperties();
+            PropertyInfo[] props = typeof(FeatureDbContext).GetProperties();
             List<Type> types = new List<Type>();
 
             foreach (PropertyInfo prop in props)
@@ -181,7 +208,5 @@ namespace Effort.Test.Data.Staff
             MethodCallExpression methodCall = expression.Body as MethodCallExpression;
             return methodCall.Method.GetGenericMethodDefinition();
         }
-
-
     }
 }

@@ -26,7 +26,7 @@ namespace Effort.Test
 {
     using System.Data.Common;
     using System.Linq;
-    using Effort.Test.Data.Staff;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -36,7 +36,7 @@ namespace Effort.Test
         public void DbContext_Create()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            StaffDbContext context = new StaffDbContext(connection);
+            FeatureDbContext context = new FeatureDbContext(connection);
 
             bool created1 = context.Database.CreateIfNotExists();
             bool created2 = context.Database.CreateIfNotExists();
@@ -49,9 +49,9 @@ namespace Effort.Test
         public void DbContext_Insert()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            StaffDbContext context = new StaffDbContext(connection);
+            FeatureDbContext context = new FeatureDbContext(connection);
 
-            context.People.Add(new Person { FirstName = "John", LastName = "Doe" });
+            context.StringFieldEntities.Add(new StringFieldEntity { Value = "Foo" });
             int count = context.SaveChanges();
 
             Assert.AreEqual(1, count);
@@ -61,52 +61,51 @@ namespace Effort.Test
         public void DbContext_Query()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            StaffDbContext context = new StaffDbContext(connection);
+            FeatureDbContext context = new FeatureDbContext(connection);
 
-            context.People.Add(new Person { FirstName = "John", LastName = "Doe" });
+            context.StringFieldEntities.Add(new StringFieldEntity { Value = "Foo" });
             context.SaveChanges();
 
-            Person person = context.People.Single();
+            StringFieldEntity person = context.StringFieldEntities.Single();
 
-            Assert.AreEqual("John", person.FirstName);
-            Assert.AreEqual("Doe", person.LastName);
+            Assert.AreEqual("Foo", person.Value);
         }
 
         [TestMethod]
         public void DbContext_Remove()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
-            StaffDbContext context = new StaffDbContext(connection);
+            FeatureDbContext context = new FeatureDbContext(connection);
 
-            context.People.Add(new Person { FirstName = "John", LastName = "Doe" });
+            context.StringFieldEntities.Add(new StringFieldEntity { Value = "Foo" });
             context.SaveChanges();
 
-            Person person = context.People.Single();
+            StringFieldEntity person = context.StringFieldEntities.Single();
 
-            context.People.Remove(person);
+            context.StringFieldEntities.Remove(person);
             int count = context.SaveChanges();
 
             Assert.AreEqual(1, count);
-            Assert.AreEqual(0, context.People.Count());
+            Assert.AreEqual(0, context.StringFieldEntities.Count());
         }
 
         /// <summary>
-        /// The default naming convention should make Effort to fetch the initial data from the
-        /// "People.csv" file.
+        ///     StringFieldEntity is directed to the Foo table
         /// </summary>
         [TestMethod]
-        public void DbContext_TableNameConvention()
+        public void DbContext_TableName()
         {
             DbConnection connection = 
                 DbConnectionFactory.CreateTransient(
-                    new LocalStaffDataLoader());
+                    new LocalFeatureDataLoader());
 
-            StaffDbContext context = new StaffDbContext(connection);
+            FeatureDbContext context = 
+                new FeatureDbContext(connection, CompiledModels.TableNameModel);
 
-            var result = context.People.ToList();
+            var result = context.StringFieldEntities.ToList();
 
             Assert.AreEqual(1, result.Count);
-            Assert.AreEqual("John", result[0].FirstName);
+            Assert.AreEqual("Foo", result[0].Value);
         }
     }
 }

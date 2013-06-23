@@ -26,7 +26,7 @@ namespace Effort.Test
 {
     using System;
     using Effort.Provider;
-    using Effort.Test.Data.Staff;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -38,14 +38,14 @@ namespace Effort.Test
             EffortConnection connection =
                 (EffortConnection)DbConnectionFactory.CreateTransient();
 
-            StaffDbContext context = new StaffDbContext(connection);
+            FeatureDbContext context = new FeatureDbContext(connection);
             context.Database.Initialize(true);
 
             {
                 // Create a separate context for initializing the data (schema without 
                 // identity field)
-                StaffDbContext dataInitContext = 
-                    new StaffDbContext(connection, CompiledModels.DisabledIdentityModel);
+                FeatureDbContext dataInitContext = 
+                    new FeatureDbContext(connection, CompiledModels.DisabledIdentityModel);
 
                 // DbConfiguration require open connection
                 connection.Open();
@@ -57,13 +57,12 @@ namespace Effort.Test
                 connection.Close();
 
                 // Add data with explicitly set id
-                Person initPerson = 
-                    new Person { Id = 5, FirstName = "John", LastName = "Doe" };
-                dataInitContext.People.Add(initPerson);
+                var initEntity = new StringFieldEntity { Id = 5, Value = "Car" };
+                dataInitContext.StringFieldEntities.Add(initEntity);
                 dataInitContext.SaveChanges();
 
                 // Identity generation should not be used
-                Assert.AreEqual(5, initPerson.Id);
+                Assert.AreEqual(5, initEntity.Id);
 
                 // Enable identity field
                 connection.Open();
@@ -71,12 +70,12 @@ namespace Effort.Test
                 connection.Close();
             }
 
-            Person person = new Person { Id = 0, FirstName = "Mike", LastName = "Smith" };
-            context.People.Add(person);
+            var entity = new StringFieldEntity { Id = 0, Value = "Bicycle" };
+            context.StringFieldEntities.Add(entity);
             context.SaveChanges();
 
             // Identity generation should be used
-            Assert.AreEqual(6, person.Id);
+            Assert.AreEqual(6, entity.Id);
         }
     }
 }

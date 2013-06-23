@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DateFieldEntity.cs" company="Effort Team">
+// <copyright file="EnumFieldType.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,18 +20,13 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
-    using System;
-    using System.ComponentModel.DataAnnotations.Schema;
-
-    public class DateFieldEntity
+    public enum EnumFieldType
     {
-        public int Id { get; set; }
-
-        //[Column(TypeName="date")]
-        public DateTime Date { get; set; } 
+        EnumValue1,
+        EnumValue2
     }
 }

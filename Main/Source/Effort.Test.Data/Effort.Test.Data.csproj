@@ -39,18 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Feature\ConstraintSupport.cs">
-      <DependentUpon>Feature.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Feature\ForeignEntity.cs">
-      <DependentUpon>Feature.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Feature\PrimaryEntity.cs">
-      <DependentUpon>Feature.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Feature\TimestampSupport.cs">
-      <DependentUpon>Feature.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Features\TimestampFieldEntity.cs" />
     <Compile Include="Northwind\Category.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
@@ -63,34 +52,17 @@
     <Compile Include="Northwind\Supplier.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
-    <Compile Include="Staff\CompiledModels.cs" />
-    <Compile Include="Staff\EnumFieldType.cs" />
-    <Compile Include="Staff\DateTimeFieldEntity.cs" />
-    <Compile Include="Staff\DateFieldEntity.cs" />
-    <Compile Include="Staff\DateTimeOffsetFieldEntity.cs" />
-    <Compile Include="Staff\EnumFieldEntity.cs" />
-    <Compile Include="Staff\GuidKeyEntity.cs" />
-    <Compile Include="Staff\LargeStringFieldEntity.cs" />
-    <Compile Include="Staff\LocalStaffDataLoader.cs" />
-    <Compile Include="Staff\Person.cs" />
-    <Compile Include="Staff\StaffDbContext.cs" />
-    <Compile Include="Feature\Feature.Context.cs">
-      <DependentUpon>Feature.Context.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Feature\Feature.cs">
-      <DependentUpon>Feature.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Feature\Feature.Designer.cs">
-      <DependentUpon>Feature.edmx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Feature\LocalFeatureObjectContext.cs" />
-    <Compile Include="Feature\LocalFeatureDataLoader.cs" />
+    <Compile Include="Features\CompiledModels.cs" />
+    <Compile Include="Features\EnumFieldType.cs" />
+    <Compile Include="Features\DateTimeFieldEntity.cs" />
+    <Compile Include="Features\DateFieldEntity.cs" />
+    <Compile Include="Features\DateTimeOffsetFieldEntity.cs" />
+    <Compile Include="Features\EnumFieldEntity.cs" />
+    <Compile Include="Features\GuidKeyEntity.cs" />
+    <Compile Include="Features\LargeStringFieldEntity.cs" />
+    <Compile Include="Features\LocalFeatureDataLoader.cs" />
+    <Compile Include="Features\StringFieldEntity.cs" />
+    <Compile Include="Features\FeatureDbContext.cs" />
     <Compile Include="Northwind\Customer.cs">
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
@@ -134,21 +106,6 @@
   <ItemGroup>
     <None Include="App.Config">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Feature\Content\TimestampSupport.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Feature\Feature.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Feature.Context.cs</LastGenOutput>
-    </None>
-    <EntityDeploy Include="Feature\Feature.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Feature.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Feature\Feature.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Feature.cs</LastGenOutput>
     </None>
     <None Include="Northwind\Content\Categories.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -202,7 +159,7 @@
       <LastGenOutput>Northwind.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
-    <None Include="Staff\Content\People.csv">
+    <None Include="Features\Content\Foo.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

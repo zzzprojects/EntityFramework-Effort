@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="StaffDbContext.cs" company="Effort Team">
+// <copyright file="DateTimeFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Staff
+namespace Effort.Test.Data.Features
 {
-    using System.Data.Common;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
+    using System;
 
-    public class StaffDbContext : DbContext
+    public class DateTimeFieldEntity
     {
-        public StaffDbContext(DbConnection connection)
-            : this(connection, CompiledModels.DefaultModel)
-        { 
-        }
+        public int Id { get; set; }
 
-        public StaffDbContext(DbConnection connection, DbCompiledModel model) 
-            : base(connection, model, false)
-        {
-        }
-
-        public IDbSet<Person> People { get; set; }
-
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
-
-        public IDbSet<DateFieldEntity> DateFieldEntities { get; set; }
-
-        public IDbSet<LargeStringFieldEntity> LargeStringFieldEntities { get; set; }
-
-        public IDbSet<DateTimeOffsetFieldEntity> DateTimeOffsetFieldEntities { get; set; }
-
-        public IDbSet<DateTimeFieldEntity> DateTimeFieldEntities { get; set; }
-
-        public IDbSet<EnumFieldEntity> EnumFieldEntities { get; set; }
+        public DateTime DateTime { get; set; }
     }
 }

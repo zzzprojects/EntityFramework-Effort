@@ -58,6 +58,17 @@
       <KeyFile Condition="!$(KeyPairAvailable)">$(PublicKey)</KeyFile>
       <DelaySign>True</DelaySign>
       <DelaySign Condition="$(KeyPairAvailable)">False</DelaySign>
+       
+      <BuildProperties>
+        Configuration=%(CompileConfig.Identity);
+      </BuildProperties>
+    
+      <BuildProperties Condition="$(SignAssembly)">
+        $(BuildProperties)
+        SignAssembly=True;
+        DelaySign=$(DelaySign);
+        AssemblyOriginatorKeyFile=$(KeyFile);
+      </BuildProperties>
     </PropertyGroup>
 
     <ItemGroup>
@@ -84,13 +95,7 @@
       Text="Key pair was not found, executing delayed signing" 
       Condition="$(SignAssembly) And ! $(KeyPairAvailable)" />
 
-    <MSBuild
-      Projects="@(BuildProjects)"
-      Properties="
-        Configuration=%(CompileConfig.Identity);
-        SignAssembly=$(SignAssembly);
-        DelaySign=$(DelaySign);
-        AssemblyOriginatorKeyFile=$(KeyFile)" />
+    <MSBuild Projects="@(BuildProjects)" Properties="$(BuildProperties)" />
   </Target>
 
   <Target Name="RunTests" Condition="$(RunTests)=='True'" Outputs="%(CompileConfig.Identity)">

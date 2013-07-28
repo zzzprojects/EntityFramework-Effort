@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="TableConfigurationGroup.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,38 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
+    using System.Collections.Generic;
     using System.Data.Metadata.Edm;
-#endif
 
-    internal interface ITypeConverter
+    internal class TableConfigurationGroup : ITableConfiguration
     {
-        object ConvertClrObject(object obj, Type type);
+        private readonly IList<ITableConfiguration> members;
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        public TableConfigurationGroup()
+        {
+            this.members = new List<ITableConfiguration>();
+        }
+
+        public void Register<T>()
+            where T : ITableConfiguration, new()
+        {
+            this.members.Add(new T());
+        }
+
+        public void Register<T>(T configuration)
+            where T : ITableConfiguration
+        {
+            this.members.Add(configuration);
+        }
+
+        public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
+        {
+            foreach (ITableConfiguration configuration in this.members)
+            {
+                configuration.Configure(entityInfo, builder);
+            }
+        }
     }
 }

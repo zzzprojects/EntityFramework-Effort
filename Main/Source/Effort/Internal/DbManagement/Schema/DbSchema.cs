@@ -24,50 +24,50 @@
 
 namespace Effort.Internal.DbManagement.Schema
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     internal class DbSchema
     {
-        private Dictionary<string, DbTableInformation> tables;
-        private List<DbRelationInformation> relations;
+        private readonly Dictionary<string, DbTableInfo> tableLookup;
+        private readonly List<DbTableInfo> tables;
+        private readonly List<DbRelationInfo> relations;
 
-        public DbSchema()
+        public DbSchema(
+            IEnumerable<DbTableInfo> tables, 
+            IEnumerable<DbRelationInfo> relations)
         {
-            this.tables = new Dictionary<string, DbTableInformation>();
-            this.relations = new List<DbRelationInformation>();
+            this.tableLookup = new Dictionary<string, DbTableInfo>();
+            this.tables = new List<DbTableInfo>();
+            this.relations = new List<DbRelationInfo>();
+
+            foreach (DbTableInfo table in tables)
+            {
+                this.tableLookup.Add(table.TableName, table);
+            }
+
+            this.tables.AddRange(tables);
+            this.relations.AddRange(relations);
         }
 
-        public void RegisterTable(DbTableInformation tableInformation)
+        public DbTableInfo GetTable(string tableName)
         {
-            this.tables.Add(tableInformation.TableName, tableInformation);
-        }
-
-        public void RegisterRelation(DbRelationInformation relationInformation)
-        {
-            this.relations.Add(relationInformation);
-        }
-
-        public DbTableInformation GetTable(string tableName)
-        {
-            return this.tables[tableName];
+            return this.tableLookup[tableName];
         }
 
         public string[] GetTableNames()
         {
-            return this.tables.Keys.ToArray();
+            return this.tableLookup.Keys.ToArray();
         }
 
-        public DbTableInformation[] Tables 
+        public ICollection<DbTableInfo> Tables 
         {
-            get { return this.tables.Values.ToArray(); }
+            get { return this.tables.AsReadOnly(); }
         }
 
-        public DbRelationInformation[] Relations
+        public ICollection<DbRelationInfo> Relations
         {
-            get { return this.relations.ToArray(); }
+            get { return this.relations.AsReadOnly(); }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="VarCharLimitConstraintFactory`1.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,27 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Constraints
 {
-    using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using NMemory.Common;
+    using NMemory.Constraints;
 
-    internal interface ITypeConverter
+    internal class VarCharLimitConstraintFactory<TEntity> : 
+        ConstraintFactoryBase<TEntity, string>
     {
-        object ConvertClrObject(object obj, Type type);
+        private readonly int maxLength;
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        public VarCharLimitConstraintFactory(
+            IEntityMemberInfo<TEntity, string> member, 
+            int maxLength)
+            : base(member)
+        {
+            this.maxLength = maxLength;
+        }
+
+        protected override IConstraint<TEntity> Create(IEntityMemberInfo<TEntity, string> member)
+        {
+            return new NVarCharConstraint<TEntity>(member, this.maxLength);
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="GeneratedGuidConstraintFactory`1.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,24 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Constraints
 {
     using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using NMemory.Common;
+    using NMemory.Constraints;
 
-    internal interface ITypeConverter
+    internal class GeneratedGuidConstraintFactory<TEntity> : 
+        ConstraintFactoryBase<TEntity, Guid>
     {
-        object ConvertClrObject(object obj, Type type);
+        public GeneratedGuidConstraintFactory(
+            IEntityMemberInfo<TEntity, Guid> member)
+            : base(member)
+        {
+        }
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        protected override IConstraint<TEntity> Create(IEntityMemberInfo<TEntity, Guid> member)
+        {
+            return new GeneratedGuidConstraint<TEntity>(member);
+        }
     }
 }

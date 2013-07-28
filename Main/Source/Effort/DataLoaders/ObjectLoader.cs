@@ -44,7 +44,7 @@ namespace Effort.DataLoaders
         /// <returns> The materialized data. </returns>
         public static IEnumerable<object> Load(
             ITableDataLoaderFactory loaderFactory, 
-            DbTableInformation table)
+            DbTableInfo table)
         {
             List<ColumnDescription> columns = new List<ColumnDescription>();
             PropertyInfo[] properties = table.EntityType.GetProperties();

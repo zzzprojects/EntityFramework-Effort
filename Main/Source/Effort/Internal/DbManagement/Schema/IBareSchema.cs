@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="IBareSchema.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,19 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema
 {
     using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using System.Collections.Generic;
 
-    internal interface ITypeConverter
+    internal interface IBareSchema
     {
-        object ConvertClrObject(object obj, Type type);
+        Type GetEntityType(string tableName);
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        string GetTableName(Type entityType);
+
+        Type[] EntityTypes { get; }
+
+        string[] Tables { get; }
     }
 }

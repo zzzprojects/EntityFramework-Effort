@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="FacetInformation.cs" company="Effort Team">
+// <copyright file="FacetInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,7 +27,7 @@ namespace Effort.Internal.TypeConversion
     /// <summary>
     ///     Contains EDM type facet information about a field.
     /// </summary>
-    internal class FacetInformation
+    internal class FacetInfo
     {
         /// <summary>
         ///     Gets or sets a value indicating whether the field is nullable.

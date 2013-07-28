@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="BareSchemaBase.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,58 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema
 {
     using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using System.Collections.Generic;
+    using System.Linq;
 
-    internal interface ITypeConverter
+    internal class BareSchemaBase : IBareSchema
     {
-        object ConvertClrObject(object obj, Type type);
+        private readonly Dictionary<string, Type> entityTypes;
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        public BareSchemaBase()
+        {
+            this.entityTypes = new Dictionary<string, Type>();
+        }
+
+        public Type GetEntityType(string tableName)
+        {
+            Type result;
+            if (!this.entityTypes.TryGetValue(tableName, out result))
+            {
+                return null;
+            }
+
+            return result;
+        }
+
+        public string GetTableName(Type entityType)
+        {
+            foreach (var keypair in this.entityTypes)
+            {
+                if (keypair.Value == entityType)
+                {
+                    return keypair.Key;
+                }
+            }
+
+            return null;
+        }
+
+        public Type[] EntityTypes
+        {
+            get { return this.entityTypes.Values.ToArray(); }
+        }
+
+        public string[] Tables
+        {
+            get { return this.entityTypes.Keys.ToArray(); }
+        }
+
+        protected void Register(string tableName, Type entityType)
+        {
+            this.entityTypes.Add(tableName, entityType);
+        }
     }
 }

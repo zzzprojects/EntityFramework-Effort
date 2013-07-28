@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DbRelationInformation.cs" company="Effort Team">
+// <copyright file="DbRelationInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,22 +28,18 @@ namespace Effort.Internal.DbManagement.Schema
     using System.Reflection;
     using NMemory.Indexes;
 
-    internal class DbRelationInformation
+    internal class DbRelationInfo
     {
-        public DbRelationInformation(
-            string fromTable, 
-            PropertyInfo[] fromProperties, 
-            string toTable,
-            PropertyInfo[] toProperties, 
+        public DbRelationInfo(
+            string primaryTable, 
+            string foreignTable,
             IKeyInfo primaryKeyInfo,
             IKeyInfo foreignKeyInfo, 
             Delegate primaryToForeignConverter,
             Delegate foreignToPrimaryConverter)
         {
-            this.PrimaryTable = fromTable;
-            this.ForeignTable = toTable;
-            this.PrimaryProperties = fromProperties;
-            this.ForeignProperties = toProperties;
+            this.PrimaryTable = primaryTable;
+            this.ForeignTable = foreignTable;
             this.PrimaryKeyInfo = primaryKeyInfo;
             this.ForeignKeyInfo = foreignKeyInfo;
             this.PrimaryToForeignConverter = primaryToForeignConverter;
@@ -54,13 +50,10 @@ namespace Effort.Internal.DbManagement.Schema
 
         public string ForeignTable { get; private set; }
 
-        public PropertyInfo[] PrimaryProperties { get; private set; }
-
-        public PropertyInfo[] ForeignProperties { get; private set; }
-
-        // NMemory.IndexesAnonymousTypeKeyInfo<TEntity, TKey> Create<TEntity, TKey>
+        // NMemory.Indexes.AnonymousTypeKeyInfo<TPrimary, TPrimaryKey>
         public IKeyInfo PrimaryKeyInfo { get; private set; }
 
+        // NMemory.Indexes.AnonymousTypeKeyInfo<TForeign, TForeignKey>
         public IKeyInfo ForeignKeyInfo { get; private set; }
 
         // Func<TPrimaryKey, TForeignKey>

@@ -33,6 +33,7 @@ namespace Effort.Internal.TypeGeneration
     using System.Text;
     using System.Threading;
     using Effort.Internal.Caching;
+    using Effort.Internal.Common;
 
     internal class AnonymousTypeFactory
     {
@@ -158,14 +159,13 @@ namespace Effort.Internal.TypeGeneration
                     AppDomain
                     .CurrentDomain
                     .GetAssemblies()
-                    .Where(a => !a.FullName.StartsWith("mscorlib") && !a.FullName.StartsWith("System.") && !a.FullName.StartsWith("Microsoft."))
+                    .Where(a => 
+                        !a.FullName.StartsWith("mscorlib") && 
+                        !a.FullName.StartsWith("System.") && 
+                        !a.FullName.StartsWith("Microsoft."))
                     .SelectMany(s => s.GetTypes())
                 where
-                    type
-                    .GetCustomAttributes(typeof(DebuggerDisplayAttribute), false)
-                    .OfType<DebuggerDisplayAttribute>()
-                    .Any(a => a.Type == "<Anonymous Type>")
-                    || NMemory.Common.ReflectionHelper.IsAnonymousType(type)
+                    TypeHelper.IsAnonymousType(type)
                 let
                     props = type.GetProperties()
                 where

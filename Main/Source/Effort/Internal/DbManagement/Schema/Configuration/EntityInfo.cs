@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="EntityInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,40 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Data.Metadata.Edm;
-#endif
+    using Effort.Internal.TypeConversion;
 
-    internal interface ITypeConverter
+    internal class EntityInfo
     {
-        object ConvertClrObject(object obj, Type type);
+        private readonly EntitySet entitySet;
+        private readonly ReadOnlyCollection<EntityPropertyInfo> properties;
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        public EntityInfo(EntitySet entitySet, EdmTypeConverter converter)
+        {
+            this.entitySet = entitySet;
+
+            List<EntityPropertyInfo> properties = new List<EntityPropertyInfo>();
+
+            foreach (EdmProperty property in entitySet.ElementType.Properties)
+            {
+                properties.Add(new EntityPropertyInfo(property, converter));
+            }
+
+            this.properties = properties.AsReadOnly();
+        }
+
+        public EntitySet EntitySet
+        {
+            get { return this.entitySet; }
+        }
+
+        public ReadOnlyCollection<EntityPropertyInfo> Properties
+        {
+            get { return this.properties; }
+        }
     }
 }

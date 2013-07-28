@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="ConstraintFactoryBase`2.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,26 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Constraints
 {
-    using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using NMemory.Common;
+    using NMemory.Constraints;
 
-    internal interface ITypeConverter
+    internal abstract class ConstraintFactoryBase<TEntity, TMember> : 
+        IConstraintFactory<TEntity>
     {
-        object ConvertClrObject(object obj, Type type);
+        private readonly IEntityMemberInfo<TEntity, TMember> member;
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        public ConstraintFactoryBase(IEntityMemberInfo<TEntity, TMember> member)
+        {
+            this.member = member;
+        }
+
+        public IConstraint<TEntity> Create()
+        {
+            return this.Create(this.member);
+        }
+
+        protected abstract IConstraint<TEntity> Create(IEntityMemberInfo<TEntity, TMember> member);
     }
 }

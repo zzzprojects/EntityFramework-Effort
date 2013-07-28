@@ -127,7 +127,8 @@
     <Compile Include="Internal\WrapperProviders\DbProviderServicesBase.cs" />
     <Compile Include="Internal\WrapperProviders\DbTransactionWrapper.cs" />
     <Compile Include="Internal\WrapperProviders\EntityConnectionWrapperUtils.cs" />
-    <Compile Include="StorageSchemaModifierFixture.cs" />
+    <Compile Include="Schema\DbSchemaFixture.cs" />
+    <Compile Include="Schema\StorageSchemaModifierFixture.cs" />
     <Compile Include="Features\AssociationFixture.cs" />
     <Compile Include="Factories\ObjectContextFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -181,26 +182,32 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv3.xml">
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv3.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv2.net40.xml">
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv2.net40.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv1.net45.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv1.net40.xml">
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv1.net45.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Internal\Resources\StorageSchemas\SSDLv2.net45.xml">
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv1.net40.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv2.net45.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Schema\Resources\DbSchema\SSDL1.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

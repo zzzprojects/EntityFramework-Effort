@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="EntityPropertyInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,38 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
     using System.Data.Metadata.Edm;
-#endif
+    using Effort.Internal.TypeConversion;
 
-    internal interface ITypeConverter
+    internal class EntityPropertyInfo
     {
-        object ConvertClrObject(object obj, Type type);
+        private readonly EdmProperty property;
+        private readonly FacetInfo facets;
+        private readonly Type clrType;
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        public EntityPropertyInfo(EdmProperty property, EdmTypeConverter converter)
+        {
+            this.property = property;
+            this.facets = converter.GetTypeFacets(property.TypeUsage);
+            this.clrType = converter.Convert(property.TypeUsage);
+        }
+
+        public EdmProperty Property
+        {
+            get { return this.property; }
+        }
+
+        public FacetInfo Facets
+        {
+            get { return this.facets; }
+        }
+
+        public Type ClrType
+        {
+            get { return this.clrType; }
+        }
     }
 }

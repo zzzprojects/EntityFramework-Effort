@@ -42,7 +42,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NMemory">
-      <HintPath>..\packages\NMemory.1.0.0-beta7-130603\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
+      <HintPath>..\packages\NMemory.1.0.0-beta7-130705\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -163,6 +163,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.UnionAll.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.VariableReference.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TraversalVisitor.cs" />
+    <Compile Include="Internal\DbManagement\Schema\BareSchemaBase.cs" />
     <Compile Include="Internal\DbManagement\DbContainerManagerWrapper.cs" />
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
@@ -171,12 +172,36 @@
     <Compile Include="Internal\DbManagement\Engine\ExtendedQueryCompiler.cs" />
     <Compile Include="Internal\DbManagement\Engine\IExtendedTable.cs" />
     <Compile Include="Internal\DbManagement\Engine\IExtendedTable`1.cs" />
-    <Compile Include="Internal\DbManagement\Schema\DbRelationInformation.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\AssociationInfo.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\RelationConfigurationGroup.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\IRelationConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\TableConfigurationGroup.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\CharLimitConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\RelationConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\VarcharLimitConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\EntityPropertyInfo.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\EntityInfo.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\GeneratedGuidConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\IdentityConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\BareSchemaConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\NotNullConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\PrimaryKeyConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Constraints\ConstraintFactories.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Constraints\ConstraintFactoryBase`2.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Constraints\CharLimitConstraintFactory`1.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Constraints\VarCharLimitConstraintFactory`1.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Constraints\GeneratedGuidConstraintFactory`1.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Constraints\NotNullableConstraintFactory`2.cs" />
+    <Compile Include="Internal\DbManagement\Schema\DbSchemaBuilder.cs" />
+    <Compile Include="Internal\DbManagement\Schema\IBareSchema.cs" />
+    <Compile Include="Internal\DbManagement\Schema\DynamicBareSchema.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\ITableConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\DbRelationInfo.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchemaFactory.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbSchema.cs" />
     <Compile Include="Internal\DbManagement\DbContainer.cs" />
     <Compile Include="Internal\DbManagement\DbMethodProvider.cs" />
-    <Compile Include="Internal\DbManagement\Schema\DbTableInformation.cs" />
+    <Compile Include="Internal\DbManagement\Schema\DbTableInfo.cs" />
     <Compile Include="DataLoaders\CsvTableDataLoader.cs" />
     <Compile Include="DataLoaders\CsvTableDataLoaderFactory.cs" />
     <Compile Include="DataLoaders\EntityTableDataLoader.cs" />
@@ -199,6 +224,8 @@
     <Compile Include="Internal\Caching\ConcurrentCache`2.cs" />
     <Compile Include="Internal\DbManagement\Engine\DatabaseComponentFactory.cs" />
     <Compile Include="Internal\DbManagement\Engine\TransientDatabaseComponentFactory.cs" />
+    <Compile Include="Internal\DbManagement\Schema\DbTableInfoBuilder.cs" />
+    <Compile Include="Internal\DbManagement\Schema\KeyInfoHelper.cs" />
     <Compile Include="Internal\Diagnostics\ILogger.cs" />
     <Compile Include="Internal\Common\ExpressionHelper.cs" />
     <Compile Include="Internal\Common\LambdaExpressionHelper.cs" />

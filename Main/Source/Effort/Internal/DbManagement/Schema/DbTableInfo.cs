@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DbTableInformation.cs" company="Effort Team">
+// <copyright file="DbTableInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,26 +32,28 @@ namespace Effort.Internal.DbManagement.Schema
     using Effort.Internal.Common;
     using NMemory.Indexes;
 
-    internal class DbTableInformation
+    internal class DbTableInfo
     {
         private FastLazy<Func<object[], object>> initializer;
 
-        public DbTableInformation(
+        public DbTableInfo(
             string tableName, 
             Type entityType, 
-            PropertyInfo[] primaryKeys, 
-            PropertyInfo identityField, 
+            MemberInfo identityField,
             PropertyInfo[] properties,
-            object[] constraints, 
-            IKeyInfo primaryKeyInfo)
+            IKeyInfo primaryKeyInfo,
+            IKeyInfo[] uniqueKeys,
+            IKeyInfo[] foreignKeys,
+            object[] constraintFactories)
         {
             this.TableName = tableName;
             this.EntityType = entityType;
-            this.PrimaryKeyFields = primaryKeys;
             this.IdentityField = identityField;
             this.Properties = properties;
-            this.Constraints = constraints;
+            this.ConstraintFactories = constraintFactories;
             this.PrimaryKeyInfo = primaryKeyInfo;
+            this.UniqueKeys = uniqueKeys;
+            this.ForeignKeys = foreignKeys;
 
             this.initializer = new FastLazy<Func<object[], object>>(CreateEntityInitializer);
         }
@@ -60,16 +62,19 @@ namespace Effort.Internal.DbManagement.Schema
 
         public Type EntityType { get; private set; }
 
-        public PropertyInfo[] PrimaryKeyFields { get; private set; }
-
-        public PropertyInfo IdentityField { get; private set; }
+        public MemberInfo IdentityField { get; private set; }
 
         public PropertyInfo[] Properties { get; private set; }
 
         // NMemory.Constraints.IConstraint<TEntity> array
-        public object[] Constraints { get; private set; }
+        public object[] ConstraintFactories { get; private set; }
 
         public IKeyInfo PrimaryKeyInfo { get; private set; }
+
+        public IKeyInfo[] ForeignKeys { get; private set; }
+
+        public IKeyInfo[] UniqueKeys { get; private set; }
+
 
         public Func<object[], object> EntityInitializer
         {

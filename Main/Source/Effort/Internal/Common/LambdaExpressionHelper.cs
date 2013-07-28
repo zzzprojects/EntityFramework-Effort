@@ -33,7 +33,7 @@ namespace Effort.Internal.Common
 
     internal static class LambdaExpressionHelper
     {
-        public static LambdaExpression CreateSelectorExpression(Type sourceType, PropertyInfo[] selectorFields)
+        public static LambdaExpression CreateSelectorExpression(Type sourceType, MemberInfo[] selectorFields)
         {
             object selectorExpression = null;
 
@@ -42,13 +42,13 @@ namespace Effort.Internal.Common
                 // Single field primary key:
                 //// Expression:  x => x.Field
 
-                Type resultType = selectorFields[0].PropertyType;
+                Type resultType = TypeHelper.GetMemberType(selectorFields[0]);
 
                 selectorExpression =
                     typeof(LambdaExpressionHelper.WrapperMethods)
                     .GetMethod("CreateSingleFieldSelector")
                     .MakeGenericMethod(sourceType, resultType)
-                    .Invoke(null, new object[] { selectorFields[0].Name });
+                    .Invoke(null, new object[] { selectorFields[0] });
             }
             else
             {
@@ -59,9 +59,9 @@ namespace Effort.Internal.Common
                 Type resultType =
                     AnonymousTypeFactory.Create(
                         selectorFields.ToDictionary(
-                            pi => pi.Name,
-                            pi => pi.PropertyType));
-
+                            mi => mi.Name,
+                            mi => TypeHelper.GetMemberType(mi)));
+                
                 ////Type resultType =
                 ////    TupleTypeFactory.Create(
                 ////        selectorFields.Select(pi => pi.PropertyType).ToArray());
@@ -70,7 +70,7 @@ namespace Effort.Internal.Common
                     typeof(LambdaExpressionHelper.WrapperMethods)
                     .GetMethod("CreateMultipleFieldSelector")
                     .MakeGenericMethod(sourceType, resultType)
-                    .Invoke(null, new object[] { selectorFields.Select(pi => pi.Name) });
+                    .Invoke(null, new object[] { selectorFields });
             }
 
             return selectorExpression as LambdaExpression;
@@ -92,29 +92,27 @@ namespace Effort.Internal.Common
 
         private static class WrapperMethods
         {
-            public static Expression<Func<TSource, TResult>> CreateSingleFieldSelector<TSource, TResult>(string fieldName) where TSource : class
+            public static Expression<Func<TSource, TResult>> CreateSingleFieldSelector<TSource, TResult>(MemberInfo member) where TSource : class
             {
-                var expressionParameter = Expression.Parameter(typeof(TSource), "x");
+                var param = Expression.Parameter(typeof(TSource), "x");
+
                 return
                     Expression.Lambda<Func<TSource, TResult>>(
-                        Expression.Property(
-                            expressionParameter,
-                            typeof(TSource),
-                            fieldName),
-                        expressionParameter);
+                        Expression.MakeMemberAccess(param, member),
+                        param);
             }
 
-            public static Expression<Func<TSource, TResult>> CreateMultipleFieldSelector<TSource, TResult>(IEnumerable<string> fields) where TSource : class
+            public static Expression<Func<TSource, TResult>> CreateMultipleFieldSelector<TSource, TResult>(IEnumerable<MemberInfo> members) where TSource : class
             {
-                var expressionParameter = Expression.Parameter(typeof(TSource), "x");
+                var param = Expression.Parameter(typeof(TSource), "x");
 
                 return
                     Expression.Lambda<Func<TSource, TResult>>(
                         Expression.New(
                             typeof(TResult).GetConstructors().Single(),
-                            fields.Select(f => Expression.Property(expressionParameter, f)),
-                            fields.Select(f => typeof(TResult).GetProperty(f))),
-                        expressionParameter);
+                            members.Select(mi => Expression.MakeMemberAccess(param, mi)),
+                            members.Select(mi => typeof(TResult).GetProperty(mi.Name))),
+                        param);
             }
         }
     }

@@ -25,307 +25,67 @@
 namespace Effort.Internal.DbManagement.Schema
 {
     using System;
-    using System.Collections.Generic;
 #if !EFOLD
     using System.Data.Entity.Core.Metadata.Edm;
 #else
     using System.Data.Metadata.Edm;
 #endif
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Reflection;
-    using System.Reflection.Emit;
-    using System.Threading;
     using Effort.Internal.Common;
     using Effort.Internal.TypeConversion;
-    using Effort.Internal.TypeGeneration;
     using NMemory.Indexes;
     using NMemory.Tables;
-    using Effort.Internal.DbManagement.Engine;
-    using NMemory.Constraints;
+    using Effort.Internal.DbManagement.Schema.Configuration;
 
     internal static class DbSchemaFactory
     {
         public static DbSchema CreateDbSchema(StoreItemCollection edmStoreSchema)
         {
-            EntityContainer entityContainer = edmStoreSchema.GetItems<EntityContainer>().FirstOrDefault();
-            DbSchema schema = new DbSchema();
+            EntityContainer entityContainer =
+                edmStoreSchema.GetItems<EntityContainer>().FirstOrDefault();
 
-            // Dynamic Library for Effort
-            AssemblyBuilder assembly =
-                Thread.GetDomain().DefineDynamicAssembly(
-                    new AssemblyName(string.Format("Effort_DynamicEntityLib({0})", Guid.NewGuid())),
-                    AssemblyBuilderAccess.Run);
+            EdmTypeConverter converter = new EdmTypeConverter(new DefaultTypeConverter());
+            IBareSchema bareSchema = new DynamicBareSchema(entityContainer, converter);
 
-            // Module for the entity types
-            ModuleBuilder entityModule = assembly.DefineDynamicModule("Entities");
+            TableConfigurationGroup tableConfig = new TableConfigurationGroup();
+            tableConfig.Register(new BareSchemaConfiguration(bareSchema));
+            tableConfig.Register<PrimaryKeyConfiguration>();
+            tableConfig.Register<IdentityConfiguration>();
+            tableConfig.Register<GeneratedGuidConfiguration>();
+            tableConfig.Register<NotNullConfiguration>();
+            tableConfig.Register<VarcharLimitConfiguration>();
+            tableConfig.Register<CharLimitConfiguration>();
 
-            // Initialize type converter
-            EdmTypeConverter typeConverter = new EdmTypeConverter(new DefaultTypeConverter());
+            DbSchemaBuilder schemaBuilder = new DbSchemaBuilder();
 
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
-                EntityType type = entitySet.ElementType;
-                string tableName = entitySet.GetTableName();
-                string cliTypeName = TypeHelper.NormalizeForCliTypeName(tableName);
+                EntityInfo entityInfo = new EntityInfo(entitySet, converter);
+                DbTableInfoBuilder tableBuilder = new DbTableInfoBuilder();
 
-                TypeBuilder entityTypeBuilder = entityModule.DefineType(cliTypeName, TypeAttributes.Public);
+                // Run all configurations
+                tableConfig.Configure(entityInfo, tableBuilder);
 
-                List<PropertyInfo> primaryKeyFields = new List<PropertyInfo>();
-                List<PropertyInfo> identityFields = new List<PropertyInfo>();
-                List<PropertyInfo> properties = new List<PropertyInfo>();
-
-                List<string> primaryKeyFieldNames = new List<string>();
-                List<string> identityFieldNames = new List<string>();
-                List<string> notNullableFields = new List<string>();
-                List<string> generatedGuidFields = new List<string>();
-                Dictionary<string, int> maxLenghtNVarcharFields = new Dictionary<string, int>();
-                Dictionary<string, int> maxLenghtNCharFields = new Dictionary<string, int>();
-
-                // Add properties as entity fields
-                foreach (EdmProperty field in type.Properties)
-                {
-                    FacetInformation facets = typeConverter.GetTypeFacets(field.TypeUsage);
-                    string fieldName = field.GetColumnName();
-                    Type fieldType = typeConverter.Convert(field.TypeUsage);
-
-                    PropertyBuilder propBuilder =
-                        EmitHelper.AddProperty(entityTypeBuilder, fieldName, fieldType);
-
-                    // Register primary key field
-                    if (type.KeyMembers.Contains(field))
-                    {
-                        primaryKeyFieldNames.Add(propBuilder.Name);
-                    }
-
-                    // Register identity field
-                    if (facets.Identity && IsIdentityType(fieldType))
-                    {
-                        identityFieldNames.Add(propBuilder.Name);
-                    }
-
-                    if (facets.Identity && fieldType == typeof(Guid))
-                    {
-                        generatedGuidFields.Add(propBuilder.Name);
-                    }
-
-                    // Register nullable field
-                    if (facets.Nullable == false)
-                    {
-                        notNullableFields.Add(propBuilder.Name);
-                    }
-
-                    // Register nchar(x)
-                    if (facets.LimitedLength && field.TypeUsage.EdmType.Name == "string" && facets.FixedLength)
-                    {
-                        maxLenghtNCharFields.Add(propBuilder.Name, facets.MaxLenght);
-                    }
-
-                    // Register nvarchar(x) 
-                    if (facets.LimitedLength && field.TypeUsage.EdmType.Name == "string")
-                    {
-                        maxLenghtNVarcharFields.Add(propBuilder.Name, facets.MaxLenght);
-                    }
-                }
-
-                if (identityFields.Count > 1)
-                {
-                    throw new InvalidOperationException("More than one identity fields is not supported");
-                }
-
-                Type entityType = entityTypeBuilder.CreateType();
-
-                List<object> constraint = new List<object>();
-
-                foreach (PropertyInfo prop in entityType.GetProperties())
-                {
-                    properties.Add(prop);
-
-                    if (primaryKeyFieldNames.Contains(prop.Name))
-                    {
-                        primaryKeyFields.Add(prop);
-                    }
-
-                    if (identityFieldNames.Contains(prop.Name))
-                    {
-                        identityFields.Add(prop);
-                    }
-
-                    if (notNullableFields.Contains(prop.Name))
-                    {
-                        var param = Expression.Parameter(entityType, "x");
-                        constraint.Add(
-                            typeof(NotNullableConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
-                            new object[] 
-                            {
-                                Expression.Lambda(Expression.Convert(Expression.PropertyOrField(param, prop.Name), typeof(object)), param)
-                            }));
-                    }
-
-                    if (maxLenghtNVarcharFields.Keys.Contains(prop.Name))
-                    {
-                        var param = Expression.Parameter(entityType, "x");
-                        constraint.Add(
-                            typeof(NVarCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
-                            new object[] 
-                            {
-                                Expression.Lambda(Expression.PropertyOrField(param, prop.Name), param), maxLenghtNVarcharFields[prop.Name]
-                            }));
-                    }
-
-                    if (maxLenghtNCharFields.Keys.Contains(prop.Name))
-                    {
-                        var param = Expression.Parameter(entityType, "x");
-                        constraint.Add(
-                            typeof(NCharConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
-                            new object[] 
-                            {
-                                Expression.Lambda(Expression.PropertyOrField(param, prop.Name), param), maxLenghtNCharFields[prop.Name]
-                            }));
-                    }
-
-                    if (generatedGuidFields.Contains(prop.Name))
-                    {
-                        var param = Expression.Parameter(entityType, "x");
-                        constraint.Add(
-                            typeof(GeneratedGuidConstraint<>).MakeGenericType(entityType).GetConstructors().First().Invoke(
-                            new object[] 
-                            {
-                                    Expression.Lambda(Expression.PropertyOrField(param, prop.Name), param)
-                            }));
-                    }
-                }
-
-                LambdaExpression primaryKeySelector = LambdaExpressionHelper.CreateSelectorExpression(entityType, primaryKeyFields.ToArray());
-                Type primaryKeyAnonymType = primaryKeySelector.Body.Type;
-
-                IKeyInfo primaryKeyInfo = CreateKeyInfo(primaryKeySelector);
-
-                schema.RegisterTable(
-                    new DbTableInformation(
-                        tableName,
-                        entityType,
-                        primaryKeyFields.ToArray(),
-                        identityFields.SingleOrDefault(),
-                        properties.ToArray(),
-                        constraint.ToArray(),
-                        primaryKeyInfo));
+                schemaBuilder.Register(tableBuilder);
             }
 
-            foreach (AssociationSet associationSet in entityContainer.BaseEntitySets.OfType<AssociationSet>())
-            {
-                var constraints = associationSet.ElementType.ReferentialConstraints;
+            RelationConfigurationGroup associationConfig = new RelationConfigurationGroup();
+            associationConfig.Register<RelationConfiguration>();
 
-                if (constraints.Count != 1)
+            foreach (AssociationSet association in entityContainer.BaseEntitySets.OfType<AssociationSet>())
+            {
+                AssociationInfo associationInfo = null;
+
+                if (!AssociationInfo.Create(association, out associationInfo))
                 {
                     continue;
                 }
 
-                ReferentialConstraint constraint = constraints[0];
-
-                RegisterRelation(schema, entityContainer, constraint);
+                associationConfig.Configure(associationInfo, schemaBuilder);
             }
 
-            return schema;
-        }
-
-        private static void RegisterRelation(DbSchema schema, EntityContainer entityContainer, ReferentialConstraint constraint)
-        {
-            string fromTableName = GetTableName(constraint.FromRole, entityContainer);
-            string toTableName = GetTableName(constraint.ToRole, entityContainer);
-
-            // entityType is the primary table, toTable is the foreign table...
-            DbTableInformation fromTable = schema.GetTable(fromTableName);
-            DbTableInformation toTable = schema.GetTable(toTableName);
-
-            // Creating the parameters for NMemory.Tables.RelationKeyConverterFactory
-            PropertyInfo[] fromTableProperties = GetRelationProperties(constraint.FromProperties, fromTable);
-            PropertyInfo[] toTableProperties = GetRelationProperties(constraint.ToProperties, toTable);
-
-            // Create primary key info 
-            LambdaExpression primaryKeySelector = LambdaExpressionHelper.CreateSelectorExpression(fromTable.EntityType, fromTableProperties);
-            Type primaryKeyType = primaryKeySelector.Body.Type;
-            IKeyInfo primaryKeyInfo = CreateKeyInfo(primaryKeySelector);
-
-            // Create foreign key info
-            LambdaExpression foreignKeySelector = LambdaExpressionHelper.CreateSelectorExpression(toTable.EntityType, toTableProperties);
-            Type foreignKeyType = foreignKeySelector.Body.Type;
-            IKeyInfo foreignKeyInfo = CreateKeyInfo(foreignKeySelector);
-
-            // Create a IRelationContraints for defining relation mapping
-            List<IRelationContraint> relationConstraints = new List<IRelationContraint>();
-
-            for (int i = 0; i < fromTableProperties.Count(); i++)
-            {
-                // Should not use the generic RelationConstraint here. 
-                relationConstraints.Add(new RelationConstraint(fromTableProperties[i], toTableProperties[i]));
-            }
-
-            Delegate primaryToForeignConverter =
-                ReflectionHelper.GetMethodInfo(() =>
-                    RelationKeyConverterFactory.CreatePrimaryToForeignConverter<object, object>(null, null, null))
-                .GetGenericMethodDefinition()
-                .MakeGenericMethod(primaryKeyType, foreignKeyType)
-                .Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() }) as Delegate;
-
-            Delegate foreignToPrimaryConverter =
-                ReflectionHelper.GetMethodInfo(() =>
-                    RelationKeyConverterFactory.CreateForeignToPrimaryConverter<object, object>(null, null, null))
-                .GetGenericMethodDefinition()
-                .MakeGenericMethod(primaryKeyType, foreignKeyType)
-                .Invoke(null, new object[] { primaryKeyInfo, foreignKeyInfo, relationConstraints.ToArray() }) as Delegate;
-
-            schema.RegisterRelation(
-                new DbRelationInformation(
-                    fromTableName,
-                    fromTableProperties,
-                    toTableName,
-                    toTableProperties,
-                    primaryKeyInfo,
-                    foreignKeyInfo,
-                    primaryToForeignConverter,
-                    foreignToPrimaryConverter));
-        }
-
-        private static bool IsIdentityType(Type fieldType)
-        {
-            return
-                fieldType == typeof(byte) ||
-                fieldType == typeof(sbyte) ||
-                fieldType == typeof(short) ||
-                fieldType == typeof(ushort) ||
-                fieldType == typeof(int) ||
-                fieldType == typeof(uint) ||
-                fieldType == typeof(long);
-        }
-
-        private static IKeyInfo CreateKeyInfo(LambdaExpression selector)
-        {
-            Type entityType = selector.Parameters[0].Type;
-            Type resultType = selector.Body.Type;
-
-            IKeyInfo result = 
-                ReflectionHelper
-                    .GetMethodInfo<DefaultKeyInfoFactory>(f => f.Create<object, object>(null))
-                    .GetGenericMethodDefinition()
-                    .MakeGenericMethod(entityType, resultType)
-                    .Invoke(new DefaultKeyInfoFactory(), new object[] { selector }) as IKeyInfo;
-
-            return result;
-        }
-
-        private static string GetTableName(RelationshipEndMember relationEndpoint, EntityContainer entityContainer)
-        {
-            RefType refType = relationEndpoint.TypeUsage.EdmType as RefType;
-            return entityContainer.BaseEntitySets.First(m => m.ElementType.Name == refType.ElementType.Name).GetTableName();
-        }
-
-        private static PropertyInfo[] GetRelationProperties(ReadOnlyMetadataCollection<EdmProperty> properties, DbTableInformation table)
-        {
-            return properties.Select(edmp => table
-                .Properties
-                .Single(clrp => clrp.Name == edmp.GetColumnName()))
-                .ToArray();
+            return schemaBuilder.Create();
         }
     }
 }

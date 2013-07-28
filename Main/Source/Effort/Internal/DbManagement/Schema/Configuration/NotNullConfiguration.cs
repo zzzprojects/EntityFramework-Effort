@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="NotNullConfiguration.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,26 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
     using System.Data.Metadata.Edm;
-#endif
+    using System.Reflection;
+    using Effort.Internal.DbManagement.Schema.Constraints;
 
-    internal interface ITypeConverter
+    internal class NotNullConfiguration : ITableConfiguration
     {
-        object ConvertClrObject(object obj, Type type);
+        public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
+        {
+            foreach (EntityPropertyInfo property in entityInfo.Properties)
+            {
+                if (!property.Facets.Nullable && property.ClrType.IsValueType)
+                {
+                    MemberInfo member = builder.FindMember(property.Property);
+                    object factory = ConstraintFactories.NotNull(member);
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+                    builder.AddContraintFactory(factory);
+                }
+            }
+        }
     }
 }

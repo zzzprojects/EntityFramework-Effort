@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="KeyInfoHelper.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,41 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema
 {
     using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using System.Linq.Expressions;
+    using System.Reflection;
+    using Effort.Internal.Common;
+    using NMemory.Indexes;
 
-    internal interface ITypeConverter
+    internal static class KeyInfoHelper
     {
-        object ConvertClrObject(object obj, Type type);
+        public static IKeyInfo CreateKeyInfo(Type entityType, MemberInfo[] properties)
+        {
+            LambdaExpression primaryKeySelector =
+                LambdaExpressionHelper.CreateSelectorExpression(
+                    entityType,
+                    properties);
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+            return CreateKeyInfo(primaryKeySelector);
+        }
+
+        public static IKeyInfo CreateKeyInfo(LambdaExpression selector)
+        {
+            Type entityType = selector.Parameters[0].Type;
+            Type resultType = selector.Body.Type;
+
+            MethodInfo factory = ReflectionHelper
+                .GetMethodInfo<DefaultKeyInfoFactory>(f => f.Create<object, object>(null))
+                .GetGenericMethodDefinition()
+                .MakeGenericMethod(entityType, resultType);
+
+            IKeyInfo result = factory.Invoke(
+                    new DefaultKeyInfoFactory(),
+                    new object[] { selector }) as IKeyInfo;
+
+            return result;
+        }
     }
 }

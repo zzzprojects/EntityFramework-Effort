@@ -45,13 +45,13 @@ namespace Effort.Internal.TypeConversion
 
         public Type Convert(TypeUsage type)
         {
-            FacetInformation facets = this.GetTypeFacets(type);
+            FacetInfo facets = this.GetTypeFacets(type);
             return this.ConvertWithFacets(type, facets);
         }
 
         public Type ConvertNotNull(TypeUsage type)
         {
-            FacetInformation facets = new FacetInformation();
+            FacetInfo facets = new FacetInfo();
 
             return this.ConvertWithFacets(type, facets);
         }
@@ -68,9 +68,9 @@ namespace Effort.Internal.TypeConversion
             return this.Convert(collectionType.TypeUsage);
         }
 
-        public FacetInformation GetTypeFacets(TypeUsage type)
+        public FacetInfo GetTypeFacets(TypeUsage type)
         {
-            FacetInformation facets = new FacetInformation();
+            FacetInfo facets = new FacetInfo();
             Facet facet = null;
             
             if (type.Facets.TryGetValue("Nullable", false, out facet))
@@ -115,7 +115,7 @@ namespace Effort.Internal.TypeConversion
             return facets;
         }
 
-        private Type ConvertWithFacets(TypeUsage type, FacetInformation facets)
+        private Type ConvertWithFacets(TypeUsage type, FacetInfo facets)
         {
             if (type.EdmType.BuiltInTypeKind == BuiltInTypeKind.PrimitiveType)
             {
@@ -133,7 +133,7 @@ namespace Effort.Internal.TypeConversion
             throw new NotSupportedException();
         }
 
-        private Type CreatePrimitiveType(PrimitiveType primitiveType, FacetInformation facets)
+        private Type CreatePrimitiveType(PrimitiveType primitiveType, FacetInfo facets)
         {
             Type result = null;
             if (this.converter.TryConvertEdmType(primitiveType, facets, out result))
@@ -151,7 +151,7 @@ namespace Effort.Internal.TypeConversion
             return result;
         }
 
-        private Type CreateRowType(RowType rowType, FacetInformation facets)
+        private Type CreateRowType(RowType rowType, FacetInfo facets)
         {
             Dictionary<string, Type> members = new Dictionary<string, Type>();
 
@@ -165,7 +165,7 @@ namespace Effort.Internal.TypeConversion
             return result;
         }
 
-        private Type CreateCollectionType(CollectionType collectionType, FacetInformation facets)
+        private Type CreateCollectionType(CollectionType collectionType, FacetInfo facets)
         {
             Type elementType = this.ConvertWithFacets(collectionType.TypeUsage, facets);
 

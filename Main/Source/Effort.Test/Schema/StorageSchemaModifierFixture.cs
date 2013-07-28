@@ -22,7 +22,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test
+namespace Effort.Test.Schema
 {
     using System.Configuration;
 #if !EFOLD
@@ -49,11 +49,20 @@ namespace Effort.Test
         [TestMethod]
         public void MetadataWorkspaceHelperRewrite()
         {
-            EntityConnectionStringBuilder nameResolver = new EntityConnectionStringBuilder(NorthwindObjectContext.DefaultConnectionString);
-            string resolvedConnectionString = ConfigurationManager.ConnectionStrings[nameResolver.Name].ConnectionString;
-            EntityConnectionStringBuilder connectionString = new EntityConnectionStringBuilder(resolvedConnectionString);
+            EntityConnectionStringBuilder nameResolver = 
+                new EntityConnectionStringBuilder(NorthwindObjectContext.DefaultConnectionString);
 
-            MetadataWorkspace workspace = MetadataWorkspaceHelper.Rewrite(connectionString.Metadata, EffortProviderConfiguration.ProviderInvariantName, EffortProviderManifestTokens.Version1);
+            string resolvedConnectionString = 
+                ConfigurationManager.ConnectionStrings[nameResolver.Name].ConnectionString;
+
+            EntityConnectionStringBuilder connectionString = 
+                new EntityConnectionStringBuilder(resolvedConnectionString);
+
+            MetadataWorkspace workspace = 
+                MetadataWorkspaceHelper.Rewrite(
+                    connectionString.Metadata, 
+                    EffortProviderConfiguration.ProviderInvariantName, 
+                    EffortProviderManifestTokens.Version1);
         }
 
         [TestMethod]
@@ -126,7 +135,7 @@ namespace Effort.Test
             }
 
             return string.Format(
-                "Effort.Test.Internal.Resources.StorageSchemas.SSDLv{0}{1}.xml",
+                "Effort.Test.Schema.Resources.StorageSchemaModifier.SSDLv{0}{1}.xml",
                 version,
                 framework);
         }

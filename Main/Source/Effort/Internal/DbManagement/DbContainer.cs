@@ -153,15 +153,14 @@ namespace Effort.Internal.DbManagement
             this.Logger.Write("Creating tables...");
             partialTime.Restart();
 
-            // Create tables
-            foreach (DbTableInformation tableInfo in schema.Tables)
+            foreach (DbTableInfo tableInfo in schema.Tables)
             {
                 ITable table = DatabaseReflectionHelper.CreateTable(
                     this.database,
                     tableInfo.EntityType,
                     (IKeyInfo)tableInfo.PrimaryKeyInfo,
                     tableInfo.IdentityField,
-                    tableInfo.Constraints);
+                    tableInfo.ConstraintFactories);
 
                 tables.Add(tableInfo.TableName, table);
             }
@@ -176,7 +175,7 @@ namespace Effort.Internal.DbManagement
             // Add initial data to the tables
             using (ITableDataLoaderFactory loaderFactory = this.CreateDataLoaderFactory())
             {
-                foreach (DbTableInformation tableInfo in schema.Tables)
+                foreach (DbTableInfo tableInfo in schema.Tables)
                 { 
                     // Get the table reference from the temporary dictionary
                     ITable table = tables[tableInfo.TableName];
@@ -192,10 +191,32 @@ namespace Effort.Internal.DbManagement
                 "Initial data added in {0:0.0} ms",
                 partialTime.Elapsed.TotalMilliseconds);
 
+            this.Logger.Write("Building additional indexes...");
+            partialTime.Restart();
+
+            foreach (DbTableInfo tableInfo in schema.Tables)
+            {
+                ITable table = tables[tableInfo.TableName];
+
+                foreach (IKeyInfo key in tableInfo.UniqueKeys)
+                {
+                    DatabaseReflectionHelper.CreateIndex(table, key, true);
+                }
+
+                foreach (IKeyInfo key in tableInfo.ForeignKeys)
+                {
+                    DatabaseReflectionHelper.CreateIndex(table, key, false);
+                }
+            }
+
+            this.Logger.Write(
+                "Additional indexes built in {0:0.0} ms",
+                partialTime.Elapsed.TotalMilliseconds);
+
             this.Logger.Write("Creating and verifying associations...");
             partialTime.Restart();
 
-            foreach (DbRelationInformation relation in schema.Relations)
+            foreach (DbRelationInfo relation in schema.Relations)
             {
                 DatabaseReflectionHelper.CreateAssociation(this.database, relation);
             }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="PrimaryKeyConfiguration.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,29 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
+    using System.Collections.Generic;
     using System.Data.Metadata.Edm;
-#endif
+    using System.Linq;
+    using System.Reflection;
+    using Effort.Internal.Common;
 
-    internal interface ITypeConverter
+    internal class PrimaryKeyConfiguration : ITableConfiguration
     {
-        object ConvertClrObject(object obj, Type type);
+        public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
+        {
+            IList<PropertyInfo> keyMembers = new List<PropertyInfo>();
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+            foreach (EdmProperty property in entityInfo.EntitySet.ElementType.KeyMembers)
+            {
+                PropertyInfo member = builder.FindMember(property);
+
+                keyMembers.Add(member);
+            }
+
+            builder.PrimaryKey = 
+                KeyInfoHelper.CreateKeyInfo(builder.EntityType, keyMembers.ToArray());
+        }
     }
 }

@@ -26,8 +26,10 @@ namespace Effort.Internal.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
 
     internal static class TypeHelper
     {
@@ -121,6 +123,46 @@ namespace Effort.Internal.Common
         public static string NormalizeForCliTypeName(string name)
         {
             return name.Replace("_", "__").Replace(".", "_");
+        }
+
+        public static Type GetMemberType(MemberInfo member)
+        {
+            switch (member.MemberType)
+            {
+                case MemberTypes.Field:
+                    return ((FieldInfo)member).FieldType;
+                case MemberTypes.Property:
+                    return ((PropertyInfo)member).PropertyType;
+                case MemberTypes.Event:
+                    return ((EventInfo)member).EventHandlerType;
+                default:
+                    throw new ArgumentException("MemberInfo must be if type FieldInfo, PropertyInfo or EventInfo", "member");
+            }
+        }
+
+        public static bool IsAnonymousType(Type type)
+        {
+            return CheckIfAnonymousType(type)
+                ||
+                (!typeof(IComparable).IsAssignableFrom(type) &&
+                type.GetCustomAttributes(typeof(DebuggerDisplayAttribute), false)
+                    .Cast<DebuggerDisplayAttribute>()
+                    .Any(m => m.Type == "<Anonymous Type>"));
+        }
+
+        private static bool CheckIfAnonymousType(Type type)
+        {
+            if (type == null)
+            {
+                return false;
+            }
+
+            // HACK: The only way to detect anonymous types right now.
+            return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
+                && type.IsGenericType 
+                && type.Name.Contains("AnonymousType")
+                && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
+                && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
         }
     }
 }

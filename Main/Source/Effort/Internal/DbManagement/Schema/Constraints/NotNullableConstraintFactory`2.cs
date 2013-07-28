@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="Effort Team">
+// <copyright file="NotNullableConstraintFactory`2.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,23 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.TypeConversion
+namespace Effort.Internal.DbManagement.Schema.Constraints
 {
-    using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using NMemory.Common;
+    using NMemory.Constraints;
 
-    internal interface ITypeConverter
+    internal class NotNullableConstraintFactory<TEntity, TMember> : 
+        ConstraintFactoryBase<TEntity, TMember>
     {
-        object ConvertClrObject(object obj, Type type);
+        public NotNullableConstraintFactory(
+            IEntityMemberInfo<TEntity, TMember> member)
+            : base(member)
+        {
+        }
 
-        bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result);
+        protected override IConstraint<TEntity> Create(IEntityMemberInfo<TEntity, TMember> member)
+        {
+            return new NotNullableConstraint<TEntity, TMember>(member);
+        }
     }
 }

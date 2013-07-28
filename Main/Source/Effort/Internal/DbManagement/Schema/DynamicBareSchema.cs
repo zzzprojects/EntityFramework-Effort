@@ -25,7 +25,11 @@
 namespace Effort.Internal.DbManagement.Schema
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;

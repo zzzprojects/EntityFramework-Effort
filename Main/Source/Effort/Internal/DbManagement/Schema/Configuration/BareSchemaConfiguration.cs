@@ -24,7 +24,6 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System.Data.Metadata.Edm;
     using Effort.Internal.Common;
 
     internal class BareSchemaConfiguration : ITableConfiguration

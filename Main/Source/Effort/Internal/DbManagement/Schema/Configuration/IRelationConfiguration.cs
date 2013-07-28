@@ -24,8 +24,6 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System.Data.Metadata.Edm;
-
     internal interface IRelationConfiguration
     {
         void Configure(AssociationInfo entityInfo, DbSchemaBuilder builder);

@@ -25,10 +25,13 @@
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System.Collections.Generic;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using System.Linq;
     using System.Reflection;
-    using Effort.Internal.Common;
 
     internal class PrimaryKeyConfiguration : ITableConfiguration
     {

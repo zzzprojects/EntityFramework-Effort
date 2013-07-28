@@ -24,8 +24,6 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System.Data.Metadata.Edm;
-
     internal interface ITableConfiguration
     {
         void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder);

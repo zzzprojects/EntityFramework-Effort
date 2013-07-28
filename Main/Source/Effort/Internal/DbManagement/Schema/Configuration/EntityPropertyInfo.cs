@@ -25,7 +25,11 @@
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using Effort.Internal.TypeConversion;
 
     internal class EntityPropertyInfo

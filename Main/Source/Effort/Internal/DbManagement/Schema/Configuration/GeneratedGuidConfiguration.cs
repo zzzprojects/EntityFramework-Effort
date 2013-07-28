@@ -25,7 +25,6 @@
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System;
-    using System.Data.Metadata.Edm;
     using System.Reflection;
     using Effort.Internal.DbManagement.Schema.Constraints;
 

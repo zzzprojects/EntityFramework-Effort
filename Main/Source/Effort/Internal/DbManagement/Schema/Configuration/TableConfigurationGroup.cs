@@ -25,7 +25,6 @@
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System.Collections.Generic;
-    using System.Data.Metadata.Edm;
 
     internal class TableConfigurationGroup : ITableConfiguration
     {

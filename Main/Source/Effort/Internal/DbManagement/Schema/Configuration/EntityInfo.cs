@@ -26,7 +26,11 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using Effort.Internal.TypeConversion;
 
     internal class EntityInfo

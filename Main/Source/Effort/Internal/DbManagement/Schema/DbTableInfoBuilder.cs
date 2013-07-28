@@ -26,11 +26,15 @@ namespace Effort.Internal.DbManagement.Schema
 {
     using System;
     using System.Collections.Generic;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
     using System.Data.Metadata.Edm;
+#endif
     using System.Linq;
     using System.Reflection;
-    using NMemory.Indexes;
     using Effort.Internal.Common;
+    using NMemory.Indexes;
 
     internal class DbTableInfoBuilder
     {

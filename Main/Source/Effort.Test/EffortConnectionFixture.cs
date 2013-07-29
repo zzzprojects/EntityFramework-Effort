@@ -63,10 +63,11 @@ namespace Effort.Test
 
             var builder = new EffortConnectionStringBuilder(conn.ConnectionString);
 
+            // The IsTransient flag should be removed
             builder.IsTransient.ShouldBeFalse();
             Guid value;
+            // The InstanceId should be set as a guid
             Guid.TryParse(builder.InstanceId, out value).ShouldBeTrue();
         }
-
     }
 }

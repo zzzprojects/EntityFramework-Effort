@@ -30,10 +30,10 @@ namespace Effort.Test
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class DbConfigurationFixture
+    public class DbManagerFixture
     {
         [TestMethod]
-        public void DbConfigurationFixture_SetIdentityFields()
+        public void DbManagerFixture_SetIdentityFields()
         {
             EffortConnection connection =
                 (EffortConnection)DbConnectionFactory.CreateTransient();

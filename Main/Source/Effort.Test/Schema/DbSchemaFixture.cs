@@ -31,20 +31,20 @@ namespace Effort.Test.Schema
 #endif
     using System.IO;
     using System.Reflection;
-    using System.Xml.Linq;
     using System.Xml;
+    using System.Xml.Linq;
+    using Effort.Internal.DbManagement;
     using Effort.Internal.DbManagement.Schema;
     using Effort.Internal.StorageSchema;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Effort.Internal.DbManagement;
 
     [TestClass]
     public class DbSchemaFixture
     {
         [TestMethod]
-        public void CreateSchemaWithComplexKey()
+        public void DbSchema_CompoundKey()
         {
-            StoreItemCollection ssdl = LoadSSDL(1); 
+            StoreItemCollection ssdl = LoadSSDL("CompoundKey"); 
  
             DbSchema schema = DbSchemaFactory.CreateDbSchema(ssdl);
 
@@ -52,12 +52,12 @@ namespace Effort.Test.Schema
             container.Initialize(schema);
         }
 
-        private static StoreItemCollection LoadSSDL(int index)
+        private static StoreItemCollection LoadSSDL(string name)
         {
             string resourceName =
                 string.Format(
-                    "Effort.Test.Schema.Resources.DbSchema.SSDL{0}.xml",
-                    index);
+                    "Effort.Test.Schema.Resources.DbSchema.{0}.xml",
+                    name);
 
             Stream stream = Assembly
                 .GetExecutingAssembly()
@@ -65,7 +65,9 @@ namespace Effort.Test.Schema
 
             XElement ssdl = XDocument.Load(stream).Root;
 
-            UniversalStorageSchemaModifier.Instance.Modify(ssdl, new EffortProviderInformation());
+            UniversalStorageSchemaModifier
+                .Instance
+                .Modify(ssdl, new EffortProviderInformation());
 
             return new StoreItemCollection(new XmlReader[] { ssdl.CreateReader() });
         }

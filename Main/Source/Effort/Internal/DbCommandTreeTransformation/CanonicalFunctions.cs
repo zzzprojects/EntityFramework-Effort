@@ -58,6 +58,22 @@ namespace Effort.Internal.DbCommandTreeTransformation
             AddStringMappings();
             AddDateTimeMappings();
             AddArithmeticMappings();
+            AddBitwiseMappings();
+        }
+
+        private void AddBitwiseMappings()
+        {
+            this.mappings["Edm.BitwiseOr"] = (f, args) => 
+                CreateBitwiseOperationExpression(f, args);
+
+            this.mappings["Edm.BitwiseAnd"] = (f, args) => 
+                CreateBitwiseOperationExpression(f, args);
+
+            this.mappings["Edm.BitwiseXor"] = (f, args) => 
+                CreateBitwiseOperationExpression(f, args);
+
+            this.mappings["Edm.BitwiseNot"] = (f, args) => 
+                CreateBitwiseOperationExpression(f, args);
         }
 
         private void AddArithmeticMappings()
@@ -267,6 +283,20 @@ namespace Effort.Internal.DbCommandTreeTransformation
             {
                 throw new InvalidOperationException("Missing function mapping for " + function.FullName + '.', exp);
             }
+        }
+
+        private MethodCallExpression CreateBitwiseOperationExpression(EdmFunction function, Expression[] args)
+        {
+            Type type = 
+                this.converter.Convert(function.Parameters[0].TypeUsage);
+
+            MethodInfo method = 
+                FindMethod(
+                    typeof(DbFunctions), 
+                    function.Name, 
+                    Enumerable.Repeat(type, args.Length).ToArray());
+
+            return Expression.Call(null, method, args);
         }
 
         private static MethodCallExpression CreateDateExpression(Expression[] args, string propertyName)

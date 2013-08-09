@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="FeatureDbContext.cs" company="Effort Team">
+// <copyright file="RequiredFieldFixture.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,40 +22,42 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Features
+namespace Effort.Test.Features
 {
     using System.Data.Common;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
+    using Effort.Provider;
+    using Effort.Test.Data.Features;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    public class FeatureDbContext : DbContext
+    [TestClass]
+    public class RequiredFieldFixture
     {
-        public FeatureDbContext(DbConnection connection)
-            : this(connection, CompiledModels.DefaultModel)
-        { 
-        }
+        private FeatureDbContext context;
+        private EffortConnection connection;
 
-        public FeatureDbContext(DbConnection connection, DbCompiledModel model) 
-            : base(connection, model, true)
+        [TestInitialize]
+        public void Initialize()
         {
+            this.connection = (EffortConnection)DbConnectionFactory.CreateTransient();
+
+            this.context =
+                new FeatureDbContext(
+                    connection,
+                    CompiledModels.GetModel<RequiredFieldEntity>());
         }
 
-        public IDbSet<StringFieldEntity> StringFieldEntities { get; set; }
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.context.Dispose();
+        }
 
-        public IDbSet<GuidKeyEntity> GuidKeyEntities { get; set; }
-
-        public IDbSet<DateFieldEntity> DateFieldEntities { get; set; }
-
-        public IDbSet<LargeStringFieldEntity> LargeStringFieldEntities { get; set; }
-
-        public IDbSet<DateTimeOffsetFieldEntity> DateTimeOffsetFieldEntities { get; set; }
-
-        public IDbSet<DateTimeFieldEntity> DateTimeFieldEntities { get; set; }
-
-        public IDbSet<EnumFieldEntity> EnumFieldEntities { get; set; }
-
-        public IDbSet<TimestampFieldEntity> TimestampFieldEntities { get; set; }
-
-        public IDbSet<RequiredFieldEntity> RequiredFieldEntities { get; set; }
+        [TestMethod]
+        public void RequiredFieldFixture_CreateRequiredField()
+        {
+            this.context.Database.Initialize(true);
+            this.connection.Open();
+            // TODO: check table contraints
+        }
     }
 }

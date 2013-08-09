@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\RequiredFieldEntity.cs" />
     <Compile Include="Features\TimestampFieldEntity.cs" />
     <Compile Include="Northwind\Category.cs">
       <DependentUpon>Northwind.tt</DependentUpon>

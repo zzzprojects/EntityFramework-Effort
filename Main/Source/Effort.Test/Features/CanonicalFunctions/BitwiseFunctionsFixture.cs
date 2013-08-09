@@ -57,8 +57,11 @@ namespace Effort.Test.Features.CanonicalFunctions
                     CompiledModels.GetModel<IntFieldEntity>());
 
             context.IntFieldEntities.Add(
-                new IntFieldEntity { 
-                    Value = 0x0f });
+                new IntFieldEntity {
+                    Value8 = 0x0f,
+                    Value16 = 0x0f,
+                    Value32 = 0x0f,
+                    Value64 = 0x0f});
 
             context.SaveChanges();
             connection.Close();
@@ -71,11 +74,41 @@ namespace Effort.Test.Features.CanonicalFunctions
         }
 
         [TestMethod]
-        public void BitwiseAnd()
+        public void BitwiseAnd8()
         {
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value & 0xaa) == (0x0f & 0xaa));
+                .Where(x => (x.Value8 & (byte)0xaa) == (0x0f & 0xaa));
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void BitwiseAnd16()
+        {
+            var q = this.context
+                .IntFieldEntities
+                .Where(x => (x.Value16 & (byte)0xaa) == (0x0f & 0xaa));
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void BitwiseAnd32()
+        {
+            var q = this.context
+                .IntFieldEntities
+                .Where(x => (x.Value32 & 0xaa) == (0x0f & 0xaa));
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void BitwiseAnd64()
+        {
+            var q = this.context
+                .IntFieldEntities
+                .Where(x => (x.Value64 & 0xaa) == (0x0f & 0xaa));
 
             q.Any().ShouldBeTrue();
         }
@@ -85,7 +118,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value | 0xaa) == (0x0f | 0xaa));
+                .Where(x => (x.Value32 | 0xaa) == (0x0f | 0xaa));
 
             q.Any().ShouldBeTrue();
         }
@@ -95,7 +128,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (~x.Value) == (~0x0f));
+                .Where(x => (~x.Value32) == (~0x0f));
 
             q.Any().ShouldBeTrue();
         }
@@ -105,7 +138,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value ^ 0xaa) == (0x0f ^ 0xaa));
+                .Where(x => (x.Value32 ^ 0xaa) == (0x0f ^ 0xaa));
 
             q.Any().ShouldBeTrue();
         }

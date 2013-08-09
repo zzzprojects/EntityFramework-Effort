@@ -31,6 +31,12 @@ namespace Effort.Test.Data.Features
         [Key]
         public int Id { get; set; }
 
-        public int Value { get; set; }
+        public byte Value8 { get; set; }
+
+        public short Value16 { get; set; }
+
+        public int Value32 { get; set; }
+
+        public long Value64 { get; set; }
     }
 }

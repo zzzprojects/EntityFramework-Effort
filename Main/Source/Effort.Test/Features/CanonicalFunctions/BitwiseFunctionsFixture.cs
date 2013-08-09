@@ -76,9 +76,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void BitwiseAnd8()
         {
+            byte val = (0x0f & 0xaa);
+
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value8 & (byte)0xaa) == (0x0f & 0xaa));
+                .Where(x => (x.Value8 & (byte)0xaa) == val);
 
             q.Any().ShouldBeTrue();
         }
@@ -86,9 +88,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void BitwiseAnd16()
         {
+            short val = (0x0f & 0xaa);
+
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value16 & (byte)0xaa) == (0x0f & 0xaa));
+                .Where(x => (x.Value16 & (short)0xaa) == val);
 
             q.Any().ShouldBeTrue();
         }
@@ -96,9 +100,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void BitwiseAnd32()
         {
+            int val = (0x0f & 0xaa);
+
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value32 & 0xaa) == (0x0f & 0xaa));
+                .Where(x => (x.Value32 & (int)0xaa) == val);
 
             q.Any().ShouldBeTrue();
         }
@@ -106,9 +112,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void BitwiseAnd64()
         {
+            long val = (0x0f & 0xaa);
+
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value64 & 0xaa) == (0x0f & 0xaa));
+                .Where(x => (x.Value64 & 0xaa) == val);
 
             q.Any().ShouldBeTrue();
         }
@@ -116,9 +124,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void BitwiseOr()
         {
+            int val = (0x0f | 0xaa);
+
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value32 | 0xaa) == (0x0f | 0xaa));
+                .Where(x => (x.Value32 | 0xaa) == val);
 
             q.Any().ShouldBeTrue();
         }
@@ -126,9 +136,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void BitwiseNot()
         {
+            int val = (~0x0f);
+
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (~x.Value32) == (~0x0f));
+                .Where(x => (~x.Value32) == val);
 
             q.Any().ShouldBeTrue();
         }
@@ -136,9 +148,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void BitwiseXor()
         {
+            int val = (0x0f ^ 0xaa);
+
             var q = this.context
                 .IntFieldEntities
-                .Where(x => (x.Value32 ^ 0xaa) == (0x0f ^ 0xaa));
+                .Where(x => (x.Value32 ^ 0xaa) == val);
 
             q.Any().ShouldBeTrue();
         }

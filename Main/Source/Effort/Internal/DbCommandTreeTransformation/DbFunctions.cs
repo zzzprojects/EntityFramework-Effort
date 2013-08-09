@@ -42,45 +42,5 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             return data.Substring(begin.Value - 1, length.Value);
         }
-
-        public static int? BitwiseAnd(int? x, int? y)
-        {
-            if (!x.HasValue || !y.HasValue)
-            {
-                return null;
-            }
-
-            return x & y;
-        }
-
-        public static int? BitwiseOr(int? x, int? y)
-        {
-            if (!x.HasValue || !y.HasValue)
-            {
-                return null;
-            }
-
-            return x | y;
-        }
-
-        public static int? BitwiseXor(int? x, int? y)
-        {
-            if (!x.HasValue || !y.HasValue)
-            {
-                return null;
-            }
-
-            return x ^ y;
-        }
-
-        public static int? BitwiseNot(int? x)
-        {
-            if (!x.HasValue)
-            {
-                return null;
-            }
-
-            return ~x;
-        }
     }
 }

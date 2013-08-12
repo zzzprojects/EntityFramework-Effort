@@ -25,6 +25,7 @@
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System.Reflection;
+    using Effort.Internal.Common;
     using Effort.Internal.DbManagement.Schema.Constraints;
 
     internal class NotNullConfiguration : ITableConfiguration
@@ -33,7 +34,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
         {
             foreach (EntityPropertyInfo property in entityInfo.Properties)
             {
-                if (!property.Facets.Nullable && property.ClrType.IsValueType)
+                if (!property.Facets.Nullable && TypeHelper.IsNullable(property.ClrType))
                 {
                     MemberInfo member = builder.FindMember(property.Property);
                     object factory = ConstraintFactories.NotNull(member);

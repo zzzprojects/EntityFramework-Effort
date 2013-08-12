@@ -25,6 +25,7 @@
 namespace Effort.Test.Features
 {
     using System.Data.Common;
+    using System.Data.Entity.Infrastructure;
     using Effort.Provider;
     using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -44,6 +45,8 @@ namespace Effort.Test.Features
                 new FeatureDbContext(
                     connection,
                     CompiledModels.GetModel<RequiredFieldEntity>());
+
+            this.context.Configuration.ValidateOnSaveEnabled = false;
         }
 
         [TestCleanup]
@@ -58,6 +61,19 @@ namespace Effort.Test.Features
             this.context.Database.Initialize(true);
             this.connection.Open();
             // TODO: check table contraints
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DbUpdateException))]
+        public void RequiredFieldFixture_EmptyFieldAdditionShouldFail()
+        {
+            this.context.RequiredFieldEntities.Add(
+                new RequiredFieldEntity
+                {
+                    Value = null
+                });
+
+            this.context.SaveChanges();
         }
     }
 }

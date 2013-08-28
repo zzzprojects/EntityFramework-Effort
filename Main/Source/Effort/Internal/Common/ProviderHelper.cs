@@ -28,7 +28,7 @@ namespace Effort.Internal.Common
     using System.Data;
     using System.Data.Common;
 #if !EFOLD
-    using System.Data.Entity.Config;
+    using System.Data.Entity;
     using System.Data.Entity.Core.Common;
     using System.Data.Entity.Core;
 #endif
@@ -41,8 +41,13 @@ namespace Effort.Internal.Common
         {
 
 #if !EFOLD
-            DbProviderServices providerServices = 
-                DbConfiguration.GetService<DbProviderServices>(providerInvariantName);
+            DbProviderServices providerServices =
+                DbConfiguration
+                    .DependencyResolver
+                    .GetService(
+                        typeof(DbProviderServices),
+                        providerInvariantName) as DbProviderServices;
+                 
 #else
             IServiceProvider serviceProvider = 
                 DbProviderFactories.GetFactory(providerInvariantName) as IServiceProvider;

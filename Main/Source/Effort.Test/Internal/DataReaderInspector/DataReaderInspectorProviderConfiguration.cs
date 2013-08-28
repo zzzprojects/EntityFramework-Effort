@@ -24,14 +24,14 @@
 
 namespace Effort.Test.Internal.DataReaderInspector
 {
-
 #if !EFOLD
-    using System.Data.Entity.Config;
+    using System.Data.Entity;
     using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Infrastructure.DependencyResolution;
 #endif
     using System.Threading;
     using Effort.Test.Internal.WrapperProviders;
-    using System.Data.Entity.Infrastructure;
 
     internal static class DataReaderInspectorProviderConfiguration
     {
@@ -66,17 +66,20 @@ namespace Effort.Test.Internal.DataReaderInspector
         private static void RegisterEFServices()
         {
 #if !EFOLD
-            DbConfiguration.OnLockingConfiguration += OnLockingConfiguration;
+            DbConfiguration.Loaded += OnDbConfigurationLoaded;
 #endif
         }
 
+        
 #if !EFOLD
-        private static void OnLockingConfiguration(object sender, DbConfigurationEventArgs e)
+        private static void OnDbConfigurationLoaded(
+            object sender, 
+            DbConfigurationLoadedEventArgs e)
         {
             e.AddDependencyResolver(
                 new SingletonDependencyResolver<DbProviderServices>(
-                        DataReaderInspectorProviderServices.Instance,
-                        ProviderInvariantName),
+                    DataReaderInspectorProviderServices.Instance,
+                    ProviderInvariantName),
                 false);
 
             e.AddDependencyResolver(

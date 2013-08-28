@@ -13,10 +13,10 @@ namespace Effort.Test.Internal.WrapperProviders
     using System.Collections.Generic;
     using System.Data.Common;
 #if !EFOLD
+    using System.Data.Entity;
     using System.Data.Entity.Core.Common;
     using System.Data.Entity.Core.Common.CommandTrees;
     using System.Data.Entity.Core.Metadata.Edm;
-    using System.Data.Entity.Config;
 #else
     using System.Data.Common.CommandTrees;
     using System.Data.Metadata.Edm;
@@ -235,7 +235,12 @@ namespace Effort.Test.Internal.WrapperProviders
         private static DbProviderServices GetProviderServicesByName(string providerInvariantName)
         {
 #if !EFOLD
-            DbProviderServices providerServices = DbConfiguration.GetService<DbProviderServices>(providerInvariantName);
+            DbProviderServices providerServices =
+                DbConfiguration
+                    .DependencyResolver
+                    .GetService(
+                        typeof(DbProviderServices),
+                        providerInvariantName) as DbProviderServices;
 #else
             DbProviderFactory factory = DbProviderFactories.GetFactory(providerInvariantName);
             if (factory == null)

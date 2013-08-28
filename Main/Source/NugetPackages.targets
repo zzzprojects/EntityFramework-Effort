@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PackageEF5Dir>EntityFramework.5.0.0</PackageEF5Dir>
+    <PackageEF6Dir>EntityFramework.6.0.0-rc1</PackageEF6Dir>
+    <PackageNMemoryDir>NMemory.1.0.0-beta7-130705</PackageNMemoryDir>
+  </PropertyGroup>
+</Project>

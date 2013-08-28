@@ -4,7 +4,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug(ef6,net40)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	<PackagePlatformDir>net40</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.6.0.0-beta1</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -17,7 +17,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release(ef6,net40)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	<PackagePlatformDir>net40</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.6.0.0-beta1</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug(ef6,net45)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	<PackagePlatformDir>net45</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.6.0.0-beta1</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -42,7 +42,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release(ef6,net45)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	<PackagePlatformDir>net45</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.6.0.0-beta1</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -56,7 +56,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug(pre-ef6,net40)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	<PackagePlatformDir>net40</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.5.0.0</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF5Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>false</ExternalEntityFramework>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -69,7 +69,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release(pre-ef6,net40)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	<PackagePlatformDir>net40</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.5.0.0</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF5Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>false</ExternalEntityFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -81,7 +81,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug(pre-ef6,net45)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	<PackagePlatformDir>net45</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.5.0.0</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF5Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>false</ExternalEntityFramework>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -94,7 +94,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release(pre-ef6,net45)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	<PackagePlatformDir>net45</PackagePlatformDir>
-	<PackageEntityFrameworkDir>EntityFramework.5.0.0</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF5Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>false</ExternalEntityFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>

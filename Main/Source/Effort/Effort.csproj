@@ -19,6 +19,7 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <Import Project="..\NugetPackages.targets" />
   <Import Project="..\BuildConfigurations.targets" />
   <Import Project="..\AssemblySigning.targets" />
   <PropertyGroup>
@@ -42,7 +43,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NMemory">
-      <HintPath>..\packages\NMemory.1.0.0-beta7-130705\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
+      <HintPath>..\packages\$(PackageNMemoryDir)\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

@@ -29,9 +29,10 @@ namespace Effort.Provider
     using System.Data;
     using System.Data.Common;
 #if !EFOLD
-    using System.Data.Entity.Config;
+    using System.Data.Entity;
     using System.Data.Entity.Core.Common;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Infrastructure.DependencyResolution;
 #endif
     using System.Threading;
     using Effort.Exceptions;
@@ -142,21 +143,23 @@ namespace Effort.Provider
 #if !EFOLD
         private static void RegisterDbConfigurationEventHandler()
         {
-            DbConfiguration.OnLockingConfiguration += OnLockingConfiguration;
+            DbConfiguration.Loaded += OnDbConfigurationLoaded;
         }
 
-        private static void OnLockingConfiguration(object sender, DbConfigurationEventArgs e)
+        private static void OnDbConfigurationLoaded(
+            object sender, 
+            DbConfigurationLoadedEventArgs e)
         {
             e.AddDependencyResolver(
                 new SingletonDependencyResolver<DbProviderServices>(
-                        EffortProviderServices.Instance,
-                        ProviderInvariantName),
+                    EffortProviderServices.Instance,
+                    ProviderInvariantName),
                 false);
 
             e.AddDependencyResolver(
                 new SingletonDependencyResolver<IProviderInvariantName>(
-                        EffortProviderInvariantName.Instance,
-                        EffortProviderFactory.Instance),
+                    EffortProviderInvariantName.Instance,
+                    EffortProviderFactory.Instance),
                 false);
         }
 #endif

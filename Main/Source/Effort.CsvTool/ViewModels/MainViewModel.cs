@@ -182,118 +182,136 @@ namespace Effort.CsvTool.ViewModels
 
                 var schema = con.GetSchema("Tables");
 
-                List<string> tables = new List<string>();
+                Dictionary<string, List<string>> tables = new Dictionary<string, List<string>>();
+                //List<string> tables = new List<string>();
 
                 foreach (DataRow item in schema.Rows)
                 {
                     if (item[3].Equals("BASE TABLE"))
                     {
+                        string schemaName = item[1] as string;
                         string name = item[2] as string;
-
-                        tables.Add(name);
-                    }
-                }
-
-                for (int j = 0; j < tables.Count; j++ )
-                {
-                    string name = tables[j];
-
-                    using (DbCommand cmd = con.CreateCommand())
-                    {
-                        cmd.CommandText = string.Format("SELECT * FROM [{0}]", name);
-                        cmd.CommandType = CommandType.Text;
-
-                        FileInfo file = new FileInfo(Path.Combine(dir.FullName, string.Format("{0}.csv", name)));
-
-                        if (!dir.Exists)
+                        
+                        if (!tables.ContainsKey(schemaName))
                         {
-                            dir.Create();
+                            tables.Add(schemaName, new List<string>());
                         }
 
-                        using (DbDataReader reader = cmd.ExecuteReader())
-                        using (StreamWriter sw = new StreamWriter(file.Open(FileMode.Create, FileAccess.Write, FileShare.None)))
+                        tables[schemaName].Add(name);
+                    }
+                }
+                foreach (var schemaName in tables.Keys)
+                {
+                    for (int j = 0; j < tables[schemaName].Count; j++)
+                    {
+                        int rowCount = 0;
+                        string name = tables[schemaName][j];
+
+                        using (DbCommand cmd = con.CreateCommand())
                         {
-                            int fieldCount = reader.FieldCount;
+                            cmd.CommandText = string.Format("SELECT * FROM [{0}].[{1}]", schemaName, name);
+                            cmd.CommandType = CommandType.Text;
 
-                            string[] fieldNames = new string[fieldCount];
-                            Func<object, string>[] serializers = new Func<object, string>[fieldCount];
-                            bool[] typeNeedQuote = new bool[fieldCount];
+                            FileInfo file = new FileInfo(Path.Combine(dir.FullName, string.Format("{0}.csv", name)));
 
-                            for (int i = 0; i < fieldCount; i++)
+                            if (!dir.Exists)
                             {
-                                fieldNames[i] = reader.GetName(i);
-
-                                Type fieldType = reader.GetFieldType(i);
-
-                                if (fieldType == typeof(Byte[]))
-                                {
-                                    serializers[i] = BinarySerializer;
-                                    typeNeedQuote[i] = false;
-                                }
-                                else if (fieldType == typeof(string))
-                                {
-                                    serializers[i] = DefaultSerializer;
-                                    typeNeedQuote[i] = true;
-                                }
-                                else
-                                {
-                                    // Default serializer
-                                    serializers[i] = DefaultSerializer;
-                                    typeNeedQuote[i] = false;
-                                }
-
+                                dir.Create();
                             }
 
-                            sw.WriteLine(string.Join(",", fieldNames));
-
-                            object[] values = new object[fieldCount];
-                            string[] serializedValues = new string[fieldCount];
-                            bool[] addQuote = new bool[fieldCount];
-
-                            while (reader.Read())
+                            using (DbDataReader reader = cmd.ExecuteReader())
+                            using (StreamWriter sw = new StreamWriter(file.Open(FileMode.Create, FileAccess.Write, FileShare.None)))
                             {
-                                reader.GetValues(values);
+                                int fieldCount = reader.FieldCount;
+
+                                string[] fieldNames = new string[fieldCount];
+                                Func<object, string>[] serializers = new Func<object, string>[fieldCount];
+                                bool[] typeNeedQuote = new bool[fieldCount];
 
                                 for (int i = 0; i < fieldCount; i++)
                                 {
-                                    object value = values[i];
+                                    fieldNames[i] = reader.GetName(i);
 
-                                    // Check if null
-                                    if (value == null || value is DBNull)
+                                    Type fieldType = reader.GetFieldType(i);
+
+                                    if (fieldType == typeof(Byte[]))
                                     {
-                                        addQuote[i] = false;
-                                        serializedValues[i] = "";
+                                        serializers[i] = BinarySerializer;
+                                        typeNeedQuote[i] = false;
+                                    }
+                                    else if (fieldType == typeof(string) | (fieldType==typeof(Guid)))
+                                    {
+                                        serializers[i] = DefaultSerializer;
+                                        typeNeedQuote[i] = true;
                                     }
                                     else
                                     {
-                                        addQuote[i] = typeNeedQuote[i];
-                                        serializedValues[i] = serializers[i](value);
+                                        // Default serializer
+                                        serializers[i] = DefaultSerializer;
+                                        typeNeedQuote[i] = false;
                                     }
+
                                 }
 
+                                sw.WriteLine(string.Join(",", fieldNames));
+
+                                object[] values = new object[fieldCount];
+                                string[] serializedValues = new string[fieldCount];
+                                bool[] addQuote = new bool[fieldCount];
+
+                                while (reader.Read())
                                 {
-                                    int i = 0;
-                                    for (; i < fieldCount - 1; i++)
-                                    {
-                                        AppendField(sw, serializedValues[i], addQuote[i]);
+                                    rowCount++;
+                                    reader.GetValues(values);
 
-                                        sw.Write(',');
+                                    for (int i = 0; i < fieldCount; i++)
+                                    {
+                                        object value = values[i];
+
+                                        // Check if null
+                                        if (value == null || value is DBNull)
+                                        {
+                                            addQuote[i] = false;
+                                            serializedValues[i] = "";
+                                        }
+                                        else
+                                        {
+                                            addQuote[i] = typeNeedQuote[i];
+                                            serializedValues[i] = serializers[i](value);
+                                        }
                                     }
 
-                                    AppendField(sw, serializedValues[i], addQuote[i]);
-                                    sw.WriteLine();
+                                    {
+                                        int i = 0;
+                                        for (; i < fieldCount - 1; i++)
+                                        {
+                                            AppendField(sw, serializedValues[i], addQuote[i]);
+
+                                            sw.Write(',');
+                                        }
+
+                                        AppendField(sw, serializedValues[i], addQuote[i]);
+                                        sw.WriteLine();
+                                    }
+
                                 }
-
+                                // DataReader is finished
                             }
-                            // DataReader is finished
+
+                            // Remove Empty file
+                            if (rowCount == 0)
+                            {
+                                file.Delete();
+                            }
+                            // Command is finished
                         }
-                        // Command is finished
+
+                        this.worker.ReportProgress((int)((double)(j + 1) * 100.0 / tables.Count));
+
+                        // Table is finished
                     }
-
-                    this.worker.ReportProgress((int)((double)(j + 1) * 100.0 / tables.Count));
-
-                    // Table is finished
                 }
+                
                 // All table finished
             }
             // Connection is closed

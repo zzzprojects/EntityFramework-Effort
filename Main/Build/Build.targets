@@ -13,21 +13,32 @@
 
   <ItemGroup>
     <CompileConfig Include="Release(pre-ef6,net40)">
+      <NugetPack>Effort</NugetPack>
       <NugetDir>lib\net40</NugetDir>
       <ZipDir>.NET 4.0\Entity Framework 4-5</ZipDir>
     </CompileConfig>
     <CompileConfig Include="Release(pre-ef6,net45)">
+      <NugetPack>Effort</NugetPack>
       <NugetDir>lib\net45</NugetDir>
       <ZipDir>.NET 4.5\Entity Framework 4-5</ZipDir>
     </CompileConfig>
     <CompileConfig Include="Release(ef6,net40)">
-      <NugetDir></NugetDir>
+      <NugetPack>Effort.EF6</NugetPack>
+      <NugetDir>lib\net40</NugetDir>
       <ZipDir>.NET 4.0\Entity Framework 6</ZipDir>
     </CompileConfig>
     <CompileConfig Include="Release(ef6,net45)">
-      <NugetDir></NugetDir>
+      <NugetPack>Effort.EF6</NugetPack>
+      <NugetDir>lib\net45</NugetDir>
       <ZipDir>.NET 4.5\Entity Framework 6</ZipDir>
     </CompileConfig>
+    
+    <NugetConfig Include="Effort">
+      <Spec>Effort.nuspec</Spec>
+    </NugetConfig>
+    <NugetConfig Include="Effort.EF6">
+      <Spec>Effort.EF6.nuspec</Spec>
+    </NugetConfig>
   </ItemGroup>
 
   <Target 
@@ -113,7 +124,7 @@
   <Target Name="Collect" Outputs="%(CompileConfig.Identity)">
     <PropertyGroup>
       <SourceDir>$(SolutionDir)\Effort\bin\%(CompileConfig.Identity)</SourceDir>
-      <DestinationDirNuget>$(TempDir)\$(EffortNugetPackageDir)\%(CompileConfig.NugetDir)</DestinationDirNuget>
+      <DestinationDirNuget>$(TempDir)\$(EffortNugetPackageDir)\%(CompileConfig.NugetPack)\%(CompileConfig.NugetDir)</DestinationDirNuget>
       <DestinationDirZip>$(TempDir)\$(EffortZipPackageDir)\%(CompileConfig.ZipDir)</DestinationDirZip>
     </PropertyGroup>
     <ItemGroup>
@@ -133,18 +144,18 @@
           DestinationFolder="$(DestinationDirZip)" />
   </Target>
 
-  <Target Name="NugetPackage">
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\Effort.nuspec"
-          DestinationFolder="$(TempDir)\$(EffortNugetPackageDir)" />
+  <Target Name="NugetPackage" Outputs="%(NugetConfig.Identity)">
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\%(NugetConfig.Spec)"
+          DestinationFolder="$(TempDir)\$(EffortNugetPackageDir)\%(NugetConfig.Identity)" />
 
-    <Exec WorkingDirectory="$(TempDir)\$(EffortNugetPackageDir)"
-          Command="&quot;$(SolutionDir)\.nuget\nuget.exe&quot; pack &quot;$(TempDir)\$(EffortNugetPackageDir)\Effort.nuspec&quot;" />
+    <Exec WorkingDirectory="$(TempDir)\$(EffortNugetPackageDir)\%(NugetConfig.Identity)"
+          Command="&quot;$(SolutionDir)\.nuget\nuget.exe&quot; pack &quot;%(NugetConfig.Spec)&quot;" />
 
     <ItemGroup>
-      <NugetPackage Include="$(TempDir)\$(EffortNugetPackageDir)\*.nupkg"/>
+      <NugetPackages Include="$(TempDir)\$(EffortNugetPackageDir)\%(NugetConfig.Identity)\*.nupkg"/>
     </ItemGroup>
     
-    <Move SourceFiles="@(NugetPackage)"
+    <Move SourceFiles="@(NugetPackages)"
           DestinationFolder="$(PackageDir)" />
   </Target>
 

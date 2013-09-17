@@ -164,6 +164,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.UnionAll.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.VariableReference.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TraversalVisitor.cs" />
+    <Compile Include="Internal\DbManagement\Engine\ExtendedServiceProvider.cs" />
     <Compile Include="Internal\DbManagement\Schema\BareSchemaBase.cs" />
     <Compile Include="Internal\DbManagement\DbContainerManagerWrapper.cs" />
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
@@ -224,7 +225,6 @@
     <Compile Include="Internal\DbCommandTreeTransformation\SingleResult.cs" />
     <Compile Include="Internal\Caching\ConcurrentCache`2.cs" />
     <Compile Include="Internal\DbManagement\Engine\DatabaseComponentFactory.cs" />
-    <Compile Include="Internal\DbManagement\Engine\TransientDatabaseComponentFactory.cs" />
     <Compile Include="Internal\DbManagement\Schema\DbTableInfoBuilder.cs" />
     <Compile Include="Internal\DbManagement\Schema\KeyInfoHelper.cs" />
     <Compile Include="Internal\Diagnostics\ILogger.cs" />
@@ -270,6 +270,10 @@
     <Compile Include="Internal\TypeConversion\EdmTypeConverter.cs" />
     <Compile Include="Internal\TypeConversion\ITypeConverter.cs" />
     <Compile Include="Internal\TypeConversion\FacetInformation.cs" />
+    <Compile Include="Internal\TypeGeneration\LargeDataRowAttribute.cs" />
+    <Compile Include="Internal\TypeGeneration\DataRow.cs" />
+    <Compile Include="Internal\TypeGeneration\DataRowFactory.cs" />
+    <Compile Include="Internal\TypeGeneration\DataRowPropertyAttribute.cs" />
     <Compile Include="ObjectContextFactory.cs" />
     <Compile Include="Internal\TypeGeneration\AnonymousTypeFactory.cs" />
     <Compile Include="Internal\Common\EmitHelper.cs" />

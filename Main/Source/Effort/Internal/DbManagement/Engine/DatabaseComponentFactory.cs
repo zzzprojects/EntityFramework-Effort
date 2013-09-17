@@ -24,18 +24,38 @@
 
 namespace Effort.Internal.DbManagement.Engine
 {
+    using NMemory.Concurrency;
     using NMemory.Modularity;
 
     internal class DatabaseComponentFactory : DefaultDatabaseComponentFactory
     {
+        private readonly bool isTransient;
+
+        public DatabaseComponentFactory(bool isTransient)
+        {
+            this.isTransient = isTransient;
+        }
+
         public override IQueryCompiler CreateQueryCompiler()
         {
             return new ExtendedQueryCompiler();
         }
 
-        public override ITableFactory CreateTableFactory()
+        public override IConcurrencyManager CreateConcurrencyManager()
         {
-            return new ExtendedTableFactory();
+            if (this.isTransient)
+            {
+                return new ChaosConcurrencyManager();
+            }
+            else
+            {
+                return base.CreateConcurrencyManager();
+            }
+        }
+
+        public override IServiceProvider CreateServiceProvider()
+        {
+            return new ExtendedServiceProvider();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedTableFactoryService.cs" company="Effort Team">
+// <copyright file="ExtendedServiceProvider.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,27 +20,17 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 
 namespace Effort.Internal.DbManagement.Engine
 {
-    using NMemory.Indexes;
-    using NMemory.Modularity;
     using NMemory.Services;
-    using NMemory.Tables;
 
-    internal class ExtendedTableFactoryService : ITableFactoryService
+    internal class ExtendedServiceProvider : DefaultServiceProvider
     {
-        public Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
-            IKeyInfo<TEntity, TPrimaryKey> primaryKey, 
-            IdentitySpecification<TEntity> identitySpecification, 
-            IDatabase database) 
-            where TEntity : class
+        public ExtendedServiceProvider()
         {
-            return new ExtendedTable<TEntity, TPrimaryKey>(
-                database,
-                primaryKey,
-                identitySpecification);
+            this.Replace<ITableFactoryService>(new ExtendedTableFactoryService());
         }
     }
 }

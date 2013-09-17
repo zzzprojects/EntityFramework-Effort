@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TransientDatabaseComponentFactory.cs" company="Effort Team">
+// <copyright file="LargeDataRowAttribute.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,19 +20,24 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+
+namespace Effort.Internal.TypeGeneration
 {
-    using NMemory.Execution;
-    using NMemory.Modularity;
-    using NMemory.Concurrency;
+    using System;
 
-    internal class TransientDatabaseComponentFactory : DatabaseComponentFactory
+    /// <summary>
+    ///     When applied to a <see cref="DataRow"/> type, specifies that the type has so many
+    ///     properties that its single constructor has a single array parameter. 
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class LargeDataRowAttribute : Attribute
     {
-        public override IConcurrencyManager CreateConcurrencyManager()
-        {
-            return new ChaosConcurrencyManager();
-        }
+        /// <summary>
+        ///     Determines the minimum amount of properties that an annotated 
+        ///     <see cref="DataRow"/> type should have.
+        /// </summary>
+        internal const int LargePropertyCount = 16;
     }
 }

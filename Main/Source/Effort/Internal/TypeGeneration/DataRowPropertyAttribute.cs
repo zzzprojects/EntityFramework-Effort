@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedTableFactoryService.cs" company="Effort Team">
+// <copyright file="DataRowPropertyAttribute.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,27 +20,40 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+
+namespace Effort.Internal.TypeGeneration
 {
-    using NMemory.Indexes;
-    using NMemory.Modularity;
-    using NMemory.Services;
-    using NMemory.Tables;
+    using System;
 
-    internal class ExtendedTableFactoryService : ITableFactoryService
+    /// <summary>
+    ///     When applied to the property of a <see cref="DataRow"/> type, specifies the index 
+    ///     of the property.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple=false)]
+    public class DataRowPropertyAttribute : Attribute
     {
-        public Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
-            IKeyInfo<TEntity, TPrimaryKey> primaryKey, 
-            IdentitySpecification<TEntity> identitySpecification, 
-            IDatabase database) 
-            where TEntity : class
+        private readonly int index;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DataRowPropertyAttribute"/> class.
+        /// </summary>
+        /// <param name="index"> The index of the property. </param>
+        public DataRowPropertyAttribute(int index)
         {
-            return new ExtendedTable<TEntity, TPrimaryKey>(
-                database,
-                primaryKey,
-                identitySpecification);
+            this.index = index;
+        }
+
+        /// <summary>
+        ///     Gets the index of the property.
+        /// </summary>
+        /// <value>
+        ///     The index.
+        /// </value>
+        public int Index
+        {
+            get { return this.index; }
         }
     }
 }

@@ -234,18 +234,11 @@ namespace Effort.Internal.DbManagement
         {
             if (this.database == null)
             {
-                IDatabaseComponentFactory componentFactory = null;
+                IDatabaseComponentFactory componentFactory = 
+                    new DatabaseComponentFactory(this.parameters.IsTransient);
 
-                if (this.parameters.IsTransient)
-                {
-                    componentFactory = new TransientDatabaseComponentFactory();
-                }
-                else
-                {
-                    componentFactory = new DatabaseComponentFactory();
-                }
-
-                this.database = new Database(componentFactory);
+                this.database = 
+                    new Database(componentFactory);
             }
         }
 

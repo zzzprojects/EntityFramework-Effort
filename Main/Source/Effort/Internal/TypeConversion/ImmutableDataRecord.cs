@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedTableFactoryService.cs" company="Effort Team">
+// <copyright file="ImmutableDataRecord.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,27 +20,38 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+namespace Effort.Internal.TypeConversion
 {
-    using NMemory.Indexes;
-    using NMemory.Modularity;
-    using NMemory.Services;
-    using NMemory.Tables;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
 
-    internal class ExtendedTableFactoryService : ITableFactoryService
+    internal class ImmutableDataRecord
     {
-        public Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
-            IKeyInfo<TEntity, TPrimaryKey> primaryKey, 
-            IdentitySpecification<TEntity> identitySpecification, 
-            IDatabase database) 
-            where TEntity : class
+        private readonly string[] names;
+        private readonly IDictionary<string, object> data;
+
+        public ImmutableDataRecord(string[] names, object[] values)
         {
-            return new ExtendedTable<TEntity, TPrimaryKey>(
-                database,
-                primaryKey,
-                identitySpecification);
+            this.names = names;
+            this.data = new Dictionary<string, object>(names.Length);
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                this.data.Add(names[i], values[i]);
+            }
+        }
+
+        public T GetValue<T>(string name)
+        {
+            return (T)this.data[name];
+        }
+
+        public string[] Properties
+        {
+            get { return this.names; }
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Effort.Internal.TypeGeneration
                     int hash = this.propertyNames[i].GetHashCode();
 
                     // Rotate and mod2 addition
-                    result = result ^ ((hash << i) | (hash >> (32 - i)));
+                    result = result ^ ((hash << (i % 32)) | (hash >> (32 - (i % 32))));
                 }
 
                 return result;
@@ -370,7 +370,7 @@ namespace Effort.Internal.TypeGeneration
         private static void GenerateConstructorIL(ILGenerator gen, FieldBuilder[] fields)
         {
             ConstructorInfo objectConstructor =
-                typeof(DebuggerHiddenAttribute).GetConstructor(
+                typeof(object).GetConstructor(
                     BindingFlags.Instance | BindingFlags.Public,
                     null,
                     Type.EmptyTypes,

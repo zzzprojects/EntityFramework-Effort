@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedTableFactoryService.cs" company="Effort Team">
+// <copyright file="DataRow.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,27 +20,20 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// --------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+namespace Effort.Internal.TypeGeneration
 {
-    using NMemory.Indexes;
-    using NMemory.Modularity;
-    using NMemory.Services;
-    using NMemory.Tables;
-
-    internal class ExtendedTableFactoryService : ITableFactoryService
+    /// <summary>
+    ///     Represent an immutable data row.
+    /// </summary>
+    public abstract class DataRow
     {
-        public Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
-            IKeyInfo<TEntity, TPrimaryKey> primaryKey, 
-            IdentitySpecification<TEntity> identitySpecification, 
-            IDatabase database) 
-            where TEntity : class
-        {
-            return new ExtendedTable<TEntity, TPrimaryKey>(
-                database,
-                primaryKey,
-                identitySpecification);
-        }
+        /// <summary>
+        ///     Returns the value of the specified property.
+        /// </summary>
+        /// <param name="index"> The index of the property. </param>
+        /// <returns> The value of the property. </returns>
+        public abstract object GetValue(int index);
     }
 }

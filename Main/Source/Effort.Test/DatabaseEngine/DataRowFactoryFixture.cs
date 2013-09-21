@@ -77,16 +77,7 @@ namespace Effort.Test.DatabaseEngine
             DataRow data = Activator.CreateInstance(type, args) as DataRow;
             data.ShouldNotBeNull();
 
-            for (int i = 0; i < count; i++)
-            {
-                bool b1 = data.Equals(null);
-                bool b2 = data.Equals(data);
-                bool b3 = data.Equals(5543);
-                object stored = data.GetValue(i);
-
-                stored.ShouldNotBeNull();
-                stored.ShouldEqual(args[i]);
-            }
+            Verify(args, data);
         }
 
         [TestMethod]
@@ -138,7 +129,40 @@ namespace Effort.Test.DatabaseEngine
             DataRow data = Activator.CreateInstance(type, new object[] { args }) as DataRow;
             data.ShouldNotBeNull();
 
-            for (int i = 0; i < count; i++)
+            Verify(args, data);
+        }
+
+        [TestMethod]
+        public void DataRow_larger_than_127()
+        {
+            int count = 129;
+            Type type = CreateType(CreateNames(count));
+
+            object[] args = GenerateArguments(count);
+
+            DataRow data = Activator.CreateInstance(type, new object[] { args }) as DataRow;
+            data.ShouldNotBeNull();
+
+            Verify(args, data);
+        }
+
+        [TestMethod]
+        public void DataRow_very_large()
+        {
+            int count = 500;
+            Type type = CreateType(CreateNames(count));
+
+            object[] args = GenerateArguments(count);
+
+            DataRow data = Activator.CreateInstance(type, new object[] { args }) as DataRow;
+            data.ShouldNotBeNull();
+
+            Verify(args, data);
+        }
+
+        private static void Verify(object[] args, DataRow data)
+        {
+            for (int i = 0; i < args.Length; i++)
             {
                 object stored = data.GetValue(i);
 
@@ -149,8 +173,7 @@ namespace Effort.Test.DatabaseEngine
 
         private static DataRow CreateInstance(Type type, object[] args)
         {
-            DataRow data = Activator.CreateInstance(type, args) as DataRow;
-            return data;
+            return Activator.CreateInstance(type, args) as DataRow;
         }
 
         private static object[] GenerateArguments(int count)

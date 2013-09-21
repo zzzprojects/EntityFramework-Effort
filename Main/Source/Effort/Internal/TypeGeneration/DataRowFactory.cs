@@ -31,7 +31,7 @@ namespace Effort.Internal.TypeGeneration
     using System.Reflection.Emit;
     using System.Threading;
     using Effort.Internal.Caching;
-using Effort.Internal.Common;
+    using Effort.Internal.Common;
 
     internal static class DataRowFactory
     {
@@ -340,7 +340,7 @@ using Effort.Internal.Common;
                     gen.Emit(OpCodes.Ldarg_1);
                     // s[2] = i
                     GenerateLdc_I4(gen, i);
-                    // s[1] = s[1][s[2]]
+                    // s[1] = s[1].[s[2]]
                     gen.Emit(OpCodes.Ldelem_Ref);
 
                     if (fields[i].FieldType.IsValueType)
@@ -469,6 +469,7 @@ using Effort.Internal.Common;
 
             // The result is already on the stack
             // goto skip
+            // 1-byte offset is enough: _S
             gen.Emit(OpCodes.Br_S, skip);
 
             // notIdentical:
@@ -549,7 +550,7 @@ using Effort.Internal.Common;
                     gen.Emit(OpCodes.Ldarg_3);
                     break;
                 default:
-                    if (i <= 255)
+                    if (i <= 127)
                     {
                         gen.Emit(OpCodes.Ldarg_S, i);
                     }
@@ -593,7 +594,7 @@ using Effort.Internal.Common;
                     gen.Emit(OpCodes.Ldc_I4_8);
                     break;
                 default:
-                    if (constant <= 255)
+                    if (constant <= 127)
                     {
                         gen.Emit(OpCodes.Ldc_I4_S, constant);
                     }

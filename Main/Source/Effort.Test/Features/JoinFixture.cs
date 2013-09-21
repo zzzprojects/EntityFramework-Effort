@@ -99,9 +99,9 @@ namespace Effort.Test.Features
         [TestMethod]
         public void OuterJoin()
         {
-            string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
+            string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Fuller\",\"LastName1\":null},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
 #if EF6
-            expected = "[{\"EmployeeID\":2,\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"EmployeeID\":2,\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"EmployeeID\":2,\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"EmployeeID\":2,\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"EmployeeID\":5,\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"EmployeeID\":5,\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"EmployeeID\":2,\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"EmployeeID\":5,\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
+            expected = "[{\"C1\":1,\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"C1\":1,\"LastName\":\"Fuller\",\"LastName1\":null},{\"C1\":1,\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"C1\":1,\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"C1\":1,\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"C1\":1,\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"C1\":1,\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"C1\":1,\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"C1\":1,\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
 #endif
 
             ICorrectness result = this.tester.TestQuery(
@@ -110,7 +110,7 @@ namespace Effort.Test.Features
 
                     join _principal in context.Employees
                     on employee.ReportsTo equals _principal.EmployeeID into __principal
-                    from principal in __principal
+                    from principal in __principal.DefaultIfEmpty()
 
                     select new
                     {
@@ -118,6 +118,7 @@ namespace Effort.Test.Features
                         PrincipalName = principal.LastName
                     }, 
                 expected);
+
 
             Assert.IsTrue(result.Check());
         }

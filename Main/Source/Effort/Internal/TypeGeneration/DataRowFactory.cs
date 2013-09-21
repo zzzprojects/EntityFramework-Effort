@@ -186,7 +186,9 @@ using Effort.Internal.Common;
                 typeBuilder.DefineConstructor(
                     MethodAttributes.Public,
                     CallingConventions.Standard,
-                    propertyTypes);
+                    isLarge ? 
+                        new Type[] { typeof(object[]) } : 
+                        propertyTypes);
 
             if (isLarge)
             {
@@ -336,29 +338,26 @@ using Effort.Internal.Common;
                 {
                     // s[1] = param[0] (object[] array)
                     gen.Emit(OpCodes.Ldarg_1);
-                    // s[1] = s[1][i]
-                    gen.Emit(OpCodes.Ldelem_Ref, i);
-                    // s[1] = unbox s[1]
-                    gen.Emit(OpCodes.Unbox);
+                    // s[2] = i
+                    GenerateLdc_I4(gen, i);
+                    // s[1] = s[1][s[2]]
+                    gen.Emit(OpCodes.Ldelem_Ref);
+
+                    if (fields[i].FieldType.IsValueType)
+                    {
+                        // s[1] = val cast s[1]
+                        gen.Emit(OpCodes.Unbox_Any, fields[i].FieldType);
+                    }
+                    else
+                    {
+                        // s[1] = ref cast s[1]
+                        gen.Emit(OpCodes.Castclass, fields[i].FieldType);
+                    }
                 }
                 else
                 {
                     // s[1] = param[i]
-                    switch (i)
-                    {
-                        case 0:
-                            gen.Emit(OpCodes.Ldarg_1);
-                            break;
-                        case 1:
-                            gen.Emit(OpCodes.Ldarg_2);
-                            break;
-                        case 2:
-                            gen.Emit(OpCodes.Ldarg_3);
-                            break;
-                        default:
-                            gen.Emit(OpCodes.Ldarg_S, i + 1);
-                            break;
-                    }
+                    GenerateLdArg(gen, i + 1);
                 }
 
 
@@ -531,6 +530,79 @@ using Effort.Internal.Common;
             gen.Emit(OpCodes.Newobj, exceptionCtor);
             // throw s[0]
             gen.Emit(OpCodes.Throw);
+        }
+
+        private static void GenerateLdArg(ILGenerator gen, int i)
+        {
+            switch (i)
+            {
+                case 0:
+                    gen.Emit(OpCodes.Ldarg_0);
+                    break;
+                case 1:
+                    gen.Emit(OpCodes.Ldarg_1);
+                    break;
+                case 2:
+                    gen.Emit(OpCodes.Ldarg_2);
+                    break;
+                case 3:
+                    gen.Emit(OpCodes.Ldarg_3);
+                    break;
+                default:
+                    if (i <= 255)
+                    {
+                        gen.Emit(OpCodes.Ldarg_S, i);
+                    }
+                    else
+                    {
+                        gen.Emit(OpCodes.Ldarg, i);
+                    }
+                    break;
+            }
+        }
+
+        private static void GenerateLdc_I4(ILGenerator gen, int constant)
+        {
+            switch (constant)
+            {
+                case 0:
+                    gen.Emit(OpCodes.Ldc_I4_0);
+                    break;
+                case 1:
+                    gen.Emit(OpCodes.Ldc_I4_1);
+                    break;
+                case 2:
+                    gen.Emit(OpCodes.Ldc_I4_2);
+                    break;
+                case 3:
+                    gen.Emit(OpCodes.Ldc_I4_3);
+                    break;
+                case 4:
+                    gen.Emit(OpCodes.Ldc_I4_4);
+                    break;
+                case 5:
+                    gen.Emit(OpCodes.Ldc_I4_5);
+                    break;
+                case 6:
+                    gen.Emit(OpCodes.Ldc_I4_6);
+                    break;
+                case 7:
+                    gen.Emit(OpCodes.Ldc_I4_7);
+                    break;
+                case 8:
+                    gen.Emit(OpCodes.Ldc_I4_8);
+                    break;
+                default:
+                    if (constant <= 255)
+                    {
+                        gen.Emit(OpCodes.Ldc_I4_S, constant);
+                    }
+                    else
+                    {
+                        gen.Emit(OpCodes.Ldc_I4, constant);
+                    }
+                    break;
+            }
         }
     }
 }

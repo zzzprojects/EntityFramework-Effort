@@ -35,6 +35,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
     using Effort.Internal.TypeGeneration;
     using Effort.Internal.Common;
     using System.Reflection;
+    using NMemory.Indexes;
+    using Effort.Internal.DbManagement.Engine.Services;
 
     internal partial class TransformVisitor
     {
@@ -90,17 +92,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 };
 
             // Create result selector
-            Type anonymType = AnonymousTypeFactory.Create(resultTypeProps);
+            Type resultType = DataRowFactory.Create(resultTypeProps);
+
+            IKeyInfoHelper helper = new DataRowKeyInfoHelper(resultType);
 
             ParameterExpression firstParam = Expression.Parameter(firstType);
             ParameterExpression secondParam = Expression.Parameter(secondType);
 
             LambdaExpression resultSelector = 
                 Expression.Lambda(
-                    Expression.New(
-                        anonymType.GetConstructors()[0], 
-                        firstParam, 
-                        secondParam),
+                    helper.CreateKeyFactoryExpression(firstParam, secondParam),
                     firstParam, 
                     secondParam);
 

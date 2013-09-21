@@ -103,6 +103,18 @@ namespace Effort.Internal.Common
             throw new NotSupportedException();
         }
 
+        public static Expression SkipConversionNodes(Expression expression)
+        {
+            while (expression.NodeType == ExpressionType.Convert ||
+                   expression.NodeType == ExpressionType.ConvertChecked)
+            {
+                UnaryExpression unary = expression as UnaryExpression;
+                expression = unary.Operand;
+            }
+
+            return expression;
+        }
+
         private static void ConvertExpression(ref Expression to, ref Expression expr)
         {
             ////// Check if the nullable expression is constant
@@ -118,5 +130,7 @@ namespace Effort.Internal.Common
             // Last chance
             expr = Expression.Convert(expr, to.Type);
         }
+
+        
     }
 }

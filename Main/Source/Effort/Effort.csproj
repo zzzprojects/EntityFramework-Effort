@@ -165,11 +165,14 @@
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.VariableReference.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TraversalVisitor.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedServiceProvider.cs" />
+    <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoHelper.cs" />
+    <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfo.cs" />
+    <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoFactoryService.cs" />
     <Compile Include="Internal\DbManagement\Schema\BareSchemaBase.cs" />
     <Compile Include="Internal\DbManagement\DbContainerManagerWrapper.cs" />
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
-    <Compile Include="Internal\DbManagement\Engine\ExtendedTableFactory.cs" />
+    <Compile Include="Internal\DbManagement\Engine\Services\ExtendedTableFactoryService.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedTable`2.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedQueryCompiler.cs" />
     <Compile Include="Internal\DbManagement\Engine\IExtendedTable.cs" />
@@ -229,7 +232,6 @@
     <Compile Include="Internal\DbManagement\Schema\KeyInfoHelper.cs" />
     <Compile Include="Internal\Diagnostics\ILogger.cs" />
     <Compile Include="Internal\Common\ExpressionHelper.cs" />
-    <Compile Include="Internal\Common\LambdaExpressionHelper.cs" />
     <Compile Include="Internal\Common\MetadataWorkspaceHelper.cs" />
     <Compile Include="Internal\Common\ReflectionHelper.cs" />
     <Compile Include="Internal\Common\TypeHelper.cs" />
@@ -275,7 +277,6 @@
     <Compile Include="Internal\TypeGeneration\DataRowFactory.cs" />
     <Compile Include="Internal\TypeGeneration\DataRowPropertyAttribute.cs" />
     <Compile Include="ObjectContextFactory.cs" />
-    <Compile Include="Internal\TypeGeneration\AnonymousTypeFactory.cs" />
     <Compile Include="Internal\Common\EmitHelper.cs" />
     <Compile Include="Internal\Common\CommandTreeBuilder.cs" />
     <Compile Include="Internal\Diagnostics\Logger.cs" />
@@ -322,7 +323,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

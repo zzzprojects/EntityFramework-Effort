@@ -160,7 +160,7 @@ namespace Effort.Internal.TypeConversion
                 members.Add(member.GetColumnName(), this.Convert(member.TypeUsage));
             }
 
-            Type result = AnonymousTypeFactory.Create(members);
+            Type result = DataRowFactory.Create(members);
 
             return result;
         }

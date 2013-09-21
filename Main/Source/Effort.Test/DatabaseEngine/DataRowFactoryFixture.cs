@@ -127,6 +127,26 @@ namespace Effort.Test.DatabaseEngine
             type.GetCustomAttributes(typeof(LargeDataRowAttribute), false).ShouldNotBeEmpty();
         }
 
+        [TestMethod]
+        public void DataRow_large()
+        {
+            int count = LargeDataRowAttribute.LargePropertyCount + 10;
+            Type type = CreateType(CreateNames(count));
+
+            object[] args = GenerateArguments(count);
+
+            DataRow data = Activator.CreateInstance(type, new object[] { args }) as DataRow;
+            data.ShouldNotBeNull();
+
+            for (int i = 0; i < count; i++)
+            {
+                object stored = data.GetValue(i);
+
+                stored.ShouldNotBeNull();
+                stored.ShouldEqual(args[i]);
+            }
+        }
+
         private static DataRow CreateInstance(Type type, object[] args)
         {
             DataRow data = Activator.CreateInstance(type, args) as DataRow;

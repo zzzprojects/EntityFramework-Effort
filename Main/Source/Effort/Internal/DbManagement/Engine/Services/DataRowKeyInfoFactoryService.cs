@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="TransformVisitor.NewInstance.cs" company="Effort Team">
+// <copyright file="DataRowKeyInfoFactoryService.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,24 +22,42 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbCommandTreeTransformation
+namespace Effort.Internal.DbManagement.Engine.Services
 {
     using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Common.CommandTrees;
-#else
-    using System.Data.Common.CommandTrees;
-#endif
     using System.Linq.Expressions;
+    using System.Reflection;
+    using Effort.Internal.TypeGeneration;
+    using NMemory.Indexes;
+    using NMemory.Services;
 
-    internal partial class TransformVisitor
+    internal class DataRowKeyInfoFactoryService : IKeyInfoFactoryService
     {
-        public override Expression Visit(DbNewInstanceExpression expression)
+        public bool TryCreateKeyInfo<TEntity, TKey>(
+            Expression<Func<TEntity, TKey>> keySelector, 
+            out IKeyInfo<TEntity, TKey> result) 
+            where TEntity : class
         {
-            Type resultType = edmTypeConverter.Convert(expression.ResultType);
+            Expression body = keySelector.Body;
+            Type keyType = body.Type;
 
-            Expression[] args = this.VisitExpressions(expression.Arguments);
-            return this.CreateSelector(args, resultType);
+            if (!typeof(DataRow).IsAssignableFrom(body.Type))
+            {
+                result = null;
+                return false;
+            }
+
+            IKeyInfoHelper helper = DataRowKeyInfo<TEntity, TKey>.KeyInfoHelper;
+
+            MemberInfo[] entityKeyMembers;
+            if (!helper.TryParseKeySelectorExpression(keySelector, true, out entityKeyMembers))
+            {
+                result = null;
+                return false;
+            }
+
+            result = new DataRowKeyInfo<TEntity, TKey>(entityKeyMembers);
+            return true;
         }
     }
 }

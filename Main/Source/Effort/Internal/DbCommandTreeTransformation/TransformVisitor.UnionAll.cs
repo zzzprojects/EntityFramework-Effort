@@ -54,14 +54,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
             PropertyInfo[] sourceProps = rightType.GetProperties();
             PropertyInfo[] resultProps = resultType.GetProperties();
 
-            List<Expression> initializers = new List<Expression>();
+            Expression[] initializers = new Expression[sourceProps.Length];
 
             for (int i = 0; i < sourceProps.Length; i++)
             {
-                initializers.Add(Expression.Property(param, sourceProps[i]));
+                initializers[i] = Expression.Property(param, sourceProps[i]);
             }
 
-            Expression body = Expression.New(resultType.GetConstructors().Single(), initializers, resultType.GetProperties());
+            Expression body = this.CreateSelector(initializers, resultType);
             right = queryMethodExpressionBuilder.Select(right, Expression.Lambda(body, param));
 
             return queryMethodExpressionBuilder.Concat(left, right);

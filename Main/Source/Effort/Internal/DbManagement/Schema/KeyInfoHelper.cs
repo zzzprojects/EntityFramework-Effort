@@ -25,19 +25,20 @@
 namespace Effort.Internal.DbManagement.Schema
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
     using Effort.Internal.Common;
+    using Effort.Internal.DbManagement.Engine.Services;
+    using Effort.Internal.TypeGeneration;
     using NMemory.Indexes;
 
     internal static class KeyInfoHelper
     {
         public static IKeyInfo CreateKeyInfo(Type entityType, MemberInfo[] properties)
         {
-            LambdaExpression primaryKeySelector =
-                LambdaExpressionHelper.CreateSelectorExpression(
-                    entityType,
-                    properties);
+            var primaryKeySelector = CreateSelectorExpression(entityType, properties);
 
             return CreateKeyInfo(primaryKeySelector);
         }
@@ -57,6 +58,35 @@ namespace Effort.Internal.DbManagement.Schema
                     new object[] { selector }) as IKeyInfo;
 
             return result;
+        }
+
+        private static LambdaExpression CreateSelectorExpression(
+            Type sourceType, 
+            MemberInfo[] selectorFields)
+        {
+            Expression body = null;
+
+            ParameterExpression param = Expression.Parameter(sourceType);
+            Expression[] memberSelectors = new Expression[selectorFields.Length];
+
+            for (int i = 0; i < memberSelectors.Length; i++)
+            {
+                memberSelectors[i] = Expression.MakeMemberAccess(param, selectorFields[i]);
+            }
+
+            if (memberSelectors.Length == 1)
+            {
+                body = memberSelectors[0];
+            }
+            else
+            {
+                Type[] memberTypes = memberSelectors.Select(e => e.Type).ToArray();
+                Type resultType = TypeHelper.GetTupleType(memberTypes);
+
+                body = Expression.New(resultType.GetConstructors()[0], memberSelectors);
+            }
+
+            return Expression.Lambda(body, param);
         }
     }
 }

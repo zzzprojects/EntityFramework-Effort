@@ -104,15 +104,17 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     selectorProperties.Add(props[i].Name, props[i].PropertyType);
                 }
 
-                Type selectorType = AnonymousTypeFactory.Create(selectorProperties);
+                Type selectorType = DataRowFactory.Create(selectorProperties);
                 LambdaExpression selector = null;
 
                 ParameterExpression groupParam = Expression.Parameter(elementType, expression.Input.VariableName);
                 using (this.CreateVariable(groupParam, expression.Input.VariableName))
                 {
+                    Expression[] keys = this.VisitExpressions(expression.Keys);
+
                     selector =
                         Expression.Lambda(
-                            this.CreateSelector(expression.Keys, selectorType),
+                            this.CreateSelector(keys, selectorType), 
                             groupParam);
                 }
 

@@ -164,5 +164,42 @@ namespace Effort.Internal.Common
                 && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
                 && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
         }
+
+        public static Type GetTupleType(params Type[] memberTypes)
+        {
+            Type generic = null;
+
+            switch (memberTypes.Length)
+            {
+                case 1:
+                    generic = typeof(Tuple<>);
+                    break;
+                case 2:
+                    generic = typeof(Tuple<,>);
+                    break;
+                case 3:
+                    generic = typeof(Tuple<,,>);
+                    break;
+                case 4:
+                    generic = typeof(Tuple<,,,>);
+                    break;
+                case 5:
+                    generic = typeof(Tuple<,,,,>);
+                    break;
+                case 6:
+                    generic = typeof(Tuple<,,,,,>);
+                    break;
+                case 7:
+                    generic = typeof(Tuple<,,,,,,>);
+                    break;
+                case 8:
+                    generic = typeof(Tuple<,,,,,,,>);
+                    break;
+                default:
+                    throw new ArgumentException("memberTypes");
+            }
+
+            return generic.MakeGenericType(memberTypes);
+        }
     }
 }

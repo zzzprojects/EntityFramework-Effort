@@ -37,6 +37,9 @@ namespace Effort.Internal.DbCommandTreeTransformation
     using System.Linq.Expressions;
     using System.Reflection;
     using Effort.Internal.TypeConversion;
+    using NMemory.Indexes;
+    using Effort.Internal.DbManagement.Engine.Services;
+    using Effort.Internal.TypeGeneration;
 
     internal partial class TransformVisitor : DbExpressionVisitor<Expression>
     {
@@ -111,9 +114,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return result;
         }
 
-        
-
-
         private Expression CreateAggregateFunction(DbFunctionAggregate functionAggregate, string sourceVariableName, Type sourceType, Expression sourceGroup, Type resultType)
         {
             Expression result = null;
@@ -177,28 +177,26 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return result;
         }
 
-        //tamas
-        
-
-        private Expression CreateSelector(IList<DbExpression> arguments, Type resultType)
+        private Expression[] VisitExpressions(IList<DbExpression> expressions)
         {
-            List<Expression> constructorExpressions = new List<Expression>();
-            PropertyInfo[] props = resultType.GetProperties();
+            Expression[] result = new Expression[expressions.Count];
 
+            for (int i = 0; i < expressions.Count; i++)
+            {
+                result[i] = this.Visit(expressions[i]);
+            }
 
+            return result;
+        }
+
+        private Expression CreateSelector(Expression[] arguments, Type resultType)
+        {
             if (resultType.IsArray)
             {
-                for (int i = 0; i < arguments.Count; i++)
-                {
-                    Expression argumentExpression = this.Visit(arguments[i]);
-
-                    constructorExpressions.Add(argumentExpression);
-                }
-
                 Expression array =
                     Expression.NewArrayInit(
                         resultType.GetElementType(),
-                        constructorExpressions.ToArray());
+                        arguments);
 
                 Type listType = typeof(List<>).MakeGenericType(resultType.GetElementType());
 
@@ -221,20 +219,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
                 return queryable;
             }
-            else
+            else if (typeof(DataRow).IsAssignableFrom(resultType))
             {
-                for (int i = 0; i < arguments.Count; i++)
-                {
-                    Expression argumentExpression = this.Visit(arguments[i], props[i].PropertyType);
+                IKeyInfoHelper helper = new DataRowKeyInfoHelper(resultType);
 
-                    constructorExpressions.Add(argumentExpression);
-                }
-
-                return Expression.New(
-                    resultType.GetConstructors().Single(),
-                    constructorExpressions,
-                    resultType.GetProperties());
+                return helper.CreateKeyFactoryExpression(arguments);
             }
+
+            throw new InvalidOperationException();
         }
     }
 }

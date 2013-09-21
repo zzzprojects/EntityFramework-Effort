@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="LargeDataRowAttribute.cs" company="Effort Team">
+// <copyright file="DataRowKeyInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,22 +22,30 @@
 // </copyright>
 // -------------------------------------------------------------------------------------------
 
-
-namespace Effort.Internal.TypeGeneration
+namespace Effort.Internal.DbManagement.Engine.Services
 {
-    using System;
-
-    /// <summary>
-    ///     When applied to a <see cref="DataRow"/> type, specifies that the type has so many
-    ///     properties that its single constructor has a single array parameter. 
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class LargeDataRowAttribute : Attribute
+    using System.Reflection;
+    using NMemory.Indexes;
+    
+    internal class DataRowKeyInfo<TEntity, TKey> : 
+        KeyInfoBase<TEntity, TKey>,
+        IKeyInfoHelperProvider where TEntity : class
     {
-        /// <summary>
-        ///     Determines the minimum amount of properties that an annotated 
-        ///     <see cref="DataRow"/> type should have.
-        /// </summary>
-        internal const int LargePropertyCount = 32;
+        internal static readonly IKeyInfoHelper KeyInfoHelper =
+            new DataRowKeyInfoHelper(typeof(TKey));
+
+        public DataRowKeyInfo(MemberInfo[] entityKeyMembers)
+            : base(
+                entityKeyMembers,
+                null,
+                new GenericKeyComparer<TKey>(null, KeyInfoHelper),
+                KeyInfoHelper)
+        {
+        }
+
+        IKeyInfoHelper IKeyInfoHelperProvider.KeyInfoHelper
+        {
+            get { return KeyInfoHelper; }
+        }
     }
 }

@@ -37,17 +37,32 @@ namespace Effort.Test.Data.Features
 
     public static class CompiledModels
     {
-        private static Type[] entityTypes;
+        private static readonly Type[] entityTypes;
 
-        private static Lazy<DbCompiledModel> defaultModel;
-        private static Lazy<DbCompiledModel> disabledIdentityModel;
-        private static Lazy<DbCompiledModel> tableNameModel;
+        private static readonly Lazy<DbCompiledModel> defaultModel;
+        private static readonly Lazy<DbCompiledModel> disabledIdentityModel;
+        private static readonly Lazy<DbCompiledModel> tableNameModel;
+        private static readonly Lazy<DbCompiledModel> decimalIdentityFieldModel;
 
-        private static ConcurrentDictionary<string, DbCompiledModel> models;
+        private static readonly ConcurrentDictionary<string, DbCompiledModel> models;
         
         static CompiledModels()
         {
-            FindEntityTypes();
+            PropertyInfo[] props = typeof(FeatureDbContext).GetProperties();
+            List<Type> types = new List<Type>();
+
+            foreach (PropertyInfo prop in props)
+            {
+                Type type = prop.PropertyType;
+
+                if (type.IsGenericType &&
+                    type.GetGenericTypeDefinition() == typeof(IDbSet<>))
+                {
+                    types.Add(type.GetGenericArguments()[0]);
+                }
+            }
+
+            entityTypes = types.ToArray();
 
             models = new ConcurrentDictionary<string, DbCompiledModel>(); 
 
@@ -67,30 +82,31 @@ namespace Effort.Test.Data.Features
                 new Lazy<DbCompiledModel>(
                     () => CreateTableNameModel(),
                     mode);
+
+            decimalIdentityFieldModel =
+                new Lazy<DbCompiledModel>(
+                    () => CreateDecimalIdentityFieldModel(),
+                    mode);
         }
 
         public static DbCompiledModel DefaultModel
         {
-            get 
-            { 
-                return defaultModel.Value; 
-            }
+            get { return defaultModel.Value; }
         }
 
         public static DbCompiledModel DisabledIdentityModel
         {
-            get
-            {
-                return disabledIdentityModel.Value;
-            }
+            get { return disabledIdentityModel.Value; }
         }
 
         public static DbCompiledModel TableNameModel
         {
-            get
-            {
-                return tableNameModel.Value;
-            }
+            get { return tableNameModel.Value; }
+        }
+
+        public static DbCompiledModel DecimalIdenityFieldModel
+        {
+            get { return decimalIdentityFieldModel.Value; }
         }
 
         public static DbCompiledModel GetModel(params Type[] allowedEntityTypes)
@@ -153,23 +169,15 @@ namespace Effort.Test.Data.Features
             return CompileModel(modelBuilder);
         }
 
-        private static void FindEntityTypes()
+        private static DbCompiledModel CreateDecimalIdentityFieldModel()
         {
-            PropertyInfo[] props = typeof(FeatureDbContext).GetProperties();
-            List<Type> types = new List<Type>();
+            DbModelBuilder modelBuilder = new DbModelBuilder();
 
-            foreach (PropertyInfo prop in props)
-            {
-                Type type = prop.PropertyType;
+            modelBuilder.Entity<DecimalIdentityFieldEntity>().Property(e => e.Id)
+                .HasPrecision(16, 0)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
-                if (type.IsGenericType &&
-                    type.GetGenericTypeDefinition() == typeof(IDbSet<>))
-                {
-                    types.Add(type.GetGenericArguments()[0]);
-                }
-            }
-
-            entityTypes = types.ToArray();
+            return CompileModel(modelBuilder);
         }
 
         private static void RegisterEntityTypes(

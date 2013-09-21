@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="IdentityConfiguration.cs" company="Effort Team">
+// <copyright file="DecimalIdentityFieldFixture.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,35 +22,53 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Schema.Configuration
+namespace Effort.Test.Features
 {
-    using System;
+    using System.Data.Common;
+    using Effort.Test.Data.Features;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SoftwareApproach.TestingExtensions;
 
-    internal class IdentityConfiguration : ITableConfiguration
+    [TestClass]
+    public class DecimalIdentityFieldFixture
     {
-        public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
+        private FeatureDbContext context;
+
+        [TestInitialize]
+        public void Initialize()
         {
-            foreach (EntityPropertyInfo property in entityInfo.Properties)
-            {
-                if (property.Facets.Identity && IsIdentityType(property.ClrType))
-                {
-                    builder.IdentityField = builder.FindMember(property.Property);
-                }
-            }
+            DbConnection connection = 
+                Effort.DbConnectionFactory.CreateTransient();
+
+            this.context = 
+                new FeatureDbContext(connection, CompiledModels.DecimalIdenityFieldModel);
         }
 
-        private static bool IsIdentityType(Type fieldType)
+        [TestCleanup]
+        public void Cleanup()
         {
-            return
-                fieldType == typeof(byte) ||
-                fieldType == typeof(sbyte) ||
-                fieldType == typeof(short) ||
-                fieldType == typeof(ushort) ||
-                fieldType == typeof(int) ||
-                fieldType == typeof(uint) ||
-                fieldType == typeof(long) ||
-                fieldType == typeof(ulong) ||
-                fieldType == typeof(decimal);
+            this.context.Dispose();
+        }
+
+        [TestMethod]
+        public void DecimalIdentity_Creation()
+        {
+            this.context.Database.Initialize(true);
+        }
+
+        [TestMethod]
+        public void DecimalIdentity_Insert()
+        {
+            var e1 = new DecimalIdentityFieldEntity();
+            var e2 = new DecimalIdentityFieldEntity();
+
+            this.context.DecimalIdentityFieldEntities.Add(e1);
+            this.context.SaveChanges();
+
+            this.context.DecimalIdentityFieldEntities.Add(e2);
+            this.context.SaveChanges();
+
+            e2.Id.ShouldEqual(e1.Id + 1);
         }
     }
 }

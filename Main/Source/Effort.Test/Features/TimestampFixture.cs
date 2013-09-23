@@ -27,6 +27,7 @@ namespace Effort.Test.Features
     using System.Linq;
     using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SoftwareApproach.TestingExtensions;
 
     [TestClass]
     public class TimestampFixture
@@ -39,7 +40,9 @@ namespace Effort.Test.Features
             this.context = 
                 new FeatureDbContext(
                     Effort.DbConnectionFactory.CreateTransient(),
-                    CompiledModels.GetModel<TimestampFieldEntity>());
+                    CompiledModels.GetModel<
+                        TimestampFieldEntity, 
+                        LargeTimestampFieldEntity>());
         }
 
         [TestMethod]
@@ -70,6 +73,37 @@ namespace Effort.Test.Features
 
             Assert.IsTrue(timestamp.Timestamp.Select((v, i) => v != currentValue[i]).Any(x => x));
             //Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
+        }
+
+        [TestMethod]
+        public void TimestampEntityMaterialize()
+        {
+            TimestampFieldEntity timestamp = new TimestampFieldEntity();
+            timestamp.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp);
+            context.SaveChanges();
+
+            var data = context.TimestampFieldEntities.ToList();
+
+            data.ShouldHaveCountOf(1);
+            data[0].ShouldNotBeNull();
+            data[0].Timestamp.All(x => x != 0).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void TimestampLargeEntityMaterialize()
+        {
+            LargeTimestampFieldEntity timestamp = new LargeTimestampFieldEntity();
+
+            context.LargeTimestampFieldEntities.Add(timestamp);
+            context.SaveChanges();
+
+            var data = context.LargeTimestampFieldEntities.ToList();
+
+            data.ShouldHaveCountOf(1);
+            data[0].ShouldNotBeNull();
+            data[0].Timestamp.All(x => x != 0).ShouldBeFalse();
         }
     }
 }

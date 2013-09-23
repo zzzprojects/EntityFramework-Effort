@@ -80,14 +80,18 @@ namespace Effort.Internal.DbManagement.Engine.Services
             {
                 args[i] = arguments[i];
 
+                Type propertyType = this.properties[i].PropertyType;
+
+                if (propertyType != args[i].Type)
+                {
+                    args[i] = Expression.Convert(args[i], propertyType);
+                }
+
                 if (this.isLarge)
                 {
                     args[i] = Expression.Convert(args[i], typeof(object));
                 }
             }
-
-            var a = this.type
-                .GetCustomAttributes(false).ToArray();
 
             if (this.isLarge)
             {

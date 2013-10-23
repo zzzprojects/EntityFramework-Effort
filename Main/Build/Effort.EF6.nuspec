@@ -13,7 +13,7 @@
         <summary>Effort is a powerful tool that enables a convenient way to create unit tests for Entity Framework based applications.</summary>
         <dependencies>
             <dependency id="NMemory" version="[1.0.0-beta7]" />
-			<dependency id="EntityFramework" version="[6.0.0-rc1]" />
+			<dependency id="EntityFramework" version="[6.0.1]" />
         </dependencies>
     </metadata>
     <files>

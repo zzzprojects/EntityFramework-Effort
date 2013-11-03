@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0FC240A8-7D16-4F3F-BB4E-73DB0E398928}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -43,6 +42,7 @@
     <Compile Include="Features\LargeTimestampFieldEntity.cs" />
     <Compile Include="Features\DecimalIdentityFieldEntity.cs" />
     <Compile Include="Features\IntFieldEntity.cs" />
+    <Compile Include="Features\MathEntity.cs" />
     <Compile Include="Features\RequiredFieldEntity.cs" />
     <Compile Include="Features\TimestampFieldEntity.cs" />
     <Compile Include="Northwind\Category.cs">

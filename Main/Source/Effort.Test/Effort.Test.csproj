@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{368B9C8C-234A-4D63-BF17-22C87A126EB6}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -15,14 +13,6 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
   </PropertyGroup>
   <Import Project="..\NugetPackages.targets" />
   <Import Project="..\BuildConfigurations.targets" />
@@ -82,6 +72,7 @@
     <Compile Include="Features\AggregationFixture.cs" />
     <Compile Include="Features\BinaryFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\BitwiseFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\GuidFunctionsFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\DateTimeFunctionsFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\DateTimeOffsetFunctionsFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\MathFunctionsFixture.cs" />

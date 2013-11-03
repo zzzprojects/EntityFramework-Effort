@@ -26,227 +26,416 @@ namespace Effort.Test.Features.CanonicalFunctions
 {
     using System;
     using System.Linq;
-    using Effort.Test.Data.Northwind;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
 
     [TestClass]
     public class MathFunctionsFixture
     {
-        private NorthwindObjectContext context;
+        private FeatureDbContext context;
 
         [TestInitialize]
         public void Initialize()
         {
-            // This context is initialized from the csv files in Effort.Test.Data/Northwind/Content
-            this.context = new LocalNorthwindObjectContext();
+            this.context =
+                new FeatureDbContext(
+                    DbConnectionFactory.CreateTransient(),
+                    CompiledModels.GetModel<MathEntity>());
         }
 
         [TestMethod]
         public void DecimalCeiling()
         {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 0.3f,
-                    Quantity = -123
-                });
-
+            this.context.MathEntities.Add(new MathEntity { Decimal = 1.4M });
             this.context.SaveChanges();
 
-            var query = this.context
-                .OrderDetails
-                .Where(x => 
-                    Decimal.Ceiling(0.3m) == 1);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Ceiling(x.Decimal) == 2.0M);
 
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DecimalCeilingNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DecimalN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Ceiling(x.DecimalN.Value) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleCeiling()
+        {
+            this.context.MathEntities.Add(new MathEntity { Double = 1.4 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Ceiling(x.Double) == 2.0);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleCeilingNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DoubleN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Ceiling(x.DoubleN.Value) == null);
+
+            q.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void DecimalFloor()
         {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 0.3f,
-                    Quantity = -123
-                });
-
+            this.context.MathEntities.Add(new MathEntity { Decimal = 1.7M });
             this.context.SaveChanges();
 
-            var query = this.context
-                .OrderDetails
-                .Where(x =>
-                    Decimal.Floor(0.3m) == 0);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Floor(x.Decimal) == 1.0M);
 
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DecimalFloorNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DecimalN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Floor(x.DecimalN.Value) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleFloor()
+        {
+            this.context.MathEntities.Add(new MathEntity { Double = 1.7 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Floor(x.Double) == 1.0);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleFloorNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DoubleN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Floor(x.DoubleN.Value) == null);
+
+            q.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void DecimalRound()
         {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 0.3f,
-                    Quantity = -123
-                });
-
+            this.context.MathEntities.Add(new MathEntity { Decimal = 1.7M });
             this.context.SaveChanges();
 
-            var query = this.context
-                .OrderDetails
-                .Where(x => 
-                    Decimal.Round(0.3m) == 0);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.Decimal) == 2.0M);
 
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
-        }
-
-
-        [TestMethod]
-        public void MathCeiling()
-        {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 0.3f,
-                    Quantity = -123
-                });
-
-            this.context.SaveChanges();
-
-            var query = this.context
-                .OrderDetails
-                .Where(x => 
-                    Math.Ceiling(x.Discount) == 1);
-
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
         }
 
         [TestMethod]
-        public void MathFloor()
+        public void DecimalRoundNull()
         {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 0.3f,
-                    Quantity = -123
-                });
-
+            this.context.MathEntities.Add(new MathEntity { DecimalN = null });
             this.context.SaveChanges();
 
-            var query = this.context
-                .OrderDetails
-                .Where(x => 
-                    Math.Floor(x.Discount) == 0);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.DecimalN.Value) == null);
 
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
         }
 
         [TestMethod]
-        public void MathRound()
+        public void DoubleRound()
         {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 0.3f,
-                    Quantity = -123
-                });
-
+            this.context.MathEntities.Add(new MathEntity { Double = 1.7 });
             this.context.SaveChanges();
 
-            var query = this.context
-                .OrderDetails
-                .Where(x => 
-                    Math.Round(x.Discount) == 0);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.Double) == 2.0);
 
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
         }
 
         [TestMethod]
-        public void MathRoundWithDigits()
+        public void DoubleRoundNull()
         {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 123.396f,
-                    Quantity = -123
-                });
-
+            this.context.MathEntities.Add(new MathEntity { DoubleN = null });
             this.context.SaveChanges();
 
-            var query = this.context
-                .OrderDetails
-                .Where(x => 
-                    Math.Round(x.Discount, 2) == 123.40);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.DoubleN.Value) == null);
 
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
         }
 
         [TestMethod]
-        public void MathAbs()
+        public void DecimalRoundDigit()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.MathEntities.Add(new MathEntity { Decimal = 1.77777M });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    Math.Abs(x.UnitPrice.Value) == 250);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.Decimal, 2) == 1.78M);
 
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
         }
 
         [TestMethod]
-        public void MathPower()
+        public void DecimalRoundDigitNull()
         {
-            this.context.OrderDetails.AddObject(
-                new OrderDetail
-                {
-                    OrderID = 10248,
-                    ProductID = 1,
-                    Discount = 10.3f,
-                    Quantity = -123
-                });
-
+            this.context.MathEntities.Add(new MathEntity { DecimalN = null });
             this.context.SaveChanges();
 
-            var query = this.context
-                .OrderDetails
-                .Where(x => 
-                    Math.Pow(x.Quantity, 2) == 123 * 123);
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.DecimalN.Value, 2) == null);
 
-            var orderdetails = query.ToList();
-            orderdetails.FirstOrDefault(x => x.Quantity == -123).ShouldNotBeNull();
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleRoundDigit()
+        {
+            this.context.MathEntities.Add(new MathEntity { Double = 1.77777 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.Double, 2) == 1.78);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleRoundDigitNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DoubleN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Round(x.DoubleN.Value, 2) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void Power()
+        {
+            this.context.MathEntities.Add(new MathEntity { Double = 2 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Pow(x.Double, 2) == 4);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void PowerNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DoubleN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x =>  Math.Pow(x.DoubleN.Value, 2) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DecimalAbs()
+        {
+            this.context.MathEntities.Add(new MathEntity { Decimal = -1.7M });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.Decimal) == 1.7M);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DecimalAbsNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DecimalN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.DecimalN.Value) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleAbs()
+        {
+            this.context.MathEntities.Add(new MathEntity { Double = -1.7 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.Double) == 1.7);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void DoubleAbsNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { DoubleN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.DoubleN.Value) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void SByteAbs()
+        {
+            // Entity Framework does not support SByte Abs
+             
+            ////this.context.MathEntities.Add(new MathEntity { SByte = -1 });
+            ////this.context.SaveChanges();
+
+            ////var q = this.context
+            ////    .MathEntities
+            ////    .Where(x => Math.Abs(x.SByte) == 1);
+
+            ////q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void SByteAbsNull()
+        {
+            // Entity Framework does not support SByte Abs
+
+            ////this.context.MathEntities.Add(new MathEntity { SByteN = null });
+            ////this.context.SaveChanges();
+
+            ////var q = this.context
+            ////    .MathEntities
+            ////    .Where(x => Math.Abs(x.SByteN.Value) == null);
+
+            ////q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void ShortAbs()
+        {
+            this.context.MathEntities.Add(new MathEntity { Short = -1 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.Short) == 1);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void ShortAbsNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { ShortN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.ShortN.Value) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void IntAbs()
+        {
+            this.context.MathEntities.Add(new MathEntity { Int = -1 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.Int) == 1);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void IntAbsNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { IntN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.IntN.Value) == null);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void LongAbs()
+        {
+            this.context.MathEntities.Add(new MathEntity { Long = -1 });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.Long) == 1);
+
+            q.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void LongAbsNull()
+        {
+            this.context.MathEntities.Add(new MathEntity { LongN = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .MathEntities
+                .Where(x => Math.Abs(x.LongN.Value) == null);
+
+            q.Any().ShouldBeTrue();
         }
     }
 }

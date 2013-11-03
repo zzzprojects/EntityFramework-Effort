@@ -27,6 +27,7 @@
   <Types>
     <Type Name="boolean" PrimitiveTypeKind="Boolean"/>
     <Type Name="byte" PrimitiveTypeKind="Byte"/>
+    <Type Name="sbyte" PrimitiveTypeKind="SByte"/>
     <Type Name="int16" PrimitiveTypeKind="Int16"/>
     <Type Name="int32" PrimitiveTypeKind="Int32"/>
     <Type Name="int64" PrimitiveTypeKind="Int64"/>

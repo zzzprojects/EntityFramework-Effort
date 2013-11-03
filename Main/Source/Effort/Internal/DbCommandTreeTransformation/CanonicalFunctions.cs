@@ -59,6 +59,13 @@ namespace Effort.Internal.DbCommandTreeTransformation
             AddDateTimeMappings();
             AddArithmeticMappings();
             AddBitwiseMappings();
+            AddMiscMappings();
+        }
+
+        private void AddMiscMappings()
+        {
+            this.mappings["Edm.NewGuid"] = (f, args) =>
+                Expression.Call(null, ReflectionHelper.GetMethodInfo(() => Guid.NewGuid()));
         }
 
         private void AddBitwiseMappings()
@@ -78,50 +85,56 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         private void AddArithmeticMappings()
         {
-            //// Arithmetic
             this.mappings["Edm.Ceiling"] = (f, args) =>
                 Expression.Call(
+                    null, 
+                    IsDecimal(f.Parameters[0]) ? 
+                        DbFunctions.CeilingDecMethod :
+                        DbFunctions.CeilingMethod, 
+                    args[0]);
+
+            this.mappings["Edm.Truncate"] = (f, args) =>
+                Expression.Call(
                     null,
-                    FindMethod(typeof(Math), "Ceiling", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
-                    ExpressionHelper.ConvertToNotNull(args[0]));
+                    IsDecimal(f.Parameters[0]) ?
+                        DbFunctions.TruncateDecMethod :
+                        DbFunctions.TruncateMethod,
+                    args[0]);
 
             this.mappings["Edm.Floor"] = (f, args) =>
                 Expression.Call(
                     null,
-                    FindMethod(typeof(Math), "Floor", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
-                    ExpressionHelper.ConvertToNotNull(args[0]));
+                    IsDecimal(f.Parameters[0]) ?
+                        DbFunctions.FloorDecMethod :
+                        DbFunctions.FloorMethod,
+                    args[0]);
 
             this.mappings["Edm.Round"] = (f, args) =>
-                Expression.Call(
-                    null,
-                    FindMethod(
-                        typeof(Math),
-                        "Round",
-                        this.converter.ConvertNotNull(f.Parameters[0].TypeUsage),
-                        args.Count() > 1 ?
-                            this.converter.ConvertNotNull(f.Parameters[1].TypeUsage) :
-                            typeof(int)),
-                    ExpressionHelper.ConvertToNotNull(args[0]),
-                        args.Count() > 1 ?
-                            ExpressionHelper.ConvertToNotNull(args[1]) :
-                            Expression.Constant(0));
+                args.Length > 1 ?
+                    Expression.Call(
+                        IsDecimal(f.Parameters[0]) ?
+                            DbFunctions.RoundDigitsDecMethod :
+                            DbFunctions.RoundDigitsMethod,
+                        args[0],
+                        args[1]) :
+                    Expression.Call(
+                        IsDecimal(f.Parameters[0]) ?
+                            DbFunctions.RoundDecMethod :
+                            DbFunctions.RoundMethod,
+                        args[0]);
 
             this.mappings["Edm.Abs"] = (f, args) =>
                 Expression.Call(
                     null,
-                    FindMethod(typeof(Math), "Abs", this.converter.ConvertNotNull(f.Parameters[0].TypeUsage)),
-                    ExpressionHelper.ConvertToNotNull(args[0]));
+                    GetAbsMethod(f.Parameters[0]),
+                    args[0]);
 
             this.mappings["Edm.Power"] = (f, args) =>
                 Expression.Call(
                     null,
-                    FindMethod(
-                        typeof(Math),
-                        "Pow",
-                        this.converter.ConvertNotNull(f.Parameters[0].TypeUsage),
-                        this.converter.ConvertNotNull(f.Parameters[1].TypeUsage)),
-                    ExpressionHelper.ConvertToNotNull(args[0]),
-                    ExpressionHelper.ConvertToNotNull(args[1]));
+                    DbFunctions.PowMethod,
+                    args[0],
+                    args[1]);
         }
 
         private void AddStringMappings()
@@ -271,6 +284,53 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             this.mappings["Edm.TruncateTime"] = (f, args) =>
                     Expression.Call(ExpressionHelper.ConvertToNotNull(args[0]), FindMethod(typeof(DateTime), "get_Date"));
+        }
+
+        private static MethodInfo GetAbsMethod(FunctionParameter param)
+        {
+            PrimitiveType primitive = param.TypeUsage.EdmType as PrimitiveType;
+
+            if (primitive == null)
+            {
+                return DbFunctions.AbsMethod;
+            }
+
+            Type clrType = primitive.ClrEquivalentType;
+
+            if (clrType == typeof(decimal))
+            {
+                return DbFunctions.AbsMethodDec;
+            }
+            else if (clrType == typeof(long))
+            {
+                return DbFunctions.AbsMethod64;
+            }
+            else if (clrType == typeof(int))
+            {
+                return DbFunctions.AbsMethod32;
+            }
+            else if (clrType == typeof(short))
+            {
+                return DbFunctions.AbsMethod16;
+            }
+            else if (clrType == typeof(sbyte))
+            {
+                return DbFunctions.AbsMethod8;
+            }
+
+            return DbFunctions.AbsMethod;
+        }
+
+        private static bool IsDecimal(FunctionParameter param)
+        {
+            PrimitiveType primitive = param.TypeUsage.EdmType as PrimitiveType;
+
+            if (primitive == null)
+            {
+                return false;
+            }
+
+            return primitive.ClrEquivalentType == typeof(decimal);
         }
 
         public Expression CreateMethodCall(EdmFunction function, Expression[] arguments)

@@ -90,8 +90,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     string.IsNullOrEmpty(x.Value));
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -105,8 +104,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     string.IsNullOrEmpty(x.Value));
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -121,8 +119,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Contains("banana"));
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -137,8 +134,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.EndsWith("ge"));
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -153,8 +149,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.StartsWith("or"));
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -169,8 +164,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Length == 6);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -185,8 +179,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Length == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -201,8 +194,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.IndexOf("ra") == 1);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -217,8 +209,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.IndexOf("app") == -1);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -233,8 +224,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.IndexOf(null) == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -249,8 +239,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.IndexOf("a") == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -265,8 +254,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Insert(1, "123") == "o123range");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -281,8 +269,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Insert(1, "123") == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -297,8 +284,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Insert(1, null) == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -313,8 +299,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Remove(3) == "ora");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -329,8 +314,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Remove(3, 2) == "orae");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -345,8 +329,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Replace("nge", "cle") == "oracle");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -361,8 +344,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Replace("nge", "cle") == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -377,8 +359,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Replace(null, "cle") == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -393,8 +374,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Replace("nge", null) == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -409,8 +389,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Substring(3) == "nge");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -425,8 +404,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Substring(3, 2) == "ng");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -441,8 +419,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Substring(3, 2) == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -457,8 +434,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.ToLower() == "orange");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -473,8 +449,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.ToLower() == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -489,8 +464,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.ToUpper() == "ORANGE");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -505,8 +479,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.ToUpper() == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -521,8 +494,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Trim() == "orange");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -537,8 +509,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.Trim() == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -553,8 +524,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.TrimEnd() == " orange");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -569,8 +539,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.TrimEnd() == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -585,8 +554,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.TrimStart() == "orange  ");
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -601,8 +569,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Value.TrimStart() == null);
 
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -623,8 +590,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     EntityFunctions.Reverse(x.Value) == "egnaro");
 #endif
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -645,9 +611,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     EntityFunctions.Reverse(x.Value) == null);
 #endif
-
-            var res = q.ToList();
-            res.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
     }
 }

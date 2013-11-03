@@ -54,7 +54,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.Decimal) == 2.0M);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.DecimalN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.Double) == 2.0);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.DoubleN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.Decimal) == 1.0M);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.DecimalN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -132,7 +132,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.Double) == 1.0);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -145,7 +145,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.DoubleN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -158,7 +158,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Decimal) == 2.0M);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -171,7 +171,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DecimalN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -184,7 +184,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Double) == 2.0);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -197,7 +197,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DoubleN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -210,7 +210,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Decimal, 2) == 1.78M);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -223,7 +223,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DecimalN.Value, 2) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -236,7 +236,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Double, 2) == 1.78);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -249,7 +249,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DoubleN.Value, 2) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -262,7 +262,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Pow(x.Double, 2) == 4);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -275,7 +275,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x =>  Math.Pow(x.DoubleN.Value, 2) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -288,7 +288,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Decimal) == 1.7M);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -301,7 +301,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.DecimalN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -314,7 +314,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Double) == 1.7);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -327,7 +327,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.DoubleN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -342,7 +342,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             ////    .MathEntities
             ////    .Where(x => Math.Abs(x.SByte) == 1);
 
-            ////q.Any().ShouldBeTrue();
+            ////q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -357,7 +357,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             ////    .MathEntities
             ////    .Where(x => Math.Abs(x.SByteN.Value) == null);
 
-            ////q.Any().ShouldBeTrue();
+            ////q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -370,7 +370,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Short) == 1);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -383,7 +383,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.ShortN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -396,7 +396,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Int) == 1);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -409,7 +409,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.IntN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -422,7 +422,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Long) == 1);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -435,7 +435,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.LongN.Value) == null);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
     }
 }

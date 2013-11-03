@@ -82,7 +82,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .IntFieldEntities
                 .Where(x => (x.Value8 & (byte)0xaa) == val);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -94,7 +94,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .IntFieldEntities
                 .Where(x => (x.Value16 & (short)0xaa) == val);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .IntFieldEntities
                 .Where(x => (x.Value32 & (int)0xaa) == val);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .IntFieldEntities
                 .Where(x => (x.Value64 & 0xaa) == val);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -130,7 +130,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .IntFieldEntities
                 .Where(x => (x.Value32 | 0xaa) == val);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -142,7 +142,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .IntFieldEntities
                 .Where(x => (~x.Value32) == val);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -154,7 +154,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .IntFieldEntities
                 .Where(x => (x.Value32 ^ 0xaa) == val);
 
-            q.Any().ShouldBeTrue();
+            q.ShouldNotBeEmpty();
         }
     }
 }

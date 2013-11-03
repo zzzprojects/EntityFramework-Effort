@@ -40,7 +40,7 @@ namespace Effort.Test.Features.CanonicalFunctions
     public class DateTimeFunctionsFixture
     {
         private FeatureDbContext context;
-        private static readonly DateTime storedDate = new DateTime(2012, 1, 2, 3, 4, 5, 100);
+        private static readonly DateTime storedDate = new DateTime(1988, 1, 2, 3, 4, 5, 100);
 
         [TestInitialize]
         public void Initialize()
@@ -70,71 +70,71 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void DateTimeYear()
         {
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
-                    x.DateTime.Year == 2012);
+                    x.DateTime.Year == 1988);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
         public void DateTimeMonth()
         {
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Month == 1);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
         public void DateTimeDay()
         {
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Day == 2);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
         public void DateTimeDayHour()
         {
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Hour == 3);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
         public void DateTimeMinute()
         {
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Minute == 4);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
         public void DateTimeSecond()
         {
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Second == 5);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
         public void DateTimeMillisecond()
         {
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Millisecond == 100);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
       
 
@@ -143,16 +143,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddMilliseconds(-1);
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.AddMilliseconds(x.DateTime, -1) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.AddMilliseconds(x.DateTime, -1) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -160,16 +160,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddSeconds(-1);
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.AddSeconds(x.DateTime, -1) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.AddSeconds(x.DateTime, -1) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -177,16 +177,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddMinutes(-1);
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.AddMinutes(x.DateTime, -1) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.AddMinutes(x.DateTime, -1) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -194,16 +194,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddHours(-1);
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.AddHours(x.DateTime, -1) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.AddHours(x.DateTime, -1) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -211,16 +211,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddDays(-1);
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.AddDays(x.DateTime, -1) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.AddDays(x.DateTime, -1) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -228,16 +228,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddMonths(-1);
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.AddMonths(x.DateTime, -1) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.AddMonths(x.DateTime, -1) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -245,16 +245,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.AddYears(-1);
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.AddYears(x.DateTime, -1) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.AddYears(x.DateTime, -1) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -262,16 +262,16 @@ namespace Effort.Test.Features.CanonicalFunctions
         {
             DateTime date = storedDate.Date;
 #if !EFOLD
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.TruncateTime(x.DateTime) == date);
 #else
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.TruncateTime(x.DateTime) == date);
 #endif
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -285,11 +285,11 @@ namespace Effort.Test.Features.CanonicalFunctions
 
             this.context.SaveChanges();
 
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Year == DateTime.Now.Year);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -303,11 +303,11 @@ namespace Effort.Test.Features.CanonicalFunctions
 
             this.context.SaveChanges();
 
-            var query = this.Entities
+            var q = this.Entities
                 .Where(x =>
                     x.DateTime.Year == DateTime.UtcNow.Year);
 
-            query.ShouldNotBeEmpty();
+            q.ShouldNotBeEmpty();
         }
     }
 }

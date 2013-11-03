@@ -25,428 +25,629 @@
 namespace Effort.Test.Features.CanonicalFunctions
 {
     using System.Linq;
+    using Effort.Test.Data.Features;
     using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
+#if !EFOLD
+    using System.Data.Entity;
+#else
+    using System.Data.Objects;
+#endif
 
     [TestClass]
     public class StringFunctionsFixture
     {
-        private NorthwindObjectContext context;
+        private FeatureDbContext context;
 
         [TestInitialize]
         public void Initialize()
         {
-            // This context is initialized from the csv files in Effort.Test.Data/Northwind/Content
-            this.context = new LocalNorthwindObjectContext();
+            this.context =
+                new FeatureDbContext(
+                    DbConnectionFactory.CreateTransient(),
+                    CompiledModels.GetModel<StringFieldEntity>());
         }
 
          [TestMethod]
         public void StringConcat()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    QuantityPerUnit = "kg",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(new StringFieldEntity { Value = "data" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
+            var q = this.context
+                .StringFieldEntities
                 .Select(x => 
-                    string.Concat(x.ProductName,x.QuantityPerUnit));
+                    string.Concat(x.Value, "1"));
 
-            var products = query.ToList();
-            products.FirstOrDefault(x => x == "Special product" + "kg").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any(x => x == "data1").ShouldBeTrue();
         }
+
+         [TestMethod]
+         public void StringConcatNull()
+         {
+             this.context.StringFieldEntities.Add(new StringFieldEntity { Value = null });
+             this.context.SaveChanges();
+
+             var q = this.context
+                 .StringFieldEntities
+                 .Select(x =>
+                     string.Concat(x.Value, "1"));
+
+             var res = q.ToList();
+             res.Any(x => x == null).ShouldBeTrue();
+         }
 
         [TestMethod]
         public void StringIsNullOrEmpty()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "",
-                    UnitPrice = -250,
-                    QuantityPerUnit = null
-
-                });
-
+            this.context.StringFieldEntities.Add(new StringFieldEntity { Value = "" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    string.IsNullOrEmpty(x.ProductName) && 
-                    string.IsNullOrEmpty(x.QuantityPerUnit));
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    string.IsNullOrEmpty(x.Value));
 
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringIsNullOrEmptyNull()
+        {
+            this.context.StringFieldEntities.Add(new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    string.IsNullOrEmpty(x.Value));
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringContains()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "apple orange banana" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Contains("Sp"));
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Contains("banana"));
 
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringEndsWith()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.EndsWith("ct"));
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.EndsWith("ge"));
 
-            var products = query.ToList();
-            products.Count.ShouldBeLessThan(20);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringStartsWith()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.StartsWith("Sp"));
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.StartsWith("or"));
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(2);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringLength()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Length == 15);
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Length == 6);
 
-            var products = query.ToList();
-            products.Count.ShouldBeLessThan(20);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringLengthNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Length == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringIndexOf()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.IndexOf("pe") == 1);
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.IndexOf("ra") == 1);
 
-            var products = query.ToList();
-            products.Count.ShouldBeLessThan(20);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringIndexOf2()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.IndexOf("app") == -1);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringIndexOfNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.IndexOf(null) == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringIndexOfNull2()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.IndexOf("a") == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringInsert()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Insert(1, "data") == "Sdatapecial product");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Insert(1, "123") == "o123range");
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringInsertNull1()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Insert(1, "123") == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringInsertNull2()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Insert(1, null) == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringRemove1()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Remove(3) == "Spe");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Remove(3) == "ora");
 
-            var products = query.ToList();
-            products.Count.ShouldBeLessThan(20);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringRemove2()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Remove(1, 2) == "Scial product");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Remove(3, 2) == "orae");
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringReplace()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product of product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Replace("product", "item") == "Special item of item");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Replace("nge", "cle") == "oracle");
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product of product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringReplaceNull1()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Replace("nge", "cle") == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringReplaceNull2()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Replace(null, "cle") == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringReplaceNull3()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Replace("nge", null) == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringSubstring1()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Substring(3) == "cial product");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Substring(3) == "nge");
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringSubstring2()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Substring(2,2) == "ec");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Substring(3, 2) == "ng");
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringSubstringNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Substring(3, 2) == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringToLower()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "OraNge" });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.ToLower() == "special product");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.ToLower() == "orange");
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringToLowerNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.ToLower() == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void StringToUpper()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "Special product",
-                    UnitPrice = -250
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "OraNge" });
             this.context.SaveChanges();
 
-            var query = 
-                this.context.Products.Where(x => 
-                    x.ProductName.ToUpper() == "SPECIAL PRODUCT");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.ToUpper() == "ORANGE");
 
-            var products = query.ToList();
-            products.Count.ShouldEqual(1);
-            products.FirstOrDefault(x => x.ProductName == "Special product").ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringToUpperNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.ToUpper() == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void Trim()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "   One Product ",
-                    UnitPrice = -250,
-                    QuantityPerUnit = null
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = " orange  " });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.Trim() == "One Product");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Trim() == "orange");
 
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void TrimNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.Trim() == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void TrimEnd()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "  One Product ",
-                    UnitPrice = -250,
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = " orange  " });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.TrimEnd() == "  One Product");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.TrimEnd() == " orange");
 
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void TrimEndNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.TrimEnd() == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
 
         [TestMethod]
         public void TrimStart()
         {
-            this.context.Products.AddObject(
-                new Product
-                {
-                    ProductName = "  One Product ",
-                    UnitPrice = -250,
-
-                });
-
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = " orange  " });
             this.context.SaveChanges();
 
-            var query = this.context
-                .Products
-                .Where(x => 
-                    x.ProductName.TrimStart() == "One Product ");
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.TrimStart() == "orange  ");
 
-            var products = query.ToList();
-            products.FirstOrDefault(x => x.UnitPrice == -250).ShouldNotBeNull();
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void TrimStartNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null});
+            this.context.SaveChanges();
+
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    x.Value.TrimStart() == null);
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringReverse()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+#if !EFOLD
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    DbFunctions.Reverse(x.Value) == "egnaro");
+#else
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    EntityFunctions.Reverse(x.Value) == "egnaro");
+#endif
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void StringReverseNull()
+        {
+            this.context.StringFieldEntities.Add(
+                new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+#if !EFOLD
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    DbFunctions.Reverse(x.Value) == null);
+#else
+            var q = this.context
+                .StringFieldEntities
+                .Where(x =>
+                    EntityFunctions.Reverse(x.Value) == null);
+#endif
+
+            var res = q.ToList();
+            res.Any().ShouldBeTrue();
         }
     }
 }

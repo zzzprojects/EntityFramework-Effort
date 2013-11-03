@@ -31,6 +31,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
     internal class DbFunctions
     {
+        #region Math exports
+
         public static readonly MethodInfo TruncateMethod =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.Truncate(0.0));
 
@@ -67,35 +69,61 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public static readonly MethodInfo AbsMethod =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0.0));
 
-        public static readonly MethodInfo AbsMethodDec =
+        public static readonly MethodInfo AbsDecMethod =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0.0M));
 
-        public static readonly MethodInfo AbsMethod64 =
+        public static readonly MethodInfo Abs64Method =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0L));
 
-        public static readonly MethodInfo AbsMethod32 =
+        public static readonly MethodInfo Abs32Method =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((int?)0));
 
-        public static readonly MethodInfo AbsMethod16 =
+        public static readonly MethodInfo Abs16Method =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((short?)0));
 
-        public static readonly MethodInfo AbsMethod8 =
+        public static readonly MethodInfo Abs8Method =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((sbyte?)0));
 
-        public static int IndexOf(string a, string b)
-        {
-            return a.IndexOf(b) + 1;
-        }
+        #endregion
 
-        public static string ReverseString(string old)
-        {
-            return new string(old.ToCharArray().Reverse().ToArray());
-        }
+        #region String exports
 
-        public static string Substring(string data, int? begin, int? length)
-        {
-            return data.Substring(begin.Value - 1, length.Value);
-        }
+        public static readonly MethodInfo ConcatMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Concat("", ""));
+
+        public static readonly MethodInfo ToLowerMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.ToLower(""));
+
+        public static readonly MethodInfo ToUpperMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.ToUpper(""));
+
+        public static readonly MethodInfo IndexOfMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.IndexOf("", ""));
+
+        public static readonly MethodInfo ReverseStringMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.ReverseString(""));
+
+        public static readonly MethodInfo SubstringMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Substring("", 0, 9));
+
+        public static readonly MethodInfo TrimMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Trim(""));
+
+        public static readonly MethodInfo LTrimMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.LTrim(""));
+
+        public static readonly MethodInfo RTrimMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.RTrim(""));
+
+        public static readonly MethodInfo LengthMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Length(""));
+
+        public static readonly MethodInfo ReplaceMethod =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Replace("", "", ""));
+
+        #endregion
+
+        #region Math
 
         public static decimal? Truncate(decimal? input)
         {
@@ -266,5 +294,124 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             return Math.Abs(input.Value);
         }
+
+        #endregion
+
+        #region String
+
+        public static string Concat(string a, string b)
+        {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
+            return string.Concat(a, b);
+        }
+
+        public static string ToUpper(string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            // TODO: culture?
+            return data.ToUpper();
+        }
+
+        public static string ToLower(string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            // TODO: culture?
+            return data.ToLower();
+        }
+
+        public static int? IndexOf(string a, string b)
+        {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
+            // TODO: culture?
+            return a.IndexOf(b) + 1;
+        }
+
+        public static string ReverseString(string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            return new string(data.ToCharArray().Reverse().ToArray());
+        }
+
+        public static string Substring(string data, int? begin, int? length)
+        {
+            if (data == null || !begin.HasValue || !length.HasValue)
+            {
+                return null;
+            }
+
+            return data.Substring(begin.Value - 1, length.Value);
+        }
+
+        public static string Trim(string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            return data.Trim();
+        }
+
+        public static string LTrim(string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            return data.TrimStart();
+        }
+
+        public static string RTrim(string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            return data.TrimEnd();
+        }
+
+        public static int? Length(string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            return data.Length;
+        }
+
+        public static string Replace(string data, string oldValue, string newValue)
+        {
+            if (data == null || oldValue == null || newValue == null)
+            {
+                return null;
+            }
+
+            return data.Replace(oldValue, newValue);
+        }
+
+        #endregion
     }
 }

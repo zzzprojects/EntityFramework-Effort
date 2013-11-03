@@ -139,71 +139,75 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         private void AddStringMappings()
         {
-            //// String
             this.mappings["Edm.Concat"] = (f, args) =>
                 Expression.Call(
                     null,
-                    FindMethod(typeof(string), "Concat", typeof(string), typeof(string)),
+                    DbFunctions.ConcatMethod,
                     args[0],
                     args[1]);
 
             this.mappings["Edm.ToUpper"] = (f, args) =>
                 Expression.Call(
-                    args[0],
-                    FindMethod(typeof(string), "ToUpper"));
+                    null,
+                    DbFunctions.ToUpperMethod,
+                    args[0]);
 
             this.mappings["Edm.ToLower"] = (f, args) =>
                 Expression.Call(
-                    args[0],
-                    FindMethod(typeof(string), "ToLower"));
+                    null,
+                    DbFunctions.ToLowerMethod,
+                    args[0]);
 
             this.mappings["Edm.IndexOf"] = (f, args) =>
                 Expression.Call(
                     null,
-                    FindMethod(typeof(DbFunctions), "IndexOf", typeof(string), typeof(string)),
+                    DbFunctions.IndexOfMethod,
                     args[1],
                     args[0]);
-
-            this.mappings["Edm.Trim"] = (f, args) =>
-                Expression.Call(
-                    args[0],
-                    FindMethod(typeof(string), "Trim"));
-
-            this.mappings["Edm.RTrim"] = (f, args) =>
-                Expression.Call(
-                    args[0],
-                    FindMethod(typeof(string), "TrimEnd", typeof(char[])),
-                    Expression.Constant(new char[0]));
-
-            this.mappings["Edm.LTrim"] = (f, args) =>
-                Expression.Call(
-                    args[0],
-                    FindMethod(typeof(string), "TrimStart", typeof(char[])),
-                    Expression.Constant(new char[0]));
-
-            this.mappings["Edm.Length"] = (f, args) =>
-                Expression.Call(
-                    args[0],
-                    typeof(string).GetProperties().Where(x => x.Name == "Length").First().GetGetMethod());
 
             this.mappings["Edm.Reverse"] = (f, args) =>
                 Expression.Call(
                     null,
-                    FindMethod(typeof(DbFunctions), "ReverseString", typeof(string)),
+                    DbFunctions.ReverseStringMethod,
                     args[0]);
 
             this.mappings["Edm.Substring"] = (f, args) =>
                 Expression.Call(
                     null,
-                    FindMethod(typeof(DbFunctions), "Substring", typeof(string), typeof(int?), typeof(int?)),
+                    DbFunctions.SubstringMethod,
                     args[0],
                     args[1],
                     args[2]);
 
-            this.mappings["Edm.Replace"] = (f, args) =>
+            this.mappings["Edm.Trim"] = (f, args) =>
                 Expression.Call(
+                    null,
+                    DbFunctions.TrimMethod,
+                    args[0]);
+
+            this.mappings["Edm.RTrim"] = (f, args) =>
+                Expression.Call(
+                    null,
+                    DbFunctions.RTrimMethod,
+                    args[0]);
+
+            this.mappings["Edm.LTrim"] = (f, args) =>
+                Expression.Call(
+                    null,
+                    DbFunctions.LTrimMethod,
+                    args[0]);
+
+            this.mappings["Edm.Length"] = (f, args) =>
+                 Expression.Call(
+                    null,
+                    DbFunctions.LengthMethod,
+                    args[0]);
+
+            this.mappings["Edm.Replace"] = (f, args) =>
+                 Expression.Call(
+                    null,
+                    DbFunctions.ReplaceMethod,
                     args[0],
-                    FindMethod(typeof(string), "Replace", typeof(string), typeof(string)),
                     args[1],
                     args[2]);
         }
@@ -299,23 +303,23 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             if (clrType == typeof(decimal))
             {
-                return DbFunctions.AbsMethodDec;
+                return DbFunctions.AbsDecMethod;
             }
             else if (clrType == typeof(long))
             {
-                return DbFunctions.AbsMethod64;
+                return DbFunctions.Abs64Method;
             }
             else if (clrType == typeof(int))
             {
-                return DbFunctions.AbsMethod32;
+                return DbFunctions.Abs32Method;
             }
             else if (clrType == typeof(short))
             {
-                return DbFunctions.AbsMethod16;
+                return DbFunctions.Abs16Method;
             }
             else if (clrType == typeof(sbyte))
             {
-                return DbFunctions.AbsMethod8;
+                return DbFunctions.Abs8Method;
             }
 
             return DbFunctions.AbsMethod;
@@ -335,14 +339,15 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         public Expression CreateMethodCall(EdmFunction function, Expression[] arguments)
         {
-            try
+            Func<EdmFunction, Expression[], Expression> mapper = null;
+
+            if (!this.mappings.TryGetValue(function.FullName, out mapper))
             {
-                return this.mappings[function.FullName](function, arguments);
+                throw new NotSupportedException(
+                    "Missing function mapping for " + function.FullName + '.');
             }
-            catch (KeyNotFoundException exp)
-            {
-                throw new InvalidOperationException("Missing function mapping for " + function.FullName + '.', exp);
-            }
+
+            return mapper(function, arguments);
         }
 
         private static MethodCallExpression CreateDateExpression(Expression[] args, string propertyName)

@@ -72,6 +72,7 @@
     <Compile Include="Features\AggregationFixture.cs" />
     <Compile Include="Features\BinaryFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\BitwiseFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\TimeFunctionsFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\GuidFunctionsFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\DateTimeFunctionsFixture.cs" />
     <Compile Include="Features\CanonicalFunctions\DateTimeOffsetFunctionsFixture.cs" />

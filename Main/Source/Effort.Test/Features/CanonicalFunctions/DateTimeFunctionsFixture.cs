@@ -24,23 +24,22 @@
 
 namespace Effort.Test.Features.CanonicalFunctions
 {
-    using System;
 #if !EFOLD
-    using System.Data.Entity.Core.Objects;
     using System.Data.Entity;
 #else
     using System.Data.Objects;
 #endif
+    using System;
     using System.Linq;
+    using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
-    using Effort.Test.Data.Features;
 
     [TestClass]
     public class DateTimeFunctionsFixture
     {
         private FeatureDbContext context;
-        private static readonly DateTime storedDate = new DateTime(1988, 1, 2, 3, 4, 5, 100);
+        private static readonly DateTime stored = new DateTime(1988, 1, 2, 3, 4, 5, 100);
 
         [TestInitialize]
         public void Initialize()
@@ -53,7 +52,8 @@ namespace Effort.Test.Features.CanonicalFunctions
             this.context.DateTimeFieldEntities.Add(
                 new DateTimeFieldEntity
                 {
-                    DateTime = storedDate
+                    DateTime = stored,
+                    DateTimeN = null
                 });
 
             this.context.SaveChanges();
@@ -136,12 +136,47 @@ namespace Effort.Test.Features.CanonicalFunctions
 
             q.ShouldNotBeEmpty();
         }
-      
+
+        [TestMethod]
+        public void TimeAddNanoseconds()
+        {
+            DateTime date = stored.AddTicks(-1);
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.AddNanoseconds(x.DateTime, -100) == date);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.AddNanoseconds(x.DateTime, -100) == date);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void TimeAddMicroseconds()
+        {
+            DateTime date = stored.AddTicks(-10);
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.AddMicroseconds(x.DateTime, -1) == date);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.AddMicroseconds(x.DateTime, -1) == date);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
 
         [TestMethod]
         public void DateTimeAddMilliseconds()
         {
-            DateTime date = storedDate.AddMilliseconds(-1);
+            DateTime date = stored.AddMilliseconds(-1);
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -158,7 +193,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void DateTimeAddSeconds()
         {
-            DateTime date = storedDate.AddSeconds(-1);
+            DateTime date = stored.AddSeconds(-1);
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -175,7 +210,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void DateTimeAddMinutes()
         {
-            DateTime date = storedDate.AddMinutes(-1);
+            DateTime date = stored.AddMinutes(-1);
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -192,7 +227,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void DateTimeAddHours()
         {
-            DateTime date = storedDate.AddHours(-1);
+            DateTime date = stored.AddHours(-1);
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -209,7 +244,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void DateTimeAddDays()
         {
-            DateTime date = storedDate.AddDays(-1);
+            DateTime date = stored.AddDays(-1);
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -226,7 +261,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void DateTimeAddMonths()
         {
-            DateTime date = storedDate.AddMonths(-1);
+            DateTime date = stored.AddMonths(-1);
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -243,7 +278,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void DateTimeAddYears()
         {
-            DateTime date = storedDate.AddYears(-1);
+            DateTime date = stored.AddYears(-1);
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -258,9 +293,165 @@ namespace Effort.Test.Features.CanonicalFunctions
         }
 
         [TestMethod]
+        public void DateTimeDiffNanoseconds()
+        {
+            DateTime date = stored.AddTicks(-1);
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffNanoseconds(date, x.DateTime) == 100);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffNanoseconds(date, x.DateTime) == 100);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffMicroseconds()
+        {
+            DateTime date = stored.AddTicks(-10);
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffMicroseconds(date, x.DateTime) == 1);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffMicroseconds(date, x.DateTime) == 1);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffMilliseconds()
+        {
+            DateTime date = stored.AddMilliseconds(-1);
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffMilliseconds(date, x.DateTime) == 1);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffMilliseconds(date, x.DateTime) == 1);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffSeconds()
+        {
+            DateTime date = stored.AddSeconds(-1);
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffSeconds(date, x.DateTime) == 1);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffSeconds(date, x.DateTime) == 1);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffMinutes()
+        {
+            DateTime date = stored.AddMinutes(-1);
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffMinutes(date, x.DateTime) == 1);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffMinutes(date, x.DateTime) == 1);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffHours()
+        {
+            DateTime date = stored.AddHours(-1);
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffHours(date, x.DateTime) == 1);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffHours(date, x.DateTime) == 1);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffDays()
+        {
+            DateTime date = stored.AddDays(-1);
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffDays(date, x.DateTime) == 1);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffDays(date, x.DateTime) == 1);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffMonths()
+        {
+            DateTime date = stored.AddYears(-1).AddMonths(-1);
+
+#if !EFOLD
+            var q = this.Entities
+                .Select(x =>
+                    DbFunctions.DiffMonths(date, x.DateTime) == 13);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffMonths(date, x.DateTime) == 13);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void DateTimeDiffYears()
+        {
+            DateTime date = stored.AddYears(-1);
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.DiffYears(date, x.DateTime) == 1);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.DiffYears(date, x.DateTime) == 1);
+#endif
+
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
         public void DateTimeTruncateTime()
         {
-            DateTime date = storedDate.Date;
+            DateTime date = stored.Date;
 #if !EFOLD
             var q = this.Entities
                 .Where(x =>
@@ -308,6 +499,24 @@ namespace Effort.Test.Features.CanonicalFunctions
                     x.DateTime.Year == DateTime.UtcNow.Year);
 
             q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void CreateDateTime()
+        {
+#if !EFOLD
+            var q = this.Entities
+                .Select(x => DbFunctions.CreateDateTime(x.DateTime.Year, 5, 1, 0, 0, 0));
+#else
+            var q = this.Entities
+                .Select(x => EntityFunctions.CreateDateTime(x.DateTime.Year, 5, 1, 0, 0, 0));
+#endif
+
+
+            var q2 = q.AsEnumerable()
+                .Where(x => x.Value.Month == 5);
+                
+            q2.ShouldNotBeEmpty();
         }
     }
 }

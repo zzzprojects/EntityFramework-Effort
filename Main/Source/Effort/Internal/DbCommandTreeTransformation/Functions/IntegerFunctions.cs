@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DateTimeFieldEntity.cs" company="Effort Team">
+// <copyright file="IntegerFunctions.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,16 +22,24 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Features
+namespace Effort.Internal.DbCommandTreeTransformation.Functions
 {
     using System;
+    using System.Reflection;
+    using Effort.Internal.Common;
 
-    public class DateTimeFieldEntity
+    internal class IntegerFunctions
     {
-        public int Id { get; set; }
+        public static readonly MethodInfo Abs64 =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0L));
 
-        public DateTime DateTime { get; set; }
+        public static readonly MethodInfo Abs32 =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((int?)0));
 
-        public DateTime? DateTimeN { get; set; }
+        public static readonly MethodInfo Abs16=
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((short?)0));
+
+        public static readonly MethodInfo Abs8 =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((sbyte?)0));
     }
 }

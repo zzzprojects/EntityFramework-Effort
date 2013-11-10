@@ -24,16 +24,14 @@
 
 namespace Effort.Test.Features.CanonicalFunctions
 {
-    using System.Linq;
-    using Effort.Test.Data.Features;
-    using Effort.Test.Data.Northwind;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
-#if !EFOLD
-    using System.Data.Entity;
-#else
+#if EFOLD
     using System.Data.Objects;
 #endif
+    using System.Data.Entity;
+    using System.Linq;
+    using Effort.Test.Data.Features;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SoftwareApproach.TestingExtensions;
 
     [TestClass]
     public class StringFunctionsFixture
@@ -49,14 +47,21 @@ namespace Effort.Test.Features.CanonicalFunctions
                     CompiledModels.GetModel<StringFieldEntity>());
         }
 
+        public IDbSet<StringFieldEntity> Entities
+        {
+            get
+            {
+                return this.context.StringFieldEntities;
+            }
+        }
+
          [TestMethod]
         public void StringConcat()
         {
-            this.context.StringFieldEntities.Add(new StringFieldEntity { Value = "data" });
+            this.Entities.Add(new StringFieldEntity { Value = "data" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Select(x => 
                     string.Concat(x.Value, "1"));
 
@@ -67,11 +72,10 @@ namespace Effort.Test.Features.CanonicalFunctions
          [TestMethod]
          public void StringConcatNull()
          {
-             this.context.StringFieldEntities.Add(new StringFieldEntity { Value = null });
+             this.Entities.Add(new StringFieldEntity { Value = null });
              this.context.SaveChanges();
 
-             var q = this.context
-                 .StringFieldEntities
+             var q = this.Entities
                  .Select(x =>
                      string.Concat(x.Value, "1"));
 
@@ -82,11 +86,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringIsNullOrEmpty()
         {
-            this.context.StringFieldEntities.Add(new StringFieldEntity { Value = "" });
+            this.Entities.Add(new StringFieldEntity { Value = "" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     string.IsNullOrEmpty(x.Value));
 
@@ -96,11 +99,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringIsNullOrEmptyNull()
         {
-            this.context.StringFieldEntities.Add(new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     string.IsNullOrEmpty(x.Value));
 
@@ -110,14 +112,12 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringContains()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "apple orange banana" });
+            this.Entities.Add(new StringFieldEntity { Value = "apple orange banana" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
-                    x.Value.Contains("banana"));
+                   x.Value.Contains("banana"));
 
             q.ShouldNotBeEmpty();
         }
@@ -125,12 +125,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringEndsWith()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.EndsWith("ge"));
 
@@ -140,12 +138,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringStartsWith()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.StartsWith("or"));
 
@@ -155,12 +151,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringLength()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Length == 6);
 
@@ -170,12 +164,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringLengthNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Length == null);
 
@@ -185,12 +177,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringIndexOf()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.IndexOf("ra") == 1);
 
@@ -200,12 +190,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringIndexOf2()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.IndexOf("app") == -1);
 
@@ -215,12 +203,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringIndexOfNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.IndexOf(null) == null);
 
@@ -230,12 +216,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringIndexOfNull2()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.IndexOf("a") == null);
 
@@ -245,12 +229,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringInsert()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Insert(1, "123") == "o123range");
 
@@ -260,12 +242,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringInsertNull1()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Insert(1, "123") == null);
 
@@ -275,12 +255,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringInsertNull2()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Insert(1, null) == null);
 
@@ -290,12 +268,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringRemove1()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Remove(3) == "ora");
 
@@ -305,12 +281,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringRemove2()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Remove(3, 2) == "orae");
 
@@ -320,12 +294,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringReplace()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Replace("nge", "cle") == "oracle");
 
@@ -335,12 +307,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringReplaceNull1()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Replace("nge", "cle") == null);
 
@@ -350,12 +320,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringReplaceNull2()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Replace(null, "cle") == null);
 
@@ -365,12 +333,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringReplaceNull3()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Replace("nge", null) == null);
 
@@ -380,12 +346,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringSubstring1()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Substring(3) == "nge");
 
@@ -395,12 +359,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringSubstring2()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Substring(3, 2) == "ng");
 
@@ -410,12 +372,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringSubstringNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Substring(3, 2) == null);
 
@@ -425,12 +385,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringToLower()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "OraNge" });
+            this.Entities.Add(new StringFieldEntity { Value = "OraNge" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.ToLower() == "orange");
 
@@ -440,12 +398,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringToLowerNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.ToLower() == null);
 
@@ -455,12 +411,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringToUpper()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "OraNge" });
+            this.Entities.Add(new StringFieldEntity { Value = "OraNge" });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.ToUpper() == "ORANGE");
 
@@ -470,12 +424,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringToUpperNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.ToUpper() == null);
 
@@ -485,12 +437,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void Trim()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = " orange  " });
+            this.Entities.Add(new StringFieldEntity { Value = " orange  " });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Trim() == "orange");
 
@@ -500,12 +450,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void TrimNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.Trim() == null);
 
@@ -515,12 +463,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void TrimEnd()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = " orange  " });
+            this.Entities.Add(new StringFieldEntity { Value = " orange  " });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.TrimEnd() == " orange");
 
@@ -530,12 +476,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void TrimEndNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.TrimEnd() == null);
 
@@ -545,12 +489,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void TrimStart()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = " orange  " });
+            this.Entities.Add(new StringFieldEntity { Value = " orange  " });
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.TrimStart() == "orange  ");
 
@@ -560,12 +502,10 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void TrimStartNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null});
+            this.Entities.Add(new StringFieldEntity { Value = null});
             this.context.SaveChanges();
 
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     x.Value.TrimStart() == null);
 
@@ -575,13 +515,11 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringReverse()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = "orange" });
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
             this.context.SaveChanges();
 
 #if !EFOLD
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.Reverse(x.Value) == "egnaro");
 #else
@@ -596,20 +534,89 @@ namespace Effort.Test.Features.CanonicalFunctions
         [TestMethod]
         public void StringReverseNull()
         {
-            this.context.StringFieldEntities.Add(
-                new StringFieldEntity { Value = null });
+            this.Entities.Add(new StringFieldEntity { Value = null });
             this.context.SaveChanges();
 
 #if !EFOLD
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     DbFunctions.Reverse(x.Value) == null);
 #else
-            var q = this.context
-                .StringFieldEntities
+            var q = this.Entities
                 .Where(x =>
                     EntityFunctions.Reverse(x.Value) == null);
+#endif
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void StringLeft()
+        {
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.Left(x.Value, 2) == "or");
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.Left(x.Value, 2) == "or");
+#endif
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void StringLeftNull()
+        {
+            this.Entities.Add(new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.Left(x.Value, 2) == null);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.Left(x.Value, 2) == null);
+#endif
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void StringRight()
+        {
+            this.Entities.Add(new StringFieldEntity { Value = "orange" });
+            this.context.SaveChanges();
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.Right(x.Value, 2) == "ge");
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.Right(x.Value, 2) == "ge");
+#endif
+            q.ShouldNotBeEmpty();
+        }
+
+        [TestMethod]
+        public void StringRightNull()
+        {
+            this.Entities.Add(new StringFieldEntity { Value = null });
+            this.context.SaveChanges();
+
+#if !EFOLD
+            var q = this.Entities
+                .Where(x =>
+                    DbFunctions.Right(x.Value, 2) == null);
+#else
+            var q = this.Entities
+                .Where(x =>
+                    EntityFunctions.Right(x.Value, 2) == null);
 #endif
             q.ShouldNotBeEmpty();
         }

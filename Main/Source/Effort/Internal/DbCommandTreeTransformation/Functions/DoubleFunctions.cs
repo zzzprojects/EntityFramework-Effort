@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DateTimeFieldEntity.cs" company="Effort Team">
+// <copyright file="DoubleFunctions.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,16 +22,33 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Test.Data.Features
+namespace Effort.Internal.DbCommandTreeTransformation.Functions
 {
     using System;
+    using System.Reflection;
+    using Effort.Internal.Common;
 
-    public class DateTimeFieldEntity
+    internal class DoubleFunctions
     {
-        public int Id { get; set; }
+        public static readonly MethodInfo Truncate =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Truncate(0.0));
 
-        public DateTime DateTime { get; set; }
+        public static readonly MethodInfo Ceiling =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Ceiling(0.0));
 
-        public DateTime? DateTimeN { get; set; }
+        public static readonly MethodInfo Floor =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Floor(0.0));
+
+        public static readonly MethodInfo Round =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Round(0.0));
+
+        public static readonly MethodInfo RoundDigits =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Round(0.0, 0));
+
+        public static readonly MethodInfo Pow =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Pow(0.0, 0.0));
+
+        public static readonly MethodInfo Abs =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0.0));
     }
 }

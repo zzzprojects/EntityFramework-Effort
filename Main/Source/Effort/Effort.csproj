@@ -115,6 +115,13 @@
     <Compile Include="Internal\Csv\ParseErrorAction.cs" />
     <Compile Include="Internal\Csv\ValueTrimmingOptions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\DbFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\DoubleFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\DecimalFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\IntegerFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\StringFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\DateTimeOffsetFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\TimeFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\DateTimeFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\MethodInfoGroup.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.In.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.Null.cs" />

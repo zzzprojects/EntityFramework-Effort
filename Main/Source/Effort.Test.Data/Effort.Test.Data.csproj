@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\TimeFieldEntity.cs" />
     <Compile Include="Features\LargeTimestampFieldEntity.cs" />
     <Compile Include="Features\DecimalIdentityFieldEntity.cs" />
     <Compile Include="Features\IntFieldEntity.cs" />

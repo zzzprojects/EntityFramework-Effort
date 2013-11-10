@@ -31,98 +31,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
     internal class DbFunctions
     {
-        #region Math exports
-
-        public static readonly MethodInfo TruncateMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Truncate(0.0));
-
-        public static readonly MethodInfo TruncateDecMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Truncate(0.0M));
-
-        public static readonly MethodInfo CeilingMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Ceiling(0.0));
-
-        public static readonly MethodInfo CeilingDecMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Ceiling(0.0M));
-
-        public static readonly MethodInfo FloorMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Floor(0.0));
-
-        public static readonly MethodInfo FloorDecMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Floor(0.0M));
-
-        public static readonly MethodInfo RoundMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Round(0.0));
-
-        public static readonly MethodInfo RoundDecMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Round(0.0M));
-
-        public static readonly MethodInfo RoundDigitsMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Round(0.0, 0));
-
-        public static readonly MethodInfo RoundDigitsDecMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Round(0.0M, 0));
-
-        public static readonly MethodInfo PowMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Pow(0.0, 0.0));
-
-        public static readonly MethodInfo AbsMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0.0));
-
-        public static readonly MethodInfo AbsDecMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0.0M));
-
-        public static readonly MethodInfo Abs64Method =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs(0L));
-
-        public static readonly MethodInfo Abs32Method =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((int?)0));
-
-        public static readonly MethodInfo Abs16Method =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((short?)0));
-
-        public static readonly MethodInfo Abs8Method =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Abs((sbyte?)0));
-
-        #endregion
-
-        #region String exports
-
-        public static readonly MethodInfo ConcatMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Concat("", ""));
-
-        public static readonly MethodInfo ToLowerMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.ToLower(""));
-
-        public static readonly MethodInfo ToUpperMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.ToUpper(""));
-
-        public static readonly MethodInfo IndexOfMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.IndexOf("", ""));
-
-        public static readonly MethodInfo ReverseStringMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.ReverseString(""));
-
-        public static readonly MethodInfo SubstringMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Substring("", 0, 9));
-
-        public static readonly MethodInfo TrimMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Trim(""));
-
-        public static readonly MethodInfo LTrimMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.LTrim(""));
-
-        public static readonly MethodInfo RTrimMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.RTrim(""));
-
-        public static readonly MethodInfo LengthMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Length(""));
-
-        public static readonly MethodInfo ReplaceMethod =
-            ReflectionHelper.GetMethodInfo(() => DbFunctions.Replace("", "", ""));
-
-        #endregion
-
         #region Math
 
         public static decimal? Truncate(decimal? input)
@@ -309,6 +217,39 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return string.Concat(a, b);
         }
 
+        public static bool? Contains(string a, string b)
+        {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
+            // TODO: culture
+            return a.Contains(b);
+        }
+
+        public static string Left(string a, int? count)
+        {
+            if (a == null || count == null)
+            {
+                return null;
+            }
+
+            // TODO: culture
+            return a.Substring(0, count.Value);
+        }
+
+        public static string Right(string a, int? count)
+        {
+            if (a == null || count == null)
+            {
+                return null;
+            }
+
+            // TODO: culture
+            return a.Substring(a.Length - count.Value);
+        }
+
         public static string ToUpper(string data)
         {
             if (data == null)
@@ -339,7 +280,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             }
 
             // TODO: culture?
-            return a.IndexOf(b) + 1;
+            return b.IndexOf(a) + 1;
         }
 
         public static string ReverseString(string data)
@@ -410,6 +351,841 @@ namespace Effort.Internal.DbCommandTreeTransformation
             }
 
             return data.Replace(oldValue, newValue);
+        }
+
+        public static bool? StartsWith(string a, string b)
+        {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
+            // TODO: culture
+            return b.StartsWith(a);
+        }
+
+        public static bool? EndsWith(string a, string b)
+        {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
+            // TODO: culture
+            return b.EndsWith(a);
+        }
+
+        #endregion
+
+        #region Datetime
+
+        public static DateTime? CurrentDateTime()
+        {
+            return DateTime.Now;
+        }
+
+        public static DateTime? CurrentUtcDateTime()
+        {
+            return DateTime.UtcNow;
+        }
+
+        public static DateTime? CreateDateTime(
+            int? year, 
+            int? month, 
+            int? day, 
+            int? hour, 
+            int? minute, 
+            int? second)
+        {
+            if (!year.HasValue || 
+                !month.HasValue || 
+                !day.HasValue ||
+                !hour.HasValue || 
+                !minute.HasValue || 
+                !second.HasValue)
+            {
+                return null;
+            }
+
+            return new DateTime(
+                year.Value,
+                month.Value,
+                day.Value,
+                hour.Value,
+                minute.Value,
+                second.Value);
+        }
+
+        public static int? GetYear(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Year;
+        }
+
+        public static int? GetMonth(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Month;
+        }
+
+        public static int? GetDay(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+            
+            return date.Value.Day;
+        }
+
+        public static int? GetHour(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Hour;
+        }
+
+        public static int? GetMinute(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Minute;
+        }
+
+        public static int? GetSecond(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Second;
+        }
+
+        public static int? GetMillisecond(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Millisecond;
+        }
+
+        public static DateTime? AddYears(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddYears(value.Value);
+        }
+
+        public static DateTime? AddMonths(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddMonths(value.Value);
+        }
+
+        public static DateTime? AddDays(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddDays(value.Value);
+        }
+
+        public static DateTime? AddHours(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddHours(value.Value);
+        }
+
+        public static DateTime? AddMinutes(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddMinutes(value.Value);
+        }
+
+        public static DateTime? AddSeconds(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddSeconds(value.Value);
+        }
+
+        public static DateTime? AddMilliseconds(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddMilliseconds(value.Value);
+        }
+
+        public static DateTime? AddMicroseconds(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddTicks(value.Value * 10);
+        }
+
+        public static DateTime? AddNanoseconds(DateTime? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddTicks(value.Value / 100);
+        }
+
+        public static int? DiffYears(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return val2.Value.Year - val1.Value.Year;
+        }
+
+        public static int? DiffMonths(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return 
+                (val2.Value.Year - val1.Value.Year) * 12 + 
+                (val2.Value.Month - val1.Value.Month);
+        }
+
+        public static int? DiffDays(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalDays);
+        }
+
+        public static int? DiffHours(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalHours);
+        }
+
+        public static int? DiffMinutes(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalMinutes);
+        }
+
+        public static int? DiffSeconds(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalSeconds);
+        }
+
+        public static int? DiffMilliseconds(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalMilliseconds);
+        }
+
+        public static int? DiffMicroseconds(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).Ticks / 10);
+        }
+
+        public static int? DiffNanoseconds(DateTime? val1, DateTime? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).Ticks * 100);
+        }
+
+        public static DateTime? TruncateTime(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Date;
+        }
+
+        public static int? DayOfYear(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.DayOfYear;
+        }
+
+        #endregion
+
+        #region DateTimeOffset
+
+        public static DateTimeOffset? CurrentDateTimeOffset()
+        {
+            return DateTimeOffset.Now;
+        }
+
+        public static DateTimeOffset? CreateDateTimeOffset(
+           int? year,
+           int? month,
+           int? day,
+           int? hour,
+           int? minute,
+           int? second,
+           int? offsetMinutes)
+        {
+            if (!year.HasValue ||
+                !month.HasValue ||
+                !day.HasValue ||
+                !hour.HasValue ||
+                !minute.HasValue ||
+                !second.HasValue ||
+                !offsetMinutes.HasValue)
+            {
+                return null;
+            }
+
+            return new DateTimeOffset(
+                year.Value,
+                month.Value,
+                day.Value,
+                hour.Value,
+                minute.Value,
+                second.Value,
+                TimeSpan.FromMinutes(offsetMinutes.Value));
+        }
+
+        public static int? GetYear(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Year;
+        }
+
+        public static int? GetMonth(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Month;
+        }
+
+        public static int? GetDay(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Day;
+        }
+
+        public static int? GetHour(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Hour;
+        }
+
+        public static int? GetMinute(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Minute;
+        }
+
+        public static int? GetSecond(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Second;
+        }
+
+        public static int? GetMillisecond(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Millisecond;
+        }
+
+        public static DateTimeOffset? AddYears(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddYears(value.Value);
+        }
+
+        public static DateTimeOffset? AddMonths(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddMonths(value.Value);
+        }
+
+        public static DateTimeOffset? AddDays(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddDays(value.Value);
+        }
+
+        public static DateTimeOffset? AddHours(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddHours(value.Value);
+        }
+
+        public static DateTimeOffset? AddMinutes(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddMinutes(value.Value);
+        }
+
+        public static DateTimeOffset? AddSeconds(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddSeconds(value.Value);
+        }
+
+        public static DateTimeOffset? AddMilliseconds(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddMilliseconds(value.Value);
+        }
+
+        public static DateTimeOffset? AddMicroseconds(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddTicks(value.Value * 10);
+        }
+
+        public static DateTimeOffset? AddNanoseconds(DateTimeOffset? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.AddTicks(value.Value / 100);
+        }
+
+        public static int? DiffYears(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return val2.Value.Year - val1.Value.Year;
+        }
+
+        public static int? DiffMonths(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return
+                (val2.Value.Year - val1.Value.Year) * 12 +
+                (val2.Value.Month - val1.Value.Month);
+        }
+
+        public static int? DiffDays(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalDays);
+        }
+
+        public static int? DiffHours(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalHours);
+        }
+
+        public static int? DiffMinutes(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalMinutes);
+        }
+
+        public static int? DiffSeconds(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalSeconds);
+        }
+
+        public static int? DiffMilliseconds(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalMilliseconds);
+        }
+
+        public static int? DiffMicroseconds(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).Ticks / 10);
+        }
+
+        public static int? DiffNanoseconds(DateTimeOffset? val1, DateTimeOffset? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).Ticks * 100);
+        }
+
+        public static DateTimeOffset? TruncateTime(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Date;
+        }
+
+        public static int? DayOfYear(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.DayOfYear;
+        }
+
+        public static int? GetTotalOffsetMinutes(DateTimeOffset? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return (int)date.Value.Offset.TotalMinutes;
+        }
+
+        #endregion
+
+        #region Time
+
+        public static TimeSpan? CreateTime(
+            int? hour,
+            int? minute,
+            int? second)
+        {
+            if (!hour.HasValue ||
+                !minute.HasValue ||
+                !second.HasValue)
+            {
+                return null;
+            }
+
+            return new TimeSpan(hour.Value, minute.Value, second.Value);
+        }
+
+        public static int? GetHour(TimeSpan? time)
+        {
+            if (!time.HasValue)
+            {
+                return null;
+            }
+
+            return time.Value.Hours;
+        }
+
+        public static int? GetMinute(TimeSpan? time)
+        {
+            if (!time.HasValue)
+            {
+                return null;
+            }
+
+            return time.Value.Minutes;
+        }
+
+        public static int? GetSecond(TimeSpan? time)
+        {
+            if (!time.HasValue)
+            {
+                return null;
+            }
+
+            return time.Value.Seconds;
+        }
+
+        public static int? GetMillisecond(TimeSpan? time)
+        {
+            if (!time.HasValue)
+            {
+                return null;
+            }
+
+            return time.Value.Milliseconds;
+        }
+
+        public static TimeSpan? AddHours(TimeSpan? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Add(TimeSpan.FromHours(value.Value));
+        }
+
+        public static TimeSpan? AddMinutes(TimeSpan? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Add(TimeSpan.FromMinutes(value.Value));
+        }
+
+        public static TimeSpan? AddSeconds(TimeSpan? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Add(TimeSpan.FromSeconds(value.Value));
+        }
+
+        public static TimeSpan? AddMilliseconds(TimeSpan? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Add(TimeSpan.FromMilliseconds(value.Value));
+        }
+
+        public static TimeSpan? AddMicroseconds(TimeSpan? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Add(TimeSpan.FromTicks(value.Value * 10));
+        }
+
+        public static TimeSpan? AddNanoseconds(TimeSpan? date, int? value)
+        {
+            if (!date.HasValue || !value.HasValue)
+            {
+                return null;
+            }
+
+            return date.Value.Add(TimeSpan.FromTicks(value.Value / 100));
+        }
+
+        public static int? DiffHours(TimeSpan? val1, TimeSpan? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalHours);
+        }
+
+        public static int? DiffMinutes(TimeSpan? val1, TimeSpan? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalMinutes);
+        }
+
+        public static int? DiffSeconds(TimeSpan? val1, TimeSpan? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalSeconds);
+        }
+
+        public static int? DiffMilliseconds(TimeSpan? val1, TimeSpan? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).TotalMilliseconds);
+        }
+
+        public static int? DiffMicroseconds(TimeSpan? val1, TimeSpan? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).Ticks / 10);
+        }
+
+        public static int? DiffNanoseconds(TimeSpan? val1, TimeSpan? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return null;
+            }
+
+            return (int)((val2.Value - val1.Value).Ticks * 100);
         }
 
         #endregion

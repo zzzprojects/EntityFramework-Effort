@@ -55,5 +55,25 @@ namespace Effort.Internal.Common
 
             return methodCall.Method;
         }
+
+
+        public static MemberInfo GetMemberInfo<TResult>(Expression<Func<TResult>> expr)
+        {
+            MemberExpression member = expr.Body as MemberExpression;
+
+            return member.Member;
+        }
+
+        public static MemberInfo GetMemberInfo(Expression<Func<object>> expr)
+        {
+            MemberExpression member = expr.Body as MemberExpression;
+
+            if (expr.Body is UnaryExpression)
+            {
+                member = (expr.Body as UnaryExpression).Operand as MemberExpression;
+            }
+
+            return member.Member;
+        }
     }
 }

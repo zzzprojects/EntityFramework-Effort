@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DateTimeFieldEntity.cs" company="Effort Team">
+// <copyright file="DateTimeOffsetFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,12 +26,10 @@ namespace Effort.Test.Data.Features
 {
     using System;
 
-    public class DateTimeFieldEntity
+    public class TimeFieldEntity
     {
         public int Id { get; set; }
 
-        public DateTime DateTime { get; set; }
-
-        public DateTime? DateTimeN { get; set; }
+        public TimeSpan Time { get; set; }
     }
 }

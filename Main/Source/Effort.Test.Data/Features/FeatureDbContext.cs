@@ -52,6 +52,8 @@ namespace Effort.Test.Data.Features
 
         public IDbSet<DateTimeFieldEntity> DateTimeFieldEntities { get; set; }
 
+        public IDbSet<TimeFieldEntity> TimeFieldEntities { get; set; }
+
         public IDbSet<EnumFieldEntity> EnumFieldEntities { get; set; }
 
         public IDbSet<TimestampFieldEntity> TimestampFieldEntities { get; set; }

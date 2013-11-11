@@ -74,6 +74,8 @@ namespace Effort.Internal.DbManagement.Schema
                 memberSelectors[i] = Expression.MakeMemberAccess(param, selectorFields[i]);
             }
 
+
+
             if (memberSelectors.Length == 1)
             {
                 body = memberSelectors[0];
@@ -81,12 +83,46 @@ namespace Effort.Internal.DbManagement.Schema
             else
             {
                 Type[] memberTypes = memberSelectors.Select(e => e.Type).ToArray();
-                Type resultType = TypeHelper.GetTupleType(memberTypes);
 
+                if (TypeHelper.LargeTupleSize <= memberTypes.Length)
+                {
+                    throw new NotSupportedException("Primary key is too large");
+                }
+
+                Type resultType = CreateTupleType(memberTypes, 0);
+
+                // TODO: Use TupleKeyInfoHelper instead
                 body = Expression.New(resultType.GetConstructors()[0], memberSelectors);
             }
 
             return Expression.Lambda(body, param);
+        }
+
+        private static Type CreateTupleType(Type[] memberTypes, int index)
+        {
+            int memberCount = Math.Min(memberTypes.Length - index, TypeHelper.LargeTupleSize);
+
+            Type[] args = new Type[memberCount];
+            bool isLarge = false;
+
+            if (TypeHelper.LargeTupleSize <= memberCount)
+            {
+                isLarge = true;
+                memberCount--;
+            }
+
+            for (int i = 0; i < memberCount; i++)
+            {
+                args[i] = memberTypes[index + i];
+            }
+
+            if (isLarge)
+            {
+                // Last type is a tuple
+                args[memberCount] = CreateTupleType(memberTypes, index + memberCount);
+            }
+
+            return TypeHelper.GetTupleType(args);
         }
     }
 }

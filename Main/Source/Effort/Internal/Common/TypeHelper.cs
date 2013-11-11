@@ -33,6 +33,8 @@ namespace Effort.Internal.Common
 
     internal static class TypeHelper
     {
+        public static readonly int LargeTupleSize = 8;
+
         public static Type GetEnumerableInterfaceTypeDefinition(Type type)
         {
             if (type.IsInterface)

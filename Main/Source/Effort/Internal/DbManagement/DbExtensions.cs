@@ -25,6 +25,7 @@
 namespace Effort.Internal.DbManagement
 {
     using System.Linq;
+    using Effort.Exceptions;
     using Effort.Internal.Common;
     using NMemory;
     using NMemory.Tables;
@@ -35,11 +36,19 @@ namespace Effort.Internal.DbManagement
         {
             string cliName = TypeHelper.NormalizeForCliTypeName(name);
 
-            return database
+            ITable table = database
                 .Tables
                 .GetAllTables()
                 .Where(t => t.EntityType.Name.Equals(cliName))
-                .First();
+                .FirstOrDefault();
+
+            if (table == null)
+            {
+                throw new EffortException(
+                    string.Format(ExceptionMessages.TableNotFound, name));
+            }
+
+            return table;
         }
 
         public static bool ContainsTable(this Database database, string name)

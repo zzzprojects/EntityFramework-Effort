@@ -198,7 +198,7 @@ namespace Effort.Internal.Common
                     generic = typeof(Tuple<,,,,,,,>);
                     break;
                 default:
-                    throw new ArgumentException("memberTypes");
+                    throw new ArgumentException("Too many members", "memberTypes");
             }
 
             return generic.MakeGenericType(memberTypes);

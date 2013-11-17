@@ -27,11 +27,6 @@ namespace Effort.Internal.DbManagement
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
     using System.Diagnostics;
     using System.Linq;
     using Effort.DataLoaders;
@@ -47,6 +42,11 @@ namespace Effort.Internal.DbManagement
     using NMemory.Modularity;
     using NMemory.StoredProcedures;
     using NMemory.Tables;
+#if !EFOLD
+    using System.Data.Entity.Core.Metadata.Edm;
+#else
+    using System.Data.Metadata.Edm;
+#endif
 
     internal class DbContainer : ITableProvider
     {

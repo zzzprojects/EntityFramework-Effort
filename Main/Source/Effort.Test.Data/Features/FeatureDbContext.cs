@@ -67,5 +67,7 @@ namespace Effort.Test.Data.Features
         public IDbSet<DecimalIdentityFieldEntity> DecimalIdentityFieldEntities { get; set; }
 
         public IDbSet<MathEntity> MathEntities { get; set; }
+
+        public IDbSet<LargePrimaryKeyEntity> LargePrimaryKeyEntities { get; set; }
     }
 }

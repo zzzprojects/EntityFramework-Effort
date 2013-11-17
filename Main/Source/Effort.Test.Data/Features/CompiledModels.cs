@@ -137,7 +137,7 @@ namespace Effort.Test.Data.Features
         {
             DbModelBuilder modelBuilder = new DbModelBuilder();
 
-            RegisterEntityTypes(modelBuilder, null);
+            ////RegisterEntityTypes(modelBuilder, null);
 
             modelBuilder
                 .Entity<StringFieldEntity>()
@@ -151,7 +151,7 @@ namespace Effort.Test.Data.Features
         {
             DbModelBuilder modelBuilder = new DbModelBuilder();
 
-            RegisterEntityTypes(modelBuilder, null);
+            ////RegisterEntityTypes(modelBuilder, null);
 
             modelBuilder
                 .Entity<StringFieldEntity>()

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedServiceProvider.cs" company="Effort Team">
+// <copyright file="KeyFixture.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,20 +20,28 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+namespace Effort.Test.Features
 {
-    using Effort.Internal.DbManagement.Engine.Services;
-    using NMemory.Services;
-
-    internal class ExtendedServiceProvider : DefaultServiceProvider
+    using Effort.Test.Data.Features;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    
+    [TestClass]
+    public class KeyFixture
     {
-        public ExtendedServiceProvider()
+        [TestMethod]
+        public void LargePrimaryKeyCreation()
         {
-            this.Replace<ITableFactoryService>(new ExtendedTableFactoryService());
+            var connection = 
+                DbConnectionFactory.CreateTransient();
 
-            this.Combine<IKeyInfoFactoryService>(new DataRowKeyInfoFactoryService());
+            var context =
+                new FeatureDbContext(
+                    connection,
+                    CompiledModels.GetModel<LargePrimaryKeyEntity>());
+
+            context.Database.CreateIfNotExists();
         }
     }
 }

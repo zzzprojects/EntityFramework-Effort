@@ -49,12 +49,12 @@ namespace Effort.Internal.DbManagement.Schema
             Type resultType = selector.Body.Type;
 
             MethodInfo factory = ReflectionHelper
-                .GetMethodInfo<DefaultKeyInfoFactory>(f => f.Create<object, object>(null))
+                .GetMethodInfo<IKeyInfoFactory>(f => f.Create<object, object>(null))
                 .GetGenericMethodDefinition()
                 .MakeGenericMethod(entityType, resultType);
 
             IKeyInfo result = factory.Invoke(
-                    new DefaultKeyInfoFactory(),
+                    ExtendedKeyInfoFactory.Instance,
                     new object[] { selector }) as IKeyInfo;
 
             return result;
@@ -74,33 +74,60 @@ namespace Effort.Internal.DbManagement.Schema
                 memberSelectors[i] = Expression.MakeMemberAccess(param, selectorFields[i]);
             }
 
-
-
             if (memberSelectors.Length == 1)
             {
+                // Primitive key info
                 body = memberSelectors[0];
+            }
+            else if (memberSelectors.Length < TypeHelper.LargeTupleSize)
+            {
+                body = CreateTupleSelector(body, memberSelectors);
             }
             else
             {
-                Type[] memberTypes = memberSelectors.Select(e => e.Type).ToArray();
-
-                if (TypeHelper.LargeTupleSize <= memberTypes.Length)
-                {
-                    throw new NotSupportedException("Primary key is too large");
-                }
-
-                Type resultType = CreateTupleType(memberTypes, 0);
-
-                // TODO: Use TupleKeyInfoHelper instead
-                body = Expression.New(resultType.GetConstructors()[0], memberSelectors);
+                body = CreateDataRowSelector(body, memberSelectors);
             }
 
             return Expression.Lambda(body, param);
         }
 
-        private static Type CreateTupleType(Type[] memberTypes, int index)
+        private static Expression CreateTupleSelector(
+            Expression body, 
+            Expression[] memberSelectors)
         {
-            int memberCount = Math.Min(memberTypes.Length - index, TypeHelper.LargeTupleSize);
+            Type[] memberTypes = memberSelectors.Select(e => e.Type).ToArray();
+
+            Type tupleType = CreateTupleType(memberTypes, 0);
+
+            var helper = new TupleKeyInfoHelper(tupleType);
+            body = helper.CreateKeyFactoryExpression(memberSelectors);
+            return body;
+        }
+
+        private static Expression CreateDataRowSelector(
+            Expression body, 
+            Expression[] memberSelectors)
+        {
+            Dictionary<string, Type> members = new Dictionary<string, Type>();
+
+            int index = 0;
+            foreach (var selector in memberSelectors)
+            {
+                members.Add(string.Format("Item{0:D2}", index), selector.Type);
+                index++;
+            }
+
+            Type rowType = DataRowFactory.Create(members);
+
+            var helper = new DataRowKeyInfoHelper(rowType);
+            body = helper.CreateKeyFactoryExpression(memberSelectors);
+
+            return body;
+        }
+
+        private static Type CreateTupleType(Type[] memberTypes, int offset)
+        {
+            int memberCount = Math.Min(memberTypes.Length - offset, TypeHelper.LargeTupleSize);
 
             Type[] args = new Type[memberCount];
             bool isLarge = false;
@@ -113,13 +140,13 @@ namespace Effort.Internal.DbManagement.Schema
 
             for (int i = 0; i < memberCount; i++)
             {
-                args[i] = memberTypes[index + i];
+                args[i] = memberTypes[offset + i];
             }
 
             if (isLarge)
             {
                 // Last type is a tuple
-                args[memberCount] = CreateTupleType(memberTypes, index + memberCount);
+                args[memberCount] = CreateTupleType(memberTypes, offset + memberCount);
             }
 
             return TypeHelper.GetTupleType(args);

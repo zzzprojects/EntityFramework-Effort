@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedServiceProvider.cs" company="Effort Team">
+// <copyright file="ExtendedKeyInfoFactory.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,20 +20,25 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //     THE SOFTWARE.
 // </copyright>
-// ------------------------------------------------------------------------------------------
-
-namespace Effort.Internal.DbManagement.Engine
+// --------------------------------------------------------------------------------------------
+namespace Effort.Internal.DbManagement.Engine.Services
 {
-    using Effort.Internal.DbManagement.Engine.Services;
+    using NMemory.Indexes;
     using NMemory.Services;
 
-    internal class ExtendedServiceProvider : DefaultServiceProvider
+    internal class ExtendedKeyInfoFactory : ModularKeyInfoFactory
     {
-        public ExtendedServiceProvider()
-        {
-            this.Replace<ITableFactoryService>(new ExtendedTableFactoryService());
+        public static IKeyInfoFactory Instance = new ExtendedKeyInfoFactory();
 
-            this.Combine<IKeyInfoFactoryService>(new DataRowKeyInfoFactoryService());
+        private ExtendedKeyInfoFactory() : base(CreateFactoryService())
+        {
+        }
+
+        public static IKeyInfoFactoryService CreateFactoryService()
+        {
+            var provider = new ExtendedServiceProvider();
+
+            return provider.GetService<IKeyInfoFactoryService>();
         }
     }
 }

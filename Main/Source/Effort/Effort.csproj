@@ -39,8 +39,9 @@
   </Choose>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NMemory">
+    <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6a46696d54971e6d, processorArchitecture=MSIL">
       <HintPath>..\packages\$(PackageNMemoryDir)\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -168,6 +169,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.UnionAll.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TransformVisitor.VariableReference.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\TraversalVisitor.cs" />
+    <Compile Include="Internal\DbManagement\Engine\Services\ExtendedKeyInfoFactory.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedServiceProvider.cs" />
     <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoHelper.cs" />
     <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfo.cs" />

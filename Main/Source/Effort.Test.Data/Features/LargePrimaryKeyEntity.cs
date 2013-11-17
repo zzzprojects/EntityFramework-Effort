@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedServiceProvider.cs" company="Effort Team">
+// <copyright file="LargePrimaryKeyEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,18 +22,51 @@
 // </copyright>
 // ------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Engine
+namespace Effort.Test.Data.Features
 {
-    using Effort.Internal.DbManagement.Engine.Services;
-    using NMemory.Services;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    internal class ExtendedServiceProvider : DefaultServiceProvider
+    public class LargePrimaryKeyEntity
     {
-        public ExtendedServiceProvider()
-        {
-            this.Replace<ITableFactoryService>(new ExtendedTableFactoryService());
+        [Key]
+        [Column(Order = 0)]
+        public int Id0 { get; set; }
 
-            this.Combine<IKeyInfoFactoryService>(new DataRowKeyInfoFactoryService());
-        }
+        [Key]
+        [Column(Order = 1)]
+        public int Id1 { get; set; }
+
+        [Key]
+        [Column(Order = 2)]
+        public int Id2 { get; set; }
+
+        [Key]
+        [Column(Order = 3)]
+        public int Id3 { get; set; }
+
+        [Key]
+        [Column(Order = 4)]
+        public int Id4 { get; set; }
+
+        [Key]
+        [Column(Order = 5)]
+        public int Id5 { get; set; }
+
+        [Key]
+        [Column(Order = 6)]
+        public int Id6 { get; set; }
+
+        [Key]
+        [Column(Order = 7)]
+        public int Id7 { get; set; }
+
+        [Key]
+        [Column(Order = 8)]
+        public int Id8 { get; set; }
+
+        [Key]
+        [Column(Order = 9)]
+        public int Id9 { get; set; }
     }
 }

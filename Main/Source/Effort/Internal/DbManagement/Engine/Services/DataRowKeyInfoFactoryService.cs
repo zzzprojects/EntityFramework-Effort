@@ -49,14 +49,14 @@ namespace Effort.Internal.DbManagement.Engine.Services
 
             IKeyInfoHelper helper = DataRowKeyInfo<TEntity, TKey>.KeyInfoHelper;
 
-            MemberInfo[] entityKeyMembers;
-            if (!helper.TryParseKeySelectorExpression(keySelector, true, out entityKeyMembers))
+            MemberInfo[] keyMembers;
+            if (!helper.TryParseKeySelectorExpression(keySelector.Body, true, out keyMembers))
             {
                 result = null;
                 return false;
             }
 
-            result = new DataRowKeyInfo<TEntity, TKey>(entityKeyMembers);
+            result = new DataRowKeyInfo<TEntity, TKey>(keyMembers);
             return true;
         }
     }

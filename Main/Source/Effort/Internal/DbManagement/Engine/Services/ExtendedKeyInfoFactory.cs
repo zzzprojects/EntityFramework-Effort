@@ -25,6 +25,7 @@ namespace Effort.Internal.DbManagement.Engine.Services
 {
     using NMemory.Indexes;
     using NMemory.Services;
+    using NMemory.Services.Contracts;
 
     internal class ExtendedKeyInfoFactory : ModularKeyInfoFactory
     {
@@ -34,11 +35,11 @@ namespace Effort.Internal.DbManagement.Engine.Services
         {
         }
 
-        public static IKeyInfoFactoryService CreateFactoryService()
+        public static IKeyInfoService CreateFactoryService()
         {
             var provider = new ExtendedServiceProvider();
 
-            return provider.GetService<IKeyInfoFactoryService>();
+            return provider.GetService<IKeyInfoService>();
         }
     }
 }

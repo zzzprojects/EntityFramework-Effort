@@ -26,14 +26,15 @@ namespace Effort.Internal.DbManagement.Engine
 {
     using Effort.Internal.DbManagement.Engine.Services;
     using NMemory.Services;
+    using NMemory.Services.Contracts;
 
     internal class ExtendedServiceProvider : DefaultServiceProvider
     {
         public ExtendedServiceProvider()
         {
-            this.Replace<ITableFactoryService>(new ExtendedTableFactoryService());
+            this.Replace<ITableService>(new ExtendedTableService());
 
-            this.Combine<IKeyInfoFactoryService>(new DataRowKeyInfoFactoryService());
+            this.Combine<IKeyInfoService>(new DataRowKeyInfoService());
         }
     }
 }

@@ -42,6 +42,7 @@
     <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6a46696d54971e6d, processorArchitecture=MSIL">
       <HintPath>..\packages\$(PackageNMemoryDir)\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -173,12 +174,12 @@
     <Compile Include="Internal\DbManagement\Engine\ExtendedServiceProvider.cs" />
     <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoHelper.cs" />
     <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfo.cs" />
-    <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoFactoryService.cs" />
+    <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoService.cs" />
     <Compile Include="Internal\DbManagement\Schema\BareSchemaBase.cs" />
     <Compile Include="Internal\DbManagement\DbContainerManagerWrapper.cs" />
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />
     <Compile Include="Internal\DbManagement\DbExtensions.cs" />
-    <Compile Include="Internal\DbManagement\Engine\Services\ExtendedTableFactoryService.cs" />
+    <Compile Include="Internal\DbManagement\Engine\Services\ExtendedTableService.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedTable`2.cs" />
     <Compile Include="Internal\DbManagement\Engine\ExtendedQueryCompiler.cs" />
     <Compile Include="Internal\DbManagement\Engine\IExtendedTable.cs" />

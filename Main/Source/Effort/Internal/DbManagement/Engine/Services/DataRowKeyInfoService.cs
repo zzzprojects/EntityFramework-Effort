@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="DataRowKeyInfoFactoryService.cs" company="Effort Team">
+// <copyright file="DataRowKeyInfoService.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,9 +29,9 @@ namespace Effort.Internal.DbManagement.Engine.Services
     using System.Reflection;
     using Effort.Internal.TypeGeneration;
     using NMemory.Indexes;
-    using NMemory.Services;
+    using NMemory.Services.Contracts;
 
-    internal class DataRowKeyInfoFactoryService : IKeyInfoFactoryService
+    internal class DataRowKeyInfoService : IKeyInfoService
     {
         public bool TryCreateKeyInfo<TEntity, TKey>(
             Expression<Func<TEntity, TKey>> keySelector, 
@@ -57,6 +57,19 @@ namespace Effort.Internal.DbManagement.Engine.Services
             }
 
             result = new DataRowKeyInfo<TEntity, TKey>(keyMembers);
+            return true;
+        }
+
+
+        public bool TryCreateKeyInfoHelper(Type keyType, out IKeyInfoHelper result)
+        {
+            if (!typeof(DataRow).IsAssignableFrom(keyType))
+            {
+                result = null;
+                return false;
+            }
+
+            result = new DataRowKeyInfoHelper(keyType);
             return true;
         }
     }

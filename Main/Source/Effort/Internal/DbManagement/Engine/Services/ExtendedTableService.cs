@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="ExtendedTableFactoryService.cs" company="Effort Team">
+// <copyright file="ExtendedTableService.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,10 +26,10 @@ namespace Effort.Internal.DbManagement.Engine
 {
     using NMemory.Indexes;
     using NMemory.Modularity;
-    using NMemory.Services;
+    using NMemory.Services.Contracts;
     using NMemory.Tables;
 
-    internal class ExtendedTableFactoryService : ITableFactoryService
+    internal class ExtendedTableService : ITableService
     {
         public Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
             IKeyInfo<TEntity, TPrimaryKey> primaryKey, 

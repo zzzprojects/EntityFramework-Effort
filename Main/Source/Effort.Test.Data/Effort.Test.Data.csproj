@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\EmptyEntity.cs" />
     <Compile Include="Features\LargePrimaryKeyEntity.cs" />
+    <Compile Include="Features\RelationEntity.cs" />
     <Compile Include="Features\TimeFieldEntity.cs" />
     <Compile Include="Features\LargeTimestampFieldEntity.cs" />
     <Compile Include="Features\DecimalIdentityFieldEntity.cs" />

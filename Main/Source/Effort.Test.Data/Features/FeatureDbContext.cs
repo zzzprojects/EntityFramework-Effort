@@ -69,5 +69,9 @@ namespace Effort.Test.Data.Features
         public IDbSet<MathEntity> MathEntities { get; set; }
 
         public IDbSet<LargePrimaryKeyEntity> LargePrimaryKeyEntities { get; set; }
+
+        public IDbSet<RelationEntity> RelationEntities { get; set; }
+
+        public IDbSet<EmptyEntity> EmptyEntities { get; set; }
     }
 }

@@ -88,6 +88,7 @@
     <Compile Include="Features\DecimalIdentityFieldFixture.cs" />
     <Compile Include="Features\EnumFieldFixture.cs" />
     <Compile Include="Features\KeyFixture.cs" />
+    <Compile Include="Features\RelationFixture.cs" />
     <Compile Include="Features\RequiredFieldFixture.cs" />
     <Compile Include="Features\StringFieldFixture.cs" />
     <Compile Include="Features\DateFieldFixture.cs" />

@@ -105,5 +105,23 @@ namespace Effort.Test.Features
             data[0].ShouldNotBeNull();
             data[0].Timestamp.All(x => x != 0).ShouldBeFalse();
         }
+
+        [TestMethod]
+        public void TimestampQuery()
+        {
+            TimestampFieldEntity timestamp = new TimestampFieldEntity();
+            timestamp.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp);
+            context.SaveChanges();
+
+            byte[] version = timestamp.Timestamp;
+            var data = context
+                .TimestampFieldEntities
+                .Where(x => x.Timestamp == version)
+                .ToList();
+
+            data.ShouldHaveCountOf(1);
+        }
     }
 }

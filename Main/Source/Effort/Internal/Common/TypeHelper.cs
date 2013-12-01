@@ -33,8 +33,6 @@ namespace Effort.Internal.Common
 
     internal static class TypeHelper
     {
-        public static readonly int LargeTupleSize = 8;
-
         public static Type GetEnumerableInterfaceTypeDefinition(Type type)
         {
             if (type.IsInterface)
@@ -140,68 +138,6 @@ namespace Effort.Internal.Common
                 default:
                     throw new ArgumentException("MemberInfo must be if type FieldInfo, PropertyInfo or EventInfo", "member");
             }
-        }
-
-        public static bool IsAnonymousType(Type type)
-        {
-            return CheckIfAnonymousType(type)
-                ||
-                (!typeof(IComparable).IsAssignableFrom(type) &&
-                type.GetCustomAttributes(typeof(DebuggerDisplayAttribute), false)
-                    .Cast<DebuggerDisplayAttribute>()
-                    .Any(m => m.Type == "<Anonymous Type>"));
-        }
-
-        private static bool CheckIfAnonymousType(Type type)
-        {
-            if (type == null)
-            {
-                return false;
-            }
-
-            // HACK: The only way to detect anonymous types right now.
-            return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
-                && type.IsGenericType 
-                && type.Name.Contains("AnonymousType")
-                && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
-                && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
-        }
-
-        public static Type GetTupleType(params Type[] memberTypes)
-        {
-            Type generic = null;
-
-            switch (memberTypes.Length)
-            {
-                case 1:
-                    generic = typeof(Tuple<>);
-                    break;
-                case 2:
-                    generic = typeof(Tuple<,>);
-                    break;
-                case 3:
-                    generic = typeof(Tuple<,,>);
-                    break;
-                case 4:
-                    generic = typeof(Tuple<,,,>);
-                    break;
-                case 5:
-                    generic = typeof(Tuple<,,,,>);
-                    break;
-                case 6:
-                    generic = typeof(Tuple<,,,,,>);
-                    break;
-                case 7:
-                    generic = typeof(Tuple<,,,,,,>);
-                    break;
-                case 8:
-                    generic = typeof(Tuple<,,,,,,,>);
-                    break;
-                default:
-                    throw new ArgumentException("Too many members", "memberTypes");
-            }
-
-            return generic.MakeGenericType(memberTypes);
         }
     }
 }

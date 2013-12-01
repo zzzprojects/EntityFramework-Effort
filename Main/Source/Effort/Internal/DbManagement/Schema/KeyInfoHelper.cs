@@ -79,7 +79,7 @@ namespace Effort.Internal.DbManagement.Schema
                 // Primitive key info
                 body = memberSelectors[0];
             }
-            else if (memberSelectors.Length < TypeHelper.LargeTupleSize)
+            else if (memberSelectors.Length < TupleTypeHelper.LargeTupleSize)
             {
                 body = CreateTupleSelector(body, memberSelectors);
             }
@@ -97,7 +97,7 @@ namespace Effort.Internal.DbManagement.Schema
         {
             Type[] memberTypes = memberSelectors.Select(e => e.Type).ToArray();
 
-            Type tupleType = CreateTupleType(memberTypes, 0);
+            Type tupleType = TupleTypeHelper.CreateTupleType(memberTypes);
 
             var helper = new TupleKeyInfoHelper(tupleType);
             body = helper.CreateKeyFactoryExpression(memberSelectors);
@@ -123,33 +123,6 @@ namespace Effort.Internal.DbManagement.Schema
             body = helper.CreateKeyFactoryExpression(memberSelectors);
 
             return body;
-        }
-
-        private static Type CreateTupleType(Type[] memberTypes, int offset)
-        {
-            int memberCount = Math.Min(memberTypes.Length - offset, TypeHelper.LargeTupleSize);
-
-            Type[] args = new Type[memberCount];
-            bool isLarge = false;
-
-            if (TypeHelper.LargeTupleSize <= memberCount)
-            {
-                isLarge = true;
-                memberCount--;
-            }
-
-            for (int i = 0; i < memberCount; i++)
-            {
-                args[i] = memberTypes[offset + i];
-            }
-
-            if (isLarge)
-            {
-                // Last type is a tuple
-                args[memberCount] = CreateTupleType(memberTypes, offset + memberCount);
-            }
-
-            return TypeHelper.GetTupleType(args);
         }
     }
 }

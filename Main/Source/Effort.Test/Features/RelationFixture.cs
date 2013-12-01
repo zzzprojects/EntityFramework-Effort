@@ -109,6 +109,8 @@ namespace Effort.Test.Features
 
             var res = this.RelationEntities
                 .Include(x => x.CascadedRelation.RequiredRelation)
+                .AsEnumerable()
+                .Where(x => x.CascadedRelation != null)
                 .FirstOrDefault();
 
             res.ShouldNotBeNull();

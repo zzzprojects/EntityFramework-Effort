@@ -3,6 +3,6 @@
   <PropertyGroup>
     <PackageEF5Dir>EntityFramework.5.0.0</PackageEF5Dir>
     <PackageEF6Dir>EntityFramework.6.0.1</PackageEF6Dir>
-    <PackageNMemoryDir>NMemory.1.0.0-beta9-131117</PackageNMemoryDir>
+    <PackageNMemoryDir>NMemory.1.0.0-beta9-131202</PackageNMemoryDir>
   </PropertyGroup>
 </Project>

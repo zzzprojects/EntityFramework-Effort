@@ -22,4 +22,5 @@ if not exist %msbuild% (
     exit /b -2
 )
 
+set EnableNugetPackageRestore=true
 %msbuild% Build.targets /v:minimal /maxcpucount /nodeReuse:false %*

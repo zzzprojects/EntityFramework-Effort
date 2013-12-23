@@ -36,7 +36,8 @@ namespace Effort.Internal.DbManagement.Schema
             IKeyInfo primaryKeyInfo,
             IKeyInfo foreignKeyInfo, 
             Delegate primaryToForeignConverter,
-            Delegate foreignToPrimaryConverter)
+            Delegate foreignToPrimaryConverter,
+            bool cascadedDelete)
         {
             this.PrimaryTable = primaryTable;
             this.ForeignTable = foreignTable;
@@ -44,6 +45,7 @@ namespace Effort.Internal.DbManagement.Schema
             this.ForeignKeyInfo = foreignKeyInfo;
             this.PrimaryToForeignConverter = primaryToForeignConverter;
             this.ForeignToPrimaryConverter = foreignToPrimaryConverter;
+            this.CascadedDelete = cascadedDelete;
         }
 
         public string PrimaryTable { get; private set; }
@@ -61,5 +63,7 @@ namespace Effort.Internal.DbManagement.Schema
 
         // Func<TForeignKey, TPrimaryKey>
         public Delegate ForeignToPrimaryConverter { get; private set; }
+
+        public bool CascadedDelete { get; private set; }
     }
 }

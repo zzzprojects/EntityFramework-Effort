@@ -217,6 +217,8 @@ namespace Effort.Internal.Common
             IIndex primaryIndex = FindIndex(primaryTable, relation.PrimaryKeyInfo, true);
             IIndex foreignIndex = FindIndex(foreignTable, relation.ForeignKeyInfo, false);
 
+            // TODO: use relation.CascadedDelete
+
             typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("CreateRelation")
                 .MakeGenericMethod(

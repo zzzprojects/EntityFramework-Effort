@@ -115,7 +115,8 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
                     primaryToForeignConverter:  primaryToForeignConverter,
                     foreignTable:               foreignTableName,
                     foreignKeyInfo:             foreignKeyInfo,
-                    foreignToPrimaryConverter:  foreignToPrimaryConverter)); 
+                    foreignToPrimaryConverter:  foreignToPrimaryConverter,
+                    cascadedDelete:             associationInfo.CascadedDelete)); 
         }
 
         public static IKeyInfo EnsureKey(

@@ -87,6 +87,17 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
             }
         }
 
+        public bool CascadedDelete
+        {
+            get
+            {
+                return this.association
+                    .AssociationSetEnds[this.constraint.FromRole.Name]
+                    .CorrespondingAssociationEndMember
+                    .DeleteBehavior == OperationAction.Cascade;
+            }
+        }
+
         private EntitySet GetTable(RelationshipEndMember relationEndpoint)
         {
             RefType refType = relationEndpoint.TypeUsage.EdmType as RefType;

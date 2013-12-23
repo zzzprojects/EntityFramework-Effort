@@ -24,7 +24,9 @@
 
 namespace Effort.Test.Features
 {
+    using System;
     using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
     using System.Linq;
     using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,15 +35,23 @@ namespace Effort.Test.Features
     [TestClass]
     public class RelationFixture
     {
+        private DbCompiledModel model;
         private FeatureDbContext context;
+
 
         [TestInitialize]
         public void Initialize()
         {
             var connection = Effort.DbConnectionFactory.CreateTransient();
-            var model = CompiledModels.GetModel<RelationEntity, EmptyEntity>();
 
-            this.context = new FeatureDbContext(connection, model);
+            this.model = CompiledModels.GetModel<RelationEntity, EmptyEntity>();
+            this.context = new FeatureDbContext(connection, this.model);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.context.Dispose();
         }
 
         public IDbSet<RelationEntity> RelationEntities
@@ -116,6 +126,30 @@ namespace Effort.Test.Features
             res.ShouldNotBeNull();
             res.CascadedRelation.ShouldNotBeNull();
             res.CascadedRelation.RequiredRelation.ShouldNotBeNull();
+        }
+
+        // TODO: Fails
+        //[TestMethod]
+        public void CascadedDelete()
+        {
+            this.RelationEntities.Add(
+                new RelationEntity
+                {
+                    RequiredRelation = new EmptyEntity()
+                });
+
+            this.context.SaveChanges();
+
+            // If the entity was removed in the current context, EF would remove the 
+            // referrenced entity automatically
+            // If a new context is created, the database would perform the cascaded delete
+            var newContext = 
+                new FeatureDbContext(this.context.Database.Connection, this.model);
+            
+            var empty = newContext.EmptyEntities.Single();
+
+            newContext.EmptyEntities.Remove(empty);
+            newContext.SaveChanges();
         }
     }
 }

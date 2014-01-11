@@ -143,7 +143,14 @@ namespace Effort.Provider
 #if !EFOLD
         private static void RegisterDbConfigurationEventHandler()
         {
-            DbConfiguration.Loaded += OnDbConfigurationLoaded;
+            try
+            {
+                DbConfiguration.Loaded += OnDbConfigurationLoaded;
+            }
+            catch (Exception ex)
+            {
+                throw new EffortException(ExceptionMessages.AutomaticRegistrationFailed, ex);
+            }
         }
 
         private static void OnDbConfigurationLoaded(

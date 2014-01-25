@@ -25,6 +25,7 @@
 namespace Effort.Test.DataLoaders
 {
     using System;
+    using System.Linq;
     using Effort.DataLoaders;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SoftwareApproach.TestingExtensions;
@@ -138,6 +139,26 @@ namespace Effort.Test.DataLoaders
             value.ShouldNotBeNull();
             value.ShouldBeOfType(typeof(Guid));
             value.ShouldEqual(new Guid());
+        }
+
+        [TestMethod]
+        public void CsvDataLoader_EmbeddedResource()
+        {
+            var loader = new CsvDataLoader("res://Effort.Test/Internal/Resources/");
+            var factory = loader.CreateTableDataLoaderFactory();
+            var tableLoader = factory.CreateTableDataLoader(
+                new TableDescription(
+                    "Foo",
+                    new[]
+                    {
+                        new ColumnDescription("Id", typeof(int)),
+                        new ColumnDescription("Value", typeof(string))
+                    }));
+
+            var data = tableLoader.GetData().Single();
+
+            data[0].ShouldEqual(1);
+            data[1].ShouldEqual("Foo");
         }
     }
 }

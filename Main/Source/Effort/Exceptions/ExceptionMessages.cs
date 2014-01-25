@@ -37,33 +37,47 @@ namespace Effort.Exceptions
             ", " +
             typeof(EffortProviderFactory).Assembly.GetName().Name;
 
+        private static readonly string ProviderServicesType =
+            typeof(EffortProviderServices).FullName +
+            ", " +
+            typeof(EffortProviderServices).Assembly.GetName().Name;
+
+        private static readonly string Break = Environment.NewLine;
+
         private static readonly string AutomaticRegistationFailedResolveCode =
              "a) Call the Effort.Provider.EffortProviderConfiguration.RegisterProvider() " +
             "method at entry point of the application";
 
         private static readonly string AutomaticRegistationFailedResolveConfig =
             "b) Add the following configuration to the App.config file:" +
-            Environment.NewLine +
-            "   <system.data>" + Environment.NewLine +
-            "      <DbProviderFactories>" + Environment.NewLine +
-            "         <add name=\"" + InvariantName + "\"" + Environment.NewLine +
-            "              invariant=\"" + InvariantName + "\"" + Environment.NewLine +
-            "              description=\"" + InvariantName + "\"" + Environment.NewLine +
-            "              type=\"" + FactoryType + "\" />" + Environment.NewLine +
-            "      </DbProviderFactories>" + Environment.NewLine +
-            "   </system.data>";
+                                                                                  Break +
+            "   <system.data>"                                                  + Break +
+            "      <DbProviderFactories>"                                       + Break +
+            "         <add name=\"" + InvariantName + "\""                      + Break +
+            "              invariant=\"" + InvariantName + "\""                 + Break +
+            "              description=\"" + InvariantName + "\""               + Break +
+            "              type=\"" + FactoryType + "\" />"                     + Break +
+            "      </DbProviderFactories>"                                      + Break +
+            "   </system.data>" +
+#if !EFOLD
+            Break + Break + Break +
+            "   <entityFramework>"                                              + Break +
+            "      <providers>"                                                 + Break +
+            "         <provider invariantName=\"" + InvariantName + "\""        + Break +
+            "                   type=\"" + ProviderServicesType + "\" />"       + Break +
+            "      </providers>"                                                + Break +
+            "   </entityFramework>" +
+#endif
+            "";
 
         public static readonly string AutomaticRegistrationFailed =
             "The Effort library failed to register its provider automatically, so manual " +
             "registration is required." +
-            Environment.NewLine +
-            Environment.NewLine +
+            Break + Break +
             AutomaticRegistationFailedResolveCode +
-            Environment.NewLine +
-            Environment.NewLine +
+            Break + Break +
             "or" +
-            Environment.NewLine +
-            Environment.NewLine +
+            Break + Break +
             AutomaticRegistationFailedResolveConfig;
 
         public static readonly string EntityPropertyAssignFailed = 
@@ -78,10 +92,9 @@ namespace Effort.Exceptions
 
         public static readonly string TableNotFound =
             "Table '{0}' was not found. The database was probably not initialized." +
-            Environment.NewLine +
-            Environment.NewLine +
+            Break + Break +
             "If using CodeFirst try to add the following line:" +
-            Environment.NewLine +
+            Break +
             "context.Database.CreateIfNotExists()";
     }
 }

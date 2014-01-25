@@ -97,7 +97,7 @@ namespace Effort.DataLoaders.Internal
         {
             get 
             {
-                return true;
+                return this.valid;
             }
         }
     }

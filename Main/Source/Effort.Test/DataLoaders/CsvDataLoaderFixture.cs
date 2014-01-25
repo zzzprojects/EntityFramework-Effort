@@ -160,5 +160,38 @@ namespace Effort.Test.DataLoaders
             data[0].ShouldEqual(1);
             data[1].ShouldEqual("Foo");
         }
+
+        [TestMethod]
+        public void CsvDataLoader_EmbeddedResource_NotExisting()
+        {
+            var loader = new CsvDataLoader("res://Effort.Test/Internal/Resources/");
+            var factory = loader.CreateTableDataLoaderFactory();
+            var tableLoader = factory.CreateTableDataLoader(
+                new TableDescription(
+                    "DoesNotExist",
+                    new[]
+                    {
+                        new ColumnDescription("Id", typeof(int)),
+                    }));
+
+            var data = tableLoader.GetData().ToList();
+
+            data.ShouldHaveCountOf(0);
+        }
+
+        [TestMethod]
+        public void CsvDataLoader_EmbeddedResource_NotExistingDirectory()
+        {
+            var loader = new CsvDataLoader("res://Effort.Test/Internal/NonExisting");
+            Exception expected = null;
+
+            try
+            {
+                loader.CreateTableDataLoaderFactory();
+            }
+            catch (Exception ex) { expected = ex; }
+
+            expected.ShouldBeOfType(typeof(ArgumentException));
+        }
     }
 }

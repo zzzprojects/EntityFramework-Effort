@@ -37,21 +37,20 @@ namespace Effort.DataLoaders
     /// </summary>
     public class CsvTableDataLoader : TableDataLoaderBase
     {
-        private FileInfo file;
-
-        private IValueConverter valueConverter;
+        private readonly IFileReference file;
+        private readonly IValueConverter valueConverter;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CsvTableDataLoader" /> class.
         /// </summary>
-        /// <param name="path"> The path of the CSV file. </param>
+        /// <param name="file"> The file reference to the CSV file. </param>
         /// <param name="table"> The metadata of the requested table. </param>
-        public CsvTableDataLoader(string path, TableDescription table) : base(table)
+        public CsvTableDataLoader(IFileReference file, TableDescription table) 
+            : base(table)
         {
             // TODO: Constructor injection
             this.valueConverter = new CsvValueConverter();
-
-            this.file = new FileInfo(path);
+            this.file = file;
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace Effort.DataLoaders
         /// </returns>
         protected override IDataReader CreateDataReader()
         {
-            FileStream file = this.file.OpenRead();
+            Stream file = this.file.Open();
 
             TextReader reader = new StreamReader(file);
 

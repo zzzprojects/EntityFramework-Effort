@@ -33,22 +33,22 @@ namespace Effort.DataLoaders
     /// </summary>
     internal class CsvTableDataLoaderFactory : ITableDataLoaderFactory
     {
-        private DirectoryInfo source;
+        private readonly FileSource source;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CsvTableDataLoaderFactory" /> 
         ///     class.
         /// </summary>
-        /// <param name="path"> The path. </param>
+        /// <param name="source"> The source of CSV files. </param>
         /// <exception cref="System.ArgumentException"> The path does not exists. </exception>
-        public CsvTableDataLoaderFactory(string path)
+        public CsvTableDataLoaderFactory(FileSource source)
         {
-            this.source = new DirectoryInfo(path);
+            this.source = source;
 
-            if (!this.source.Exists)
+            if (!this.source.IsValid)
             {
                 throw new ArgumentException(
-                    string.Format("Path \"{0}\" does not exists", path), 
+                    string.Format("Path \"{0}\" does not exists", source.Path), 
                     "path");
             }
         }
@@ -64,10 +64,15 @@ namespace Effort.DataLoaders
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
-            string fileName = string.Format("{0}.csv", table.Name);
-            string csvPath = Path.Combine(this.source.FullName, fileName);
+            string name = string.Format("{0}.csv", table.Name);
+            IFileReference file = this.source.GetFile(name);
 
-            return new CsvTableDataLoader(csvPath, table);
+            if (file == null || !file.Exists)
+            {
+                return new EmptyTableDataLoader();
+            }
+
+            return new CsvTableDataLoader(file, table);
         }
 
         /// <summary>

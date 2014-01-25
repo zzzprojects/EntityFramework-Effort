@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="CsvDataLoader.cs" company="Effort Team">
+// <copyright file="FileSource.cs" company="Effort Team">
 //     Copyright (C) 2011-2013 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,74 +24,85 @@
 
 namespace Effort.DataLoaders
 {
+    using System;
+    using Effort.DataLoaders.Internal;
+
     /// <summary>
-    ///     Represents a data loader that reads data from CSV files.
+    ///     Represents a source of files.
     /// </summary>
-    public class CsvDataLoader : IDataLoader
+    public class FileSource
     {
-        private string path;
+        private readonly string path;
+        private readonly IFileProvider provider;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CsvDataLoader" /> class.
+        ///     Initializes a new instance of the <see cref="FileSource"/> class.
         /// </summary>
-        public CsvDataLoader()
+        /// <param name="path"> The path representing the source. </param>
+        public FileSource(string path)
         {
+            this.provider = GetProvider(path);
+            this.path = path;           
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CsvDataLoader" /> class.
-        /// </summary>
-        /// <param name="path"> The path of the folder that contains the CSV files. </param>
-        public CsvDataLoader(string path)
-        {
-            this.path = path;
-        }
-
-        /// <summary>
-        ///     Gets path of the folder that contains the CSV files.
+        ///     Gets a value indicating whether the source is valid and containing CSV files.
         /// </summary>
         /// <value>
-        ///     The path of the folder.
+        ///   <c>true</c> if valid; otherwise, <c>false</c>.
         /// </value>
-        public string ContainerFolderPath
+        public bool IsValid
         {
-            get
-            {
-                return this.path;
+            get 
+            { 
+                return this.provider.IsValid; 
             }
         }
 
         /// <summary>
-        ///     Gets or sets the argument that contains the path of the folder where the CSV
-        ///     files are located.
+        ///     The path that represents the source.
         /// </summary>
         /// <value>
-        ///     The argument.
+        ///     The path.
         /// </value>
-        string IDataLoader.Argument
+        public string Path
         {
             get 
             { 
                 return this.path; 
             }
-
-            set 
-            { 
-                this.path = value; 
-            }
         }
 
         /// <summary>
-        ///     Creates a <see cref="CsvTableDataLoaderFactory" /> instance.
+        ///     Returns the specified file contained by this soruce.
         /// </summary>
-        /// <returns>
-        ///     A <see cref="CsvTableDataLoaderFactory" /> instance.
-        /// </returns>
-        public ITableDataLoaderFactory CreateTableDataLoaderFactory()
+        /// <param name="name">The name of the file.</param>
+        /// <returns> Reference for the requested file. </returns>
+        public IFileReference GetFile(string name)
         {
-            FileSource source = new FileSource(this.path);
+            return this.provider.GetFile(name);
+        }
 
-            return new CsvTableDataLoaderFactory(source);
+        private IFileProvider GetProvider(string path)
+        {
+            Uri uri = null;
+
+            Uri.TryCreate(path, UriKind.Absolute, out uri);
+
+            if (uri == null)
+            {
+                return new InvalidFileProvider();
+            }
+
+            switch (uri.Scheme)
+            {
+                case "res":
+                    return new ResourceFileProvider(uri);
+                case "file":
+                    return new FileSystemFileProvider(uri);
+                default:
+                    return new InvalidFileProvider();
+            }
         }
     }
 }

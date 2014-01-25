@@ -64,6 +64,14 @@
     <Compile Include="DataLoaders\EntityDataLoader.cs" />
     <Compile Include="DataLoaders\IDataLoaderConfigurationLatch.cs" />
     <Compile Include="DataLoaders\ICachingTableDataLoaderStore.cs" />
+    <Compile Include="DataLoaders\FileSource.cs" />
+    <Compile Include="DataLoaders\Internal\ResourceFileReference.cs" />
+    <Compile Include="DataLoaders\Internal\InvalidFileProvider.cs" />
+    <Compile Include="DataLoaders\Internal\ResourceFileProvider.cs" />
+    <Compile Include="DataLoaders\Internal\FileSystemFileProvider.cs" />
+    <Compile Include="DataLoaders\Internal\FileSystemFileReference.cs" />
+    <Compile Include="DataLoaders\Internal\IFileProvider.cs" />
+    <Compile Include="DataLoaders\IFileReference.cs" />
     <Compile Include="DataLoaders\IValueConverter.cs" />
     <Compile Include="DataLoaders\ObjectLoader.cs" />
     <Compile Include="DataLoaders\TableDataLoaderBase.cs" />

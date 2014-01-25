@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="DataLoaders\CachingDataLoaderFixture.cs" />
     <Compile Include="DataLoaders\CsvDataLoaderFixture.cs" />
+    <Compile Include="DataLoaders\FileProviderFixture.cs" />
     <Compile Include="DatabaseEngine\DataRowFactoryFixture.cs" />
     <Compile Include="DbManagerFixture.cs" />
     <Compile Include="EffortConnectionFixture.cs" />
@@ -207,6 +208,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Internal\Resources\EmptyResource.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -40,29 +40,13 @@ namespace Effort.Internal.DbCommandTreeTransformation
     {
         public override Expression Visit(DbUnionAllExpression expression)
         {
+            Type resultType = edmTypeConverter.Convert(expression.ResultType);
+
             Expression left = this.Visit(expression.Left);
             Expression right = this.Visit(expression.Right);
 
-            Type resultType = edmTypeConverter.Convert(expression.ResultType).GetElementType();
-            Type rightType = TypeHelper.GetElementType(right.Type);
-
-
-            ParameterExpression param = Expression.Parameter(rightType);
-
-            List<MemberBinding> bindings = new List<MemberBinding>();
-
-            PropertyInfo[] sourceProps = rightType.GetProperties();
-            PropertyInfo[] resultProps = resultType.GetProperties();
-
-            Expression[] initializers = new Expression[sourceProps.Length];
-
-            for (int i = 0; i < sourceProps.Length; i++)
-            {
-                initializers[i] = Expression.Property(param, sourceProps[i]);
-            }
-
-            Expression body = this.CreateSelector(initializers, resultType);
-            right = queryMethodExpressionBuilder.Select(right, Expression.Lambda(body, param));
+            var resultElemType = TypeHelper.GetElementType(resultType);
+            this.UnifyCollections(resultElemType, ref left, ref right);
 
             return queryMethodExpressionBuilder.Concat(left, right);
         }

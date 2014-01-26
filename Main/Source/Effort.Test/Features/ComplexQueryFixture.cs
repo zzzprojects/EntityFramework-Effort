@@ -24,6 +24,7 @@
 
 namespace Effort.Test.Features
 {
+    using System.Collections.Generic;
     using System.Linq;
     using Effort.Test.Data.Northwind;
     using Effort.Test.Internal.Queries;
@@ -96,6 +97,27 @@ namespace Effort.Test.Features
                          cus)
                     .Select(c => c.Orders.Max(o => o.OrderDate))
                     .FirstOrDefault(), 
+                expected);
+
+            Assert.IsTrue(result.Check());
+        }
+
+        [TestMethod]
+        public void Categories_That_Do_Not_Have_Certain_Products()
+        {
+            List<int> prod = new List<int>() { 1, 2 };
+
+            var expected = "[{\"CategoryID\":2},{\"CategoryID\":3},{\"CategoryID\":4},{\"CategoryID\":5},{\"CategoryID\":6},{\"CategoryID\":7},{\"CategoryID\":8}]";
+
+            ICorrectness result = this.tester.TestQuery(
+                context =>
+                    from 
+                        cat in context.Categories
+                    where
+                        prod.Except(cat.Products.Select(x => x.ProductID))
+                            .Count() > 0
+                    select 
+                        cat.CategoryID,
                 expected);
 
             Assert.IsTrue(result.Check());

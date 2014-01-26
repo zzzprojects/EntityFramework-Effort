@@ -30,15 +30,62 @@ namespace Effort.Internal.DbCommandTreeTransformation
     using System.Data.Common.CommandTrees;
 #endif
     using System.Linq.Expressions;
+    using System;
+    using Effort.Internal.Common;
+    using System.Reflection;
 
     internal partial class TransformVisitor
     {
         public override Expression Visit(DbExceptExpression expression)
         {
+            Type resultType = this.edmTypeConverter.Convert(expression.ResultType);
+
             Expression left = this.Visit(expression.Left);
             Expression right = this.Visit(expression.Right);
 
+            // Entity Framework does not ensure that left, right and result items have the same
+            // type
+            var resultElemType = TypeHelper.GetElementType(resultType);
+
+            this.UnifyCollections(resultElemType, ref left, ref right);
+
             return queryMethodExpressionBuilder.Except(left, right);
+        }
+
+        private void UnifyCollections(
+            Type expectedType, 
+            ref Expression e1, 
+            ref Expression e2)
+        {
+            ChangeCollectionType(expectedType, ref e1);
+            ChangeCollectionType(expectedType, ref e2);
+        }
+
+        private void ChangeCollectionType(Type expectedType, ref Expression node)
+        {
+            Type type = TypeHelper.GetElementType(node.Type);
+
+            if (expectedType == type)
+            {
+                return;
+            }
+
+            var param = Expression.Parameter(type);
+
+            PropertyInfo[] sourceProps = type.GetProperties();
+            Expression[] initializers = new Expression[sourceProps.Length];
+
+            for (int j = 0; j < sourceProps.Length; j++)
+            {
+                initializers[j] = Expression.Property(param, sourceProps[j]);
+            }
+
+            Expression body = this.CreateSelector(initializers, expectedType);
+
+            node =
+                this.queryMethodExpressionBuilder.Select(
+                    node,
+                    Expression.Lambda(body, param));
         }
     }
 }

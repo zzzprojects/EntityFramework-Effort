@@ -53,6 +53,11 @@ namespace Effort.Internal.Common
 
         public static Type GetElementType(Type type)
         {
+            if (type.IsArray)
+            {
+                return type.GetElementType();
+            }
+
             Type enumerableInterface = GetEnumerableInterfaceTypeDefinition(type);
 
             if (enumerableInterface == null)

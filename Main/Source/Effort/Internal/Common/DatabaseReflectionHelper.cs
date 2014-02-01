@@ -217,7 +217,9 @@ namespace Effort.Internal.Common
             IIndex primaryIndex = FindIndex(primaryTable, relation.PrimaryKeyInfo, true);
             IIndex foreignIndex = FindIndex(foreignTable, relation.ForeignKeyInfo, false);
 
-            // TODO: use relation.CascadedDelete
+            RelationOptions options = 
+                new RelationOptions(
+                    cascadedDeletion: relation.CascadedDelete);
 
             typeof(DatabaseReflectionHelper.WrapperMethods)
                 .GetMethod("CreateRelation")
@@ -231,7 +233,9 @@ namespace Effort.Internal.Common
                     primaryIndex, 
                     foreignIndex, 
                     relation.ForeignToPrimaryConverter, 
-                    relation.PrimaryToForeignConverter });
+                    relation.PrimaryToForeignConverter,
+                    options
+                });
         }
 
         private static IIndex FindIndex(ITable table, IKeyInfo key, bool unique)
@@ -299,7 +303,7 @@ namespace Effort.Internal.Common
                 foreach (var constraintFactory in 
                     constraintFactories.Cast<IConstraintFactory<TEntity>>())
                 {
-                    table.AddConstraint(constraintFactory);
+                    table.Contraints.Add(constraintFactory);
                 }
                 
                 return table;
@@ -397,7 +401,8 @@ namespace Effort.Internal.Common
                 UniqueIndex<TPrimary, TPrimaryKey> primaryIndex,
                 IIndex<TForeign, TForeignKey> foreignIndex,
                 Func<TForeignKey, TPrimaryKey> foreignToPrimary,
-                Func<TPrimaryKey, TForeignKey> primaryToForeign)
+                Func<TPrimaryKey, TForeignKey> primaryToForeign,
+                RelationOptions options)
 
                 where TPrimary : class
                 where TForeign : class
@@ -408,7 +413,8 @@ namespace Effort.Internal.Common
                         primaryIndex, 
                         foreignIndex, 
                         foreignToPrimary, 
-                        primaryToForeign);
+                        primaryToForeign,
+                        options);
                 }
                 catch (NMemory.Exceptions.NMemoryException ex)
                 {

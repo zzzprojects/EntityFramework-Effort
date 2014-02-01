@@ -128,8 +128,7 @@ namespace Effort.Test.Features
             res.CascadedRelation.RequiredRelation.ShouldNotBeNull();
         }
 
-        // TODO: Fails
-        //[TestMethod]
+        [TestMethod]
         public void CascadedDelete()
         {
             this.RelationEntities.Add(

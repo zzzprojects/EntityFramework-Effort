@@ -73,5 +73,7 @@ namespace Effort.Test.Data.Features
         public IDbSet<RelationEntity> RelationEntities { get; set; }
 
         public IDbSet<EmptyEntity> EmptyEntities { get; set; }
+
+        public IDbSet<BinaryKeyEntity> BinaryKeyEntities { get; set; }
     }
 }

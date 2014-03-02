@@ -86,6 +86,7 @@
     <Compile Include="DbContextFixture.cs" />
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Features\MiscellaneousQueryFixture.cs" />
     <Compile Include="Features\DecimalIdentityFieldFixture.cs" />
     <Compile Include="Features\EnumFieldFixture.cs" />
     <Compile Include="Features\KeyFixture.cs" />

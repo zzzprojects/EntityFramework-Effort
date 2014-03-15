@@ -24,12 +24,17 @@
 
 namespace Effort.Internal.DbManagement
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Effort.Internal.Common;
     using Effort.Internal.DbManagement.Engine;
     using Effort.Provider;
 
     internal class DbContainerManagerWrapper : IDbManager
     {
         private DbContainer container;
+
+        private static readonly string MigrationHistoryTable = "__MigrationHistory";
 
         public DbContainerManagerWrapper(DbContainer container)
         {
@@ -43,10 +48,46 @@ namespace Effort.Internal.DbManagement
 
         public void ClearMigrationHistory()
         {
-            IExtendedTable table = 
-                this.container.GetTable("__MigrationHistory") as IExtendedTable;
+            var table = this.container.GetTable(MigrationHistoryTable) as IExtendedTable;
 
             table.Clear();
+        }
+
+        public void ClearTables()
+        {
+            var db = this.container.Internal;
+            var specialEntityTypes = GetEntityTypeNames(MigrationHistoryTable);
+
+            this.SetRelations(false);
+
+            foreach (IExtendedTable table in db.Tables.GetAllTables())
+            {
+                if (specialEntityTypes.Contains(table.ElementType.Name))
+                {
+                    continue;
+                }
+
+                table.Clear();
+            }
+
+            this.SetRelations(true);
+        }
+
+        private void SetRelations(bool enabled)
+        {
+            var db = this.container.Internal;
+
+            foreach (var relation in db.Tables.GetAllRelations())
+            {
+                relation.IsEnabled = enabled;
+            }
+        }
+
+        private static List<string> GetEntityTypeNames(params string[] tableNames)
+        {
+            return tableNames
+                .Select(x => TypeHelper.NormalizeForCliTypeName(x))
+                .ToList();
         }
     }
 }

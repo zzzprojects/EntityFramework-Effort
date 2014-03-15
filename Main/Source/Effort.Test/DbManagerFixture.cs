@@ -25,6 +25,8 @@
 namespace Effort.Test
 {
     using System;
+    using System.Linq;
+    using SoftwareApproach.TestingExtensions;
     using Effort.Provider;
     using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,7 +35,7 @@ namespace Effort.Test
     public class DbManagerFixture
     {
         [TestMethod]
-        public void DbManagerFixture_SetIdentityFields()
+        public void DbManager_SetIdentityFields()
         {
             EffortConnection connection =
                 (EffortConnection)DbConnectionFactory.CreateTransient();
@@ -76,6 +78,40 @@ namespace Effort.Test
 
             // Identity generation should be used
             Assert.AreEqual(6, entity.Id);
+        }
+
+        [TestMethod]
+        public void DbManager_ClearTables()
+        {
+            var connection = (EffortConnection)DbConnectionFactory.CreateTransient();
+
+            var model = CompiledModels.GetModel<RelationEntity, EmptyEntity>();
+            var context = new FeatureDbContext(connection, model);
+
+            context.Database.Initialize(true);
+
+            context.RelationEntities.Add(
+                new RelationEntity
+                {
+                    RequiredRelation = new EmptyEntity()
+                });
+
+            context.SaveChanges();
+
+            // Create new context
+            context = new FeatureDbContext(connection, model);
+
+            // The records should be in
+            context.EmptyEntities.Count().ShouldEqual(1);
+            context.RelationEntities.Count().ShouldEqual(1);
+
+            // Use DbManager to delete all data from the database
+            connection.Open();
+            connection.DbManager.ClearTables();
+
+            // Tables should be empty
+            context.EmptyEntities.Count().ShouldEqual(0);
+            context.RelationEntities.Count().ShouldEqual(0);
         }
     }
 }

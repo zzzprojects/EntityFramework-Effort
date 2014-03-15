@@ -115,8 +115,5 @@ namespace Effort.Internal.DbManagement.Engine
                 base.GenerateIdentityFieldValue(entity);
             }
         }
-
-
-
     }
 }

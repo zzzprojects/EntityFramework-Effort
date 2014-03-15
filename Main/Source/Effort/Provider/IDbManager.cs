@@ -42,5 +42,10 @@ namespace Effort.Provider
         ///     appropriate tables.
         /// </summary>
         void ClearMigrationHistory();
+
+        /// <summary>
+        ///     Deletes all data from the database tables.
+        /// </summary>
+        void ClearTables();
     }
 }

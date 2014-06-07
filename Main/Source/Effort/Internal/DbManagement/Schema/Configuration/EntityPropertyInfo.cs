@@ -25,29 +25,25 @@
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+
     using Effort.Internal.TypeConversion;
 
     internal class EntityPropertyInfo
     {
-        private readonly EdmProperty property;
+        private readonly string name;
+        private readonly Type type;
         private readonly FacetInfo facets;
-        private readonly Type clrType;
 
-        public EntityPropertyInfo(EdmProperty property, EdmTypeConverter converter)
+        public EntityPropertyInfo(string name, Type type, FacetInfo facets)
         {
-            this.property = property;
-            this.facets = converter.GetTypeFacets(property.TypeUsage);
-            this.clrType = converter.Convert(property.TypeUsage);
+            this.name = name;
+            this.type = type;
+            this.facets = facets;
         }
 
-        public EdmProperty Property
+        public string Name
         {
-            get { return this.property; }
+            get { return this.name; }
         }
 
         public FacetInfo Facets
@@ -57,7 +53,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
         public Type ClrType
         {
-            get { return this.clrType; }
+            get { return this.type; }
         }
     }
 }

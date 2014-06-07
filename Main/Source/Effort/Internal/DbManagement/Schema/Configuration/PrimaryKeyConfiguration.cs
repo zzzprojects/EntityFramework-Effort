@@ -39,7 +39,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
         {
             IList<PropertyInfo> keyMembers = new List<PropertyInfo>();
 
-            foreach (EdmProperty property in entityInfo.EntitySet.ElementType.KeyMembers)
+            foreach (EntityPropertyInfo property in entityInfo.KeyMembers)
             {
                 PropertyInfo member = builder.FindMember(property);
 

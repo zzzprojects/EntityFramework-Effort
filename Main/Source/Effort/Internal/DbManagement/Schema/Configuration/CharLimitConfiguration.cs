@@ -33,14 +33,14 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
         {
             foreach (EntityPropertyInfo property in entityInfo.Properties)
             {
-                if (property.Facets.LimitedLength &&
-                    property.Facets.FixedLength &&
-                    property.ClrType == typeof(string))
+                if (property.ClrType == typeof(string) &&
+                    property.Facets.LimitedLength &&
+                    property.Facets.FixedLength)
                 {
-                    MemberInfo member = 
-                        builder.FindMember(property.Property);
-                    object factory = 
-                        ConstraintFactories.CharLimit(member, property.Facets.MaxLenght);
+                    MemberInfo member = builder.FindMember(property);
+                    int length = property.Facets.MaxLength;
+
+                    object factory = ConstraintFactories.CharLimit(member, length);
 
                     builder.AddContraintFactory(factory);
                 }

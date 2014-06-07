@@ -184,6 +184,7 @@
     <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoHelper.cs" />
     <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfo.cs" />
     <Compile Include="Internal\DbManagement\Engine\Services\DataRowKeyInfoService.cs" />
+    <Compile Include="Internal\DbManagement\CanonicalContainer.cs" />
     <Compile Include="Internal\DbManagement\Schema\BareSchemaBase.cs" />
     <Compile Include="Internal\DbManagement\DbContainerManagerWrapper.cs" />
     <Compile Include="Internal\DbManagement\DbContainerParameters.cs" />

@@ -67,7 +67,7 @@ namespace Effort.Internal.TypeConversion
         /// <value>
         ///     The max lenght of the field.
         /// </value>
-        public int MaxLenght { get; set; }
+        public int MaxLength { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the length of the field is fixed.

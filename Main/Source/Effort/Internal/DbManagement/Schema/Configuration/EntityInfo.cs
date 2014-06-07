@@ -26,40 +26,45 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
+    using System.Linq;
     using Effort.Internal.TypeConversion;
 
     internal class EntityInfo
     {
-        private readonly EntitySet entitySet;
         private readonly ReadOnlyCollection<EntityPropertyInfo> properties;
-
-        public EntityInfo(EntitySet entitySet, EdmTypeConverter converter)
+        private readonly ReadOnlyCollection<EntityPropertyInfo> keyMembers;
+        private readonly string tableName;
+             
+        public EntityInfo(
+            string tableName,
+            IEnumerable<EntityPropertyInfo> properties, 
+            string[] keyMembers)
         {
-            this.entitySet = entitySet;
+            this.tableName = tableName;
+            this.properties = properties.ToList().AsReadOnly();
 
-            List<EntityPropertyInfo> properties = new List<EntityPropertyInfo>();
+            var lookup = properties.ToLookup(x => x.Name);
 
-            foreach (EdmProperty property in entitySet.ElementType.Properties)
-            {
-                properties.Add(new EntityPropertyInfo(property, converter));
-            }
-
-            this.properties = properties.AsReadOnly();
-        }
-
-        public EntitySet EntitySet
-        {
-            get { return this.entitySet; }
+            this.keyMembers = keyMembers
+                .Select(x => lookup[x].Single())
+                .ToList()
+                .AsReadOnly();
         }
 
         public ReadOnlyCollection<EntityPropertyInfo> Properties
         {
             get { return this.properties; }
         }
+
+        public string TableName 
+        {
+            get { return this.tableName; } 
+        }
+
+        public ReadOnlyCollection<EntityPropertyInfo> KeyMembers
+        {
+            get { return this.keyMembers; }
+        }
+
     }
 }

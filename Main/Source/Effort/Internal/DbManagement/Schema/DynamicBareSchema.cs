@@ -36,12 +36,13 @@ namespace Effort.Internal.DbManagement.Schema
     using System.Threading;
     using Effort.Internal.Common;
     using Effort.Internal.TypeConversion;
+    using Effort.Internal.DbManagement.Schema.Configuration;
 
     internal class DynamicBareSchema : BareSchemaBase
     {
         private readonly Assembly dynamicAssembly;
 
-        public DynamicBareSchema(EntityContainer entityContainer, EdmTypeConverter converter)
+        public DynamicBareSchema(CanonicalContainer container, EdmTypeConverter converter)
         {
             AssemblyBuilder assembly =
                 Thread.GetDomain().DefineDynamicAssembly(
@@ -50,12 +51,10 @@ namespace Effort.Internal.DbManagement.Schema
 
             ModuleBuilder entityModule = assembly.DefineDynamicModule("Entities");
 
-            foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
+            foreach (EntityInfo entity in container.GetEntities(converter))
             {
-                EntityType entityType = entitySet.ElementType;
-
-                string name = entitySet.GetTableName();
-                Type type = CreateEntityType(entitySet, entityModule, converter);
+                string name = entity.TableName;
+                Type type = CreateEntityType(entity, entityModule, converter);
 
                 this.Register(name, type);
             }
@@ -64,21 +63,17 @@ namespace Effort.Internal.DbManagement.Schema
         }
 
         private static Type CreateEntityType(
-            EntitySet entitySet, 
+            EntityInfo entity, 
             ModuleBuilder entityModule, 
             EdmTypeConverter typeConverter)
         {
-            EntityType entityType = entitySet.ElementType;
-            string cliTypeName = TypeHelper.NormalizeForCliTypeName(entitySet.GetTableName());
+            string cliTypeName = TypeHelper.NormalizeForCliTypeName(entity.TableName);
 
             TypeBuilder entityTypeBuilder = entityModule.DefineType(cliTypeName, TypeAttributes.Public);
 
-            foreach (EdmProperty property in entityType.Properties)
+            foreach (EntityPropertyInfo property in entity.Properties)
             {
-                string memberName = property.GetColumnName();
-                Type memberType = typeConverter.Convert(property.TypeUsage);
-
-                EmitHelper.AddProperty(entityTypeBuilder, memberName, memberType);
+                EmitHelper.AddProperty(entityTypeBuilder, property.Name, property.ClrType);
             }
 
             return entityTypeBuilder.CreateType();

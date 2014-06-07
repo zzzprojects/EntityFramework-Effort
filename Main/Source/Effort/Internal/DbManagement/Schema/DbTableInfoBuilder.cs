@@ -26,14 +26,9 @@ namespace Effort.Internal.DbManagement.Schema
 {
     using System;
     using System.Collections.Generic;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
     using System.Linq;
     using System.Reflection;
-    using Effort.Internal.Common;
+    using Effort.Internal.DbManagement.Schema.Configuration;
     using NMemory.Indexes;
 
     internal class DbTableInfoBuilder
@@ -149,9 +144,9 @@ namespace Effort.Internal.DbManagement.Schema
             return null;
         }
 
-        public PropertyInfo FindMember(EdmProperty property)
+        public PropertyInfo FindMember(EntityPropertyInfo property)
         {
-            return FindMember(property.GetColumnName());
+            return FindMember(property.Name);
         }
 
         public PropertyInfo FindMember(string name)

@@ -107,7 +107,7 @@ namespace Effort.Internal.TypeConversion
                 }
                 else if (facet.Value != null)
                 {
-                    facets.MaxLenght = (int)facet.Value;
+                    facets.MaxLength = (int)facet.Value;
                     facets.LimitedLength = true;
                 }
             }

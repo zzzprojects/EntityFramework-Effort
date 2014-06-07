@@ -34,7 +34,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
             {
                 if (property.Facets.Identity && IsIdentityType(property.ClrType))
                 {
-                    builder.IdentityField = builder.FindMember(property.Property);
+                    builder.IdentityField = builder.FindMember(property);
                 }
             }
         }

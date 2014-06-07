@@ -37,11 +37,10 @@ namespace Effort.Internal.DbManagement.Schema
     {
         public static DbSchema CreateDbSchema(StoreItemCollection edmStoreSchema)
         {
-            EntityContainer entityContainer =
-                edmStoreSchema.GetItems<EntityContainer>().FirstOrDefault();
+            CanonicalContainer container = new CanonicalContainer(edmStoreSchema);
 
             EdmTypeConverter converter = new EdmTypeConverter(new DefaultTypeConverter());
-            IBareSchema bareSchema = new DynamicBareSchema(entityContainer, converter);
+            IBareSchema bareSchema = new DynamicBareSchema(container, converter);
 
             TableConfigurationGroup tableConfig = new TableConfigurationGroup();
             tableConfig.Register(new BareSchemaConfiguration(bareSchema));
@@ -54,9 +53,8 @@ namespace Effort.Internal.DbManagement.Schema
 
             DbSchemaBuilder schemaBuilder = new DbSchemaBuilder();
 
-            foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
+            foreach (EntityInfo entityInfo in container.GetEntities(converter))
             {
-                EntityInfo entityInfo = new EntityInfo(entitySet, converter);
                 DbTableInfoBuilder tableBuilder = new DbTableInfoBuilder();
 
                 // Run all configurations
@@ -68,15 +66,8 @@ namespace Effort.Internal.DbManagement.Schema
             RelationConfigurationGroup associationConfig = new RelationConfigurationGroup();
             associationConfig.Register<RelationConfiguration>();
 
-            foreach (AssociationSet association in entityContainer.BaseEntitySets.OfType<AssociationSet>())
+            foreach (AssociationInfo associationInfo in container.GetAssociations())
             {
-                AssociationInfo associationInfo = null;
-
-                if (!AssociationInfo.Create(association, out associationInfo))
-                {
-                    continue;
-                }
-
                 associationConfig.Configure(associationInfo, schemaBuilder);
             }
 

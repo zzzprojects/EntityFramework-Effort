@@ -36,7 +36,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
             {
                 if (!property.Facets.Nullable && TypeHelper.IsNullable(property.ClrType))
                 {
-                    MemberInfo member = builder.FindMember(property.Property);
+                    MemberInfo member = builder.FindMember(property);
                     object factory = ConstraintFactories.NotNull(member);
 
                     builder.AddContraintFactory(factory);

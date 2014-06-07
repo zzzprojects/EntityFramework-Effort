@@ -36,7 +36,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
             {
                 if (property.Facets.Identity && property.ClrType == typeof(Guid))
                 {
-                    MemberInfo member = builder.FindMember(property.Property);
+                    MemberInfo member = builder.FindMember(property);
                     object factory = ConstraintFactories.GeneratedGuid(member);
 
                     builder.AddContraintFactory(factory);

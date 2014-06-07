@@ -37,7 +37,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
         public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
         {
-            string tableName = entityInfo.EntitySet.GetTableName();
+            string tableName = entityInfo.TableName;
 
             builder.EntityType = this.schema.GetEntityType(tableName);
             builder.Name = tableName;

@@ -37,10 +37,10 @@ namespace Effort.Internal.DbManagement.Schema
     {
         public static DbSchema CreateDbSchema(StoreItemCollection edmStoreSchema)
         {
-            CanonicalContainer container = new CanonicalContainer(edmStoreSchema);
-
             EdmTypeConverter converter = new EdmTypeConverter(new DefaultTypeConverter());
-            IBareSchema bareSchema = new DynamicBareSchema(container, converter);
+            CanonicalContainer container = new CanonicalContainer(edmStoreSchema, converter);
+
+            IBareSchema bareSchema = new DynamicBareSchema(container);
 
             TableConfigurationGroup tableConfig = new TableConfigurationGroup();
             tableConfig.Register(new BareSchemaConfiguration(bareSchema));
@@ -53,7 +53,7 @@ namespace Effort.Internal.DbManagement.Schema
 
             DbSchemaBuilder schemaBuilder = new DbSchemaBuilder();
 
-            foreach (EntityInfo entityInfo in container.GetEntities(converter))
+            foreach (EntityInfo entityInfo in container.Entities)
             {
                 DbTableInfoBuilder tableBuilder = new DbTableInfoBuilder();
 
@@ -66,7 +66,7 @@ namespace Effort.Internal.DbManagement.Schema
             RelationConfigurationGroup associationConfig = new RelationConfigurationGroup();
             associationConfig.Register<RelationConfiguration>();
 
-            foreach (AssociationInfo associationInfo in container.GetAssociations())
+            foreach (AssociationInfo associationInfo in container.Associations)
             {
                 associationConfig.Configure(associationInfo, schemaBuilder);
             }

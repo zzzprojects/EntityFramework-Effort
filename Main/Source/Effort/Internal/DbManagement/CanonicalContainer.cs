@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="MergedEntityContainer.cs" company="Effort Team">
+// <copyright file="CanonicalContainer.cs" company="Effort Team">
 //     Copyright (C) 2011-2014 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,6 +26,7 @@ namespace Effort.Internal.DbManagement
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 #if !EFOLD
     using System.Data.Entity.Core.Metadata.Edm;
 #else
@@ -39,14 +40,38 @@ namespace Effort.Internal.DbManagement
 
     internal class CanonicalContainer
     {
-        private readonly IEnumerable<EntityContainer> containers;
+        private readonly EdmTypeConverter converter;
+        private readonly List<EntityContainer> containers;
+        private readonly Lazy<ReadOnlyCollection<EntityInfo>> entities;
+        private readonly Lazy<ReadOnlyCollection<AssociationInfo>> associations;
 
-        public CanonicalContainer(ItemCollection source)
+        public CanonicalContainer(ItemCollection source, EdmTypeConverter converter)
         {
-            this.containers = source.GetItems<EntityContainer>();
+            this.converter = converter;
+            this.containers = source.GetItems<EntityContainer>().ToList();
+
+            this.entities = new Lazy<ReadOnlyCollection<EntityInfo>>(() =>
+                this.GetEntities()
+                    .ToList()
+                    .AsReadOnly());
+
+            this.associations = new Lazy<ReadOnlyCollection<AssociationInfo>>(() =>
+                this.GetAssociations()
+                    .ToList()
+                    .AsReadOnly());
         }
 
-        public IEnumerable<EntityInfo> GetEntities(EdmTypeConverter converter)
+        public ReadOnlyCollection<EntityInfo> Entities
+        {
+            get { return this.entities.Value; }
+        }
+
+        public ReadOnlyCollection<AssociationInfo> Associations
+        {
+            get { return this.associations.Value; }
+        }
+
+        private IEnumerable<EntityInfo> GetEntities()
         {
             var groups = this.containers
                 .SelectMany(x => x.BaseEntitySets.OfType<EntitySet>())
@@ -91,7 +116,7 @@ namespace Effort.Internal.DbManagement
             }
         }
 
-        public IEnumerable<AssociationInfo> GetAssociations()
+        private IEnumerable<AssociationInfo> GetAssociations()
         {
             var groups = this.containers
                 .SelectMany(x => x.BaseEntitySets.OfType<AssociationSet>())

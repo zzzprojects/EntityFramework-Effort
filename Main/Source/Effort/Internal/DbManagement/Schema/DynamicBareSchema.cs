@@ -42,7 +42,7 @@ namespace Effort.Internal.DbManagement.Schema
     {
         private readonly Assembly dynamicAssembly;
 
-        public DynamicBareSchema(CanonicalContainer container, EdmTypeConverter converter)
+        public DynamicBareSchema(CanonicalContainer container)
         {
             AssemblyBuilder assembly =
                 Thread.GetDomain().DefineDynamicAssembly(
@@ -51,10 +51,10 @@ namespace Effort.Internal.DbManagement.Schema
 
             ModuleBuilder entityModule = assembly.DefineDynamicModule("Entities");
 
-            foreach (EntityInfo entity in container.GetEntities(converter))
+            foreach (EntityInfo entity in container.Entities)
             {
                 string name = entity.TableName;
-                Type type = CreateEntityType(entity, entityModule, converter);
+                Type type = CreateEntityType(entity, entityModule);
 
                 this.Register(name, type);
             }
@@ -64,8 +64,7 @@ namespace Effort.Internal.DbManagement.Schema
 
         private static Type CreateEntityType(
             EntityInfo entity, 
-            ModuleBuilder entityModule, 
-            EdmTypeConverter typeConverter)
+            ModuleBuilder entityModule)
         {
             string cliTypeName = TypeHelper.NormalizeForCliTypeName(entity.TableName);
 

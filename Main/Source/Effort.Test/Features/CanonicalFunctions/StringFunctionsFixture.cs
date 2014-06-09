@@ -76,11 +76,17 @@ namespace Effort.Test.Features.CanonicalFunctions
              this.context.SaveChanges();
 
              var q = this.Entities
-                 .Select(x =>
-                     string.Concat(x.Value, "1"));
+                  .Select(x => 
+                      string.Concat(x.Value, "1"));
 
              var res = q.ToList();
+
+#if EF61
+             // EF 6.1 fixes this object-relational impedance
+             res.Any(x => x == "1").ShouldBeTrue();
+#else
              res.Any(x => x == null).ShouldBeTrue();
+#endif
          }
 
         [TestMethod]

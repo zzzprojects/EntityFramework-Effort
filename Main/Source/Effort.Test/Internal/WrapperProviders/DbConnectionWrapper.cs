@@ -85,8 +85,25 @@ namespace Effort.Test.Internal.WrapperProviders
         /// <value>The wrapped connection.</value>
         public DbConnection WrappedConnection
         {
-            get { return this.wrappedConnection; }
-            set { this.wrappedConnection = value; }
+            get 
+            { 
+                return this.wrappedConnection; 
+            }
+
+            set 
+            {
+                if (this.wrappedConnection != null)
+                {
+                    this.wrappedConnection.StateChange -= WrappedConnectionStateChange;
+                }
+
+                this.wrappedConnection = value;
+
+                if (this.wrappedConnection != null)
+                {
+                    this.wrappedConnection.StateChange += WrappedConnectionStateChange;
+                }
+            }
         }
 
         /// <summary>
@@ -335,6 +352,11 @@ namespace Effort.Test.Internal.WrapperProviders
             this.wrappedProviderInvariantName = providerInvariantName;
             this.wrappedConnection = factory.CreateConnection();
             this.wrappedConnection.ConnectionString = newConnectionString;
+        }
+
+        private void WrappedConnectionStateChange(object sender, StateChangeEventArgs e)
+        {
+            this.OnStateChange(e);
         }
     }
 }

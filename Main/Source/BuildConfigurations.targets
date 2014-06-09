@@ -4,50 +4,50 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug(ef6,net40)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	<PackagePlatformDir>net40</PackagePlatformDir>
-	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF61Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug(ef6,net40)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NET40;EF6</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NET40;EF6;EF61</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release(ef6,net40)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	<PackagePlatformDir>net40</PackagePlatformDir>
-	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF61Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release(ef6,net40)\</OutputPath>
-    <DefineConstants>TRACE;NET40;EF6</DefineConstants>
+    <DefineConstants>TRACE;NET40;EF6;EF61</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>	
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug(ef6,net45)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	<PackagePlatformDir>net45</PackagePlatformDir>
-	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF61Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug(ef6,net45)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NET45;EF6</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NET45;EF6;EF61</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release(ef6,net45)|AnyCPU' ">
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	<PackagePlatformDir>net45</PackagePlatformDir>
-	<PackageEntityFrameworkDir>$(PackageEF6Dir)</PackageEntityFrameworkDir>
+	<PackageEntityFrameworkDir>$(PackageEF61Dir)</PackageEntityFrameworkDir>
 	<ExternalEntityFramework>true</ExternalEntityFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release(ef6,net45)\</OutputPath>
-    <DefineConstants>TRACE;NET45;EF6</DefineConstants>
+    <DefineConstants>TRACE;NET45;EF6;EF61</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

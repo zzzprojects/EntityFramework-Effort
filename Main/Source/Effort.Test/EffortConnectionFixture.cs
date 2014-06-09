@@ -40,7 +40,7 @@ namespace Effort.Test
             conn.MarkAsPrimaryTransient();
 
             conn.Dispose();
-
+            
             conn.IsUnregisterContainerCalled.ShouldBeTrue();
         }
 

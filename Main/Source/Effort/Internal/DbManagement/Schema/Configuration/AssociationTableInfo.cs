@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="AssociationInfo.cs" company="Effort Team">
+// <copyright file="AssociationTableInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2014 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,37 +24,22 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
 
-    internal class AssociationInfo
+    internal class AssociationTableInfo
     {
-        public AssociationInfo(
-            AssociationTableInfo primary, 
-            AssociationTableInfo foreign,
-            bool cascadedDelete)
+        public AssociationTableInfo(string tableName, string[] properties)
         {
-            this.PrimaryTable = primary;
-            this.ForeignTable = foreign;
-            this.CascadedDelete = cascadedDelete;
+            this.TableName = tableName;
+
+            this.PropertyNames = properties
+                .ToList()
+                .AsReadOnly();
         }
 
-        public AssociationTableInfo PrimaryTable
-        {
-            get;
-            private set;
-        }
+        public string TableName { get; private set; }
 
-        public AssociationTableInfo ForeignTable
-        {
-            get;
-            private set;
-        }
-
-        public bool CascadedDelete
-        {
-            get;
-            private set;
-        }
+        public ReadOnlyCollection<string> PropertyNames { get; private set; }
     }
 }

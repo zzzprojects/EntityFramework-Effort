@@ -126,13 +126,52 @@ namespace Effort.Internal.DbManagement
             {
                 var association = group.First();
 
-                AssociationInfo associationInfo = null;
+                // TODO: verify conflict
 
-                if (AssociationInfo.Create(association, out associationInfo))
+                if (association.ElementType.ReferentialConstraints.Count != 1)
                 {
-                    yield return associationInfo;
+                    continue;
                 }
+
+                var constraint = association.ElementType.ReferentialConstraints[0];
+
+                var primaryTable = this.GetTable(association, constraint.FromRole);
+                var foreignTable = this.GetTable(association, constraint.ToRole);
+
+                var primaryProps = this.GetPropertyNames(constraint.FromProperties);
+                var foreignProps = this.GetPropertyNames(constraint.ToProperties);
+
+                bool cascadedDelete = association
+                    .AssociationSetEnds[constraint.FromRole.Name]
+                    .CorrespondingAssociationEndMember
+                    .DeleteBehavior == OperationAction.Cascade;
+
+                yield return new AssociationInfo(
+                    new AssociationTableInfo(primaryTable, primaryProps),
+                    new AssociationTableInfo(foreignTable, foreignProps),
+                    cascadedDelete);
             }
+        }
+
+        private string[] GetPropertyNames(IEnumerable<EdmProperty> properties)
+        {
+            return properties
+                .Select(x => x.GetColumnName())
+                .ToArray();
+        }
+
+        private string GetTable(
+            AssociationSet association,
+            RelationshipEndMember relationEndpoint)
+        {
+  
+            RefType refType = relationEndpoint.TypeUsage.EdmType as RefType;
+
+            return association
+                .AssociationSetEnds
+                .Select(x => x.EntitySet)
+                .First(x => x.ElementType == refType.ElementType)
+                .GetTableName();
         }
     }
 }

@@ -26,11 +26,6 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System;
     using System.Collections.Generic;
-#if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
-#else
-    using System.Data.Metadata.Edm;
-#endif
     using System.Linq;
     using System.Reflection;
     using Effort.Internal.Common;
@@ -57,21 +52,21 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
         public void Configure(AssociationInfo associationInfo, DbSchemaBuilder builder)
         {
-            string primaryTableName = associationInfo.PrimaryTable.GetTableName();
-            string foreignTableName = associationInfo.ForeignTable.GetTableName();
+            var primary = associationInfo.PrimaryTable;
+            var foreign = associationInfo.ForeignTable;
 
-            DbTableInfoBuilder primaryTable = builder.Find(primaryTableName);
-            DbTableInfoBuilder foreignTable = builder.Find(foreignTableName);
+            DbTableInfoBuilder primaryTable = builder.Find(primary.TableName);
+            DbTableInfoBuilder foreignTable = builder.Find(foreign.TableName);
 
             MemberInfo[] primaryKeyMembers = 
                 GetMembers(
-                    primaryTable.EntityType, 
-                    associationInfo.PrimaryKeyMembers);
+                    primaryTable.EntityType,
+                    primary.PropertyNames);
 
             MemberInfo[] foreignKeyMembers =
                 GetMembers(
                     foreignTable.EntityType,
-                    associationInfo.ForeignKeyMembers);
+                    foreign.PropertyNames);
 
             IKeyInfo primaryKeyInfo = 
                 EnsureKey(
@@ -110,10 +105,10 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
             builder.Register(
                 new DbRelationInfo(
-                    primaryTable:               primaryTableName,
+                    primaryTable:               primary.TableName,
                     primaryKeyInfo:             primaryKeyInfo,
                     primaryToForeignConverter:  primaryToForeignConverter,
-                    foreignTable:               foreignTableName,
+                    foreignTable:               foreign.TableName,
                     foreignKeyInfo:             foreignKeyInfo,
                     foreignToPrimaryConverter:  foreignToPrimaryConverter,
                     cascadedDelete:             associationInfo.CascadedDelete)); 
@@ -137,11 +132,11 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
         private static MemberInfo[] GetMembers(
             Type entityType,
-            ICollection<EdmProperty> properties)
+            ICollection<string> properties)
         {
-            return properties.Select(edmp => entityType
+            return properties.Select(property => entityType
                 .GetProperties()
-                .Single(clrp => clrp.Name == edmp.GetColumnName()))
+                .Single(x => x.Name == property))
                 .ToArray();
         }
 

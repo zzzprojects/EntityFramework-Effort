@@ -27,6 +27,7 @@ namespace Effort.Internal.Common
     using System;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
+    using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
     using System.Data.Entity.Core.Metadata.Edm;
 #else
     using System.Data.Common.CommandTrees;
@@ -55,7 +56,12 @@ namespace Effort.Internal.Common
             MetadataWorkspace workspace, 
             EntitySet entitySet)
         {
-            ConstructorInfo treeConstructor =
+#if !EFOLD
+            var scanExpression = DbExpressionBuilder.Scan(entitySet);
+
+            return new DbQueryCommandTree(workspace, DataSpace.SSpace, scanExpression);
+#else
+            var treeConstructor =
                 typeof(DbQueryCommandTree)
                 .GetConstructor(
                     BindingFlags.NonPublic | BindingFlags.Instance,
@@ -63,19 +69,20 @@ namespace Effort.Internal.Common
                     new Type[] { typeof(MetadataWorkspace), typeof(DataSpace), typeof(DbExpression) },
                     null);
 
-            Type expressionBuilder = 
+            var expressionBuilderType = 
                 typeof(DbExpression).Assembly.GetType(
                     "System.Data.Common.CommandTrees.ExpressionBuilder.DbExpressionBuilder");
 
-            object scanExpression = expressionBuilder
+            var scanExpression = expressionBuilderType
                 .GetMethod("Scan")
                 .Invoke(null, new object[] { entitySet });
 
-            object tree = 
+            var tree = 
                 treeConstructor.Invoke(
                     new object[] { workspace, DataSpace.SSpace, scanExpression });
 
             return tree as DbCommandTree;
+#endif
         }
     }
 }

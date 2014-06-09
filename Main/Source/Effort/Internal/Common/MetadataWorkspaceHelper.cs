@@ -25,13 +25,16 @@
 namespace Effort.Internal.Common
 {
     using System;
-    using System.Collections.Generic; 
+    using System.Collections.Generic;
+    using System.Configuration;
 #if !EFOLD
     using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Core.EntityClient;
     using System.Data.Entity.Core.Mapping;
     using System.Data.Entity.Core.Metadata.Edm;
 #else
     using System.Data.Common;
+    using System.Data.EntityClient;
     using System.Data.Mapping;
     using System.Data.Metadata.Edm;
 #endif
@@ -42,6 +45,7 @@ namespace Effort.Internal.Common
     using System.Xml;
     using System.Xml.Linq;
     using Effort.Internal.StorageSchema;
+    
 
     internal static class MetadataWorkspaceHelper
     {
@@ -109,6 +113,17 @@ namespace Effort.Internal.Common
             workspace.RegisterItemCollection(smic);
 #endif
             return workspace;
+        }
+
+        public static MetadataWorkspace GetMetadataWorkspace(
+            string connectionStringName, 
+            Assembly assembly)
+        {
+            var conn = ConfigurationManager.ConnectionStrings[connectionStringName];
+            var builder = new EntityConnectionStringBuilder(conn.ConnectionString);
+            var metadata = builder.Metadata.Split('|').Select(x => x.Trim());
+
+            return new MetadataWorkspace(metadata, new[] { assembly });
         }
 
         public static void ParseMetadata(string metadata, List<XElement> csdl, List<XElement> ssdl, List<XElement> msl)

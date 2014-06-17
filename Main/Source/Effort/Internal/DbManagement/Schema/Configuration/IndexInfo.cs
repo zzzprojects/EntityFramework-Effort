@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EntityPropertyInfo.cs" company="Effort Team">
+// <copyright file="IndexInfo.cs" company="Effort Team">
 //     Copyright (C) 2011-2014 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,49 +24,19 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using Effort.Internal.TypeConversion;
-
-    internal class EntityPropertyInfo
+    internal class IndexInfo
     {
-        private readonly string name;
-        private readonly Type type;
-        private readonly FacetInfo facets;
-        private readonly ReadOnlyCollection<IndexInfo> indexes;
-
-        public EntityPropertyInfo(
-            string name, 
-            Type type, 
-            FacetInfo facets, 
-            List<IndexInfo> indexes)
+        public IndexInfo(string name, int order, bool unique)
         {
-            this.name = name;
-            this.type = type;
-            this.facets = facets;
-            this.indexes = indexes.ToList().AsReadOnly();
+            this.Name = name;
+            this.Order = order;
+            this.IsUnique = unique;
         }
 
-        public string Name
-        {
-            get { return this.name; }
-        }
+        public string Name { get; private set; }
 
-        public FacetInfo Facets
-        {
-            get { return this.facets; }
-        }
+        public int Order { get; private set; }
 
-        public Type ClrType
-        {
-            get { return this.type; }
-        }
-
-        public IList<IndexInfo> Indexes
-        {
-            get { return this.indexes; }
-        }
+        public bool IsUnique { get; private set; }
     }
 }

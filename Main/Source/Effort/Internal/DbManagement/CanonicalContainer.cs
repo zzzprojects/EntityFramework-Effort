@@ -109,11 +109,36 @@ namespace Effort.Internal.DbManagement
                 var name = prop.GetColumnName();
                 var facets = converter.GetTypeFacets(prop.TypeUsage);
                 var clrType = converter.Convert(prop.TypeUsage);
+                var indexes = GetIndexes(prop).ToList();
 
                 // TODO: verify conflict
 
-                yield return new EntityPropertyInfo(name, clrType, facets);
+                yield return new EntityPropertyInfo(name, clrType, facets, indexes);
             }
+        }
+
+        private static IEnumerable<IndexInfo> GetIndexes(EdmProperty prop)
+        {
+            var indexMetadata = prop.MetadataProperties
+                .FirstOrDefault(x => x.Name == "http://schemas.microsoft.com/ado/2013/11/edm/customannotation:Index");
+
+            if (indexMetadata == null)
+            {
+                yield break;
+            }
+
+            // Use dynamic in order to not force the need of EF6.1
+            dynamic indexAnnotation = indexMetadata.Value;
+
+            foreach (dynamic index in indexAnnotation.Indexes)
+            {
+                yield return GetIndexInfo(index);
+            }
+        }
+
+        private static IndexInfo GetIndexInfo(dynamic index)
+        {
+            return new IndexInfo(index.Name, index.Order, index.IsUnique);
         }
 
         private IEnumerable<AssociationInfo> GetAssociations()

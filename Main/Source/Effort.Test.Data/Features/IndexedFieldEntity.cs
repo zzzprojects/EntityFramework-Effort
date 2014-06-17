@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EntityPropertyInfo.cs" company="Effort Team">
+// <copyright file="IndexedEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2014 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,51 +22,27 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Schema.Configuration
+namespace Effort.Test.Data.Features
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using Effort.Internal.TypeConversion;
+#if EF61
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    internal class EntityPropertyInfo
+    public class IndexedFieldEntity
     {
-        private readonly string name;
-        private readonly Type type;
-        private readonly FacetInfo facets;
-        private readonly ReadOnlyCollection<IndexInfo> indexes;
+        public int Id { get; set; }
 
-        public EntityPropertyInfo(
-            string name, 
-            Type type, 
-            FacetInfo facets, 
-            List<IndexInfo> indexes)
-        {
-            this.name = name;
-            this.type = type;
-            this.facets = facets;
-            this.indexes = indexes.ToList().AsReadOnly();
-        }
+        [Index("IX_Unique", IsUnique=true)]
+        public int Unique { get; set; }
 
-        public string Name
-        {
-            get { return this.name; }
-        }
+        [Index("IX_Multi")]
+        public int Multi1 { get; set; }
 
-        public FacetInfo Facets
-        {
-            get { return this.facets; }
-        }
+        [Index("IX_Multi")]
+        [Index("IX_Overlap")]
+        public int Multi2 { get; set; }
 
-        public Type ClrType
-        {
-            get { return this.type; }
-        }
-
-        public IList<IndexInfo> Indexes
-        {
-            get { return this.indexes; }
-        }
+        [Index("IX_Simple")]
+        public int Single { get; set; }
     }
+#endif
 }

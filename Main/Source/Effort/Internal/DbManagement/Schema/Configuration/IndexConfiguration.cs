@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EntityPropertyInfo.cs" company="Effort Team">
+// <copyright file="IndexConfiguration.cs" company="Effort Team">
 //     Copyright (C) 2011-2014 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,49 +24,31 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using System;
     using System.Linq;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using Effort.Internal.TypeConversion;
 
-    internal class EntityPropertyInfo
+    internal class IndexConfiguration : ITableConfiguration
     {
-        private readonly string name;
-        private readonly Type type;
-        private readonly FacetInfo facets;
-        private readonly ReadOnlyCollection<IndexInfo> indexes;
-
-        public EntityPropertyInfo(
-            string name, 
-            Type type, 
-            FacetInfo facets, 
-            List<IndexInfo> indexes)
+        public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
         {
-            this.name = name;
-            this.type = type;
-            this.facets = facets;
-            this.indexes = indexes.ToList().AsReadOnly();
-        }
+            var indexes = entityInfo
+                .Properties
+                .SelectMany(p => p.Indexes, (p, i) => new { Property = p, Index = i })
+                .GroupBy(x => x.Index.Name);
 
-        public string Name
-        {
-            get { return this.name; }
-        }
+            foreach (var indexGroup in indexes)
+            {
+                var index = indexGroup.First().Index;
 
-        public FacetInfo Facets
-        {
-            get { return this.facets; }
-        }
+                var indexProps = indexGroup
+                    .OrderBy(x => x.Index.Order)
+                    .Select(x => builder.FindMember(x.Property))
+                    .ToArray();
 
-        public Type ClrType
-        {
-            get { return this.type; }
-        }
+                var keyInfo = KeyInfoHelper.CreateKeyInfo(builder.EntityType, indexProps);
 
-        public IList<IndexInfo> Indexes
-        {
-            get { return this.indexes; }
+                builder.AddKey(keyInfo, index.IsUnique);
+            }
+
         }
     }
 }

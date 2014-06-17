@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------
-// <copyright file="EntityPropertyInfo.cs" company="Effort Team">
+// <copyright file="IndexedFieldFixture.cs" company="Effort Team">
 //     Copyright (C) 2011-2014 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,51 +22,51 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-namespace Effort.Internal.DbManagement.Schema.Configuration
+namespace Effort.Test.Features
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using Effort.Internal.TypeConversion;
+#if EF61
+    using System.Data.Common;
+    using System.Data.Entity.Infrastructure;
+    using Effort.Test.Data.Features;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    internal class EntityPropertyInfo
+    [TestClass]
+    public class IndexedFieldFixture
     {
-        private readonly string name;
-        private readonly Type type;
-        private readonly FacetInfo facets;
-        private readonly ReadOnlyCollection<IndexInfo> indexes;
+        private FeatureDbContext context;
 
-        public EntityPropertyInfo(
-            string name, 
-            Type type, 
-            FacetInfo facets, 
-            List<IndexInfo> indexes)
+        [TestInitialize]
+        public void Initialize()
         {
-            this.name = name;
-            this.type = type;
-            this.facets = facets;
-            this.indexes = indexes.ToList().AsReadOnly();
+            DbConnection connection =
+                Effort.DbConnectionFactory.CreateTransient();
+
+            this.context =
+                new FeatureDbContext(
+                    connection,
+                    CompiledModels.IndexedFieldModel);
         }
 
-        public string Name
+        [TestMethod]
+        [ExpectedException(typeof(DbUpdateException))]
+        public void UniqueIndexViolation()
         {
-            get { return this.name; }
-        }
+            var e1 = new IndexedFieldEntity
+            {
+                Unique = 1
+            };
 
-        public FacetInfo Facets
-        {
-            get { return this.facets; }
-        }
+            var e2 = new IndexedFieldEntity
+            {
+                Unique = 1
+            };
 
-        public Type ClrType
-        {
-            get { return this.type; }
-        }
+            this.context.IndexedFieldEntities.Add(e1);
+            this.context.SaveChanges();
 
-        public IList<IndexInfo> Indexes
-        {
-            get { return this.indexes; }
+            this.context.IndexedFieldEntities.Add(e2);
+            this.context.SaveChanges();
         }
     }
+#endif
 }

@@ -43,6 +43,7 @@ namespace Effort.Test.Data.Features
         private static readonly Lazy<DbCompiledModel> disabledIdentityModel;
         private static readonly Lazy<DbCompiledModel> tableNameModel;
         private static readonly Lazy<DbCompiledModel> decimalIdentityFieldModel;
+        private static readonly Lazy<DbCompiledModel> indexedFieldModel;
 
         private static readonly ConcurrentDictionary<string, DbCompiledModel> models;
         
@@ -87,6 +88,11 @@ namespace Effort.Test.Data.Features
                 new Lazy<DbCompiledModel>(
                     () => CreateDecimalIdentityFieldModel(),
                     mode);
+
+            indexedFieldModel =
+                new Lazy<DbCompiledModel>(
+                    () => CreateIndexedFieldModel(),
+                    mode);
         }
 
         public static DbCompiledModel DefaultModel
@@ -107,6 +113,11 @@ namespace Effort.Test.Data.Features
         public static DbCompiledModel DecimalIdenityFieldModel
         {
             get { return decimalIdentityFieldModel.Value; }
+        }
+
+        public static DbCompiledModel IndexedFieldModel
+        {
+            get { return indexedFieldModel.Value; }
         }
 
         public static DbCompiledModel GetModel(params Type[] allowedEntityTypes)
@@ -176,6 +187,17 @@ namespace Effort.Test.Data.Features
             modelBuilder.Entity<DecimalIdentityFieldEntity>().Property(e => e.Id)
                 .HasPrecision(16, 0)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+            return CompileModel(modelBuilder);
+        }
+
+        private static DbCompiledModel CreateIndexedFieldModel()
+        {
+            DbModelBuilder modelBuilder = new DbModelBuilder();
+
+#if EF61
+            modelBuilder.Entity<IndexedFieldEntity>();
+#endif
 
             return CompileModel(modelBuilder);
         }

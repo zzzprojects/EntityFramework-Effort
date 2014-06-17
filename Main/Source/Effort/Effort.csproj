@@ -196,6 +196,8 @@
     <Compile Include="Internal\DbManagement\Engine\IExtendedTable`1.cs" />
     <Compile Include="Internal\DbManagement\Schema\Configuration\AssociationInfo.cs" />
     <Compile Include="Internal\DbManagement\Schema\Configuration\AssociationTableInfo.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\IndexConfiguration.cs" />
+    <Compile Include="Internal\DbManagement\Schema\Configuration\IndexInfo.cs" />
     <Compile Include="Internal\DbManagement\Schema\Configuration\RelationConfigurationGroup.cs" />
     <Compile Include="Internal\DbManagement\Schema\Configuration\IRelationConfiguration.cs" />
     <Compile Include="Internal\DbManagement\Schema\Configuration\TableConfigurationGroup.cs" />

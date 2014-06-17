@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Features\BinaryKeyEntity.cs" />
+    <Compile Include="Features\IndexedFieldEntity.cs" />
     <Compile Include="Features\OptionalRelationEntity.cs" />
     <Compile Include="Features\EmptyEntity.cs" />
     <Compile Include="Features\LargePrimaryKeyEntity.cs" />

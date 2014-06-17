@@ -50,6 +50,7 @@ namespace Effort.Internal.DbManagement.Schema
             tableConfig.Register<NotNullConfiguration>();
             tableConfig.Register<VarcharLimitConfiguration>();
             tableConfig.Register<CharLimitConfiguration>();
+            tableConfig.Register<IndexConfiguration>();
 
             DbSchemaBuilder schemaBuilder = new DbSchemaBuilder();
 

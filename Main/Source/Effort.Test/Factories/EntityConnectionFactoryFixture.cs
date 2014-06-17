@@ -24,6 +24,7 @@
 
 namespace Effort.Test.Factories
 {
+    using System.Configuration;
 #if !EFOLD
     using System.Data.Entity.Core.EntityClient;
     using System.Data.Entity.Core.Objects;
@@ -34,6 +35,7 @@ namespace Effort.Test.Factories
     using System.Linq;
     using Effort.Test.Data.Northwind;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
     [TestClass]
     public class EntityConnectionFactoryFixture
@@ -59,9 +61,13 @@ namespace Effort.Test.Factories
         [TestMethod]
         public void EntityConnectionFactory_CreatePersistentEntityConnection()
         {
-            //// TODO: Use unique connection string
+            var name = NorthwindObjectContext.DefaultConnectionStringName;
+            var connString = ConfigurationManager.ConnectionStrings[name].ConnectionString;
 
-            EntityConnection connection = EntityConnectionFactory.CreatePersistent(NorthwindObjectContext.DefaultConnectionString);
+            var csBuilder = new EntityConnectionStringBuilder(connString);
+            csBuilder.ProviderConnectionString = Guid.NewGuid().ToString();
+
+            EntityConnection connection = EntityConnectionFactory.CreatePersistent(csBuilder.ConnectionString);
         }
     }
 }

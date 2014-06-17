@@ -21,8 +21,9 @@ namespace Effort.Test.Data.Northwind
     public class NorthwindObjectContext : ObjectContext
     {
         public const string ContainerName = "NorthwindObjectContext";
-    
-    	public const string DefaultConnectionString = "name=NorthwindObjectContext";
+
+        public const string DefaultConnectionStringName = "NorthwindObjectContext";
+        public const string DefaultConnectionString = "name=" + DefaultConnectionStringName;
     
         #region Constructors
     

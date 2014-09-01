@@ -123,5 +123,123 @@ namespace Effort.Test.Features
 
             data.ShouldHaveCountOf(1);
         }
+
+        [TestMethod]
+        public void TimestampCompareGreaterQuery()
+        {
+            TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
+            timestamp1.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp1);
+
+            TimestampFieldEntity timestamp2 = new TimestampFieldEntity();
+            timestamp2.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp2);
+            context.SaveChanges();
+
+            byte[] version1 = timestamp1.Timestamp;
+            byte[] version2 = timestamp2.Timestamp;
+            var data = context
+                .TimestampFieldEntities
+                .Where(x => x.Timestamp.Compare(version1) > 0)
+                .ToList();
+
+            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
+            data.ShouldHaveCountOf(1);
+        }
+
+        [TestMethod]
+        public void TimestampCompareGreaterThanOrEqualQuery()
+        {
+            TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
+            timestamp1.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp1);
+
+            TimestampFieldEntity timestamp2 = new TimestampFieldEntity();
+            timestamp2.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp2);
+            context.SaveChanges();
+
+            byte[] version1 = timestamp1.Timestamp;
+            byte[] version2 = timestamp2.Timestamp;
+            var data = context
+                .TimestampFieldEntities
+                .Where(x => x.Timestamp.Compare(version1) >= 0)
+                .ToList();
+
+            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
+            data.ShouldHaveCountOf(2);
+        }
+
+        [TestMethod]
+        public void TimestampCompareSmallerQuery()
+        {
+            TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
+            timestamp1.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp1);
+
+            TimestampFieldEntity timestamp2 = new TimestampFieldEntity();
+            timestamp2.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp2);
+            context.SaveChanges();
+
+            byte[] version1 = timestamp1.Timestamp;
+            byte[] version2 = timestamp2.Timestamp;
+            var data = context
+                .TimestampFieldEntities
+                .Where(x => x.Timestamp.Compare(version2) < 0)
+                .ToList();
+
+            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
+            data.ShouldHaveCountOf(1);
+        }
+
+        [TestMethod]
+        public void TimestampCompareSmallerThanOrEqualQuery()
+        {
+            TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
+            timestamp1.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp1);
+
+            TimestampFieldEntity timestamp2 = new TimestampFieldEntity();
+            timestamp2.Data = "New record";
+
+            context.TimestampFieldEntities.Add(timestamp2);
+            context.SaveChanges();
+
+            byte[] version1 = timestamp1.Timestamp;
+            byte[] version2 = timestamp2.Timestamp;
+            var data = context
+                .TimestampFieldEntities
+                .Where(x => x.Timestamp.Compare(version2) <= 0)
+                .ToList();
+
+            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
+            data.ShouldHaveCountOf(2);
+        }
+    }
+
+    /// <summary>
+    /// Helper for comparing timestamp columns
+    /// </summary>
+    internal static class TimestampHelper
+    {
+        /// <summary>
+        /// Compare timestamp columns with EF
+        /// </summary>
+        /// <param name="ts1">first timestamp</param>
+        /// <param name="ts2">second timestamp</param>
+        /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "ts"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "ts2"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "ts1")] // Just a EF method proxy
+        public static int Compare(this byte[] ts1, byte[] ts2)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

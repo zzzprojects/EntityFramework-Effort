@@ -87,6 +87,11 @@ namespace Effort.Internal.Common
                 UniversalStorageSchemaModifier.Instance.Modify(ssdlFile, new ProviderInformation(providerInvariantName, providerManifestToken));
             }
 
+            foreach (var mslFile in msl)
+            {
+                new ModificationFunctionMappingModifier().Modify(mslFile, new Effort.Internal.Common.XmlProcessing.ModificationContext());
+            }
+
             MetadataWorkspace workspace = CreateMetadataWorkspace(csdl, ssdl, msl);
 
             return workspace;

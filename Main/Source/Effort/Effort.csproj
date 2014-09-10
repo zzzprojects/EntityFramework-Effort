@@ -257,6 +257,7 @@
     <Compile Include="Internal\Common\TypeHelper.cs" />
     <Compile Include="EntityConnectionFactory.cs" />
     <Compile Include="Internal\StorageSchema\CommonPropertyElementModifier.cs" />
+    <Compile Include="Internal\StorageSchema\ModificationFunctionMappingModifier.cs" />
     <Compile Include="Internal\StorageSchema\ReturnTypeAttributeSelector.cs" />
     <Compile Include="Internal\StorageSchema\ProviderManifestTokenAttributeModifier.cs" />
     <Compile Include="Internal\StorageSchema\ProviderAttributeModifier.cs" />

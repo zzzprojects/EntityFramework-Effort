@@ -96,5 +96,12 @@ namespace Effort.Exceptions
             "If using CodeFirst try to add the following line:" +
             Break +
             "context.Database.CreateIfNotExists()";
+
+        public static readonly string DatabaseNotInitialized =
+            "Database has not been initialized." + 
+            Break + Break +
+             "If using CodeFirst try to add the following line:" +
+            Break +
+            "context.Database.CreateIfNotExists()";
     }
 }

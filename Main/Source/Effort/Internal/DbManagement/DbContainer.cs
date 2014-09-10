@@ -30,6 +30,7 @@ namespace Effort.Internal.DbManagement
     using System.Diagnostics;
     using System.Linq;
     using Effort.DataLoaders;
+    using Effort.Exceptions;
     using Effort.Internal.Caching;
     using Effort.Internal.Common;
     using Effort.Internal.DbCommandTreeTransformation;
@@ -68,7 +69,17 @@ namespace Effort.Internal.DbManagement
 
         public Database Internal
         {
-            get { return this.database; }
+            get 
+            {
+                var db = this.database;
+
+                if (db == null)
+                {
+                    throw new EffortException(ExceptionMessages.DatabaseNotInitialized);
+                }
+
+                return db; 
+            }
         }
 
         public ILogger Logger
@@ -88,12 +99,12 @@ namespace Effort.Internal.DbManagement
 
         public object GetTable(string name)
         {
-            return this.database.GetTable(name);
+            return this.Internal.GetTable(name);
         }
 
         public void SetIdentityFields(bool enabled)
         {
-            foreach (IExtendedTable table in this.database.Tables.GetAllTables())
+            foreach (IExtendedTable table in this.Internal.Tables.GetAllTables())
             {
                 table.IsIdentityFieldEnabled = enabled;
             }
@@ -113,7 +124,7 @@ namespace Effort.Internal.DbManagement
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
                 // TODO: Verify fields
-                if (!this.database.ContainsTable(entitySet.GetTableName()))
+                if (!this.Internal.ContainsTable(entitySet.GetTableName()))
                 {
                     return false;
                 }
@@ -156,7 +167,7 @@ namespace Effort.Internal.DbManagement
             foreach (DbTableInfo tableInfo in schema.Tables)
             {
                 ITable table = DatabaseReflectionHelper.CreateTable(
-                    this.database,
+                    this.Internal,
                     tableInfo.EntityType,
                     (IKeyInfo)tableInfo.PrimaryKeyInfo,
                     tableInfo.IdentityField,
@@ -218,7 +229,7 @@ namespace Effort.Internal.DbManagement
 
             foreach (DbRelationInfo relation in schema.Relations)
             {
-                DatabaseReflectionHelper.CreateAssociation(this.database, relation);
+                DatabaseReflectionHelper.CreateAssociation(this.Internal, relation);
             }
 
             this.Logger.Write(

@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Features\BinaryKeyEntity.cs" />
+    <Compile Include="Features\FlagEnumFieldEntity.cs" />
+    <Compile Include="Features\FlagEnumFieldType.cs" />
     <Compile Include="Features\IndexedFieldEntity.cs" />
     <Compile Include="Features\OptionalRelationEntity.cs" />
     <Compile Include="Features\EmptyEntity.cs" />

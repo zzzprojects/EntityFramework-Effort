@@ -25,6 +25,7 @@
 namespace Effort.Test
 {
     using System.Data.Common;
+    using System.Data.Entity;
     using System.Linq;
     using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -106,6 +107,28 @@ namespace Effort.Test
 
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Foo", result[0].Value);
+        }
+
+        [TestMethod]
+        public void DbContext_DatabaseExists()
+        {
+            // Microsoft change the way database existence check works
+            //
+            // Exist call with an open connection always returns true
+            // In an earlier version of Effort, the Exists call opened the connection, 
+            // so later initialization did not begin 
+
+            DbConnection connection = DbConnectionFactory.CreateTransient();
+            FeatureDbContext context = new FeatureDbContext(connection);
+            
+            var exists = context.Database.Exists();
+
+            Assert.IsFalse(exists);
+
+            context.StringFieldEntities.Add(new StringFieldEntity { Value = "Foo" });
+            int count = context.SaveChanges();
+
+            Assert.AreEqual(1, count);
         }
     }
 }

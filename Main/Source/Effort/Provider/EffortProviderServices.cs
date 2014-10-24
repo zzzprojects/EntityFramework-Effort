@@ -37,6 +37,7 @@ namespace Effort.Provider
     using Effort.Internal.Caching;
     using Effort.Internal.DbManagement;
     using Effort.Internal.DbManagement.Schema;
+    using System.Data;
 
     /// <summary>
     ///     The factory for building command definitions; use the type of this object as the 
@@ -144,9 +145,12 @@ namespace Effort.Provider
             int? commandTimeout, 
             StoreItemCollection storeItemCollection)
         {
-            DbContainer container = GetDbContainer(connection);
+            return Wrap(connection, x =>
+            {
+                DbContainer container = GetDbContainer(x);
 
-            return container.IsInitialized(storeItemCollection);
+                return container.IsInitialized(storeItemCollection);
+            });
         }
 
         /// <summary>
@@ -169,12 +173,17 @@ namespace Effort.Provider
             int? commandTimeout, 
             StoreItemCollection storeItemCollection)
         {
-            DbContainer container = GetDbContainer(connection);
-
-            if (!container.IsInitialized(storeItemCollection))
+            Wrap(connection, x =>
             {
-                container.Initialize(storeItemCollection);
-            }
+                DbContainer container = GetDbContainer(x);
+
+                if (!container.IsInitialized(storeItemCollection))
+                {
+                    container.Initialize(storeItemCollection);
+                }
+
+                return 0;
+            });
         }
 
         /// <summary>
@@ -232,15 +241,6 @@ namespace Effort.Provider
             return string.Format("CREATE SCHEMA ({0})", key);
         }
 
-        /// <summary>
-        ///     Returns the underlying DbContainer object of the specified DbConnection object. 
-        /// </summary>
-        /// <param name="connection">
-        ///     The connection object.
-        /// </param>
-        /// <returns>
-        ///     The DbContainer object.
-        /// </returns>
         private static DbContainer GetDbContainer(DbConnection connection)
         {
             EffortConnection effortConnection = connection as EffortConnection;
@@ -250,13 +250,35 @@ namespace Effort.Provider
                 throw new ArgumentException("", "connection");
             }
 
-            // Open if needed
-            if (effortConnection.State == System.Data.ConnectionState.Closed)
-            {
-                effortConnection.Open();
-            }
+            ////// Open if needed
+            ////if (effortConnection.State == System.Data.ConnectionState.Closed)
+            ////{
+            ////    effortConnection.Open();
+            ////}
 
             return effortConnection.DbContainer;
+        }
+
+        private static T Wrap<T>(DbConnection connection, Func<DbConnection, T> action)
+        {
+            bool isOpen = connection.State == ConnectionState.Open;
+
+            if (!isOpen)
+            {
+                connection.Open();
+            }
+
+            try
+            {
+                return action(connection);
+            }
+            finally
+            {
+                if (!isOpen)
+                {
+                    connection.Close();
+                }
+            }
         }
     }
 }

@@ -77,5 +77,8 @@ namespace Effort.Internal.DbCommandTreeTransformation.Functions
 
         public static readonly MethodInfo EndsWith =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.EndsWith(string.Empty, string.Empty));
+
+        public static readonly MethodInfo CompareTo =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.CompareTo(string.Empty, string.Empty));
     }
 }

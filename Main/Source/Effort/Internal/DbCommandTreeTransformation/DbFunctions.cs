@@ -375,6 +375,21 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return b.EndsWith(a);
         }
 
+        internal static int CompareTo(string a, string b)
+        {
+            if (a == null && b == null)
+            {
+                return 0;
+            }
+
+            if (a == null || b == null)
+            {
+                return -1;
+            }
+
+            return a.CompareTo(b);
+        }
+
         #endregion
 
         #region Datetime

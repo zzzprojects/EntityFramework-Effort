@@ -32,6 +32,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 #endif
     using System.Linq.Expressions;
     using Effort.Internal.Common;
+    using Effort.Internal.DbCommandTreeTransformation.Functions;
 
     internal partial class TransformVisitor
     {
@@ -42,7 +43,17 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             ExpressionHelper.TryUnifyValueTypes(ref left, ref right);
 
-            switch (expression.ExpressionKind)
+            return this.CreateComparison(left, right, expression.ExpressionKind);
+        }
+
+        private Expression CreateComparison(Expression left, Expression right, DbExpressionKind kind)
+        {
+            if (left.Type == typeof(string) && right.Type == typeof(string))
+            {
+                return CreateStringComparison(left, right, kind);
+            }
+
+            switch (kind)
             {
                 case DbExpressionKind.Equals:
                     return Expression.Equal(left, right);
@@ -61,9 +72,48 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
                 case DbExpressionKind.LessThanOrEquals:
                     return Expression.LessThanOrEqual(left, right);
+
+                default:
+                    throw new InvalidOperationException(
+                        "The ExpressionKind cannot be " + kind.ToString());
+            }
+        }
+
+        private Expression CreateStringComparison(Expression left, Expression right, DbExpressionKind kind)
+        {
+            var method = Expression.Call(null, StringFunctions.CompareTo, left, right);
+            var mode = GetCompareMode(kind);
+
+            Expression res = Expression.Equal(method, Expression.Constant(mode.Item1));
+
+            if (!mode.Item2)
+            {
+                res = Expression.Not(res);
             }
 
-            throw new InvalidOperationException("The ExpressionKind cannot be " + expression.ExpressionKind.ToString());
+            return res;
+        }
+
+        private Tuple<int, bool> GetCompareMode(DbExpressionKind kind)
+        {
+            switch (kind)
+            {
+                case DbExpressionKind.Equals:
+                    return Tuple.Create(0, true);
+                case DbExpressionKind.NotEquals:
+                    return Tuple.Create(0, false);
+                case DbExpressionKind.GreaterThan:
+                    return Tuple.Create(1, true);
+                case DbExpressionKind.GreaterThanOrEquals:
+                    return Tuple.Create(-1, false);
+                case DbExpressionKind.LessThan:
+                    return Tuple.Create(-1, true);
+                case DbExpressionKind.LessThanOrEquals:
+                    return Tuple.Create(1, false);
+            }
+
+            throw new InvalidOperationException(
+                "The ExpressionKind cannot be " + kind.ToString());
         }
     }
 }

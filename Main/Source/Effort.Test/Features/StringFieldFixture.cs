@@ -24,25 +24,159 @@
 
 namespace Effort.Test.Features
 {
-    using System.Data.Common;
+    using System.Data.Entity;
+    using System.Linq;
     using Effort.Test.Data.Features;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class StringFieldFixture
     {
-        [TestMethod]
-        public void StringFieldFixture_LargeStringFieldCreation()
+        private FeatureDbContext context;
+
+        [TestInitialize]
+        public void Initialize()
         {
-            DbConnection connection =
-                Effort.DbConnectionFactory.CreateTransient();
-
-            FeatureDbContext context =
+            this.context =
                 new FeatureDbContext(
-                    connection, 
-                    CompiledModels.GetModel<LargeStringFieldEntity>());
+                    Effort.DbConnectionFactory.CreateTransient(),
+                    CompiledModels.GetModel<
+                        StringFieldEntity>());
+        }
 
-            context.Database.Initialize(true);
+        protected IDbSet<StringFieldEntity> Entities
+        {
+            get { return this.context.StringFieldEntities; }
+        }
+
+        protected void Add(params string[] values)
+        {
+            foreach (var value in values)
+            {
+                this.Entities.Add(new StringFieldEntity { Value = value });
+            }
+
+            this.context.SaveChanges();
+        }
+
+        [TestMethod]
+        public void String_Equals()
+        {
+            this.Add("John", "Doe");
+
+            var res = this.Entities
+                .Where(x => x.Value == "John")
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+
+        [TestMethod]
+        public void String_Equals2()
+        {
+            this.Add("John", null, null);
+
+            var res = this.Entities
+                .Where(x => x.Value == null)
+                .Count();
+
+            Assert.AreEqual(2, res);
+        }
+
+        [TestMethod]
+        public void String_NotEquals()
+        {
+            this.Add("John", "Doe", "John");
+
+            var res = this.Entities
+                .Where(x => x.Value != "John")
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+
+        [TestMethod]
+        public void String_NotEqualsNull()
+        {
+            this.Add("John", "Doe", null);
+
+            var res = this.Entities
+                .Where(x => x.Value != null)
+                .Count();
+
+            Assert.AreEqual(2, res);
+        }
+
+        [TestMethod]
+        public void String_GreaterThan()
+        {
+            this.Add("Indie", "Imp", "Huge");
+
+            var res = this.Entities
+                .Where(x => x.Value.CompareTo("Imp") > 0)
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+
+        [TestMethod]
+        public void String_GreaterThanOrEquals()
+        {
+            this.Add("Indie", "Imp", "Huge");
+
+            var res = this.Entities
+                .Where(x => x.Value.CompareTo("I") >= 0)
+                .Count();
+
+            Assert.AreEqual(2, res);
+        }
+
+        [TestMethod]
+        public void String_LessThan()
+        {
+            this.Add("Indie", "Imp", "Huge");
+
+            var res = this.Entities
+                .Where(x => x.Value.CompareTo("Imp") < 0)
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+
+        [TestMethod]
+        public void String_LessThanOrEquals()
+        {
+            this.Add("Indie", "Imp", "Huge");
+
+            var res = this.Entities
+                .Where(x => x.Value.CompareTo("Imp") <= 0)
+                .Count();
+
+            Assert.AreEqual(2, res);
+        }
+
+        [TestMethod]
+        public void String_CompareNull()
+        {
+            this.Add("Indie", "Imp", null);
+
+            var res = this.Entities
+                .Where(x => x.Value.CompareTo(null) == -1)
+                .Count();
+
+            Assert.AreEqual(2, res);
+        }
+
+        [TestMethod]
+        public void String_CompareNull2()
+        {
+            this.Add("Indie", "Imp", null);
+
+            var res = this.Entities
+                .Where(x => ((string)null).CompareTo(x.Value) == -1)
+                .Count();
+
+            Assert.AreEqual(2, res);
         }
     }
 }

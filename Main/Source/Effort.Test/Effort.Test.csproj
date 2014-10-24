@@ -89,6 +89,7 @@
     <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
     <Compile Include="Features\BinaryKeyFixture.cs" />
     <Compile Include="Features\FlagEnumFieldFixture.cs" />
+    <Compile Include="Features\TimestampIndexFixture.cs" />
     <Compile Include="Features\IndexedFieldFixture.cs" />
     <Compile Include="Features\MiscellaneousQueryFixture.cs" />
     <Compile Include="Features\DecimalIdentityFieldFixture.cs" />

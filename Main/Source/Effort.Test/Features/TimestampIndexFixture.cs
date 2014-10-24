@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+#if EF61
+
 namespace Effort.Test.Features
 {
     using System.Linq;
@@ -76,3 +78,5 @@ namespace Effort.Test.Features
 
     }
 }
+
+#endif

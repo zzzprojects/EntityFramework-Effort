@@ -58,8 +58,6 @@ namespace Effort.Test.Data.Features
 
         public IDbSet<TimestampFieldEntity> TimestampFieldEntities { get; set; }
 
-        public IDbSet<TimestampIndexedFieldEntity> TimestampIndexedFieldEntities { get; set; }
-
         public IDbSet<LargeTimestampFieldEntity> LargeTimestampFieldEntities { get; set; }
 
         public IDbSet<RequiredFieldEntity> RequiredFieldEntities { get; set; }
@@ -80,6 +78,8 @@ namespace Effort.Test.Data.Features
 
 #if EF61
         public IDbSet<IndexedFieldEntity> IndexedFieldEntities { get; set; }
+
+		public IDbSet<TimestampIndexedFieldEntity> TimestampIndexedFieldEntities { get; set; }
 #endif
-    }
+	}
 }

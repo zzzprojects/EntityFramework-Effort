@@ -27,6 +27,7 @@ namespace Effort.Test.Data.Features
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+#if EF61
     public class TimestampIndexedFieldEntity
     {
         [Key]
@@ -38,4 +39,5 @@ namespace Effort.Test.Data.Features
         [Index]
         public byte[] Timestamp { get; set; }
     }
+#endif
 }

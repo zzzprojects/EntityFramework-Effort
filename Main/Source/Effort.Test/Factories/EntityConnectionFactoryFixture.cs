@@ -61,13 +61,30 @@ namespace Effort.Test.Factories
         [TestMethod]
         public void EntityConnectionFactory_CreatePersistentEntityConnection()
         {
-            var name = NorthwindObjectContext.DefaultConnectionStringName;
-            var connString = ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            var connString = this.GetDefaultConnectionString();
 
             var csBuilder = new EntityConnectionStringBuilder(connString);
             csBuilder.ProviderConnectionString = Guid.NewGuid().ToString();
 
             EntityConnection connection = EntityConnectionFactory.CreatePersistent(csBuilder.ConnectionString);
+        }
+
+        [TestMethod]
+        public void EntityConnectionFactory_ImplicitMetadata()
+        {
+            var connString = this.GetDefaultConnectionString();
+
+            var csBuilder = new EntityConnectionStringBuilder(connString);
+            csBuilder.Metadata = "res://*/";
+            csBuilder.ProviderConnectionString = Guid.NewGuid().ToString();
+
+            EntityConnectionFactory.CreateTransient(csBuilder.ConnectionString);
+        }
+
+        private string GetDefaultConnectionString()
+        {
+            var name = NorthwindObjectContext.DefaultConnectionStringName;
+            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
     }
 }

@@ -223,32 +223,53 @@ namespace Effort.Internal.Common
                 !IsSystemAssembly(asm) &&
                 !asm.IsDynamic))
             {
-                using (Stream stream = asm.GetManifestResourceStream(resourceName))
+                foreach (var res in FindResources(resourceName, asm))
                 {
-                    if (stream == null)
+                    using (var stream = asm.GetManifestResourceStream(res))
                     {
-                        continue;
-                    }
+                        if (stream == null)
+                        {
+                            continue;
+                        }
 
-                    if (resourceName.EndsWith(".csdl", StringComparison.OrdinalIgnoreCase))
-                    {
-                        csdl.Add(XElement.Load(XmlReader.Create(stream)));
-                        return;
-                    }
-                    else if (resourceName.EndsWith(".ssdl", StringComparison.OrdinalIgnoreCase))
-                    {
-                        ssdl.Add(XElement.Load(XmlReader.Create(stream)));
-                        return;
-                    }
-                    else if (resourceName.EndsWith(".msl", StringComparison.OrdinalIgnoreCase))
-                    {
-                        msl.Add(XElement.Load(XmlReader.Create(stream)));
-                        return;
+                        if (res.EndsWith(".csdl", StringComparison.OrdinalIgnoreCase))
+                        {
+                            csdl.Add(XElement.Load(XmlReader.Create(stream)));
+                        }
+                        else if (res.EndsWith(".ssdl", StringComparison.OrdinalIgnoreCase))
+                        {
+                            ssdl.Add(XElement.Load(XmlReader.Create(stream)));
+                        }
+                        else if (res.EndsWith(".msl", StringComparison.OrdinalIgnoreCase))
+                        {
+                            msl.Add(XElement.Load(XmlReader.Create(stream)));
+                        }
                     }
                 }
             }
+        }
 
-            throw new InvalidOperationException("Resource " + resPath + " not found.");
+        private static IEnumerable<string> FindResources(string resourceName, Assembly asm)
+        {
+            if (string.IsNullOrWhiteSpace(resourceName))
+            {
+                return GetAllResources(asm);
+            }
+
+            return new[] { resourceName };
+        }
+
+        private static IEnumerable<string> GetAllResources(Assembly asm)
+        {
+            foreach (var item in asm.GetManifestResourceNames())
+            {
+                var exts = new [] { ".csdl", ".ssdl", ".msl" };
+
+                if (!exts.Any(x => item.EndsWith(x, StringComparison.InvariantCultureIgnoreCase)))
+                    continue;
+
+                yield return item;
+            }
         }
 
         private static bool IsEcmaAssembly(Assembly asm)

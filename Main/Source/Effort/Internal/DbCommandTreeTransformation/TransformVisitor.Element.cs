@@ -37,9 +37,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             Expression source = this.Visit(expression.Argument);
             Expression single = queryMethodExpressionBuilder.FirstOrDefault(source);
-            Expression result = Expression.Property(single, single.Type.GetProperties()[0]);
 
-            return result;
+            var props = single.Type.GetProperties();
+
+            if (props.Length == 1)
+            {
+                // If the row record has a single property, it is evaluated too
+                return Expression.Property(single, props[0]);
+            }
+
+            return single;
         }
     }
 }

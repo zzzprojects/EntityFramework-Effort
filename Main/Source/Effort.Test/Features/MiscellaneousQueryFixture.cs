@@ -24,7 +24,6 @@
 
 namespace Effort.Test.Features
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Effort.Test.Data.Northwind;
     using Effort.Test.Internal.Queries;
@@ -47,18 +46,19 @@ namespace Effort.Test.Features
         [TestMethod]
         public void Discussion528812()
         {
-            var expected = "[{\"C2\":null},{\"C2\":null},{\"C2\":null},{\"C2\":null},{\"C2\":null},{\"C2\":null},{\"C2\":null},{\"C2\":null}]";
+            var expected = "[{\"C1\":1},{\"C1\":3},{\"C1\":16},{\"C1\":11},{\"C1\":22},{\"C1\":9},{\"C1\":7},{\"C1\":10}]";
 
             ICorrectness result = this.tester.TestQuery(
-                context =>
-                    context.Categories.Select(x =>
+                context => context.Categories
+                    .Where(x => x.Description != null)
+                    .Select(x =>
                         new
                         {
-                            Description = context.Products.FirstOrDefault(u => false) != null ?
-                                context.Products.FirstOrDefault(u => false).ProductName :
+                            Description = context.Products.Any(u => u.CategoryID == x.CategoryID) != null ?
+                                (int?)context.Products.FirstOrDefault(u => u.CategoryID == x.CategoryID).ProductID :
                                 null
                         }),
-                expected);
+               expected);
 
             Assert.IsTrue(result.Check());
         }

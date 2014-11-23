@@ -27,14 +27,14 @@ namespace Effort.Test.Features
     using System;
     using System.Data.Common;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class GuidKeyFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection = 
@@ -46,13 +46,13 @@ namespace Effort.Test.Features
                     CompiledModels.GetModel<GuidKeyEntity>());
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void GuidKey_InsertGeneratesNewGuid()
         {
             GuidKeyEntity entity = new GuidKeyEntity();
@@ -63,7 +63,7 @@ namespace Effort.Test.Features
             Assert.AreNotEqual(Guid.Empty, entity.Id);
         }
 
-        [TestMethod]
+        [Test]
         public void GuidKey_UpdateKeepsGuid()
         {
             GuidKeyEntity entity = new GuidKeyEntity();

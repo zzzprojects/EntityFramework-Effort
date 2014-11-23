@@ -26,49 +26,49 @@ namespace Effort.Test.Csv
 {
     using System;
     using Effort.Internal.Csv;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class FieldValueFixture
     {
         private const string TestString = "Hello World!";
 
-        [TestMethod]
+        [Test]
         public void DefaultFieldValue()
         {
             FieldValue[] value = new FieldValue[1];
 
-            value[0].IsMissing.ShouldBeTrue();;
+            value[0].IsMissing.Should().BeTrue();;
         }
 
-        [TestMethod]
+        [Test]
         public void ValuedFieldValue()
         {
             FieldValue value = TestString;
 
-            value.IsMissing.ShouldBeFalse();
-            value.Value.ShouldEqual(TestString);
+            value.IsMissing.Should().BeFalse();
+            value.Value.Should().Be(TestString);
         }
 
-        [TestMethod]
+        [Test]
         public void NullValuedFieldValue()
         {
             FieldValue value = null;
 
-            value.IsMissing.ShouldBeFalse();
-            value.Value.ShouldEqual(null);
+            value.IsMissing.Should().BeFalse();
+            value.Value.Should().Be(null);
         }
 
-        [TestMethod]
+        [Test]
         public void MissingFieldValue()
         {
             FieldValue value = FieldValue.Missing;
 
-            value.IsMissing.ShouldBeTrue();
+            value.IsMissing.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void MissingFieldValueEvaluation()
         {
@@ -77,7 +77,7 @@ namespace Effort.Test.Csv
             string eval = value.Value;
         }
 
-        [TestMethod]
+        [Test]
         public void MissingFieldAndStringAddition()
         {
             FieldValue left = FieldValue.Missing;
@@ -85,11 +85,11 @@ namespace Effort.Test.Csv
 
             FieldValue result = left + right;
 
-            result.IsMissing.ShouldBeFalse();
-            result.Value.ShouldEqual(TestString);
+            result.IsMissing.Should().BeFalse();
+            result.Value.Should().Be(TestString);
         }
 
-        [TestMethod]
+        [Test]
         public void MissingFieldAndStringAddition2()
         {
             string left = TestString;
@@ -97,8 +97,8 @@ namespace Effort.Test.Csv
 
             FieldValue result = left + right;
 
-            result.IsMissing.ShouldBeFalse();
-            result.Value.ShouldEqual(TestString);
+            result.IsMissing.Should().BeFalse();
+            result.Value.Should().Be(TestString);
         }
     }
 }

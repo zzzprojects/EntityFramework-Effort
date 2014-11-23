@@ -27,8 +27,8 @@ namespace Effort.Test.DataLoaders
     using System.Linq;
     using Effort.Internal.Common;
     using Effort.Test.Data.Northwind;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
     using System.Data.Entity.Core.Metadata.Edm;
@@ -37,10 +37,10 @@ namespace Effort.Test.DataLoaders
     using System.Data.Metadata.Edm;
 #endif
 
-    [TestClass]
+    [TestFixture]
     public class EntityDataLoaderFixture
     {
-        [TestMethod]
+        [Test]
         public void EntityDataLoader_CommandTreeBuilder()
         {
             var connString = "NorthwindObjectContext";
@@ -58,11 +58,11 @@ namespace Effort.Test.DataLoaders
             var tree = CommandTreeBuilder.CreateSelectAll(workspace, entitySet);
 
             var query = tree as DbQueryCommandTree;
-            query.ShouldNotBeNull();
+            query.Should().NotBeNull();
 
             var scan = query.Query as DbScanExpression;
-            scan.ShouldNotBeNull();
-            scan.Target.ShouldEqual(entitySet);
+            scan.Should().NotBeNull();
+            scan.Target.Should().Be(entitySet);
         }
     }
 }

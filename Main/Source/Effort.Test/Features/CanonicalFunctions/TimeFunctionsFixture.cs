@@ -28,19 +28,19 @@ namespace Effort.Test.Features.CanonicalFunctions
     using System.Data.Objects;
 #endif
     using System;
+    using System.Data.Entity;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
-    using System.Data.Entity;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class TimeFunctionsFixture
     {
         private FeatureDbContext context;
         private static readonly TimeSpan stored = new TimeSpan(3, 4, 5);
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context =
@@ -65,47 +65,47 @@ namespace Effort.Test.Features.CanonicalFunctions
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TimeHour()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Time.Hours == 3);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeMinute()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Time.Minutes == 4);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeSecond()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Time.Seconds == 5);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeMillisecond()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Time.Milliseconds == 0);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddNanoseconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromTicks(-1));
@@ -120,10 +120,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddNanoseconds(x.Time, -100) == time);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddMicroseconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromTicks(-10));
@@ -138,10 +138,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddMicroseconds(x.Time, -1) == time);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddMilliseconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromMilliseconds(-1));
@@ -156,10 +156,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddMilliseconds(x.Time, -1) == time);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddSeconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromSeconds(-1));
@@ -174,10 +174,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddSeconds(x.Time, -1) == time);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddMinutes()
         {
             TimeSpan time = stored.Add(TimeSpan.FromMinutes(-1));
@@ -192,10 +192,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddMinutes(x.Time, -1) == time);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddHours()
         {
             TimeSpan time = stored.Add(TimeSpan.FromHours(-1));
@@ -210,10 +210,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddHours(x.Time, -1) == time);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeDiffNanoseconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromTicks(-1));
@@ -228,10 +228,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffNanoseconds(time, x.Time) == 100);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeDiffMicroseconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromTicks(-10));
@@ -246,10 +246,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffMicroseconds(time, x.Time) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeDiffMilliseconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromMilliseconds(-1));
@@ -264,10 +264,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffMilliseconds(time, x.Time) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeDiffSeconds()
         {
             TimeSpan time = stored.Add(TimeSpan.FromSeconds(-1));
@@ -282,10 +282,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffSeconds(time, x.Time) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeDiffMinutes()
         {
             TimeSpan time = stored.Add(TimeSpan.FromMinutes(-1));
@@ -300,10 +300,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffMinutes(time, x.Time) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeDiffHours()
         {
             TimeSpan time = stored.Add(TimeSpan.FromHours(-1));
@@ -318,11 +318,11 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffHours(time, x.Time) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
 
-        [TestMethod]
+        [Test]
         public void CreateTime()
         {
 #if !EFOLD
@@ -337,7 +337,7 @@ namespace Effort.Test.Features.CanonicalFunctions
 
             var q2 = q.AsEnumerable().Where(x => x.Value.Hours == 2);
                 
-            q2.ShouldNotBeEmpty();
+            q2.Should().NotBeEmpty();
         }
     }
 }

@@ -27,20 +27,20 @@ namespace Effort.Test.Features
     using System.Linq;
     using System.Transactions;
     using Effort.Test.Data.Northwind;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class TransactionFixture
     {
         private NorthwindObjectContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context = new LocalNorthwindObjectContext();
         }
 
-        [TestMethod]
+        [Test]
         public void TransactionScopeRollback()
         {
             Customer customer = new Customer();
@@ -64,7 +64,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(customerWasNotAdded);
         }
 
-        [TestMethod]
+        [Test]
         public void TransactionScopeCommit()
         {
             Customer customer = new Customer();

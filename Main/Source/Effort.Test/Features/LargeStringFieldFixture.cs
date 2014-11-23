@@ -26,12 +26,12 @@ namespace Effort.Test.Features
 {
     using System.Data.Common;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class LargeStringFieldFixture
     {
-        [TestMethod]
+        [Test]
         public void StringFieldFixture_LargeStringFieldCreation()
         {
             DbConnection connection =

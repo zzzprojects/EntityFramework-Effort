@@ -33,16 +33,16 @@ namespace Effort.Test.Features
 #endif
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using NUnit.Framework;
+    using FluentAssertions;
 
 #if NET45
-    [TestClass]
+    [TestFixture]
     public class EnumFieldFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection =
@@ -55,7 +55,7 @@ namespace Effort.Test.Features
         }
 
 
-        [TestMethod]
+        [Test]
         public void EnumField_Insert()
         {
             this.context.EnumFieldEntities.Add(
@@ -64,7 +64,7 @@ namespace Effort.Test.Features
             this.context.SaveChanges();
         }
 
-        [TestMethod]
+        [Test]
         public void EnumField_Query()
         {
             this.context.EnumFieldEntities.Add(
@@ -74,10 +74,10 @@ namespace Effort.Test.Features
             var queried = this.context.EnumFieldEntities
                 .FirstOrDefault(x => x.Value == EnumFieldType.EnumValue1);
 
-            queried.ShouldNotBeNull();
+            queried.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void EnumField_Query_ESql_Param()
         {
             var entity = new EnumFieldEntity { Value = EnumFieldType.EnumValue1 };
@@ -97,11 +97,11 @@ namespace Effort.Test.Features
                 .CreateQuery<object>(sql, parameters)
                 .FirstOrDefault();
 
-            queried.ShouldNotBeNull();
-            queried.ShouldEqual(entity.Id);
+            queried.Should().NotBeNull();
+            queried.Should().Be(entity.Id);
         }
 
-        [TestMethod]
+        [Test]
         public void EnumField_Query_Param()
         {
             this.context.EnumFieldEntities.Add(
@@ -112,10 +112,10 @@ namespace Effort.Test.Features
             var queried = this.context.EnumFieldEntities
                 .FirstOrDefault(x => x.Value == param);
 
-            queried.ShouldNotBeNull();
+            queried.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void EnumField_Delete()
         {
             var entity = new EnumFieldEntity { Value = EnumFieldType.EnumValue1 };
@@ -126,7 +126,7 @@ namespace Effort.Test.Features
             this.context.SaveChanges();
         }
 
-        [TestMethod]
+        [Test]
         public void EnumField_Update()
         {
             var entity = this.context.EnumFieldEntities.Create();
@@ -140,7 +140,7 @@ namespace Effort.Test.Features
             var queried = this.context.EnumFieldEntities
                .FirstOrDefault(x => x.Value == EnumFieldType.EnumValue2);
 
-            queried.ShouldNotBeNull();
+            queried.Should().NotBeNull();
         }
     }
 #endif

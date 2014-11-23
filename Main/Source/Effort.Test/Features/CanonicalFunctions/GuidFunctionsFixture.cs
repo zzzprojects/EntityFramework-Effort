@@ -28,15 +28,15 @@ namespace Effort.Test.Features.CanonicalFunctions
     using System.Data.Common;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class GuidFunctionsFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
@@ -47,7 +47,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                     CompiledModels.GetModel<StringFieldEntity>());
         }
 
-        [TestMethod]
+        [Test]
         public void NewGuidFunction()
         {
             this.context.StringFieldEntities.Add(
@@ -65,8 +65,8 @@ namespace Effort.Test.Features.CanonicalFunctions
 
             var entity = q.First();
 
-            entity.Value.ShouldEqual("Value");
-            entity.Guid.ShouldNotEqual(Guid.Empty);
+            entity.Value.Should().Be("Value");
+            entity.Guid.Should().NotBe(Guid.Empty);
         }
     }
 }

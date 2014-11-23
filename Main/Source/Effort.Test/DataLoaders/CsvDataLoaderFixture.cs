@@ -27,71 +27,63 @@ namespace Effort.Test.DataLoaders
     using System;
     using System.Linq;
     using Effort.DataLoaders;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class CsvDataLoaderFixture
     {
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_EmptyStringConversion()
         {
             IValueConverter converter = new CsvValueConverter();
 
             object value = converter.ConvertValue("", typeof(string));
 
-            value.ShouldNotBeNull();
-            value.ShouldBeOfType(typeof(string));
-            value.ShouldEqual("");
+            value.Should().Be("");
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_NullStringConversion()
         {
             IValueConverter converter = new CsvValueConverter();
 
             object value = converter.ConvertValue(null, typeof(string));
 
-            value.ShouldBeNull();
+            value.Should().BeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_LineFeedStringConversion()
         {
             IValueConverter converter = new CsvValueConverter();
 
             object value = converter.ConvertValue(@"\n", typeof(string));
 
-            value.ShouldNotBeNull();
-            value.ShouldBeOfType(typeof(string));
-            value.ShouldEqual("\n");
+            value.Should().Be("\n");
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_CarrageReturnStringConversion()
         {
             IValueConverter converter = new CsvValueConverter();
 
             object value = converter.ConvertValue(@"\r", typeof(string));
 
-            value.ShouldNotBeNull();
-            value.ShouldBeOfType(typeof(string));
-            value.ShouldEqual("\r");
+            value.Should().Be("\r");
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_EscapeStringConversion()
         {
             IValueConverter converter = new CsvValueConverter();
 
             object value = converter.ConvertValue(@"\\", typeof(string));
 
-            value.ShouldNotBeNull();
-            value.ShouldBeOfType(typeof(string));
-            value.ShouldEqual("\\");
+            value.Should().Be("\\");
         }
 
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(FormatException))]
         public void CsvDataLoader_InvalidStringConversion()
         {
@@ -100,19 +92,17 @@ namespace Effort.Test.DataLoaders
            converter.ConvertValue(@"\k", typeof(string));
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_TimespanConversion()
         {
             IValueConverter converter = new CsvValueConverter();
 
             object value = converter.ConvertValue("3:00:00", typeof(TimeSpan));
 
-            value.ShouldNotBeNull();
-            value.ShouldBeOfType(typeof(TimeSpan));
-            value.ShouldEqual(TimeSpan.FromHours(3));
+            value.Should().Be(TimeSpan.FromHours(3));
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_DateTimeOffsetConversion()
         {
             IValueConverter converter = new CsvValueConverter();
@@ -120,15 +110,13 @@ namespace Effort.Test.DataLoaders
             object value = 
                 converter.ConvertValue("03/05/2013 03:00:00 +01:00", typeof(DateTimeOffset));
 
-            value.ShouldNotBeNull();
-            value.ShouldBeOfType(typeof(DateTimeOffset));
-            value.ShouldEqual(
-                new DateTimeOffset(
-                    new DateTime(2013, 3, 5, 3, 0, 0),
-                    new TimeSpan(1, 0, 0)));
+            value.Should().Be(
+                    new DateTimeOffset(
+                        new DateTime(2013, 3, 5, 3, 0, 0),
+                        new TimeSpan(1, 0, 0)));
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_GuidConversion()
         {
             IValueConverter converter = new CsvValueConverter();
@@ -136,12 +124,10 @@ namespace Effort.Test.DataLoaders
             object value = 
                 converter.ConvertValue("00000000-0000-0000-0000-000000000000", typeof(Guid));
 
-            value.ShouldNotBeNull();
-            value.ShouldBeOfType(typeof(Guid));
-            value.ShouldEqual(new Guid());
+            value.Should().Be(new Guid());
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_EmbeddedResource()
         {
             var loader = new CsvDataLoader("res://Effort.Test/Internal/Resources/");
@@ -157,11 +143,11 @@ namespace Effort.Test.DataLoaders
 
             var data = tableLoader.GetData().Single();
 
-            data[0].ShouldEqual(1);
-            data[1].ShouldEqual("Foo");
+            data[0].Should().Be(1);
+            data[1].Should().Be("Foo");
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_EmbeddedResource_NotExisting()
         {
             var loader = new CsvDataLoader("res://Effort.Test/Internal/Resources/");
@@ -176,10 +162,10 @@ namespace Effort.Test.DataLoaders
 
             var data = tableLoader.GetData().ToList();
 
-            data.ShouldHaveCountOf(0);
+            data.Should().HaveCount(0);
         }
 
-        [TestMethod]
+        [Test]
         public void CsvDataLoader_EmbeddedResource_NotExistingDirectory()
         {
             var loader = new CsvDataLoader("res://Effort.Test/Internal/NonExisting");
@@ -191,7 +177,7 @@ namespace Effort.Test.DataLoaders
             }
             catch (Exception ex) { expected = ex; }
 
-            expected.ShouldBeOfType(typeof(ArgumentException));
+            expected.Should().BeOfType<ArgumentException>();
         }
     }
 }

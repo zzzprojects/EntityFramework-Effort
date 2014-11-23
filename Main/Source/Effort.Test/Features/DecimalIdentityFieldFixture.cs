@@ -26,15 +26,15 @@ namespace Effort.Test.Features
 {
     using System.Data.Common;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using NUnit.Framework;
+    using FluentAssertions;
 
-    [TestClass]
+    [TestFixture]
     public class DecimalIdentityFieldFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection = 
@@ -44,19 +44,19 @@ namespace Effort.Test.Features
                 new FeatureDbContext(connection, CompiledModels.DecimalIdenityFieldModel);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalIdentity_Creation()
         {
             this.context.Database.Initialize(true);
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalIdentity_Insert()
         {
             var e1 = new DecimalIdentityFieldEntity();
@@ -68,7 +68,7 @@ namespace Effort.Test.Features
             this.context.DecimalIdentityFieldEntities.Add(e2);
             this.context.SaveChanges();
 
-            e2.Id.ShouldEqual(e1.Id + 1);
+            e2.Id.Should().Be(e1.Id + 1);
         }
     }
 }

@@ -27,14 +27,14 @@ namespace Effort.Test.Features
     using System.Data.Entity;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class StringFieldFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context =
@@ -59,7 +59,7 @@ namespace Effort.Test.Features
             this.context.SaveChanges();
         }
 
-        [TestMethod]
+        [Test]
         public void String_Equals()
         {
             this.Add("John", "Doe");
@@ -71,7 +71,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(1, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_Equals2()
         {
             this.Add("John", null, null);
@@ -83,7 +83,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(2, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_NotEquals()
         {
             this.Add("John", "Doe", "John");
@@ -95,7 +95,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(1, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_NotEqualsNull()
         {
             this.Add("John", "Doe", null);
@@ -107,7 +107,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(2, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_GreaterThan()
         {
             this.Add("Indie", "Imp", "Huge");
@@ -119,7 +119,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(1, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_GreaterThanOrEquals()
         {
             this.Add("Indie", "Imp", "Huge");
@@ -131,7 +131,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(2, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_LessThan()
         {
             this.Add("Indie", "Imp", "Huge");
@@ -143,7 +143,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(1, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_LessThanOrEquals()
         {
             this.Add("Indie", "Imp", "Huge");
@@ -155,7 +155,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(2, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_CompareNull()
         {
             this.Add("Indie", "Imp", null);
@@ -167,7 +167,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(2, res);
         }
 
-        [TestMethod]
+        [Test]
         public void String_CompareNull2()
         {
             this.Add("Indie", "Imp", null);

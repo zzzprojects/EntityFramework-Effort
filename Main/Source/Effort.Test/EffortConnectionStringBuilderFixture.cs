@@ -25,13 +25,13 @@
 namespace Effort.Test
 {
     using Effort.Provider;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using System;
 
-    [TestClass]
+    [TestFixture]
     public class EffortConnectionStringBuilderFixture
     {
-        [TestMethod]
+        [Test]
         public void EffortConnectionStringBuilder_InstanceId()
         {
             var writer = new EffortConnectionStringBuilder();
@@ -42,7 +42,7 @@ namespace Effort.Test
             Assert.AreEqual("InstanceId", reader.InstanceId);
         }
 
-        [TestMethod]
+        [Test]
         public void EffortConnectionStringBuilder_DataLoaderArgument()
         {
             var writer = new EffortConnectionStringBuilder();
@@ -53,7 +53,7 @@ namespace Effort.Test
             Assert.AreEqual("LoaderArgument", reader.DataLoaderArgument);
         }
 
-        [TestMethod]
+        [Test]
         public void EffortConnectionStringBuilder_DataLoaderType()
         {
             var writer = new EffortConnectionStringBuilder();
@@ -64,7 +64,7 @@ namespace Effort.Test
             Assert.AreEqual(typeof(Effort.DataLoaders.EmptyDataLoader), reader.DataLoaderType);
         }
 
-        [TestMethod]
+        [Test]
         public void EffortConnectionStringBuilder_IsTransient()
         {
             var writer = new EffortConnectionStringBuilder();
@@ -75,7 +75,7 @@ namespace Effort.Test
             Assert.IsTrue(reader.IsTransient);
         }
 
-        [TestMethod]
+        [Test]
         public void EffortConnectionStringBuilder_Normalize()
         {
             var builder = new EffortConnectionStringBuilder();

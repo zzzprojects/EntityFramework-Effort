@@ -28,14 +28,14 @@ namespace Effort.Test.Features
     using System.Data.Common;
     using System.Data.Entity.Infrastructure;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class IndexedFieldFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection =
@@ -47,7 +47,7 @@ namespace Effort.Test.Features
                     CompiledModels.IndexedFieldModel);
         }
 
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(DbUpdateException))]
         public void UniqueIndexViolation()
         {

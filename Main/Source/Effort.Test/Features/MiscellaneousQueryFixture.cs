@@ -27,14 +27,14 @@ namespace Effort.Test.Features
     using System.Linq;
     using Effort.Test.Data.Northwind;
     using Effort.Test.Internal.Queries;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class MiscellaneousQueryFixture
     {
         private IQueryTester<NorthwindObjectContext> tester;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.tester = new NorthwindQueryTester();
@@ -43,7 +43,7 @@ namespace Effort.Test.Features
         /// <summary>
         ///     Query source: http://effort.codeplex.com/discussions/528812
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Discussion528812()
         {
             var expected = "[{\"C1\":1},{\"C1\":3},{\"C1\":16},{\"C1\":11},{\"C1\":22},{\"C1\":9},{\"C1\":7},{\"C1\":10}]";

@@ -27,20 +27,20 @@ namespace Effort.Test.Features
     using System.Linq;
     using Effort.Test.Data.Northwind;
     using Effort.Test.Internal.Queries;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class JoinFixture
     {
         private IQueryTester<NorthwindObjectContext> tester;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.tester = new NorthwindQueryTester();
         }
 
-        [TestMethod]
+        [Test]
         public void CrossJoin()
         {
             string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Callahan\"},{\"LastName\":\"King\",\"LastName1\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"King\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Davolio\",\"LastName1\":\"King\"},{\"LastName\":\"Fuller\",\"LastName1\":\"King\"},{\"LastName\":\"Leverling\",\"LastName1\":\"King\"},{\"LastName\":\"Peacock\",\"LastName1\":\"King\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"King\"},{\"LastName\":\"Suyama\",\"LastName1\":\"King\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Peacock\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Peacock\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Peacock\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Suyama\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Suyama\"}]";
@@ -63,7 +63,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(result.Check());
         }
 
-        [TestMethod]
+        [Test]
         public void TripleCrossJoin()
         {
             string expected = "[{\"LastName\":\"Buchanan\",\"LastName1\":\"Suyama\",\"LastName2\":\"King\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Suyama\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Suyama\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"King\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"King\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Callahan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\",\"LastName2\":\"Leverling\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\",\"LastName2\":\"Peacock\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\",\"LastName2\":\"Buchanan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\",\"LastName2\":\"King\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\",\"LastName2\":\"Peacock\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\",\"LastName2\":\"Buchanan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\",\"LastName2\":\"King\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Leverling\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Peacock\",\"LastName2\":\"Buchanan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Peacock\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Peacock\",\"LastName2\":\"King\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Peacock\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Peacock\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Buchanan\",\"LastName2\":\"King\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Suyama\",\"LastName2\":\"King\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Suyama\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Suyama\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"King\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Davolio\",\"LastName1\":\"King\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Davolio\",\"LastName1\":\"Callahan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\",\"LastName2\":\"Peacock\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\",\"LastName2\":\"Buchanan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\",\"LastName2\":\"King\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Leverling\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Peacock\",\"LastName2\":\"Buchanan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Peacock\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Peacock\",\"LastName2\":\"King\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Peacock\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Peacock\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Buchanan\",\"LastName2\":\"King\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Suyama\",\"LastName2\":\"King\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Suyama\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Suyama\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"King\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Fuller\",\"LastName1\":\"King\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Fuller\",\"LastName1\":\"Callahan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"King\",\"LastName1\":\"Callahan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Peacock\",\"LastName2\":\"Buchanan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Peacock\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Peacock\",\"LastName2\":\"King\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Peacock\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Peacock\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Buchanan\",\"LastName2\":\"King\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Suyama\",\"LastName2\":\"King\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Suyama\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Suyama\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Leverling\",\"LastName1\":\"King\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Leverling\",\"LastName1\":\"King\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Callahan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Suyama\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Buchanan\",\"LastName2\":\"King\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Buchanan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Suyama\",\"LastName2\":\"King\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Suyama\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Suyama\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Peacock\",\"LastName1\":\"King\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Peacock\",\"LastName1\":\"King\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Callahan\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Suyama\",\"LastName1\":\"King\",\"LastName2\":\"Callahan\"},{\"LastName\":\"Suyama\",\"LastName1\":\"King\",\"LastName2\":\"Dodsworth\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Callahan\",\"LastName2\":\"Dodsworth\"}]";
@@ -90,7 +90,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(result.Check());
         }
 
-        [TestMethod]
+        [Test]
         public void OuterJoin()
         {
             string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Fuller\",\"LastName1\":null},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
@@ -114,7 +114,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(result.Check());
         }
 
-        [TestMethod]
+        [Test]
         public void OuterJoin2()
         {
             string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Fuller\",\"LastName1\":null},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
@@ -132,7 +132,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(result.Check());
         }
 
-        [TestMethod]
+        [Test]
         public void InnerJoin()
         {
             string expected = "[{\"LastName\":\"Davolio\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Leverling\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Peacock\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Buchanan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Suyama\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"King\",\"LastName1\":\"Buchanan\"},{\"LastName\":\"Callahan\",\"LastName1\":\"Fuller\"},{\"LastName\":\"Dodsworth\",\"LastName1\":\"Buchanan\"}]";
@@ -152,7 +152,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(result.Check());
         }
 
-        [TestMethod]
+        [Test]
         public void OuterApply()
         {
             string expected = "[{\"FirstName\":\"Nancy\",\"FirstName1\":\"Michael\"},{\"FirstName\":\"Andrew\",\"FirstName1\":\"Robert\"},{\"FirstName\":\"Janet\",\"FirstName1\":\"Laura\"},{\"FirstName\":\"Margaret\",\"FirstName1\":\"Anne\"},{\"FirstName\":\"Steven\",\"FirstName1\":null},{\"FirstName\":\"Michael\",\"FirstName1\":null},{\"FirstName\":\"Robert\",\"FirstName1\":null},{\"FirstName\":\"Laura\",\"FirstName1\":null},{\"FirstName\":\"Anne\",\"FirstName1\":null}]";
@@ -170,7 +170,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(result.Check());
         }
 
-        [TestMethod]
+        [Test]
         public void CrossApply()
         {
             string expected = "[{\"FirstName\":\"Nancy\",\"FirstName1\":\"Michael\"},{\"FirstName\":\"Andrew\",\"FirstName1\":\"Robert\"},{\"FirstName\":\"Janet\",\"FirstName1\":\"Laura\"},{\"FirstName\":\"Margaret\",\"FirstName1\":\"Anne\"}]";

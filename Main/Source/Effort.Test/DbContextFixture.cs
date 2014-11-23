@@ -28,12 +28,12 @@ namespace Effort.Test
     using System.Data.Entity;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DbContextFixture
     {
-        [TestMethod]
+        [Test]
         public void DbContext_Create()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
@@ -46,7 +46,7 @@ namespace Effort.Test
             Assert.IsFalse(created2);
         }
 
-        [TestMethod]
+        [Test]
         public void DbContext_Insert()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
@@ -58,7 +58,7 @@ namespace Effort.Test
             Assert.AreEqual(1, count);
         }
 
-        [TestMethod]
+        [Test]
         public void DbContext_Query()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
@@ -72,7 +72,7 @@ namespace Effort.Test
             Assert.AreEqual("Foo", person.Value);
         }
 
-        [TestMethod]
+        [Test]
         public void DbContext_Remove()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
@@ -93,7 +93,7 @@ namespace Effort.Test
         /// <summary>
         ///     StringFieldEntity is directed to the Foo table
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DbContext_TableName()
         {
             DbConnection connection = 
@@ -109,7 +109,7 @@ namespace Effort.Test
             Assert.AreEqual("Foo", result[0].Value);
         }
 
-        [TestMethod]
+        [Test]
         public void DbContext_DatabaseExists()
         {
             // Microsoft change the way database existence check works

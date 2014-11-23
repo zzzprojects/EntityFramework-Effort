@@ -26,15 +26,15 @@ namespace Effort.Test
 {
     using System;
     using System.Linq;
-    using SoftwareApproach.TestingExtensions;
     using Effort.Provider;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DbManagerFixture
     {
-        [TestMethod]
+        [Test]
         public void DbManager_SetIdentityFields()
         {
             EffortConnection connection =
@@ -80,7 +80,7 @@ namespace Effort.Test
             Assert.AreEqual(6, entity.Id);
         }
 
-        [TestMethod]
+        [Test]
         public void DbManager_ClearTables()
         {
             var connection = (EffortConnection)DbConnectionFactory.CreateTransient();
@@ -102,16 +102,16 @@ namespace Effort.Test
             context = new FeatureDbContext(connection, model);
 
             // The records should be in
-            context.EmptyEntities.Count().ShouldEqual(1);
-            context.RelationEntities.Count().ShouldEqual(1);
+            context.EmptyEntities.Count().Should().Be(1);
+            context.RelationEntities.Count().Should().Be(1);
 
             // Use DbManager to delete all data from the database
             connection.Open();
             connection.DbManager.ClearTables();
 
             // Tables should be empty
-            context.EmptyEntities.Count().ShouldEqual(0);
-            context.RelationEntities.Count().ShouldEqual(0);
+            context.EmptyEntities.Count().Should().Be(0);
+            context.RelationEntities.Count().Should().Be(0);
         }
     }
 }

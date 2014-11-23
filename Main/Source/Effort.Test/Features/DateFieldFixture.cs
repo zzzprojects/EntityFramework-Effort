@@ -26,14 +26,14 @@ namespace Effort.Test.Features
 {
     using System.Data.Common;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DateFieldFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection = 
@@ -45,13 +45,13 @@ namespace Effort.Test.Features
                     CompiledModels.GetModel<DateFieldEntity>());
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void DateFieldFixture_CreateDateField()
         {
             // Column(TypeName=date) attribute is currently disable

@@ -26,12 +26,12 @@ namespace Effort.Test
 {
     using System.Collections.Generic;
     using Effort.Test.Internal.ResultSets;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class ResultSetFixture
     {
-        [TestMethod]
+        [Test]
         public void SerializeResultSet()
         {
             IResultSet resultSet =

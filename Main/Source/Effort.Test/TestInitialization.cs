@@ -24,13 +24,13 @@
 
 namespace Effort.Test
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [SetUpFixture]
     public class TestInitialization
     {
-        [AssemblyInitialize]
-        public static void Initialize(TestContext context)
+        [SetUp]
+        public static void Initialize()
         {
             Effort.Provider.EffortProviderConfiguration.RegisterProvider();
             Effort.Test.Internal.DataReaderInspector.DataReaderInspectorProviderConfiguration.RegisterProvider();

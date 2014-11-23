@@ -25,12 +25,12 @@
 namespace Effort.Test.Features
 {
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     
-    [TestClass]
+    [TestFixture]
     public class KeyFixture
     {
-        [TestMethod]
+        [Test]
         public void LargePrimaryKeyCreation()
         {
             var connection = 

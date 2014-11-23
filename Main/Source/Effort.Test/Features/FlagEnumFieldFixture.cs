@@ -28,15 +28,15 @@ namespace Effort.Test.Features
     using System.Data.Entity;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using NUnit.Framework;
+    using FluentAssertions;
     
-    [TestClass]
+    [TestFixture]
     public class FlagEnumFieldFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection =
@@ -48,7 +48,7 @@ namespace Effort.Test.Features
                     CompiledModels.GetModel<FlagEnumFieldEntity>());
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
@@ -60,7 +60,7 @@ namespace Effort.Test.Features
         }
 
 #if !EFOLD || NET45
-        [TestMethod]
+        [Test]
         public void FlagEnumFieldFixture_And()
         {
             this.Entities.Add(
@@ -81,10 +81,10 @@ namespace Effort.Test.Features
                 .Where(x => (FlagEnumFieldType.Value1 & x.Value) == FlagEnumFieldType.Value1)
                 .Count();
 
-            res.ShouldEqual(1);
+            res.Should().Be(1);
         }
 
-        [TestMethod]
+        [Test]
         public void FlagEnumFieldFixture_Or()
         {
             this.Entities.Add(
@@ -105,10 +105,10 @@ namespace Effort.Test.Features
                 .Where(x => (FlagEnumFieldType.Value2 | x.Value) == (FlagEnumFieldType)3)
                 .Count();
 
-            res.ShouldEqual(1);
+            res.Should().Be(1);
         }
 
-        [TestMethod]
+        [Test]
         public void FlagEnumFieldFixture_NullableAnd()
         {
             this.Entities.Add(
@@ -129,7 +129,7 @@ namespace Effort.Test.Features
                 .Where(x => (FlagEnumFieldType.Value1 & x.NullableValue) == FlagEnumFieldType.Value1)
                 .Count();
 
-            res.ShouldEqual(1);
+            res.Should().Be(1);
         }
 #endif
     }

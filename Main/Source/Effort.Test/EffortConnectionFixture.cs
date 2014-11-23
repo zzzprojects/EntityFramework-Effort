@@ -27,13 +27,13 @@ namespace Effort.Test
     using System;
     using Effort.Provider;
     using Effort.Test.Internal.Fakes;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using NUnit.Framework;
+    using FluentAssertions;
     
-    [TestClass]
+    [TestFixture]
     public class EffortConnectionFixture
     {
-        [TestMethod]
+        [Test]
         public void transient_EffortConnection_should_unregister_container()
         {
             EffortConnectionMock conn = new EffortConnectionMock();
@@ -41,10 +41,10 @@ namespace Effort.Test
 
             conn.Dispose();
             
-            conn.IsUnregisterContainerCalled.ShouldBeTrue();
+            conn.IsUnregisterContainerCalled.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Test]
         public void transient_EffortConnection_should_unregister_container2()
         {
             EffortConnectionMock conn = new EffortConnectionMock();
@@ -52,10 +52,10 @@ namespace Effort.Test
 
             conn.Dispose();
 
-            conn.IsUnregisterContainerCalled.ShouldBeTrue();
+            conn.IsUnregisterContainerCalled.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Test]
         public void transient_EffortConnection_should_normalize_connectionstring()
         {
             EffortConnection conn = new EffortConnection();
@@ -64,10 +64,10 @@ namespace Effort.Test
             var builder = new EffortConnectionStringBuilder(conn.ConnectionString);
 
             // The IsTransient flag should be removed
-            builder.IsTransient.ShouldBeFalse();
+            builder.IsTransient.Should().BeFalse();
             Guid value;
             // The InstanceId should be set as a guid
-            Guid.TryParse(builder.InstanceId, out value).ShouldBeTrue();
+            Guid.TryParse(builder.InstanceId, out value).Should().BeTrue();
         }
     }
 }

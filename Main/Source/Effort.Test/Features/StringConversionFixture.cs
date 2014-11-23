@@ -1,20 +1,18 @@
-﻿using Effort.Test.Data.Features;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using SoftwareApproach.TestingExtensions;
-
+﻿
 namespace Effort.Test.Features
 {
-    [TestClass]
+    using System;
+    using System.Data.Common;
+    using System.Linq;
+    using Effort.Test.Data.Features;
+    using FluentAssertions;
+    using NUnit.Framework;
+
     public class StringConversionFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
@@ -50,14 +48,14 @@ namespace Effort.Test.Features
             connection.Close();
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
         }
 
 #if EF6
-        [TestMethod]
+        [Test]
         public void ByteToString()
         {
             var res = this.context
@@ -65,10 +63,10 @@ namespace Effort.Test.Features
                 .Select(x => "_" + x.Value8)
                 .FirstOrDefault();
 
-            res.ShouldEqual("_1");
+            res.Should().Be("_1");
         }
 
-        [TestMethod]
+        [Test]
         public void ShortToString()
         {
             var res = this.context
@@ -76,10 +74,10 @@ namespace Effort.Test.Features
                 .Select(x => "_" + x.Value16)
                 .FirstOrDefault();
 
-            res.ShouldEqual("_1");
+            res.Should().Be("_1");
         }
 
-        [TestMethod]
+        [Test]
         public void IntToString()
         {
             var res = this.context
@@ -87,10 +85,10 @@ namespace Effort.Test.Features
                 .Select(x => "_" + x.Value32)
                 .FirstOrDefault();
 
-            res.ShouldEqual("_1");
+            res.Should().Be("_1");
         }
 
-        [TestMethod]
+        [Test]
         public void LongToString()
         {
             var res = this.context
@@ -98,10 +96,10 @@ namespace Effort.Test.Features
                 .Select(x => "_" + x.Value64)
                 .FirstOrDefault();
 
-            res.ShouldEqual("_1");
+            res.Should().Be("_1");
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleToString()
         {
             var res = this.context
@@ -109,10 +107,10 @@ namespace Effort.Test.Features
                 .Select(x => "_" + x.ValueD)
                 .FirstOrDefault();
 
-            res.ShouldEqual("_1");
+            res.Should().Be("_1");
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalToString()
         {
             var res = this.context
@@ -120,10 +118,10 @@ namespace Effort.Test.Features
                 .Select(x => "_" + x.ValueM)
                 .FirstOrDefault();
 
-            res.ShouldEqual("_1.0");
+            res.Should().Be("_1.0");
         }
 
-        [TestMethod]
+        [Test]
         public void FloatToString()
         {
             var res = this.context
@@ -131,7 +129,7 @@ namespace Effort.Test.Features
                 .Select(x => "_" + x.ValueF)
                 .FirstOrDefault();
 
-            res.ShouldEqual("_1");
+            res.Should().Be("_1");
         }
 #endif
     }

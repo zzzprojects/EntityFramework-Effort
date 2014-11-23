@@ -26,27 +26,27 @@ namespace Effort.Test.Features
 {
     using System.Linq;
     using Effort.Test.Data.Northwind;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class ManipulationFixture
     {
         private NorthwindObjectContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context = new LocalNorthwindObjectContext();
         }
 
-        [TestMethod]
+        [Test]
         public void ManipulationInitialData()
         {
             Assert.AreEqual(this.context.Categories.Count(), 8);
             Assert.AreEqual(this.context.Products.Count(), 77);
         }
 
-        [TestMethod]
+        [Test]
         public void InsertWithIdentity()
         {
             Category cat1 = new Category();
@@ -68,7 +68,7 @@ namespace Effort.Test.Features
             Assert.AreEqual(cat1.CategoryName, cat1b.CategoryName);
         }
 
-        [TestMethod]
+        [Test]
         public void Update()
         {
             var q = this.context.Products.Where(p => p.ProductID == 1);
@@ -85,7 +85,7 @@ namespace Effort.Test.Features
         }
 
 
-        [TestMethod]
+        [Test]
         public void Delete()
         {
             var q = this.context.OrderDetails.Where(p => p.OrderID == 10248 && p.ProductID == 11);

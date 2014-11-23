@@ -29,12 +29,13 @@ namespace Effort.Test.Factories
     using Effort.DataLoaders;
     using Effort.Provider;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DbConnectionFactoryFixture
     {
-        [TestMethod]
+        [Test]
         public void CsvDataProvider()
         {
             string path = "C:\\";
@@ -42,8 +43,8 @@ namespace Effort.Test.Factories
 
             EffortConnectionStringBuilder csb = new EffortConnectionStringBuilder(connection.ConnectionString);
 
-            Assert.AreEqual(csb.DataLoaderType, typeof(CsvDataLoader));
-            Assert.AreEqual(csb.DataLoaderArgument, path);
+            csb.DataLoaderType.Should().Be<CsvDataLoader>();
+            csb.DataLoaderArgument.Should().Be(path);
         }
     }
 }

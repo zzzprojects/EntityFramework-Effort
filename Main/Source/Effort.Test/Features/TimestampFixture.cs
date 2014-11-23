@@ -26,15 +26,15 @@ namespace Effort.Test.Features
 {
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using NUnit.Framework;
+    using FluentAssertions;
 
-    [TestClass]
+    [TestFixture]
     public class TimestampFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context = 
@@ -45,7 +45,7 @@ namespace Effort.Test.Features
                         LargeTimestampFieldEntity>());
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampInsert()
         {
             TimestampFieldEntity timestamp = new TimestampFieldEntity();
@@ -57,7 +57,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampUpdate()
         {
             TimestampFieldEntity timestamp = new TimestampFieldEntity();
@@ -75,7 +75,7 @@ namespace Effort.Test.Features
             //Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampEntityMaterialize()
         {
             TimestampFieldEntity timestamp = new TimestampFieldEntity();
@@ -86,12 +86,12 @@ namespace Effort.Test.Features
 
             var data = context.TimestampFieldEntities.ToList();
 
-            data.ShouldHaveCountOf(1);
-            data[0].ShouldNotBeNull();
-            data[0].Timestamp.All(x => x != 0).ShouldBeFalse();
+            data.Should().HaveCount(1);
+            data[0].Should().NotBeNull();
+            data[0].Timestamp.All(x => x != 0).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampLargeEntityMaterialize()
         {
             LargeTimestampFieldEntity timestamp = new LargeTimestampFieldEntity();
@@ -101,12 +101,12 @@ namespace Effort.Test.Features
 
             var data = context.LargeTimestampFieldEntities.ToList();
 
-            data.ShouldHaveCountOf(1);
-            data[0].ShouldNotBeNull();
-            data[0].Timestamp.All(x => x != 0).ShouldBeFalse();
+            data.Should().HaveCount(1);
+            data[0].Should().NotBeNull();
+            data[0].Timestamp.All(x => x != 0).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampQuery()
         {
             TimestampFieldEntity timestamp = new TimestampFieldEntity();
@@ -121,10 +121,10 @@ namespace Effort.Test.Features
                 .Where(x => x.Timestamp == version)
                 .ToList();
 
-            data.ShouldHaveCountOf(1);
+            data.Should().HaveCount(1);
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampCompareGreaterQuery()
         {
             TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
@@ -145,11 +145,11 @@ namespace Effort.Test.Features
                 .Where(x => x.Timestamp.Compare(version1) > 0)
                 .ToList();
 
-            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
-            data.ShouldHaveCountOf(1);
+            context.TimestampFieldEntities.ToList().Should().HaveCount(2);
+            data.Should().HaveCount(1);
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampCompareGreaterThanOrEqualQuery()
         {
             TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
@@ -170,11 +170,11 @@ namespace Effort.Test.Features
                 .Where(x => x.Timestamp.Compare(version1) >= 0)
                 .ToList();
 
-            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
-            data.ShouldHaveCountOf(2);
+            context.TimestampFieldEntities.ToList().Should().HaveCount(2);
+            data.Should().HaveCount(2);
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampCompareSmallerQuery()
         {
             TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
@@ -195,11 +195,11 @@ namespace Effort.Test.Features
                 .Where(x => x.Timestamp.Compare(version2) < 0)
                 .ToList();
 
-            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
-            data.ShouldHaveCountOf(1);
+            context.TimestampFieldEntities.ToList().Should().HaveCount(2);
+            data.Should().HaveCount(1);
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampCompareSmallerThanOrEqualQuery()
         {
             TimestampFieldEntity timestamp1 = new TimestampFieldEntity();
@@ -220,8 +220,8 @@ namespace Effort.Test.Features
                 .Where(x => x.Timestamp.Compare(version2) <= 0)
                 .ToList();
 
-            context.TimestampFieldEntities.ToList().ShouldHaveCountOf(2);
-            data.ShouldHaveCountOf(2);
+            context.TimestampFieldEntities.ToList().Should().HaveCount(2);
+            data.Should().HaveCount(2);
         }
     }
 

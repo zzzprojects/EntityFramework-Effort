@@ -41,12 +41,12 @@ namespace Effort.Test.Schema
     using Effort.Provider;
     using Effort.Test.Data.Northwind;
     using Effort.Test.Internal;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class StorageSchemaModifierFixture
     {
-        [TestMethod]
+        [Test]
         public void MetadataWorkspaceHelperRewrite()
         {
             EntityConnectionStringBuilder nameResolver = 
@@ -65,7 +65,7 @@ namespace Effort.Test.Schema
                     EffortProviderManifestTokens.Version1);
         }
 
-        [TestMethod]
+        [Test]
         public void RewriteSsdlV1()
         {
             XElement ssdl = LoadXml(1);
@@ -75,7 +75,7 @@ namespace Effort.Test.Schema
             ValidateSsdl(ssdl); 
         }
 
-        [TestMethod]
+        [Test]
         public void RewriteSsdlV2()
         {
             XElement ssdl = LoadXml(2);
@@ -85,7 +85,7 @@ namespace Effort.Test.Schema
             ValidateSsdl(ssdl); 
         }
 
-        [TestMethod]
+        [Test]
         public void RewriteSsdlV3()
         {
             // SSDL v3 requires .NET45

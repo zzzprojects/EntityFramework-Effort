@@ -29,13 +29,13 @@ namespace Effort.Test.DatabaseEngine
     using System.Linq;
     using System.Reflection;
     using Effort.Internal.TypeGeneration;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
     
-    [TestClass]
+    [TestFixture]
     public class DataRowFactoryFixture
     {
-        [TestMethod]
+        [Test]
         public void DataRow_DataRowProperty_attribute_Index_property()
         {
             Type type = CreateType(CreateNames(8));
@@ -47,15 +47,15 @@ namespace Effort.Test.DatabaseEngine
                     .OfType<DataRowPropertyAttribute>()
                     .FirstOrDefault();
 
-                attr.ShouldNotBeNull();
+                attr.Should().NotBeNull();
 
                 int index = int.Parse(prop.Name.Split(new char[] { '_' })[1]);
 
-                index.ShouldEqual(attr.Index);
+                index.Should().Be(attr.Index);
             }
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_same_definition_should_result_in_same_type()
         {
             IDictionary<string, Type> definition = CreateRichDefinition();
@@ -63,10 +63,10 @@ namespace Effort.Test.DatabaseEngine
             Type datarow1 = DataRowFactory.Create(definition);
             Type datarow2 = DataRowFactory.Create(definition);
 
-            datarow1.ShouldBeSameAs(datarow2);
+            datarow1.Should().BeSameAs(datarow2);
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_GetValue_method()
         {
             int count = 8;
@@ -75,50 +75,50 @@ namespace Effort.Test.DatabaseEngine
             object[] args = GenerateArguments(count);
 
             DataRow data = Activator.CreateInstance(type, args) as DataRow;
-            data.ShouldNotBeNull();
+            data.Should().NotBeNull();
 
             Verify(args, data);
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_Equal_method()
         {
             object[] args = new object[] { 1, 2, 3 };
             Type type = CreateType(CreateNames(args.Length));
 
             DataRow data = CreateInstance(type, args);
-            data.ShouldNotBeNull();
 
-            data.Equals(null).ShouldBeFalse();
-            data.Equals(new object()).ShouldBeFalse();
-            data.Equals(5).ShouldBeFalse();
-            data.Equals(data).ShouldBeTrue();
-            data.Equals(CreateInstance(type, args)).ShouldBeTrue();
+            data.Should()
+                .NotBeNull().And
+                .NotBeSameAs(new object()).And
+                .NotBe(5).And
+                .BeSameAs(data).And
+                .Be(CreateInstance(type, args));
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_GetHashCode_should_result_in_same_value()
         {
             object[] args = new object[] { 1, 2, 3 };
             Type type = CreateType(CreateNames(args.Length));
 
             DataRow data = CreateInstance(type, args);
-            data.ShouldNotBeNull();
+            data.Should().NotBeNull();
 
             int hash = data.GetHashCode();
 
-            CreateInstance(type, args).GetHashCode().ShouldEqual(hash);
+            CreateInstance(type, args).GetHashCode().Should().Be(hash);
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_annotated_with_LargeDataRowAttribute_if_it_has_many_properties()
         {
             Type type = CreateType(CreateNames(LargeDataRowAttribute.LargePropertyCount));
 
-            type.GetCustomAttributes(typeof(LargeDataRowAttribute), false).ShouldNotBeEmpty();
+            type.GetCustomAttributes(typeof(LargeDataRowAttribute), false).Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_large()
         {
             int count = LargeDataRowAttribute.LargePropertyCount + 10;
@@ -127,12 +127,12 @@ namespace Effort.Test.DatabaseEngine
             object[] args = GenerateArguments(count);
 
             DataRow data = Activator.CreateInstance(type, new object[] { args }) as DataRow;
-            data.ShouldNotBeNull();
+            data.Should().NotBeNull();
 
             Verify(args, data);
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_larger_than_127()
         {
             int count = 129;
@@ -141,12 +141,12 @@ namespace Effort.Test.DatabaseEngine
             object[] args = GenerateArguments(count);
 
             DataRow data = Activator.CreateInstance(type, new object[] { args }) as DataRow;
-            data.ShouldNotBeNull();
+            data.Should().NotBeNull();
 
             Verify(args, data);
         }
 
-        [TestMethod]
+        [Test]
         public void DataRow_very_large()
         {
             int count = 500;
@@ -155,7 +155,7 @@ namespace Effort.Test.DatabaseEngine
             object[] args = GenerateArguments(count);
 
             DataRow data = Activator.CreateInstance(type, new object[] { args }) as DataRow;
-            data.ShouldNotBeNull();
+            data.Should().NotBeNull();
 
             Verify(args, data);
         }
@@ -166,8 +166,8 @@ namespace Effort.Test.DatabaseEngine
             {
                 object stored = data.GetValue(i);
 
-                stored.ShouldNotBeNull();
-                stored.ShouldEqual(args[i]);
+                stored.Should().NotBeNull();
+                stored.Should().Be(args[i]);
             }
         }
 

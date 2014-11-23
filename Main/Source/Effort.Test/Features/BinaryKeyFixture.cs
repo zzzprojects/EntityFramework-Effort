@@ -28,15 +28,15 @@ namespace Effort.Test.Features
     using System.Linq;
     using System.Data.Common;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class BinaryKeyFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection = 
@@ -48,13 +48,13 @@ namespace Effort.Test.Features
                     CompiledModels.GetModel<BinaryKeyEntity>());
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void BinaryKey_InsertAndQuery()
         {
             byte[] id = new byte[] { 1, 2, 3 };
@@ -70,8 +70,8 @@ namespace Effort.Test.Features
             BinaryKeyEntity entity2 = 
                 this.context.BinaryKeyEntities.FirstOrDefault(x => x.Id == id);
 
-            entity2.ShouldNotBeNull();
-            entity2.Data.ShouldEqual(data);
+            entity2.Should().NotBeNull();
+            entity2.Data.Should().Be(data);
         }
     }
 }

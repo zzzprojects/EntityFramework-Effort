@@ -28,27 +28,27 @@ namespace Effort.Test.DataLoaders
     using System.IO;
     using Effort.DataLoaders;
     using Effort.DataLoaders.Internal;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class FileProviderFixture
     {
-        [TestMethod]
+        [Test]
         public void ResourceFileProvider_FullPath()
         {
             var path = new Uri("res://Effort.Test/Internal/Resources/");
             var provider = new ResourceFileProvider(path);
 
-            provider.IsValid.ShouldBeTrue();
+            provider.IsValid.Should().BeTrue();
 
             var file = provider.GetFile("EmptyResource.txt");
 
-            file.Exists.ShouldBeTrue();
+            file.Exists.Should().BeTrue();
 
             using (StreamReader reader = new StreamReader(file.Open()))
             {
-                reader.ReadLine().ShouldEqual("Hello World!");
+                reader.ReadLine().Should().Be("Hello World!");
             }
         }
     }

@@ -28,15 +28,15 @@ namespace Effort.Test.Features
 {
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using NUnit.Framework;
+    using FluentAssertions;
 
-    [TestClass]
+    [TestFixture]
     public class TimestampIndexFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context =
@@ -46,7 +46,7 @@ namespace Effort.Test.Features
                         TimestampIndexedFieldEntity>());
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampIndexedSingleInsert()
         {
             TimestampIndexedFieldEntity timestamp = new TimestampIndexedFieldEntity();
@@ -58,7 +58,7 @@ namespace Effort.Test.Features
             Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
         }
 
-        [TestMethod]
+        [Test]
         public void TimestampIndexedDoubleInsert()
         {
             TimestampIndexedFieldEntity timestamp = new TimestampIndexedFieldEntity();
@@ -73,7 +73,7 @@ namespace Effort.Test.Features
 
             Assert.IsTrue(timestamp.Timestamp.Any(b => b > 0));
             Assert.IsTrue(timestamp2.Timestamp.Any(b => b > 0));
-            context.TimestampIndexedFieldEntities.Count().ShouldEqual(2);
+            context.TimestampIndexedFieldEntities.Count().Should().Be(2);
         }
 
     }

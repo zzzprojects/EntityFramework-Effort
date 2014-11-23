@@ -26,83 +26,83 @@ namespace Effort.Test.Csv
 {
     using System.IO;
     using Effort.Internal.Csv;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class CsvReaderFixture
     {
-        [TestMethod]
+        [Test]
         public void CsvReader_EmptyVsNull1()
         {
             string body = ",item";
 
             CsvReader reader = new CsvReader(new StringReader(body), false);
 
-            reader.ReadNextRecord().ShouldBeTrue();
-            reader[0].ShouldBeNull();
-            reader[1].ShouldEqual("item");
+            reader.ReadNextRecord().Should().BeTrue();
+            reader[0].Should().BeNull();
+            reader[1].Should().Be("item");
         }
 
-        [TestMethod]
+        [Test]
         public void CsvReader_EmptyVsNull2()
         {
             string body = "\"\",item";
 
             CsvReader reader = new CsvReader(new StringReader(body), false);
 
-            reader.ReadNextRecord().ShouldBeTrue();
-            reader[0].ShouldEqual("");
-            reader[1].ShouldEqual("item");
+            reader.ReadNextRecord().Should().BeTrue();
+            reader[0].Should().Be("");
+            reader[1].Should().Be("item");
         }
 
-        [TestMethod]
+        [Test]
         public void CsvReader_EmptyVsNull3()
         {
             string body = "item,\"\"";
 
             CsvReader reader = new CsvReader(new StringReader(body), false);
 
-            reader.ReadNextRecord().ShouldBeTrue();
-            reader[0].ShouldEqual("item");
-            reader[1].ShouldEqual("");
+            reader.ReadNextRecord().Should().BeTrue();
+            reader[0].Should().Be("item");
+            reader[1].Should().Be("");
         }
 
-        [TestMethod]
+        [Test]
         public void CsvReader_EmptyVsNull4()
         {
             string body = "item,";
 
             CsvReader reader = new CsvReader(new StringReader(body), false);
 
-            reader.ReadNextRecord().ShouldBeTrue();
-            reader[0].ShouldEqual("item");
-            reader[1].ShouldBeNull();
+            reader.ReadNextRecord().Should().BeTrue();
+            reader[0].Should().Be("item");
+            reader[1].Should().BeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void CsvReader_EmptyVsNull5()
         {
             string body = ",";
 
             CsvReader reader = new CsvReader(new StringReader(body), false);
 
-            reader.ReadNextRecord().ShouldBeTrue();
-            reader[0].ShouldBeNull();
-            reader[1].ShouldBeNull();
+            reader.ReadNextRecord().Should().BeTrue();
+            reader[0].Should().BeNull();
+            reader[1].Should().BeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void CsvReader_Read1()
         {
             string body = "1,\"2\",3";
 
             CsvReader reader = new CsvReader(new StringReader(body), false);
 
-            reader.ReadNextRecord().ShouldBeTrue();
-            reader[0].ShouldEqual("1");
-            reader[1].ShouldEqual("2");
-            reader[2].ShouldEqual("3");
+            reader.ReadNextRecord().Should().BeTrue();
+            reader[0].Should().Be("1");
+            reader[1].Should().Be("2");
+            reader[2].Should().Be("3");
         }
     }
 }

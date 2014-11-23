@@ -16,21 +16,25 @@
       <NugetPack>Effort</NugetPack>
       <NugetDir>lib\net40</NugetDir>
       <ZipDir>.NET 4.0\Entity Framework 4-5</ZipDir>
+      <Runtime>net-4.0</Runtime>
     </CompileConfig>
     <CompileConfig Include="Release(pre-ef6,net45)">
       <NugetPack>Effort</NugetPack>
       <NugetDir>lib\net45</NugetDir>
       <ZipDir>.NET 4.5\Entity Framework 4-5</ZipDir>
+      <Runtime>net-4.5</Runtime>
     </CompileConfig>
     <CompileConfig Include="Release(ef6,net40)">
       <NugetPack>Effort.EF6</NugetPack>
       <NugetDir>lib\net40</NugetDir>
       <ZipDir>.NET 4.0\Entity Framework 6</ZipDir>
+      <Runtime>net-4.0</Runtime>
     </CompileConfig>
     <CompileConfig Include="Release(ef6,net45)">
       <NugetPack>Effort.EF6</NugetPack>
       <NugetDir>lib\net45</NugetDir>
       <ZipDir>.NET 4.5\Entity Framework 6</ZipDir>
+      <Runtime>net-4.5</Runtime>
     </CompileConfig>
     
     <NugetConfig Include="Effort">
@@ -114,8 +118,10 @@
       <TestSuccess>1</TestSuccess>
     </PropertyGroup>
     
-    <Message Text="Run tests" />
-    <Exec Command="&quot;$(VS110COMNTOOLS)..\IDE\mstest.exe&quot; /testcontainer:&quot;$(SolutionDir)\Effort.Test\bin\%(CompileConfig.Identity)\Effort.Test.dll&quot; /testsettings:&quot;$(SolutionDir)\Local.testsettings&quot;">
+    <Message 
+      Importance="High" 
+      Text="Run tests (%(CompileConfig.Identity))" />
+    <Exec Command="&quot;$(SolutionDir)\packages\NUnit.Runners.2.6.3\tools\nunit-console.exe&quot; &quot;$(SolutionDir)\Effort.Test\bin\%(CompileConfig.Identity)\Effort.Test.dll&quot; /nologo /framework:%(CompileConfig.Runtime) /stoponerror">
       <Output TaskParameter="ExitCode" PropertyName="TestSuccess"/>
     </Exec>
     <Error Text="One or more tests failed" Condition="'$(TestSuccess)'!='0'" />

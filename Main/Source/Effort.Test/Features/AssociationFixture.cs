@@ -27,14 +27,14 @@ namespace Effort.Test.Features
     using System;
     using System.Linq;
     using Effort.Test.Data.Northwind;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
     using Effort.Test.Internal;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class AssociationFixture
     {
-        [TestMethod]
+        [Test]
         public void SingleFieldAssocitationValidation()
         {
             NorthwindObjectContext context = new LocalNorthwindObjectContext();
@@ -65,7 +65,7 @@ namespace Effort.Test.Features
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SingleFieldAssocitationEmpty()
         {
             NorthwindObjectContext context = new LocalNorthwindObjectContext();

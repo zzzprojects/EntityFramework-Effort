@@ -24,7 +24,11 @@
 
 namespace Effort.Test.Factories
 {
+    using System;
     using System.Configuration;
+    using System.Linq;
+    using Effort.Test.Data.Northwind;
+    using NUnit.Framework;
 #if !EFOLD
     using System.Data.Entity.Core.EntityClient;
     using System.Data.Entity.Core.Objects;
@@ -32,21 +36,18 @@ namespace Effort.Test.Factories
     using System.Data.EntityClient;
     using System.Data.Objects;
 #endif
-    using System.Linq;
-    using Effort.Test.Data.Northwind;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System;
+    
 
-    [TestClass]
+    [TestFixture]
     public class EntityConnectionFactoryFixture
     {
-        [TestMethod]
+        [Test]
         public void EntityConnectionFactory_CreateTransientEntityConnection()
         {
             EntityConnection connection = EntityConnectionFactory.CreateTransient(NorthwindObjectContext.DefaultConnectionString);
         }
 
-        [TestMethod]
+        [Test]
         public void EntityConnectionFactory_CreateTransientEntityConnection_InitializesDataSchema()
         {
             EntityConnection connection = EntityConnectionFactory.CreateTransient(NorthwindObjectContext.DefaultConnectionString);
@@ -58,7 +59,7 @@ namespace Effort.Test.Factories
             }
         }
 
-        [TestMethod]
+        [Test]
         public void EntityConnectionFactory_CreatePersistentEntityConnection()
         {
             var connString = this.GetDefaultConnectionString();
@@ -69,7 +70,7 @@ namespace Effort.Test.Factories
             EntityConnection connection = EntityConnectionFactory.CreatePersistent(csBuilder.ConnectionString);
         }
 
-        [TestMethod]
+        [Test]
         public void EntityConnectionFactory_ImplicitMetadata()
         {
             var connString = this.GetDefaultConnectionString();

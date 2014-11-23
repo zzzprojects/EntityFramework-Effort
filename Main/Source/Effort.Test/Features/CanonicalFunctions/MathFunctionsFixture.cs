@@ -27,15 +27,15 @@ namespace Effort.Test.Features.CanonicalFunctions
     using System;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class MathFunctionsFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context =
@@ -44,7 +44,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                     CompiledModels.GetModel<MathEntity>());
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalCeiling()
         {
             this.context.MathEntities.Add(new MathEntity { Decimal = 1.4M });
@@ -54,10 +54,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.Decimal) == 2.0M);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalCeilingNull()
         {
             this.context.MathEntities.Add(new MathEntity { DecimalN = null });
@@ -67,10 +67,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.DecimalN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleCeiling()
         {
             this.context.MathEntities.Add(new MathEntity { Double = 1.4 });
@@ -80,10 +80,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.Double) == 2.0);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleCeilingNull()
         {
             this.context.MathEntities.Add(new MathEntity { DoubleN = null });
@@ -93,10 +93,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Ceiling(x.DoubleN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalFloor()
         {
             this.context.MathEntities.Add(new MathEntity { Decimal = 1.7M });
@@ -106,10 +106,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.Decimal) == 1.0M);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalFloorNull()
         {
             this.context.MathEntities.Add(new MathEntity { DecimalN = null });
@@ -119,10 +119,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.DecimalN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleFloor()
         {
             this.context.MathEntities.Add(new MathEntity { Double = 1.7 });
@@ -132,10 +132,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.Double) == 1.0);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleFloorNull()
         {
             this.context.MathEntities.Add(new MathEntity { DoubleN = null });
@@ -145,10 +145,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Floor(x.DoubleN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalRound()
         {
             this.context.MathEntities.Add(new MathEntity { Decimal = 1.7M });
@@ -158,10 +158,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Decimal) == 2.0M);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalRoundNull()
         {
             this.context.MathEntities.Add(new MathEntity { DecimalN = null });
@@ -171,10 +171,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DecimalN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleRound()
         {
             this.context.MathEntities.Add(new MathEntity { Double = 1.7 });
@@ -184,10 +184,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Double) == 2.0);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleRoundNull()
         {
             this.context.MathEntities.Add(new MathEntity { DoubleN = null });
@@ -197,10 +197,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DoubleN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalRoundDigit()
         {
             this.context.MathEntities.Add(new MathEntity { Decimal = 1.77777M });
@@ -210,10 +210,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Decimal, 2) == 1.78M);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalRoundDigitNull()
         {
             this.context.MathEntities.Add(new MathEntity { DecimalN = null });
@@ -223,10 +223,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DecimalN.Value, 2) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleRoundDigit()
         {
             this.context.MathEntities.Add(new MathEntity { Double = 1.77777 });
@@ -236,10 +236,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.Double, 2) == 1.78);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleRoundDigitNull()
         {
             this.context.MathEntities.Add(new MathEntity { DoubleN = null });
@@ -249,10 +249,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Round(x.DoubleN.Value, 2) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Power()
         {
             this.context.MathEntities.Add(new MathEntity { Double = 2 });
@@ -262,10 +262,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Pow(x.Double, 2) == 4);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void PowerNull()
         {
             this.context.MathEntities.Add(new MathEntity { DoubleN = null });
@@ -275,10 +275,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x =>  Math.Pow(x.DoubleN.Value, 2) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalAbs()
         {
             this.context.MathEntities.Add(new MathEntity { Decimal = -1.7M });
@@ -288,10 +288,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Decimal) == 1.7M);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DecimalAbsNull()
         {
             this.context.MathEntities.Add(new MathEntity { DecimalN = null });
@@ -301,10 +301,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.DecimalN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleAbs()
         {
             this.context.MathEntities.Add(new MathEntity { Double = -1.7 });
@@ -314,10 +314,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Double) == 1.7);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleAbsNull()
         {
             this.context.MathEntities.Add(new MathEntity { DoubleN = null });
@@ -327,10 +327,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.DoubleN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void SByteAbs()
         {
             // Entity Framework does not support SByte Abs
@@ -342,10 +342,10 @@ namespace Effort.Test.Features.CanonicalFunctions
             ////    .MathEntities
             ////    .Where(x => Math.Abs(x.SByte) == 1);
 
-            ////q.ShouldNotBeEmpty();
+            ////q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void SByteAbsNull()
         {
             // Entity Framework does not support SByte Abs
@@ -357,10 +357,10 @@ namespace Effort.Test.Features.CanonicalFunctions
             ////    .MathEntities
             ////    .Where(x => Math.Abs(x.SByteN.Value) == null);
 
-            ////q.ShouldNotBeEmpty();
+            ////q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void ShortAbs()
         {
             this.context.MathEntities.Add(new MathEntity { Short = -1 });
@@ -370,10 +370,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Short) == 1);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void ShortAbsNull()
         {
             this.context.MathEntities.Add(new MathEntity { ShortN = null });
@@ -383,10 +383,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.ShortN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void IntAbs()
         {
             this.context.MathEntities.Add(new MathEntity { Int = -1 });
@@ -396,10 +396,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Int) == 1);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void IntAbsNull()
         {
             this.context.MathEntities.Add(new MathEntity { IntN = null });
@@ -409,10 +409,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.IntN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void LongAbs()
         {
             this.context.MathEntities.Add(new MathEntity { Long = -1 });
@@ -422,10 +422,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.Long) == 1);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void LongAbsNull()
         {
             this.context.MathEntities.Add(new MathEntity { LongN = null });
@@ -435,7 +435,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .MathEntities
                 .Where(x => Math.Abs(x.LongN.Value) == null);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
     }
 }

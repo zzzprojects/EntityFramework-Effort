@@ -34,12 +34,12 @@ namespace Effort.Test
     using Effort.Test.Data.Northwind;
     using Effort.Test.Internal;
     using Effort.Test.Internal.Fakes;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DataReaderInspectorFixture
     {
-        [TestMethod]
+        [Test]
         public void DataReaderInspector_ResultSetComposerShouldReceiveCalls()
         {
             IDataLoader dataLoader = new NorthwindLocalDataLoader();

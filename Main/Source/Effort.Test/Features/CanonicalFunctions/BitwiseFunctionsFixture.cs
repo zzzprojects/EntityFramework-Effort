@@ -28,15 +28,15 @@ namespace Effort.Test.Features.CanonicalFunctions
     using System.Linq;
     using Effort.Provider;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class BitwiseFunctionsFixture
     {
         private FeatureDbContext context;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             DbConnection connection = DbConnectionFactory.CreateTransient();
@@ -67,13 +67,13 @@ namespace Effort.Test.Features.CanonicalFunctions
             connection.Close();
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void BitwiseAnd8()
         {
             byte val = (0x0f & 0xaa);
@@ -82,10 +82,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .NumberFieldEntities
                 .Where(x => (x.Value8 & (byte)0xaa) == val);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void BitwiseAnd16()
         {
             short val = (0x0f & 0xaa);
@@ -94,10 +94,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .NumberFieldEntities
                 .Where(x => (x.Value16 & (short)0xaa) == val);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void BitwiseAnd32()
         {
             int val = (0x0f & 0xaa);
@@ -106,10 +106,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .NumberFieldEntities
                 .Where(x => (x.Value32 & (int)0xaa) == val);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void BitwiseAnd64()
         {
             long val = (0x0f & 0xaa);
@@ -118,10 +118,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .NumberFieldEntities
                 .Where(x => (x.Value64 & 0xaa) == val);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void BitwiseOr()
         {
             int val = (0x0f | 0xaa);
@@ -130,10 +130,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .NumberFieldEntities
                 .Where(x => (x.Value32 | 0xaa) == val);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void BitwiseNot()
         {
             int val = (~0x0f);
@@ -142,10 +142,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .NumberFieldEntities
                 .Where(x => (~x.Value32) == val);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void BitwiseXor()
         {
             int val = (0x0f ^ 0xaa);
@@ -154,7 +154,7 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .NumberFieldEntities
                 .Where(x => (x.Value32 ^ 0xaa) == val);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
     }
 }

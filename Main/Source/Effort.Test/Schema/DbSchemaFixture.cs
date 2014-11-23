@@ -36,12 +36,12 @@ namespace Effort.Test.Schema
     using Effort.Internal.DbManagement;
     using Effort.Internal.DbManagement.Schema;
     using Effort.Internal.StorageSchema;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DbSchemaFixture
     {
-        [TestMethod]
+        [Test]
         public void DbSchema_CompoundKey()
         {
             StoreItemCollection ssdl = LoadSSDL("CompoundKey"); 

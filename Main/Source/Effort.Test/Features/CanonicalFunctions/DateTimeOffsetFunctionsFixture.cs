@@ -24,19 +24,19 @@
 
 namespace Effort.Test.Features.CanonicalFunctions
 {
-#if !EFOLD
-#else
-    using System.Data.Objects;
-#endif
     using System;
     using System.Data.Entity;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using FluentAssertions;
+    using NUnit.Framework;
+#if !EFOLD
+#else
+    using System.Data.Objects;
+#endif
 
 
-    [TestClass]
+    [TestFixture]
     public class DateTimeOffsetFunctionsFixture
     {
         private FeatureDbContext context;
@@ -44,8 +44,7 @@ namespace Effort.Test.Features.CanonicalFunctions
         private static readonly DateTimeOffset stored = 
             new DateTimeOffset(2012, 1, 2, 3, 4, 5, 100, new TimeSpan(1, 0, 0));
 
-
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             this.context = 
@@ -70,77 +69,77 @@ namespace Effort.Test.Features.CanonicalFunctions
             }
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetYear()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Offset.Year == 2012);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetMonth()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Offset.Month == 1);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDay()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Offset.Day == 2);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetHour()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Offset.Hour == 3);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetMinute()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Offset.Minute == 4);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetSecond()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Offset.Second == 5);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetMillisecond()
         {
             var q = this.Entities
                 .Where(x =>
                     x.Offset.Millisecond == 100);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddNanoseconds()
         {
             DateTimeOffset offset = stored.AddTicks(-1);
@@ -155,10 +154,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddNanoseconds(x.Offset, -100) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void TimeAddMicroseconds()
         {
             DateTimeOffset offset = stored.AddTicks(-10);
@@ -173,10 +172,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddMicroseconds(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetAddMilliseconds()
         {
             DateTimeOffset offset = stored.AddMilliseconds(-1);
@@ -191,10 +190,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddMilliseconds(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetAddSeconds()
         {
             DateTimeOffset offset = stored.AddSeconds(-1);
@@ -209,10 +208,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddSeconds(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetAddMinutes()
         {
             DateTimeOffset offset = stored.AddMinutes(-1);
@@ -227,10 +226,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddMinutes(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetAddHours()
         {
             DateTimeOffset offset = stored.AddHours(-1);
@@ -245,10 +244,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddHours(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetAddDays()
         {
             DateTimeOffset offset = stored.AddDays(-1);
@@ -263,10 +262,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddDays(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetAddMonths()
         {
             DateTimeOffset offset = stored.AddMonths(-1);
@@ -281,10 +280,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddMonths(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetAddYears()
         {
             DateTimeOffset offset = stored.AddYears(-1);
@@ -299,10 +298,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.AddYears(x.Offset, -1) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffNanoseconds()
         {
             DateTimeOffset offset = stored.AddTicks(-1);
@@ -317,10 +316,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffNanoseconds(offset, x.Offset) == 100);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffMicroseconds()
         {
             DateTimeOffset offset = stored.AddTicks(-10);
@@ -335,10 +334,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffMicroseconds(offset, x.Offset) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffMilliseconds()
         {
             DateTimeOffset offset = stored.AddMilliseconds(-1);
@@ -353,10 +352,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffMilliseconds(offset, x.Offset) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffSeconds()
         {
             DateTimeOffset offset = stored.AddSeconds(-1);
@@ -371,10 +370,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffSeconds(offset, x.Offset) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffMinutes()
         {
             DateTimeOffset offset = stored.AddMinutes(-1);
@@ -389,10 +388,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffMinutes(offset, x.Offset) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffHours()
         {
             DateTimeOffset offset = stored.AddHours(-1);
@@ -407,10 +406,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffHours(offset, x.Offset) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffDays()
         {
             DateTimeOffset offset = stored.AddDays(-1);
@@ -425,10 +424,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffDays(offset, x.Offset) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffMonths()
         {
             DateTimeOffset offset = stored.AddYears(-1).AddMonths(-1);
@@ -443,10 +442,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffMonths(offset, x.Offset) == 13);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetDiffYears()
         {
             DateTimeOffset offset = stored.AddYears(-1);
@@ -461,10 +460,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.DiffYears(offset, x.Offset) == 1);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void DateTimeOffsetTruncateTime()
         {
             DateTimeOffset offset = new DateTimeOffset(stored.Date, stored.Offset);
@@ -479,10 +478,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.TruncateTime(x.Offset) == offset);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void CurrentDateTimeOffset()
         {
             this.Entities.Add(
@@ -497,10 +496,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                 .Where(x =>
                     x.Offset.Year == DateTimeOffset.Now.Year);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void OffsetOfDateTimeOffset()
         {
             this.Entities.Add(
@@ -521,10 +520,10 @@ namespace Effort.Test.Features.CanonicalFunctions
                     EntityFunctions.GetTotalOffsetMinutes(x.Offset) == 60);
 #endif
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void CreateDateTimeOffset()
         {
             this.context.DateTimeOffsetFieldEntities.Add(
@@ -547,7 +546,7 @@ namespace Effort.Test.Features.CanonicalFunctions
 
             var q2 = q.AsEnumerable().Where(x => x.Value.Offset.TotalHours == 1);
 
-            q.ShouldNotBeEmpty();
+            q.Should().NotBeEmpty();
         }
     }
 }

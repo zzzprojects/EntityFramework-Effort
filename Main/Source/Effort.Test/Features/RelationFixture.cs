@@ -29,17 +29,17 @@ namespace Effort.Test.Features
     using System.Data.Entity.Infrastructure;
     using System.Linq;
     using Effort.Test.Data.Features;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SoftwareApproach.TestingExtensions;
+    using NUnit.Framework;
+    using FluentAssertions;
 
-    [TestClass]
+    [TestFixture]
     public class RelationFixture
     {
         private DbCompiledModel model;
         private FeatureDbContext context;
 
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             var connection = Effort.DbConnectionFactory.CreateTransient();
@@ -48,7 +48,7 @@ namespace Effort.Test.Features
             this.context = new FeatureDbContext(connection, this.model);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this.context.Dispose();
@@ -62,7 +62,7 @@ namespace Effort.Test.Features
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OptionalInclude()
         {
             this.RelationEntities.Add(
@@ -78,11 +78,11 @@ namespace Effort.Test.Features
                 .Include(x => x.OptionalRelation)
                 .FirstOrDefault();
 
-            res.ShouldNotBeNull();
-            res.OptionalRelation.ShouldNotBeNull();
+            res.Should().NotBeNull();
+            res.OptionalRelation.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void RequiredInclude()
         {
             this.RelationEntities.Add(
@@ -97,11 +97,11 @@ namespace Effort.Test.Features
                 .Include(x => x.RequiredRelation)
                 .FirstOrDefault();
 
-            res.ShouldNotBeNull();
-            res.RequiredRelation.ShouldNotBeNull();
+            res.Should().NotBeNull();
+            res.RequiredRelation.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void CascadedRequiredInclude()
         {
             this.RelationEntities.Add(
@@ -123,12 +123,12 @@ namespace Effort.Test.Features
                 .Where(x => x.CascadedRelation != null)
                 .FirstOrDefault();
 
-            res.ShouldNotBeNull();
-            res.CascadedRelation.ShouldNotBeNull();
-            res.CascadedRelation.RequiredRelation.ShouldNotBeNull();
+            res.Should().NotBeNull();
+            res.CascadedRelation.Should().NotBeNull();
+            res.CascadedRelation.RequiredRelation.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Test]
         public void CascadedDelete()
         {
             this.RelationEntities.Add(

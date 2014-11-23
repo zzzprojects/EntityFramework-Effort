@@ -27,12 +27,13 @@ namespace Effort.Test.DataLoaders
     using System.Linq;
     using Effort.DataLoaders;
     using Effort.Test.Internal.Fakes;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using FluentAssertions;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class CachingDataLoaderFixture
     {
-        [TestMethod]
+        [Test]
         public void CachingDataLoader_Recreate()
         {
             CsvDataLoader wrapped = new CsvDataLoader("C:\\path");
@@ -49,9 +50,7 @@ namespace Effort.Test.DataLoaders
                 original.WrappedDataLoader.GetType(),
                 recreated.WrappedDataLoader.GetType());
 
-            Assert.IsInstanceOfType(
-                recreated.WrappedDataLoader,
-                typeof(CsvDataLoader));
+            recreated.WrappedDataLoader.Should().BeOfType<CsvDataLoader>();
 
             // The wrapped data loader should be restored completely too
             CsvDataLoader recreatedWrapped = recreated.WrappedDataLoader as CsvDataLoader;
@@ -60,7 +59,7 @@ namespace Effort.Test.DataLoaders
             Assert.AreEqual(wrapped.ContainerFolderPath, recreatedWrapped.ContainerFolderPath);
         }
 
-        [TestMethod]
+        [Test]
         public void CachingDataLoaderFactory_SingleTablesSingleQuery()
         {
             var dataLoaderMock = new FakeDataLoader();
@@ -80,7 +79,7 @@ namespace Effort.Test.DataLoaders
             Assert.AreEqual(1, storeProxy.CachedItemReturnCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CachingDataLoaderFactory_MoreTablesMoreQuery()
         {
             var dataLoaderMock = new FakeDataLoader();
@@ -101,7 +100,7 @@ namespace Effort.Test.DataLoaders
             Assert.AreEqual(0, storeProxy.CachedItemReturnCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CachingDataLoaderFactory_InvokesLatch()
         {
             var latchMock = new DataLoaderConfigurationLatchMock();
@@ -131,7 +130,7 @@ namespace Effort.Test.DataLoaders
             Assert.AreEqual(1, latchMock.ReleaseCallCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CachingDataLoaderFactory_IgnoresLatch()
         {
             var latchMock = new DataLoaderConfigurationLatchMock();
@@ -151,7 +150,7 @@ namespace Effort.Test.DataLoaders
             Assert.AreEqual(0, latchMock.AcquireCallCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CachingDataLoaderFactory_ReturnsSameData()
         {
             var latchMock = new DataLoaderConfigurationLatchMock();

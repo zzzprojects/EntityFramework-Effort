@@ -80,5 +80,8 @@ namespace Effort.Internal.DbCommandTreeTransformation.Functions
 
         public static readonly MethodInfo CompareTo =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.CompareTo(string.Empty, string.Empty));
+
+        public static readonly MethodInfo ConvertToString =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.ToString(null));
     }
 }

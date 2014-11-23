@@ -24,18 +24,31 @@
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
+    using System;
+    using System.Linq.Expressions;
+    using Effort.Internal.DbCommandTreeTransformation.Functions;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
 #else
     using System.Data.Common.CommandTrees;
 #endif
-    using System.Linq.Expressions;
 
     internal partial class TransformVisitor
     {
         public override Expression Visit(DbCastExpression expression)
         {
-            return Expression.Convert(this.Visit(expression.Argument), edmTypeConverter.Convert(expression.ResultType));
+            Expression source = this.Visit(expression.Argument);
+            Type resultType = edmTypeConverter.Convert(expression.ResultType);
+
+            if (resultType == typeof(string))
+            {
+                return Expression.Call(
+                    null,
+                    StringFunctions.ConvertToString,
+                    Expression.Convert(source, typeof(object)));
+            }
+
+            return Expression.Convert(source, resultType);
         }
     }
 }

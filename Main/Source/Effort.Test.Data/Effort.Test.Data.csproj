@@ -51,7 +51,7 @@
     <Compile Include="Features\TimeFieldEntity.cs" />
     <Compile Include="Features\LargeTimestampFieldEntity.cs" />
     <Compile Include="Features\DecimalIdentityFieldEntity.cs" />
-    <Compile Include="Features\IntFieldEntity.cs" />
+    <Compile Include="Features\NumberFieldEntity.cs" />
     <Compile Include="Features\MathEntity.cs" />
     <Compile Include="Features\RequiredFieldEntity.cs" />
     <Compile Include="Features\TimestampFieldEntity.cs" />

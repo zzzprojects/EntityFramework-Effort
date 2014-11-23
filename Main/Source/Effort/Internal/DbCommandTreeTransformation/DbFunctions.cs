@@ -28,6 +28,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
     using System.Linq;
     using System.Reflection;
     using Effort.Internal.Common;
+    using System.Globalization;
 
     internal class DbFunctions
     {
@@ -1204,5 +1205,12 @@ namespace Effort.Internal.DbCommandTreeTransformation
         }
 
         #endregion
+
+        public static string ToString(object obj)
+        {
+            var format = CultureInfo.InvariantCulture;
+
+            return string.Format(format, "{0}", obj);
+        }
     }
 }

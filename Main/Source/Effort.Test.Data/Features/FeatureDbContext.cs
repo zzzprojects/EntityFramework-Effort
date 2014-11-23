@@ -62,7 +62,7 @@ namespace Effort.Test.Data.Features
 
         public IDbSet<RequiredFieldEntity> RequiredFieldEntities { get; set; }
 
-        public IDbSet<IntFieldEntity> IntFieldEntities { get; set; }
+        public IDbSet<NumberFieldEntity> NumberFieldEntities { get; set; }
 
         public IDbSet<DecimalIdentityFieldEntity> DecimalIdentityFieldEntities { get; set; }
 

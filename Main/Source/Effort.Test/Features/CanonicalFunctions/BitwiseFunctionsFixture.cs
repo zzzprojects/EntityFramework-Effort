@@ -46,7 +46,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             this.context =
                 new FeatureDbContext(
                     connection,
-                    CompiledModels.GetModel<IntFieldEntity>());
+                    CompiledModels.GetModel<NumberFieldEntity>());
         }
 
         private static void InitializeData(DbConnection connection)
@@ -54,10 +54,10 @@ namespace Effort.Test.Features.CanonicalFunctions
             var context = 
                 new FeatureDbContext(
                     connection,
-                    CompiledModels.GetModel<IntFieldEntity>());
+                    CompiledModels.GetModel<NumberFieldEntity>());
 
-            context.IntFieldEntities.Add(
-                new IntFieldEntity {
+            context.NumberFieldEntities.Add(
+                new NumberFieldEntity {
                     Value8 = 0x0f,
                     Value16 = 0x0f,
                     Value32 = 0x0f,
@@ -79,7 +79,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             byte val = (0x0f & 0xaa);
 
             var q = this.context
-                .IntFieldEntities
+                .NumberFieldEntities
                 .Where(x => (x.Value8 & (byte)0xaa) == val);
 
             q.ShouldNotBeEmpty();
@@ -91,7 +91,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             short val = (0x0f & 0xaa);
 
             var q = this.context
-                .IntFieldEntities
+                .NumberFieldEntities
                 .Where(x => (x.Value16 & (short)0xaa) == val);
 
             q.ShouldNotBeEmpty();
@@ -103,7 +103,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             int val = (0x0f & 0xaa);
 
             var q = this.context
-                .IntFieldEntities
+                .NumberFieldEntities
                 .Where(x => (x.Value32 & (int)0xaa) == val);
 
             q.ShouldNotBeEmpty();
@@ -115,7 +115,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             long val = (0x0f & 0xaa);
 
             var q = this.context
-                .IntFieldEntities
+                .NumberFieldEntities
                 .Where(x => (x.Value64 & 0xaa) == val);
 
             q.ShouldNotBeEmpty();
@@ -127,7 +127,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             int val = (0x0f | 0xaa);
 
             var q = this.context
-                .IntFieldEntities
+                .NumberFieldEntities
                 .Where(x => (x.Value32 | 0xaa) == val);
 
             q.ShouldNotBeEmpty();
@@ -139,7 +139,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             int val = (~0x0f);
 
             var q = this.context
-                .IntFieldEntities
+                .NumberFieldEntities
                 .Where(x => (~x.Value32) == val);
 
             q.ShouldNotBeEmpty();
@@ -151,7 +151,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             int val = (0x0f ^ 0xaa);
 
             var q = this.context
-                .IntFieldEntities
+                .NumberFieldEntities
                 .Where(x => (x.Value32 ^ 0xaa) == val);
 
             q.ShouldNotBeEmpty();

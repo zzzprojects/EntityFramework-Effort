@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------
-// <copyright file="IntFieldEntity.cs" company="Effort Team">
+// <copyright file="NumberFieldEntity.cs" company="Effort Team">
 //     Copyright (C) 2011-2014 Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,7 @@ namespace Effort.Test.Data.Features
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class IntFieldEntity
+    public class NumberFieldEntity
     {
         [Key]
         public int Id { get; set; }
@@ -38,5 +38,11 @@ namespace Effort.Test.Data.Features
         public int Value32 { get; set; }
 
         public long Value64 { get; set; }
+
+        public double ValueD { get; set; }
+
+        public float ValueF { get; set; }
+
+        public decimal ValueM { get; set; }
     }
 }

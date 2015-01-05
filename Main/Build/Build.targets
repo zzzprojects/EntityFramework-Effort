@@ -111,6 +111,10 @@
       Condition="$(SignAssembly) And ! $(KeyPairAvailable)" />
 
     <MSBuild Projects="@(BuildProjects)" Properties="$(BuildProperties)" />
+
+    <Exec 
+      Command="&quot;$(SolutionDir)\.nuget\NuGet.exe&quot; install &quot;$(SolutionDir)\.nuget\packages.config&quot;"
+      WorkingDirectory="$(SolutionDir)\packages" />
   </Target>
 
   <Target Name="RunTests" Condition="$(RunTests)=='True'" Outputs="%(CompileConfig.Identity)">

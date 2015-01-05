@@ -41,7 +41,7 @@ namespace Effort.Provider
     ///     Represent an Effort command that realizes Entity Framework command tree 
     ///     representations.
     /// </summary>
-    public sealed class EffortEntityCommand : EffortCommandBase, ICloneable
+    public sealed class EffortEntityCommand : EffortCommandBase
     {
         private ICommandAction commandAction;
 
@@ -112,7 +112,7 @@ namespace Effort.Provider
         /// <returns>
         ///     A new object that is a copy of this instance.
         /// </returns>
-        public object Clone()
+        public override object Clone()
         {
             return new EffortEntityCommand(this);
         }

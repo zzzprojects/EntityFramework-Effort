@@ -24,10 +24,9 @@
 
 namespace Effort.Provider
 {
+    using System.Data.Common;
 #if !EFOLD
     using System.Data.Entity.Core.Common;
-#else
-    using System.Data.Common;
 #endif
 
     /// <summary>
@@ -35,6 +34,8 @@ namespace Effort.Provider
     /// </summary>
     public class EffortCommandDefinition : DbCommandDefinition
     {
+        private readonly EffortCommandBase prototype;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortCommandDefinition" /> class 
         ///     using the supplied <see cref="EffortCommandBase" />.
@@ -42,8 +43,20 @@ namespace Effort.Provider
         /// <param name="prototype">
         ///     The supplied <see cref="EffortCommandDefinition" />.
         /// </param>
-        public EffortCommandDefinition(EffortCommandBase prototype) : base(prototype)
+        public EffortCommandDefinition(EffortCommandBase prototype)
         {
+            this.prototype = prototype;
+        }
+
+        /// <summary>
+        ///     Creates and returnds a <see cref="DbCommand" /> object that can be executed.
+        /// </summary>
+        /// <returns>
+        ///     The command for database.
+        /// </returns>
+        public override DbCommand CreateCommand()
+        {
+            return (DbCommand)this.prototype.Clone();
         }
     }
 }

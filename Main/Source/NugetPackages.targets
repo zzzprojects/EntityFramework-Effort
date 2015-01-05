@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PackageEF5Dir>EntityFramework.5.0.0</PackageEF5Dir>
-    <PackageEF61Dir>EntityFramework.6.1.1</PackageEF61Dir>
+    <PackageEF61Dir>EntityFramework.6.1.2</PackageEF61Dir>
     <PackageNMemoryDir>NMemory.1.0.1</PackageNMemoryDir>
   </PropertyGroup>
 </Project>

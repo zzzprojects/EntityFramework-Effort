@@ -24,7 +24,7 @@ public class MyTests
   public void MyTest()
   {
     var db = new ApplicationDbContext(DbConnectionFactory.CreateTransient());
-    db.Database.CreateIfNotExists();
+    db.Database.CreateIfNotExists(); // Important, or you will get a MigrationsException
     
     ApplicationUser user = db.Users.Add(new ApplicationUser("testuser"));
     db.SaveChanges();

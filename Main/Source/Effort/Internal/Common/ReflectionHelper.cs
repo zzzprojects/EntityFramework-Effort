@@ -44,7 +44,7 @@ namespace Effort.Internal.Common
             return methodCall.Method;
         }
 
-        public static MethodInfo GetMethodInfo(Expression<Func<object>> expr)
+        public static MethodInfo GetMethodInfo(Expression<Func<object>> expr, bool makeGeneric = false)
         {
             MethodCallExpression methodCall = expr.Body as MethodCallExpression;
 
@@ -53,7 +53,14 @@ namespace Effort.Internal.Common
                 methodCall = (expr.Body as UnaryExpression).Operand as MethodCallExpression;
             }
 
-            return methodCall.Method;
+            var method = methodCall.Method;
+
+            if (makeGeneric)
+            {
+                return method.GetGenericMethodDefinition();
+            }
+
+            return method;
         }
 
 

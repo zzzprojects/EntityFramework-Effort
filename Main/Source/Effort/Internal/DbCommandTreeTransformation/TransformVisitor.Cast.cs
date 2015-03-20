@@ -26,9 +26,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
     using System.Linq.Expressions;
+    using Effort.Internal.Common;
     using Effort.Internal.DbCommandTreeTransformation.Functions;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
+    
 #else
     using System.Data.Common.CommandTrees;
 #endif
@@ -46,6 +48,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     null,
                     StringFunctions.ConvertToString,
                     Expression.Convert(source, typeof(object)));
+            }
+
+            var resType = TypeHelper.MakeNotNullable(resultType);
+
+            if (source.Type == typeof(string) && TypeHelper.IsNumeric(resType))
+            {
+                return Expression.Call(
+                    null,
+                    StringFunctions.ParseString.MakeGenericMethod(resType),
+                    source);
             }
 
             return Expression.Convert(source, resultType);

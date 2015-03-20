@@ -1212,5 +1212,19 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             return string.Format(format, "{0}", obj);
         }
+
+        public static T? TryParse<T>(string s) where T : struct
+        {
+            var format = CultureInfo.InvariantCulture;
+
+            try
+            {
+                return (T)Convert.ChangeType(s, typeof(T), format);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

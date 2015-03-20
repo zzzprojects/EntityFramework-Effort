@@ -83,5 +83,8 @@ namespace Effort.Internal.DbCommandTreeTransformation.Functions
 
         public static readonly MethodInfo ConvertToString =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.ToString(null));
+
+        public static readonly MethodInfo ParseString =
+            ReflectionHelper.GetMethodInfo(() => DbFunctions.TryParse<int>(null), makeGeneric: true);
     }
 }

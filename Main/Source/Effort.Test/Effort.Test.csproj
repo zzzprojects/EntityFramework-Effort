@@ -93,6 +93,7 @@
     <Compile Include="EffortConnectionStringBuilderFixture.cs" />
     <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
     <Compile Include="Features\BinaryKeyFixture.cs" />
+    <Compile Include="Features\StringParseFixture.cs" />
     <Compile Include="Features\FlagEnumFieldFixture.cs" />
     <Compile Include="Features\StringConversionFixture.cs" />
     <Compile Include="Features\StringFieldFixture.cs" />

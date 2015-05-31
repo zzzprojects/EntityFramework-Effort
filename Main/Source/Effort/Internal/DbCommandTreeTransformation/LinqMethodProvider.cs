@@ -43,6 +43,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private FastLazy<MethodInfo> selectManyWithResultSelector;
 
         private FastLazy<MethodInfo> count;
+        private FastLazy<MethodInfo> longCount;
         private FastLazy<MethodInfo> where;
         private FastLazy<MethodInfo> take;
         private FastLazy<MethodInfo> skip;
@@ -85,6 +86,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.selectManyWithResultSelector = CreateLazy(CreateSelectManyWithResultSelector);
 
             this.count = CreateLazy(CreateCount);
+            this.longCount = CreateLazy(CreateLongCount);
             this.where = CreateLazy(CreateWhere);
             this.take = CreateLazy(CreateTake);
             this.skip = CreateLazy(CreateSkip);
@@ -180,6 +182,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
         public MethodInfo Count
         {
             get { return this.count.Value; }
+        }
+
+        public MethodInfo LongCount
+        {
+            get { return this.longCount.Value; }
         }
 
         public MethodInfo Where
@@ -344,6 +351,12 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             // This needs Enumerable method, because of IGrouping
             return GetMethod(q => Enumerable.Count(q));
+        }
+
+        private static MethodInfo CreateLongCount()
+        {
+            // This needs Enumerable method, because of IGrouping
+            return GetMethod(q => Enumerable.LongCount(q));
         }
 
         private static MethodInfo CreateWhere()

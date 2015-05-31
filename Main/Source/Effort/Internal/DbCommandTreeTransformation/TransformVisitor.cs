@@ -164,6 +164,10 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     result = queryMethodExpressionBuilder.Sum(sourceGroup, aggregateSelector);
                     break;
 
+                case "BigCount":
+                    result = queryMethodExpressionBuilder.LongCount(sourceGroup);
+                    break;
+               
                 default:
                     throw new NotSupportedException(functionAggregate.Function.Name + " is not a not supported DbFunctionAggregate");
             }

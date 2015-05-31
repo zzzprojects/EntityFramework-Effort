@@ -505,7 +505,7 @@ namespace Effort.Test.Features.CanonicalFunctions
             this.Entities.Add(
                 new DateTimeOffsetFieldEntity()
                 {
-                    Offset = DateTimeOffset.Now
+                    Offset = new DateTimeOffset(DateTime.Now, TimeSpan.FromMinutes(30))
                 });
 
             this.context.SaveChanges();
@@ -513,11 +513,11 @@ namespace Effort.Test.Features.CanonicalFunctions
 #if !EFOLD
             var q = this.Entities
                 .Where(x => 
-                    DbFunctions.GetTotalOffsetMinutes(x.Offset) == 60);
+                    DbFunctions.GetTotalOffsetMinutes(x.Offset) == 30);
 #else
             var q = this.Entities
                 .Where(x =>
-                    EntityFunctions.GetTotalOffsetMinutes(x.Offset) == 60);
+                    EntityFunctions.GetTotalOffsetMinutes(x.Offset) == 30);
 #endif
 
             q.Should().NotBeEmpty();

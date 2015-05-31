@@ -1002,7 +1002,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 return null;
             }
 
-            return date.Value.Date;
+            return new DateTimeOffset(date.Value.Date, date.Value.Offset);
         }
 
         public static int? DayOfYear(DateTimeOffset? date)

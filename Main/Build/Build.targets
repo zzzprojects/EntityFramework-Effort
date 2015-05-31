@@ -125,7 +125,7 @@
     <Message 
       Importance="High" 
       Text="Run tests (%(CompileConfig.Identity))" />
-    <Exec Command="&quot;$(SolutionDir)\packages\NUnit.Runners.2.6.3\tools\nunit-console.exe&quot; &quot;$(SolutionDir)\Effort.Test\bin\%(CompileConfig.Identity)\Effort.Test.dll&quot; /nologo /framework:%(CompileConfig.Runtime) /stoponerror">
+    <Exec Command="&quot;$(SolutionDir)\packages\NUnit.Runners.2.6.3\tools\nunit-console.exe&quot; &quot;$(SolutionDir)\Effort.Test\bin\%(CompileConfig.Identity)\Effort.Test.dll&quot; /nologo /framework:%(CompileConfig.Runtime)">
       <Output TaskParameter="ExitCode" PropertyName="TestSuccess"/>
     </Exec>
     <Error Text="One or more tests failed" Condition="'$(TestSuccess)'!='0'" />

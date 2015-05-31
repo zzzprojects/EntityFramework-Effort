@@ -505,7 +505,9 @@ namespace Effort.Test.Features.CanonicalFunctions
             this.Entities.Add(
                 new DateTimeOffsetFieldEntity()
                 {
-                    Offset = new DateTimeOffset(DateTime.Now, TimeSpan.FromMinutes(30))
+                    Offset = new DateTimeOffset(
+                        new DateTime(2005, 1, 2, 13, 0, 0), 
+                        TimeSpan.FromMinutes(30))
                 });
 
             this.context.SaveChanges();

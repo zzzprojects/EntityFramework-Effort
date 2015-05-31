@@ -285,6 +285,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return Expression.Call(method, source);
         }
 
+        public Expression LongCount(Expression source)
+        {
+            Type sourceType = TypeHelper.GetElementType(source.Type);
+
+            MethodInfo genericMethod = this.queryMethods.Count;
+            MethodInfo method = genericMethod.MakeGenericMethod(sourceType);
+
+            return Expression.Call(method, source);
+        }
+
         public Expression Max(Expression source, LambdaExpression selector)
         {
             MethodInfoGroup group = this.queryMethods.Max;

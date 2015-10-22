@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------
 // <copyright file="VarCharLimitConstraintFactory`1.cs" company="Effort Team">
-//     Copyright (C) 2011-2014 Effort Team
+//     Copyright (C) Effort Team
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy
 //     of this software and associated documentation files (the "Software"), to deal

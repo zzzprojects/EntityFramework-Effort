@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------
 // <copyright file="CsvReader.DataReaderValidations.cs" company="Effort Team">
-//     Copyright (C) 2011-2014 Effort Team
+//     Copyright (C) Effort Team
 //     Copyright (C) 2006 Sébastien Lorion
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy

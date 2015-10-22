@@ -38,9 +38,16 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             Expression source = this.Visit(expression.Argument);
 
-            if (source.Type.IsValueType && !TypeHelper.IsNullable(source.Type))
+            if (source.Type.IsValueType)
             {
-                return Expression.Constant(false);
+                if (!TypeHelper.IsNullable(source.Type))
+                {
+                    return Expression.Constant(false);
+                }
+                else
+                {
+                    return Expression.Equal(Expression.Convert(source, typeof(object)), Expression.Constant(null));
+                }
             }
             else
             {

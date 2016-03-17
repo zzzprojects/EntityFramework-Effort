@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Effort.Test.Features
 {
     using System.Data.Entity;
@@ -177,6 +179,30 @@ namespace Effort.Test.Features
                 .Count();
 
             Assert.AreEqual(2, res);
+        }
+
+        [Test]
+        public void String_EqualsIgnoreCase()
+        {
+            this.Add("John", "Doe");
+
+            var res = this.Entities
+                .Where(x => x.Value.Equals("john", StringComparison.OrdinalIgnoreCase))
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+
+        [Test]
+        public void String_NotEqualsIgnoreCase()
+        {
+            this.Add("John", "Doe", "John");
+
+            var res = this.Entities
+                .Where(x => !x.Value.Equals("john", StringComparison.OrdinalIgnoreCase))
+                .Count();
+
+            Assert.AreEqual(1, res);
         }
     }
 }

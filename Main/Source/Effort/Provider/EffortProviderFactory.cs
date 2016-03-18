@@ -22,6 +22,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System.Configuration;
+using System.Linq;
+
 namespace Effort.Provider
 {
     using System;
@@ -46,9 +49,23 @@ namespace Effort.Provider
         ///     Prevents a default instance of the <see cref="EffortProviderFactory" /> class
         ///     from being created.
         /// </summary>
-        private EffortProviderFactory()
+        internal EffortProviderFactory()
         {
+            IsCaseSensitive = GetDefaultCaseSensitiveConfig();
         }
+
+        public bool IsCaseSensitive { get; set; }
+
+        private static bool GetDefaultCaseSensitiveConfig()
+        {
+            var configValue = ConfigurationManager.AppSettings["effort:caseSensitive"];
+            // for sake of backwards compatibility, return true when app settings is not specified.
+            return
+                string.IsNullOrEmpty(configValue) ||
+                TrueValue.Any(v => string.Equals(v, configValue, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private static string[] TrueValue = new[] { "true", "1", "on" };
 
         /// <summary>
         ///     Returns a new instance of the <see cref="T:EffortConnection" /> class.
@@ -58,7 +75,10 @@ namespace Effort.Provider
         /// </returns>
         public override DbConnection CreateConnection()
         {
-            return new EffortConnection();
+            return new EffortConnection(this)
+            {
+                IsCaseSensitive = IsCaseSensitive
+            };
         }
 
         /// <summary>

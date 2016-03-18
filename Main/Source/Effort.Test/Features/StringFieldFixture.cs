@@ -23,6 +23,7 @@
 // --------------------------------------------------------------------------------------------
 
 using System;
+using Effort.Provider;
 
 namespace Effort.Test.Features
 {
@@ -39,6 +40,7 @@ namespace Effort.Test.Features
         [SetUp]
         public void Initialize()
         {
+            EffortProviderFactory.Instance.IsCaseSensitive = true;
             this.context =
                 new FeatureDbContext(
                     Effort.DbConnectionFactory.CreateTransient(),
@@ -184,10 +186,11 @@ namespace Effort.Test.Features
         [Test]
         public void String_EqualsIgnoreCase()
         {
+            this.MarkAsCaseInsensitive();
             this.Add("John", "Doe");
 
             var res = this.Entities
-                .Where(x => x.Value.Equals("john", StringComparison.OrdinalIgnoreCase))
+                .Where(x => x.Value.Equals("johN", StringComparison.OrdinalIgnoreCase))
                 .Count();
 
             Assert.AreEqual(1, res);
@@ -196,13 +199,19 @@ namespace Effort.Test.Features
         [Test]
         public void String_NotEqualsIgnoreCase()
         {
+            this.MarkAsCaseInsensitive();
             this.Add("John", "Doe", "John");
 
             var res = this.Entities
-                .Where(x => !x.Value.Equals("john", StringComparison.OrdinalIgnoreCase))
+                .Where(x => !x.Value.Equals("johN", StringComparison.OrdinalIgnoreCase))
                 .Count();
 
             Assert.AreEqual(1, res);
+        }
+
+        private void MarkAsCaseInsensitive()
+        {
+            EffortProviderFactory.Instance.IsCaseSensitive = false;
         }
     }
 }

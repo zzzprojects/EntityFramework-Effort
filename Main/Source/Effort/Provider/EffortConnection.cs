@@ -22,6 +22,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System.Configuration;
+using System.Linq;
+
 namespace Effort.Provider
 {
     using System;
@@ -45,14 +48,22 @@ namespace Effort.Provider
         private Guid identifier;
         private ConnectionState state;
         private bool isPrimaryTransient;
+        private readonly DbProviderFactory dbProviderFactory;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
         /// </summary>
         public EffortConnection()
+            : this (EffortProviderFactory.Instance)
+        {
+        }
+
+        internal EffortConnection(EffortProviderFactory dbProviderFactory)
         {
             this.identifier = Guid.NewGuid();
             this.state = ConnectionState.Closed;
+            this.IsCaseSensitive = dbProviderFactory.IsCaseSensitive;
+            this.dbProviderFactory = dbProviderFactory;
         }
 
         /// <summary>
@@ -160,7 +171,7 @@ namespace Effort.Provider
         {
             get
             {
-                return EffortProviderFactory.Instance;
+                return this.dbProviderFactory ?? EffortProviderFactory.Instance;
             }
         }
 
@@ -356,8 +367,11 @@ namespace Effort.Provider
             }
 
             parameters.IsTransient = this.isPrimaryTransient;
+            parameters.IsCaseSensitive = IsCaseSensitive;
 
             return new DbContainer(parameters);
         }
+
+        public bool IsCaseSensitive { get; set; }
     }
 }

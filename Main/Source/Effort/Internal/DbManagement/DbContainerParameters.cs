@@ -32,30 +32,9 @@ namespace Effort.Internal.DbManagement
 
     internal class DbContainerParameters
     {
-        private bool? isCaseSensitive;
-
         public IDataLoader DataLoader { get; set; }
 
         public bool IsTransient { get; set; }
-
-        public bool IsCaseSensitive
-        {
-            get
-            {
-                if (!isCaseSensitive.HasValue)
-                {
-                    var configValue = ConfigurationManager.AppSettings["effort:caseSensitive"];
-                    // for sake of backwards compatibility, return true when app settings is not specified.
-                    isCaseSensitive =
-                        string.IsNullOrEmpty(configValue) ||
-                        TrueValue.Any(v => string.Equals(v, configValue, StringComparison.InvariantCultureIgnoreCase));
-                }
-                return isCaseSensitive.Value;
-            }
-            set { isCaseSensitive = value; }
-        }
-
-        private static string[] TrueValue = new[] { "true", "1", "on" };
-
+        public bool IsCaseSensitive { get; set; }
     }
 }

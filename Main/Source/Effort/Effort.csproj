@@ -126,7 +126,6 @@
     <Compile Include="Internal\Csv\ParseErrorAction.cs" />
     <Compile Include="Internal\Csv\ValueTrimmingOptions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\DbFunctions.cs" />
-    <Compile Include="Internal\DbCommandTreeTransformation\EffortDbSettings.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\DoubleFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\DecimalFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\IntegerFunctions.cs" />

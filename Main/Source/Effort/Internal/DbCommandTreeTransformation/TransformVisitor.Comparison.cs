@@ -81,6 +81,12 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         private Expression CreateStringComparison(Expression left, Expression right, DbExpressionKind kind)
         {
+            if (!this.isCaseSensitive)
+            {
+                left = Expression.Call(null, StringFunctions.ToLower, left);
+                right = Expression.Call(null, StringFunctions.ToLower, right);
+            }
+
             var method = Expression.Call(null, StringFunctions.CompareTo, left, right);
             var mode = GetCompareMode(kind);
 

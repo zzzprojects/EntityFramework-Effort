@@ -54,7 +54,7 @@ namespace Effort.Internal.CommandActions
 
         public DbDataReader ExecuteDataReader(ActionContext context)
         {
-            TransformVisitor visitor = new TransformVisitor(context.DbContainer.TypeConverter);
+            TransformVisitor visitor = new TransformVisitor(context.DbContainer);
             visitor.TableProvider = context.DbContainer;
 
             // Transform command tree

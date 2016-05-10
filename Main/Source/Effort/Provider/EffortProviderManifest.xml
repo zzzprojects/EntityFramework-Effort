@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
  <copyright file="EffortProviderManifest.xml" company="Effort Team">
      Copyright (C) Effort Team
@@ -30,10 +30,17 @@
     <Type Name="sbyte" PrimitiveTypeKind="SByte"/>
     <Type Name="int16" PrimitiveTypeKind="Int16"/>
     <Type Name="int32" PrimitiveTypeKind="Int32"/>
+    <Type Name="int" PrimitiveTypeKind="Int32"/>
     <Type Name="int64" PrimitiveTypeKind="Int64"/>
     <Type Name="double" PrimitiveTypeKind="Double" />
     <Type Name="single" PrimitiveTypeKind="Single" />
     <Type Name="decimal" PrimitiveTypeKind="Decimal">
+      <FacetDescriptions>
+        <Precision Minimum="1" Maximum="1000" DefaultValue="18" Constant="false" />
+        <Scale Minimum="0" Maximum="1000" DefaultValue="0" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="money" PrimitiveTypeKind="Decimal">
       <FacetDescriptions>
         <Precision Minimum="1" Maximum="1000" DefaultValue="18" Constant="false" />
         <Scale Minimum="0" Maximum="1000" DefaultValue="0" Constant="false" />
@@ -46,7 +53,24 @@
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
     </Type>
+    <Type Name="image" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
     <Type Name="datetime" PrimitiveTypeKind="DateTime">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="date" PrimitiveTypeKind="DateTime">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="datetime2" PrimitiveTypeKind="DateTime">
       <FacetDescriptions>
         <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
       </FacetDescriptions>
@@ -69,10 +93,33 @@
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
     </Type>
+    <Type Name="text" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="ntext" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
     <Type Name="guid" PrimitiveTypeKind="Guid" />
     <Type Name="rowversion" PrimitiveTypeKind="Binary">
       <FacetDescriptions>
         <MaxLength DefaultValue="8" Constant="false" 
+                   Minimum="0" Maximum="1000" />
+        <FixedLength DefaultValue="true" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="timestamp" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="8" Constant="false"
                    Minimum="0" Maximum="1000" />
         <FixedLength DefaultValue="true" Constant="false" />
       </FacetDescriptions>

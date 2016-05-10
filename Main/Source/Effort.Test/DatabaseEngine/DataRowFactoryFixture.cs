@@ -69,7 +69,7 @@ namespace Effort.Test.DatabaseEngine
         [Test]
         public void DataRow_GetValue_method()
         {
-            int count = 8;
+            int count = 3;
             Type type = CreateType(CreateNames(count));
 
             object[] args = GenerateArguments(count);

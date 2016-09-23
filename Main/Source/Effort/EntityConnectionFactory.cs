@@ -99,6 +99,31 @@ namespace Effort
         ///     Creates a <see cref="T:EntityConnection"/> object that rely on an in-memory 
         ///     database instance that lives during the complete application lifecycle. If the 
         ///     database is accessed the first time, then it will be constructed based on the 
+        ///     metadata referenced by the provided entity connection string and its state is 
+        ///     initialized by the provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        ///     The entity connection string that identifies the in-memory database and
+        ///     references the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        ///     in-memory database.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:EntityConnection"/> object.
+        /// </returns>
+        public static EntityConnection CreatePersistent(
+            string entityConnectionString,
+            IDataLoader dataLoader)
+        {
+            return CreatePersistent(entityConnectionString, entityConnectionString, dataLoader);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="T:EntityConnection"/> object that rely on an in-memory 
+        ///     database instance that lives during the complete application lifecycle. If the 
+        ///     database is accessed the first time, then it will be constructed based on the 
         ///     metadata referenced by the provided entity connection string.
         /// </summary>
         /// <param name="entityConnectionString">

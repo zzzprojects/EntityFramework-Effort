@@ -97,6 +97,8 @@ namespace Effort.Internal.DbManagement
             get { return this.converter; }
         }
 
+        public bool IsCaseSensitive { get { return parameters.IsCaseSensitive; } }
+
         public object GetTable(string name)
         {
             return this.Internal.GetTable(name);

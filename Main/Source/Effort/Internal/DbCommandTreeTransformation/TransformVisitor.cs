@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using Effort.Internal.DbManagement;
+
 namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
@@ -55,8 +57,14 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private EdmTypeConverter edmTypeConverter;
 
         private VariableCollection currentVariables;
+        private bool isCaseSensitive;
 
-        public TransformVisitor(ITypeConverter converter)
+        public TransformVisitor(DbContainer dbContainer)
+            : this(dbContainer.TypeConverter, dbContainer.IsCaseSensitive)
+        {
+        }
+
+        public TransformVisitor(ITypeConverter converter, bool isCaseSensitive)
         {
             this.converter = converter;
             this.edmTypeConverter = new EdmTypeConverter(converter);
@@ -67,6 +75,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             this.functionMapper = new CanonicalFunctionMapper(converter);
             this.methodProvider = new Effort.Internal.DbManagement.DbMethodProvider();
+
+            this.isCaseSensitive = isCaseSensitive;
         }
 
         public ITableProvider TableProvider

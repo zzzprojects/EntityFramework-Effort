@@ -22,6 +22,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System;
+using System.Configuration;
+using System.Linq;
+
 namespace Effort.Internal.DbManagement
 {
     using Effort.DataLoaders;
@@ -31,5 +35,6 @@ namespace Effort.Internal.DbManagement
         public IDataLoader DataLoader { get; set; }
 
         public bool IsTransient { get; set; }
+        public bool IsCaseSensitive { get; set; }
     }
 }

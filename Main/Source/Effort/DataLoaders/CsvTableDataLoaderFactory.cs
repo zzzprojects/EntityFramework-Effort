@@ -25,7 +25,8 @@
 namespace Effort.DataLoaders
 {
     using System;
-    using System.IO;
+    using System.Collections.Generic;
+   
 
     /// <summary>
     ///     Represents a table data loader factory that creates 
@@ -64,15 +65,28 @@ namespace Effort.DataLoaders
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
-            string name = string.Format("{0}.csv", table.Name);
-            IFileReference file = this.source.GetFile(name);
-
-            if (file == null || !file.Exists)
+            var options = new List<string>()
             {
-                return new EmptyTableDataLoader();
+                CreateName(table.Schema, table.Name),
+                CreateName(table.Name)
+            };
+
+            foreach (var item in options)
+            {
+                IFileReference file = this.source.GetFile(item);
+
+                if (file != null && file.Exists)
+                {
+                    return new CsvTableDataLoader(file, table);
+                }
             }
 
-            return new CsvTableDataLoader(file, table);
+            return new EmptyTableDataLoader();
+        }
+
+        private static string CreateName(params string[] args)
+        {
+            return string.Format("{0}.csv", string.Join(".", args));
         }
 
         /// <summary>

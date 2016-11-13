@@ -24,8 +24,6 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    using Effort.Internal.Common;
-
     internal class BareSchemaConfiguration : ITableConfiguration
     {
         private readonly IBareSchema schema;
@@ -37,7 +35,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
         public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
         {
-            string tableName = entityInfo.TableName;
+            var tableName = entityInfo.TableName;
 
             builder.EntityType = this.schema.GetEntityType(tableName);
             builder.Name = tableName;

@@ -51,7 +51,7 @@ namespace Effort.Internal.DbManagement.Schema
 
         public MemberInfo IdentityField { get; set; }
 
-        public string Name { get; set; }
+        public TableName Name { get; set; }
 
         public Type EntityType 
         {

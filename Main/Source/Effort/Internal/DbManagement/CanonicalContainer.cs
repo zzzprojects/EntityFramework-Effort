@@ -33,8 +33,8 @@ namespace Effort.Internal.DbManagement
     using System.Data.Metadata.Edm;
 #endif
     using System.Linq;
-    using System.Text;
     using Effort.Internal.Common;
+    using Effort.Internal.DbManagement.Schema;
     using Effort.Internal.DbManagement.Schema.Configuration;
     using Effort.Internal.TypeConversion;
 
@@ -75,11 +75,11 @@ namespace Effort.Internal.DbManagement
         {
             var groups = this.containers
                 .SelectMany(x => x.BaseEntitySets.OfType<EntitySet>())
-                .GroupBy(x => x.GetTableName());
+                .GroupBy(x => x.GetFullTableName());
 
             foreach (var group in groups)
             {
-                var tableName = group.First().GetTableName();
+                var table = group.First();
 
                 var properties = group.SelectMany(x => x.ElementType.Properties);
 
@@ -90,7 +90,7 @@ namespace Effort.Internal.DbManagement
                     .ToArray();
 
                 yield return new EntityInfo(
-                    tableName,
+                    new Schema.TableName(table.GetSchema(), table.GetTableName()),
                     this.GetProperties(properties, converter),
                     keyProperties);
             }
@@ -185,18 +185,19 @@ namespace Effort.Internal.DbManagement
                 .ToArray();
         }
 
-        private string GetTable(
+        private TableName GetTable(
             AssociationSet association,
             RelationshipEndMember relationEndpoint)
         {
   
             RefType refType = relationEndpoint.TypeUsage.EdmType as RefType;
 
-            return association
+            var entitySet = association
                 .AssociationSetEnds
                 .Select(x => x.EntitySet)
-                .First(x => x.ElementType == refType.ElementType)
-                .GetTableName();
+                .First(x => x.ElementType == refType.ElementType);
+
+            return entitySet.GetFullTableName();
         }
     }
 }

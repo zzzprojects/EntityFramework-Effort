@@ -48,9 +48,9 @@ namespace Effort.Internal.DbManagement.Schema
             this.relations.Add(relation);
         }
 
-        public DbTableInfoBuilder Find(string tableName)
+        public DbTableInfoBuilder Find(TableName tableName)
         {
-            return this.tables.FirstOrDefault(b => b.Name == tableName);
+            return this.tables.FirstOrDefault(b => b.Name.Equals(tableName));
         }
 
         public DbSchema Create()

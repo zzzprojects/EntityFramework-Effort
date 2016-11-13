@@ -29,7 +29,7 @@ namespace Effort.Internal.DbManagement.Schema
 
     internal class DbSchema
     {
-        private readonly Dictionary<string, DbTableInfo> tableLookup;
+        private readonly Dictionary<TableName, DbTableInfo> tableLookup;
         private readonly List<DbTableInfo> tables;
         private readonly List<DbRelationInfo> relations;
 
@@ -37,7 +37,7 @@ namespace Effort.Internal.DbManagement.Schema
             IEnumerable<DbTableInfo> tables, 
             IEnumerable<DbRelationInfo> relations)
         {
-            this.tableLookup = new Dictionary<string, DbTableInfo>();
+            this.tableLookup = new Dictionary<TableName, DbTableInfo>();
             this.tables = new List<DbTableInfo>();
             this.relations = new List<DbRelationInfo>();
 
@@ -50,12 +50,12 @@ namespace Effort.Internal.DbManagement.Schema
             this.relations.AddRange(relations);
         }
 
-        public DbTableInfo GetTable(string tableName)
+        public DbTableInfo GetTable(TableName tableName)
         {
             return this.tableLookup[tableName];
         }
 
-        public string[] GetTableNames()
+        public TableName[] GetTableNames()
         {
             return this.tableLookup.Keys.ToArray();
         }

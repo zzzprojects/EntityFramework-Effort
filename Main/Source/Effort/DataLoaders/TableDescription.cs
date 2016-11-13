@@ -33,15 +33,15 @@ namespace Effort.DataLoaders
     /// </summary>
     public sealed class TableDescription
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TableDescription" /> class.
-        /// </summary>
-        /// <param name="name"> The name of the table. </param>
-        /// <param name="columns"> The columns of the table. </param>
-        internal TableDescription(string name, IEnumerable<ColumnDescription> columns)
+        internal TableDescription(string schema, string name, IEnumerable<ColumnDescription> columns)
         {
             this.Name = name;
+            this.Schema = schema;
             this.Columns = columns.ToList().AsReadOnly();
+        }
+
+        internal TableDescription(string name, IEnumerable<ColumnDescription> columns) : this(null, name, columns)
+        {
         }
 
         /// <summary>
@@ -51,6 +51,15 @@ namespace Effort.DataLoaders
         ///     The name of the table.
         /// </value>
         public string Name { get; private set; }
+
+
+        /// <summary>
+        ///     Gets the schema of the table.
+        /// </summary>
+        /// <value>
+        ///     The schema of the table.
+        /// </value>
+        public string Schema { get; set; }
 
         /// <summary>
         ///     Gets the columns of the table.

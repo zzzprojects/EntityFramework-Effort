@@ -29,12 +29,13 @@ namespace Effort.Internal.DbManagement
     using Effort.Internal.Common;
     using NMemory;
     using NMemory.Tables;
+    using Schema;
 
     internal static class DbExtensions
     {
-        public static ITable GetTable(this Database database, string name)
+        public static ITable GetTable(this Database database, TableName name)
         {
-            string cliName = TypeHelper.NormalizeForCliTypeName(name);
+            string cliName = TypeHelper.NormalizeForCliTypeName(name.FullName);
 
             ITable table = database
                 .Tables
@@ -45,15 +46,15 @@ namespace Effort.Internal.DbManagement
             if (table == null)
             {
                 throw new EffortException(
-                    string.Format(ExceptionMessages.TableNotFound, name));
+                    string.Format(ExceptionMessages.TableNotFound, name.FullName));
             }
 
             return table;
         }
 
-        public static bool ContainsTable(this Database database, string name)
+        public static bool ContainsTable(this Database database, TableName name)
         {
-            string cliName = TypeHelper.NormalizeForCliTypeName(name);
+            string cliName = TypeHelper.NormalizeForCliTypeName(name.FullName);
 
             return database
                 .Tables

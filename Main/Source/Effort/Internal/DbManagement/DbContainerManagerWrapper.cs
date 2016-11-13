@@ -25,9 +25,8 @@
 namespace Effort.Internal.DbManagement
 {
     using System.Collections.Generic;
-    using System.Linq;
-    using Effort.Internal.Common;
     using Effort.Internal.DbManagement.Engine;
+    using Effort.Internal.DbManagement.Schema;
     using Effort.Provider;
 
     internal class DbContainerManagerWrapper : IDbManager
@@ -48,25 +47,30 @@ namespace Effort.Internal.DbManagement
 
         public void ClearMigrationHistory()
         {
-            var table = this.container.GetTable(MigrationHistoryTable) as IExtendedTable;
-
-            table.Clear();
+            foreach (var tableName in this.container.TableNames)
+            {
+                if (tableName.Name == MigrationHistoryTable)
+                {
+                    var table = this.container.GetTable(tableName) as IExtendedTable;
+                    table.Clear();
+                }
+            }
         }
 
         public void ClearTables()
         {
-            var db = this.container.Internal;
-            var specialEntityTypes = GetEntityTypeNames(MigrationHistoryTable);
+            var specialTables = new List<string>() { MigrationHistoryTable };
 
             this.SetRelations(false);
 
-            foreach (IExtendedTable table in db.Tables.GetAllTables())
+            foreach (TableName name in this.container.TableNames)
             {
-                if (specialEntityTypes.Contains(table.ElementType.Name))
+                if (specialTables.Contains(name.Name))
                 {
                     continue;
                 }
 
+                IExtendedTable table = (IExtendedTable)this.container.GetTable(name);
                 table.Clear();
             }
 
@@ -81,13 +85,6 @@ namespace Effort.Internal.DbManagement
             {
                 relation.IsEnabled = enabled;
             }
-        }
-
-        private static List<string> GetEntityTypeNames(params string[] tableNames)
-        {
-            return tableNames
-                .Select(x => TypeHelper.NormalizeForCliTypeName(x))
-                .ToList();
         }
     }
 }

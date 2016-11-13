@@ -29,12 +29,12 @@ namespace Effort.Internal.DbManagement.Schema
 
     internal interface IBareSchema
     {
-        Type GetEntityType(string tableName);
+        Type GetEntityType(TableName tableName);
 
-        string GetTableName(Type entityType);
+        TableName GetTableName(Type entityType);
 
         Type[] EntityTypes { get; }
 
-        string[] Tables { get; }
+        TableName[] Tables { get; }
     }
 }

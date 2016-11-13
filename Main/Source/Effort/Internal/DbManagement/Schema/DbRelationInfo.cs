@@ -31,8 +31,8 @@ namespace Effort.Internal.DbManagement.Schema
     internal class DbRelationInfo
     {
         public DbRelationInfo(
-            string primaryTable, 
-            string foreignTable,
+            TableName primaryTable,
+            TableName foreignTable,
             IKeyInfo primaryKeyInfo,
             IKeyInfo foreignKeyInfo, 
             Delegate primaryToForeignConverter,
@@ -48,9 +48,9 @@ namespace Effort.Internal.DbManagement.Schema
             this.CascadedDelete = cascadedDelete;
         }
 
-        public string PrimaryTable { get; private set; }
+        public TableName PrimaryTable { get; private set; }
 
-        public string ForeignTable { get; private set; }
+        public TableName ForeignTable { get; private set; }
 
         // NMemory.Indexes.AnonymousTypeKeyInfo<TPrimary, TPrimaryKey>
         public IKeyInfo PrimaryKeyInfo { get; private set; }

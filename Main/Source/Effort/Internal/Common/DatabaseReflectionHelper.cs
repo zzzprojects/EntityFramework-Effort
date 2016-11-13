@@ -265,9 +265,11 @@ namespace Effort.Internal.Common
                 return null;
             }
 
-            RefType refType = rel.TypeUsage.EdmType as RefType;
+            var refType = rel.TypeUsage.EdmType as RefType;
+            var elemType = refType.ElementType;
+            var name = new TableName(elemType.NamespaceName, elemType.Name);
 
-            return database.GetTable(refType.ElementType.Name);
+            return database.GetTable(name);
         }
 
         private static class WrapperMethods

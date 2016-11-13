@@ -30,14 +30,14 @@ namespace Effort.Internal.DbManagement.Schema
 
     internal class BareSchemaBase : IBareSchema
     {
-        private readonly Dictionary<string, Type> entityTypes;
+        private readonly Dictionary<TableName, Type> entityTypes;
 
         public BareSchemaBase()
         {
-            this.entityTypes = new Dictionary<string, Type>();
+            this.entityTypes = new Dictionary<TableName, Type>();
         }
 
-        public Type GetEntityType(string tableName)
+        public Type GetEntityType(TableName tableName)
         {
             Type result;
             if (!this.entityTypes.TryGetValue(tableName, out result))
@@ -48,7 +48,7 @@ namespace Effort.Internal.DbManagement.Schema
             return result;
         }
 
-        public string GetTableName(Type entityType)
+        public TableName GetTableName(Type entityType)
         {
             foreach (var keypair in this.entityTypes)
             {
@@ -58,7 +58,7 @@ namespace Effort.Internal.DbManagement.Schema
                 }
             }
 
-            return null;
+            return default(TableName);
         }
 
         public Type[] EntityTypes
@@ -66,12 +66,12 @@ namespace Effort.Internal.DbManagement.Schema
             get { return this.entityTypes.Values.ToArray(); }
         }
 
-        public string[] Tables
+        public TableName[] Tables
         {
             get { return this.entityTypes.Keys.ToArray(); }
         }
 
-        protected void Register(string tableName, Type entityType)
+        protected void Register(TableName tableName, Type entityType)
         {
             this.entityTypes.Add(tableName, entityType);
         }

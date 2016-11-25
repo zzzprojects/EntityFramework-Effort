@@ -24,31 +24,28 @@
 
 namespace Effort.Test.Features
 {
+    using System.Data.Entity;
     using System.Linq;
     using Effort.Test.Data.Northwind;
     using Effort.Test.Internal.Queries;
     using NUnit.Framework;
+#if EFOLD
+    using System.Data;
+#endif
+
 
     [TestFixture]
     public class MiscellaneousQueryFixture
     {
-        private IQueryTester<NorthwindObjectContext> tester;
-
-        [SetUp]
-        public void Initialize()
-        {
-            this.tester = new NorthwindQueryTester();
-        }
-
         /// <summary>
-        ///     Query source: http://effort.codeplex.com/discussions/528812
+        ///     Source: http://effort.codeplex.com/discussions/528812
         /// </summary>
         [Test]
         public void Discussion528812()
         {
             var expected = "[{\"C1\":1},{\"C1\":3},{\"C1\":16},{\"C1\":11},{\"C1\":22},{\"C1\":9},{\"C1\":7},{\"C1\":10}]";
 
-            ICorrectness result = this.tester.TestQuery(
+            ICorrectness result = new NorthwindQueryTester().TestQuery(
                 context => context.Categories
                     .Where(x => x.Description != null)
                     .Select(x =>
@@ -61,6 +58,34 @@ namespace Effort.Test.Features
                expected);
 
             Assert.IsTrue(result.Check());
+        }
+
+        /// <summary>
+        ///     Source: https://github.com/tamasflamich/effort/issues/56
+        /// </summary>
+        [Test]
+        public void GithubIssue56()
+        {
+            var connection = Effort.EntityConnectionFactory.CreateTransient(NorthwindObjectContext.DefaultConnectionString);
+            var dbContext = new NorthwindDbContext(connection);
+
+            var cat1 = new Category { CategoryName = "Foo" };
+            dbContext.Configuration.AutoDetectChangesEnabled = true;
+            dbContext.Categories.Add(cat1);
+            dbContext.SaveChanges();
+
+            var dbContext2 = new NorthwindDbContext(connection);
+            var cat2 = dbContext2.Categories.FirstOrDefault();
+
+            cat2.CategoryName = "Baar";
+            dbContext2.SaveChanges();
+
+            // This test would fail without the following line
+            dbContext.Entry(cat1).State = EntityState.Detached;
+
+            Assert.AreEqual(
+                dbContext.Categories.FirstOrDefault().CategoryName,
+                dbContext2.Categories.FirstOrDefault().CategoryName);
         }
     }
 }

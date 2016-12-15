@@ -39,6 +39,15 @@ namespace Effort.Provider
     /// </summary>
     public class EffortConnection : DbConnection
     {
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is case sensitive.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is case sensitive; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCaseSensitive { get; set; }
+
+
         private string connectionString;
 
         private string lastContainerId;
@@ -48,22 +57,26 @@ namespace Effort.Provider
         private Guid identifier;
         private ConnectionState state;
         private bool isPrimaryTransient;
-        private readonly DbProviderFactory dbProviderFactory;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
         /// </summary>
         public EffortConnection()
-            : this (EffortProviderFactory.Instance)
+            : this(null)
         {
         }
 
-        internal EffortConnection(EffortProviderFactory dbProviderFactory)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
+        /// </summary>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive, <c>false</c> if it should not be case sensitive, <c>null</c> if it should use the configuration value.
+        /// </param>
+        public EffortConnection(bool? isCaseSensitive)
         {
             this.identifier = Guid.NewGuid();
             this.state = ConnectionState.Closed;
-            this.IsCaseSensitive = dbProviderFactory.IsCaseSensitive;
-            this.dbProviderFactory = dbProviderFactory;
+            this.IsCaseSensitive = isCaseSensitive.GetValueOrDefault(EffortProviderFactory.IsCaseSensitiveDefault);
         }
 
         /// <summary>
@@ -171,7 +184,7 @@ namespace Effort.Provider
         {
             get
             {
-                return this.dbProviderFactory ?? EffortProviderFactory.Instance;
+                return EffortProviderFactory.Instance;
             }
         }
 
@@ -367,11 +380,9 @@ namespace Effort.Provider
             }
 
             parameters.IsTransient = this.isPrimaryTransient;
-            parameters.IsCaseSensitive = IsCaseSensitive;
+            parameters.IsCaseSensitive = this.IsCaseSensitive;
 
             return new DbContainer(parameters);
         }
-
-        public bool IsCaseSensitive { get; set; }
     }
 }

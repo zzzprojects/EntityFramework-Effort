@@ -45,16 +45,15 @@ namespace Effort.Provider
         /// </summary>
         public static readonly EffortProviderFactory Instance = new EffortProviderFactory();
 
+        internal static bool IsCaseSensitiveDefault { get; } = GetDefaultCaseSensitiveConfig();
+
         /// <summary>
         ///     Prevents a default instance of the <see cref="EffortProviderFactory" /> class
         ///     from being created.
         /// </summary>
-        internal EffortProviderFactory()
+        private EffortProviderFactory()
         {
-            IsCaseSensitive = GetDefaultCaseSensitiveConfig();
         }
-
-        public bool IsCaseSensitive { get; set; }
 
         private static bool GetDefaultCaseSensitiveConfig()
         {
@@ -75,10 +74,21 @@ namespace Effort.Provider
         /// </returns>
         public override DbConnection CreateConnection()
         {
-            return new EffortConnection(this)
-            {
-                IsCaseSensitive = IsCaseSensitive
-            };
+            return CreateConnection(IsCaseSensitiveDefault);
+        }
+
+        /// <summary>
+        ///     Returns a new instance of the <see cref="T:EffortConnection" /> class.
+        /// </summary>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive; otherwise <c>false</c>.
+        /// </param>
+        /// <returns>
+        ///     A new instance of <see cref="T:EffortConnection" />.
+        /// </returns>
+        public DbConnection CreateConnection(bool isCaseSensitive)
+        {
+            return new EffortConnection(isCaseSensitive);
         }
 
         /// <summary>

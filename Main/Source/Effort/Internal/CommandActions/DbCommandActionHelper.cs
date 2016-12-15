@@ -85,7 +85,7 @@ namespace Effort.Internal.CommandActions
                     "The type of the Target property is not DbScanExpression");
             }
 
-            return container.Internal.GetTable(source.Target.GetTableName());
+            return (ITable)container.GetTable(source.Target.GetFullTableName());
         }
 
         public static IDictionary<string, DbExpression> GetSetClauseExpressions(

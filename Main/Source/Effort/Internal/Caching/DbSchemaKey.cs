@@ -67,11 +67,11 @@ namespace Effort.Internal.Caching
             IEnumerable<EntitySet> sets = entityContainer
                 .BaseEntitySets
                 .OfType<EntitySet>()
-                .OrderBy(s => s.GetTableName());
+                .OrderBy(s => s.GetFullTableName().FullName);
 
             foreach (EntitySet set in sets)
             {
-                builder.Append(set.GetTableName());
+                builder.Append(set.GetFullTableName().FullName);
                 builder.Append("(");
 
                 IEnumerable<EdmProperty> properties = 

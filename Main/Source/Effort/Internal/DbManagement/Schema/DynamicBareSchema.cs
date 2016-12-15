@@ -30,12 +30,10 @@ namespace Effort.Internal.DbManagement.Schema
 #else
     using System.Data.Metadata.Edm;
 #endif
-    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Threading;
     using Effort.Internal.Common;
-    using Effort.Internal.TypeConversion;
     using Effort.Internal.DbManagement.Schema.Configuration;
 
     internal class DynamicBareSchema : BareSchemaBase
@@ -53,7 +51,7 @@ namespace Effort.Internal.DbManagement.Schema
 
             foreach (EntityInfo entity in container.Entities)
             {
-                string name = entity.TableName;
+                TableName name = entity.TableName;
                 Type type = CreateEntityType(entity, entityModule);
 
                 this.Register(name, type);
@@ -66,7 +64,7 @@ namespace Effort.Internal.DbManagement.Schema
             EntityInfo entity, 
             ModuleBuilder entityModule)
         {
-            string cliTypeName = TypeHelper.NormalizeForCliTypeName(entity.TableName);
+            string cliTypeName = TypeHelper.NormalizeForCliTypeName(entity.TableName.FullName);
 
             TypeBuilder entityTypeBuilder = entityModule.DefineType(cliTypeName, TypeAttributes.Public);
 

@@ -33,10 +33,10 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
     {
         private readonly ReadOnlyCollection<EntityPropertyInfo> properties;
         private readonly ReadOnlyCollection<EntityPropertyInfo> keyMembers;
-        private readonly string tableName;
+        private readonly TableName tableName;
              
         public EntityInfo(
-            string tableName,
+            TableName tableName,
             IEnumerable<EntityPropertyInfo> properties, 
             string[] keyMembers)
         {
@@ -56,7 +56,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
             get { return this.properties; }
         }
 
-        public string TableName 
+        public TableName TableName 
         {
             get { return this.tableName; } 
         }

@@ -24,8 +24,10 @@
 
 namespace Effort.Internal.DbCommandTreeTransformation
 {
+    using Effort.Internal.DbManagement.Schema;
+
     internal interface ITableProvider
     {
-        object GetTable(string name);
+        object GetTable(TableName name);
     }
 }

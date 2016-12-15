@@ -30,6 +30,7 @@ namespace Effort.Internal.Common
     using System.Data.Metadata.Edm;
 #endif
     using System.Linq;
+    using Effort.Internal.DbManagement.Schema;
 
     /// <summary>
     ///     Providers helper method for EDM types.
@@ -37,22 +38,60 @@ namespace Effort.Internal.Common
     internal static class EdmHelper
     {
         /// <summary>
+        ///     Returns the full name of the table that is represented by the specified entity set.
+        /// </summary>
+        /// <param name="entitySet"> The entity set. </param>
+        /// <returns >The full name of the table represented by the entity set. </returns>
+        public static TableName GetFullTableName(this EntitySetBase entitySet)
+        {
+            string schema = entitySet.GetSchema();
+            string table = entitySet.GetTableName();
+
+            if (string.IsNullOrEmpty(schema))
+            {
+                return new TableName("", table);
+            }
+
+            return new TableName(schema, table);
+        }
+
+        /// <summary>
+        ///     Returns the schema of the table that is represented by the specified entity set.
+        /// </summary>
+        /// <param name="entitySet"> The entity set. </param>
+        /// <returns >The schema of the table represented by the entity set. </returns>
+        public static string GetSchema(this EntitySetBase entitySet)
+        {
+            MetadataProperty property = entitySet
+               .MetadataProperties
+               .FirstOrDefault(p => p.Name == "Schema");
+
+            if (property == null)
+            {
+                return string.Empty;
+            }
+
+            return property.Value as string ?? string.Empty;
+        }
+
+        /// <summary>
         ///     Returns the name of the table that is represented by the specified entity set.
         /// </summary>
         /// <param name="entitySet"> The entity set. </param>
         /// <returns >The name of the table represented by the entity set. </returns>
         public static string GetTableName(this EntitySetBase entitySet)
         {
+
             MetadataProperty property = entitySet
                .MetadataProperties
                .FirstOrDefault(p => p.Name == "Table");
 
-            if (property == null)
+            if (property != null)
             {
-                return entitySet.Name;
+                return (property.Value as string) ?? entitySet.Name;
             }
 
-            return property.Value as string ?? entitySet.Name;
+            return entitySet.Name;
         }
 
         /// <summary>

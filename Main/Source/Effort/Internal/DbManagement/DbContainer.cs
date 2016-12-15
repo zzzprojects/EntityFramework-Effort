@@ -24,7 +24,6 @@
 
 namespace Effort.Internal.DbManagement
 {
-    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -52,6 +51,7 @@ namespace Effort.Internal.DbManagement
     internal class DbContainer : ITableProvider
     {
         private Database database;
+        private List<TableName> tableNames;
         private ITypeConverter converter;
         private DbContainerParameters parameters;
 
@@ -65,6 +65,7 @@ namespace Effort.Internal.DbManagement
             this.logger = new Logger();
             this.transformCache = new ConcurrentDictionary<string, IStoredProcedure>();
             this.converter = new DefaultTypeConverter();
+            this.tableNames = new List<TableName>();
         }
 
         public Database Internal
@@ -99,7 +100,12 @@ namespace Effort.Internal.DbManagement
 
         public bool IsCaseSensitive { get { return parameters.IsCaseSensitive; } }
 
-        public object GetTable(string name)
+        public IList<TableName> TableNames
+        {
+            get { return this.tableNames.AsReadOnly(); }
+        }
+
+        public object GetTable(TableName name)
         {
             return this.Internal.GetTable(name);
         }
@@ -126,7 +132,7 @@ namespace Effort.Internal.DbManagement
             foreach (EntitySet entitySet in entityContainer.BaseEntitySets.OfType<EntitySet>())
             {
                 // TODO: Verify fields
-                if (!this.Internal.ContainsTable(entitySet.GetTableName()))
+                if (!this.Internal.ContainsTable(entitySet.GetFullTableName()))
                 {
                     return false;
                 }
@@ -161,7 +167,7 @@ namespace Effort.Internal.DbManagement
             this.EnsureInitializedDatabase();
 
             // Temporary dictionary
-            Dictionary<string, ITable> tables = new Dictionary<string,ITable>();
+            Dictionary<TableName, ITable> tables = new Dictionary<TableName, ITable>();
 
             this.Logger.Write("Creating tables...");
             partialTime.Restart();
@@ -176,6 +182,7 @@ namespace Effort.Internal.DbManagement
                     tableInfo.ConstraintFactories);
 
                 tables.Add(tableInfo.TableName, table);
+                tableNames.Add(tableInfo.TableName);
             }
 
             this.Logger.Write(

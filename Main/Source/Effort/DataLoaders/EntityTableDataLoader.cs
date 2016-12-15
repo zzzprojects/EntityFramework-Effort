@@ -37,6 +37,7 @@ namespace Effort.DataLoaders
     using System.Data.EntityClient;
     using System.Data.Metadata.Edm;
 #endif
+    using System.Linq;
     using Effort.Internal.Common;
 
     /// <summary>
@@ -61,7 +62,11 @@ namespace Effort.DataLoaders
             this.workspace = connection.GetMetadataWorkspace();
             this.entitySet = MetadataWorkspaceHelper
                 .GetEntityContainer(this.workspace)
-                .GetEntitySetByName(table.Name, true);
+                .BaseEntitySets
+                .OfType<EntitySet>()
+                .FirstOrDefault(x => 
+                    x.GetSchema() == table.Schema && 
+                    x.GetTableName() == table.Name);
         }
 
         /// <summary>

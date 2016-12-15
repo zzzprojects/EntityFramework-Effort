@@ -37,7 +37,7 @@ namespace Effort.Internal.DbManagement.Schema
         private FastLazy<Func<object[], object>> initializer;
 
         public DbTableInfo(
-            string tableName, 
+            TableName tableName, 
             Type entityType, 
             MemberInfo identityField,
             PropertyInfo[] properties,
@@ -58,7 +58,7 @@ namespace Effort.Internal.DbManagement.Schema
             this.initializer = new FastLazy<Func<object[], object>>(CreateEntityInitializer);
         }
 
-        public string TableName { get; set; }
+        public TableName TableName { get; private set; }
 
         public Type EntityType { get; private set; }
 

@@ -25,14 +25,13 @@
 namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
+    using System.Linq.Expressions;
     using Effort.Internal.Common;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
 #else
     using System.Data.Common.CommandTrees;
 #endif
-    using System.Linq.Expressions;
-    using NMemory.Tables;
 
     internal partial class TransformVisitor
     {
@@ -45,8 +44,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             // TODO: make this database independent
 
-            string tableName = expression.Target.GetTableName();
-            object table = this.tableProvider.GetTable(tableName);
+            var tableName = expression.Target.GetFullTableName();
+            var table = this.tableProvider.GetTable(tableName);
 
             return Expression.Constant(table);
         }

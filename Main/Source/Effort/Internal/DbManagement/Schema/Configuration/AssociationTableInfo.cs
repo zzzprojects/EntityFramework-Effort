@@ -29,7 +29,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
     internal class AssociationTableInfo
     {
-        public AssociationTableInfo(string tableName, string[] properties)
+        public AssociationTableInfo(TableName tableName, string[] properties)
         {
             this.TableName = tableName;
 
@@ -38,7 +38,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
                 .AsReadOnly();
         }
 
-        public string TableName { get; private set; }
+        public TableName TableName { get; private set; }
 
         public ReadOnlyCollection<string> PropertyNames { get; private set; }
     }

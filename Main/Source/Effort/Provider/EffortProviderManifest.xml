@@ -48,7 +48,7 @@
     </Type>
     <Type Name="binary" PrimitiveTypeKind="Binary">
       <FacetDescriptions>
-        <MaxLength DefaultValue="2147483647" Constant="false" 
+        <MaxLength DefaultValue="2147483647" Constant="false"
                    Minimum="0" Maximum="2147483647" />
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
@@ -87,7 +87,7 @@
     </Type>
     <Type Name="string" PrimitiveTypeKind="String">
       <FacetDescriptions>
-        <MaxLength DefaultValue="2147483647" Constant="false" 
+        <MaxLength DefaultValue="2147483647" Constant="false"
                    Minimum="0" Maximum="2147483647" />
         <Unicode DefaultValue="true" Constant="false" />
         <FixedLength DefaultValue="false" Constant="false" />
@@ -112,7 +112,7 @@
     <Type Name="guid" PrimitiveTypeKind="Guid" />
     <Type Name="rowversion" PrimitiveTypeKind="Binary">
       <FacetDescriptions>
-        <MaxLength DefaultValue="8" Constant="false" 
+        <MaxLength DefaultValue="8" Constant="false"
                    Minimum="0" Maximum="1000" />
         <FixedLength DefaultValue="true" Constant="false" />
       </FacetDescriptions>
@@ -124,5 +124,23 @@
         <FixedLength DefaultValue="true" Constant="false" />
       </FacetDescriptions>
     </Type>
+    
+    <Type Name="varchar" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="char" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+  
   </Types>
 </ProviderManifest>

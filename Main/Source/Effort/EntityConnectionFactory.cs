@@ -247,11 +247,11 @@ namespace Effort
             EffortConnectionStringBuilder ecsb = 
                 new EffortConnectionStringBuilder(effortConnectionString);
 
-            if (persistent)
+            if (persistent && string.IsNullOrEmpty(ecsb.InstanceId))
             {
                 ecsb.InstanceId = entityConnectionString;
             }
-            else
+            else if(!persistent)
             {
                 ecsb.InstanceId = Guid.NewGuid().ToString();
             }

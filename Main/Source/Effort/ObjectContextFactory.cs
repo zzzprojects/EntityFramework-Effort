@@ -133,8 +133,8 @@ namespace Effort
         ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
         ///     in-memory database.
         /// </param>
-        /// <param name="identifier">
-        ///     The identifier of the in-memory database.
+        /// <param name="instanceId">
+        ///     The instanceId of the in-memory database.
         /// </param>
         /// <returns>
         ///     The <see cref="T:Type"/> object.
@@ -142,10 +142,10 @@ namespace Effort
         public static Type CreatePersistentType<T>(
             string entityConnectionString,
             IDataLoader dataLoader,
-            string identifier)
+            string instanceId)
             where T : ObjectContext
         {
-            return CreateType<T>(entityConnectionString, true, dataLoader, identifier);
+            return CreateType<T>(entityConnectionString, true, dataLoader, instanceId);
         }
 
         /// <summary>
@@ -188,17 +188,17 @@ namespace Effort
         ///     The entity connection string that identifies the in-memory database and 
         ///     references the metadata that is required for constructing the schema.
         /// </param>
-        /// <param name="identifier">
-        ///     The identifier of the in-memory database.
+        /// <param name="instanceId">
+        ///     The instanceId of the in-memory database.
         /// </param>
         /// <returns>
         ///     The <see cref="T:Type"/> object.
         /// </returns>
         public static Type CreatePersistentType<T>(
-            string entityConnectionString, string identifier)
+            string entityConnectionString, string instanceId)
             where T : ObjectContext
         {
-            return CreateType<T>(entityConnectionString, true, null, identifier);
+            return CreateType<T>(entityConnectionString, true, null, instanceId);
         }
 
         /// <summary>
@@ -262,16 +262,16 @@ namespace Effort
         ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
         ///     in-memory database.
         /// </param>
-        /// <param name="identifier">
-        ///     The identifier of the in-memory database.
+        /// <param name="instanceId">
+        ///     The instanceId of the in-memory database.
         /// </param>
         /// <returns>
         ///     The <see cref="T:Type"/> object.
         /// </returns>
-        public static Type CreatePersistentType<T>(IDataLoader dataLoader, string identifier)
+        public static Type CreatePersistentType<T>(IDataLoader dataLoader, string instanceId)
             where T : ObjectContext
         {
-            return CreateType<T>(null, true, dataLoader, identifier);
+            return CreateType<T>(null, true, dataLoader, instanceId);
         }
 
         /// <summary>
@@ -312,15 +312,15 @@ namespace Effort
         ///     The entity connection string that identifies the in-memory database and 
         ///     references the metadata that is required for constructing the schema.
         /// </param>
-        /// <param name="identifier">
-        ///     The identifier of the in-memory database.
+        /// <param name="instanceId">
+        ///     The instanceId of the in-memory database.
         /// </param>
         /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
-        public static T CreatePersistent<T>(string entityConnectionString, string identifier)
+        public static T CreatePersistent<T>(string entityConnectionString, string instanceId)
             where T : ObjectContext
         {
             return Activator.CreateInstance(
-                CreatePersistentType<T>(entityConnectionString, identifier)) as T;
+                CreatePersistentType<T>(entityConnectionString, instanceId)) as T;
         }
 
         /// <summary>
@@ -375,8 +375,8 @@ namespace Effort
         ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
         ///     in-memory database.
         /// </param>
-        /// <param name="identifier">
-        ///     The identifier of the in-memory database.
+        /// <param name="instanceId">
+        ///     The instanceId of the in-memory database.
         /// </param>
         /// <returns>
         ///     The <see cref="T:ObjectContext"/> object.
@@ -384,11 +384,11 @@ namespace Effort
         public static T CreatePersistent<T>(
             string entityConnectionString,
             IDataLoader dataLoader,
-            string identifier)
+            string instanceId)
             where T : ObjectContext
         {
             return Activator.CreateInstance(
-                CreatePersistentType<T>(entityConnectionString, dataLoader, identifier)) as T;
+                CreatePersistentType<T>(entityConnectionString, dataLoader, instanceId)) as T;
         }
 
         /// <summary>
@@ -453,18 +453,18 @@ namespace Effort
         ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
         ///     in-memory database.
         /// </param>
-        /// <param name="identifier">
-        ///     The identifier of the in-memory database.
+        /// <param name="instanceId">
+        ///     The instanceId of the in-memory database.
         /// </param>
         /// <returns>
         ///     The <see cref="T:ObjectContext"/> object.
         /// </returns>
         public static T CreatePersistent<T>(
             IDataLoader dataLoader,
-            string identifier)
+            string instanceId)
             where T : ObjectContext
         {
-            return Activator.CreateInstance(CreatePersistentType<T>(dataLoader, identifier)) as T;
+            return Activator.CreateInstance(CreatePersistentType<T>(dataLoader, instanceId)) as T;
         }
 
         #endregion
@@ -705,8 +705,8 @@ namespace Effort
         /// <param name="dataLoader">
         ///     The data loader that initializes the state of the database.
         /// </param>
-        /// <param name="identifier">
-        ///     An optional identifier for the In-Memory-Database
+        /// <param name="instanceId">
+        ///     An optional instanceId for the In-Memory-Database
         /// </param>
         /// <returns>
         ///     The ObjectContext type.
@@ -715,7 +715,7 @@ namespace Effort
             string entityConnectionString,
             bool persistent,
             IDataLoader dataLoader,
-            string identifier = null)
+            string instanceId = null)
             where T : ObjectContext
         {
             EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder();
@@ -726,8 +726,8 @@ namespace Effort
                 ecsb.DataLoaderArgument = dataLoader.Argument;
             }
 
-            if (identifier != null)
-                ecsb.InstanceId = identifier;
+            if (instanceId != null)
+                ecsb.InstanceId = instanceId;
 
             string effortConnectionString = ecsb.ConnectionString;
 

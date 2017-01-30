@@ -522,13 +522,17 @@ namespace Effort
         /// <param name="dataLoader">
         ///     The data loader that initializes the state of the database.
         /// </param>
+        /// <param name="identifier">
+        ///     An optional identifier for the In-Memory-Database
+        /// </param>
         /// <returns>
         ///     The ObjectContext type.
         /// </returns>
         private static Type CreateType<T>(
-            string entityConnectionString, 
-            bool persistent, 
-            IDataLoader dataLoader) 
+            string entityConnectionString,
+            bool persistent,
+            IDataLoader dataLoader,
+            string identifier = null)
             where T : ObjectContext
         {
             EffortConnectionStringBuilder ecsb = new EffortConnectionStringBuilder();
@@ -538,6 +542,9 @@ namespace Effort
                 ecsb.DataLoaderType = dataLoader.GetType();
                 ecsb.DataLoaderArgument = dataLoader.Argument;
             }
+
+            if (identifier != null)
+                ecsb.InstanceId = identifier;
 
             string effortConnectionString = ecsb.ConnectionString;
 

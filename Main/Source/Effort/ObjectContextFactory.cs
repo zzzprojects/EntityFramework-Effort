@@ -115,6 +115,41 @@ namespace Effort
 
         /// <summary>
         ///     Returns a new type that derives from the <see cref="T:ObjectContext"/> based
+        ///     class specified by the <typeparamref name="T"/> generic argument. This class
+        ///     relies on an in-memory database instance that lives during the complete 
+        ///     application lifecycle. If the database is accessed the first time, then it will
+        ///     be constructed based on the metadata referenced by the provided entity 
+        ///     connection string and its state is initialized by the provided
+        ///     <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        ///     The entity connection string that identifies the in-memory database and
+        ///     references the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        ///     in-memory database.
+        /// </param>
+        /// <param name="identifier">
+        ///     The identifier of the in-memory database.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:Type"/> object.
+        /// </returns>
+        public static Type CreatePersistentType<T>(
+            string entityConnectionString,
+            IDataLoader dataLoader,
+            string identifier)
+            where T : ObjectContext
+        {
+            return CreateType<T>(entityConnectionString, true, dataLoader, identifier);
+        }
+
+        /// <summary>
+        ///     Returns a new type that derives from the <see cref="T:ObjectContext"/> based
         ///     class specified by the <typeparamref name="T"/> generic argument. This class 
         ///     relies on an in-memory database instance that lives during the complete 
         ///     application lifecycle. If the database is accessed the first time, then it will
@@ -136,6 +171,34 @@ namespace Effort
             where T : ObjectContext
         {
             return CreateType<T>(entityConnectionString, true, null);
+        }
+
+        /// <summary>
+        ///     Returns a new type that derives from the <see cref="T:ObjectContext"/> based
+        ///     class specified by the <typeparamref name="T"/> generic argument. This class 
+        ///     relies on an in-memory database instance that lives during the complete 
+        ///     application lifecycle. If the database is accessed the first time, then it will
+        ///     be constructed based on the metadata referenced by the provided entity 
+        ///     connection string.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        ///     The entity connection string that identifies the in-memory database and 
+        ///     references the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="identifier">
+        ///     The identifier of the in-memory database.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:Type"/> object.
+        /// </returns>
+        public static Type CreatePersistentType<T>(
+            string entityConnectionString, string identifier)
+            where T : ObjectContext
+        {
+            return CreateType<T>(entityConnectionString, true, null, identifier);
         }
 
         /// <summary>
@@ -184,6 +247,34 @@ namespace Effort
         }
 
         /// <summary>
+        ///     Returns a new type that derives from the <see cref="T:ObjectContext"/> based
+        ///     class specified by the <typeparamref name="T"/> generic argument. This class
+        ///     relies on an in-memory database instance that lives during the complete 
+        ///     application lifecycle. If the database is accessed the first time, then it will
+        ///     be constructed based on the metadata referenced by the default entity 
+        ///     connection string of the provided <see cref="T:ObjectContext"/> type and its
+        ///     state is initialized by the provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="dataLoader">
+        ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        ///     in-memory database.
+        /// </param>
+        /// <param name="identifier">
+        ///     The identifier of the in-memory database.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:Type"/> object.
+        /// </returns>
+        public static Type CreatePersistentType<T>(IDataLoader dataLoader, string identifier)
+            where T : ObjectContext
+        {
+            return CreateType<T>(null, true, dataLoader, identifier);
+        }
+
+        /// <summary>
         ///     Creates a new instance of the <see cref="T:ObjectContext"/> based class
         ///     specified by the <typeparamref name="T"/> generic argument. This class relies
         ///     on an in-memory database instance that lives during the complete application
@@ -204,6 +295,32 @@ namespace Effort
         {
             return Activator.CreateInstance(
                 CreatePersistentType<T>(entityConnectionString)) as T;
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the <see cref="T:ObjectContext"/> based class
+        ///     specified by the <typeparamref name="T"/> generic argument. This class relies
+        ///     on an in-memory database instance that lives during the complete application
+        ///     lifecycle. If the database is accessed the first time, then it will be 
+        ///     constructed based on the metadata referenced by the provided entity connection 
+        ///     string.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        ///     The entity connection string that identifies the in-memory database and 
+        ///     references the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="identifier">
+        ///     The identifier of the in-memory database.
+        /// </param>
+        /// <returns>The <see cref="T:ObjectContext"/> object.</returns>
+        public static T CreatePersistent<T>(string entityConnectionString, string identifier)
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(
+                CreatePersistentType<T>(entityConnectionString, identifier)) as T;
         }
 
         /// <summary>
@@ -236,6 +353,42 @@ namespace Effort
         {
             return Activator.CreateInstance(
                 CreatePersistentType<T>(entityConnectionString, dataLoader)) as T;
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the <see cref="T:ObjectContext"/> based class
+        ///     specified by the <typeparamref name="T"/> generic argument. This class relies
+        ///     on an in-memory database instance that lives during the complete application
+        ///     lifecycle. If the database is accessed the first time, then it will be 
+        ///     constructed based on the metadata referenced by the provided entity connection
+        ///     string and its state is initialized by the provided <see cref="T:IDataLoader"/>
+        ///     object.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="entityConnectionString">
+        ///     The entity connection string that identifies the in-memory database and
+        ///     references the metadata that is required for constructing the schema.
+        /// </param>
+        /// <param name="dataLoader">
+        ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        ///     in-memory database.
+        /// </param>
+        /// <param name="identifier">
+        ///     The identifier of the in-memory database.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:ObjectContext"/> object.
+        /// </returns>
+        public static T CreatePersistent<T>(
+            string entityConnectionString,
+            IDataLoader dataLoader,
+            string identifier)
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(
+                CreatePersistentType<T>(entityConnectionString, dataLoader, identifier)) as T;
         }
 
         /// <summary>
@@ -282,6 +435,36 @@ namespace Effort
             where T : ObjectContext
         {
             return Activator.CreateInstance(CreatePersistentType<T>(dataLoader)) as T;
+        }
+
+        /// <summary>
+        ///     Creates a instance of the <see cref="T:ObjectContext"/> based class specified 
+        ///     by the <typeparamref name="T"/> generic argument. This class relies on an 
+        ///     in-memory database instance that lives during the complete application 
+        ///     lifecycle. If the database is accessed the first time, then it will be 
+        ///     constructed based on the metadata referenced by the default entity connection
+        ///     string of the provided <see cref="T:ObjectContext"/> type and its state is
+        ///     initialized by the provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The concrete <see cref="T:ObjectContext"/> based class.
+        /// </typeparam>
+        /// <param name="dataLoader">
+        ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        ///     in-memory database.
+        /// </param>
+        /// <param name="identifier">
+        ///     The identifier of the in-memory database.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:ObjectContext"/> object.
+        /// </returns>
+        public static T CreatePersistent<T>(
+            IDataLoader dataLoader,
+            string identifier)
+            where T : ObjectContext
+        {
+            return Activator.CreateInstance(CreatePersistentType<T>(dataLoader, identifier)) as T;
         }
 
         #endregion

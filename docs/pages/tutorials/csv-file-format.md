@@ -29,5 +29,3 @@ id,name,birthdate,reportto,storages,photo
 {% endhighlight %}
 
 The first line contains the name of the table fields, and the remaining lines represent a data row.
-
-

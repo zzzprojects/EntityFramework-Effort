@@ -1,0 +1,23 @@
+permalink,title,meta-description,meta-keywords,h1,h2,nagivation,template
+index,Learn how to use Entity Framework Effort with Tutorials & Examples using C# syntax.,Learn how to use Entity Framework Effort with Tutorials & Examples using C# syntax.,,,,,full
+/404.html,Page Moved,Page Moved,,Page Moved,,,container-h1
+download,Download,Download,,Download,,no,full-h1
+contact-us,Contact Us,Contact Us,,Contact Us,,no,full-h1
+tutorials,Tutorials,Tutorials,,Tutorials,,,container-h1
+overview,Overview,Overview,,Overview,,,
+requirements,Requirements,Requirements,,Requirements,,,
+installing,Installing,Installing,,Installing,,,
+upgrading,Upgrading,Upgrading,,Upgrading,,,
+export-data-to-csv,Export Data to Csv Files,Export Data to Csv Files,,Export Data to Csv Files,,,
+fake-object-context-instance,Fake ObjectContext Instance,Fake ObjectContext Instance,,Fake ObjectContext Instance,,,
+factory-methods,Factory Methods,Factory Methods,,Factory Methods,,,
+data-loaders,Data Loaders,Data Loaders,,Data Loaders,,,
+load-data-from-csv,Load Data from Csv Files,Load Data from Csv Files,,Load Data from Csv Files,,,
+write-unit-tests,Write Unit Tests,Write Unit Tests,,Write Unit Tests,,,
+csv-file-format,CSV File Format,CSV File Format,,CSV File Format,,,
+api,API,API,,API,,,
+faq,FAQ,FAQ,,FAQ,,,
+issue-tracker,Issue Tracker,Issue Tracker,,Issue Tracker,,,
+faq-general,FAQ - General,FAQ - General,,FAQ - General,,,
+faq-installation,FAQ - Installation,FAQ - Installation,,FAQ - Installation,,,
+problems,Problems,Problems,,Problems,,,

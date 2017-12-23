@@ -1,7 +1,7 @@
 highlighter: rouge
 gems:
   - jekyll-sitemap
-ga: "UA-55584370-4"
+ga: "UA-55584370-16"
 encoding: "utf-8"
 defaults:
   -

@@ -1,3 +1,13 @@
+## Library Powered By
+
+This library is powered by [Entity Framework Extensions](http://entityframework-extensions.net/?z=github&y=entityframework-plus)
+
+<a href="http://entityframework-extensions.net/?z=github&y=entityframework-effort">
+<kbd>
+<img src="https://zzzprojects.github.io/images/logo/entityframework-extensions-pub.jpg" alt="Entity Framework Extensions" />
+</kbd>
+</a>
+
 ## Overview
 
 Effort is a powerful tool that enables a convenient way to create automated tests for Entity Framework based applications. 

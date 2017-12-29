@@ -2,12 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata>
         <id>Effort</id>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
         <title />
-        <authors>tamasflamich</authors>
-        <owners>tamasflamich</owners>
-        <licenseUrl>https://github.com/tamasflamich/effort/blob/develop/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/tamasflamich/effort</projectUrl>
+        <authors>tamasflamich, ZZZ Projects</authors>
+        <owners>ZZZ Projects</owners>
+		<iconUrl>https://zzzprojects.github.io/images/logo/logo-64.png</iconUrl>
+        <licenseUrl>https://github.com/zzzprojects/effort/blob/develop/LICENSE</licenseUrl>
+        <projectUrl>http://entityframework-effort.net/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Effort is basicly an ADO.NET provider that executes all the data operations on a lightweight in-process main memory database instead of a traditional external database. It provides some intuitive helper methods too that make really easy to use this provider with existing ObjectContext or DbContext classes. A simple addition to existing code might be enough to create data driven unit tests that can be run without the presence of the external database.</description>
         <summary>Effort is a powerful tool that enables a convenient way to create unit tests for Entity Framework based applications.</summary>

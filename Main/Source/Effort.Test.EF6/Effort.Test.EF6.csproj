@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{368B9C8C-234A-4D63-BF17-22C87A126EB6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Effort.Test</RootNamespace>
+    <AssemblyName>Effort.Test</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <Import Project="..\NugetPackages.targets" />
+  <Import Project="..\BuildConfigurations.targets" />
+  <Choose>
+    <When Condition="$(ExternalEntityFramework) == 'false'">
+      <ItemGroup>
+        <Reference Include="System.Data.Entity" />
+      </ItemGroup>
+    </When>
+    <!-- Temporary, this should be removed -->
+    <When Condition="$(ExternalEntityFramework) == 'true'">
+      <ItemGroup>
+        <Reference Include="EntityFramework.SqlServer">
+          <HintPath>..\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.SqlServer.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\$(PackageEntityFrameworkDir)\lib\$(PackagePlatformDir)\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions">
+      <HintPath>..\packages\FluentAssertions.3.2.1\lib\net40\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions.Core">
+      <HintPath>..\packages\FluentAssertions.3.2.1\lib\net40\FluentAssertions.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataLoaders\CachingDataLoaderFixture.cs" />
+    <Compile Include="DataLoaders\CsvDataLoaderFixture.cs" />
+    <Compile Include="DataLoaders\EntityDataLoaderFixture.cs" />
+    <Compile Include="DataLoaders\FileProviderFixture.cs" />
+    <Compile Include="DatabaseEngine\DataRowFactoryFixture.cs" />
+    <Compile Include="DbManagerFixture.cs" />
+    <Compile Include="EffortConnectionFixture.cs" />
+    <Compile Include="Features\AggregationFixture.cs" />
+    <Compile Include="Features\BinaryFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\BitwiseFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\TimeFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\GuidFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\DateTimeFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\DateTimeOffsetFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\MathFunctionsFixture.cs" />
+    <Compile Include="Features\CanonicalFunctions\StringFunctionsFixture.cs" />
+    <Compile Include="Csv\CsvReaderFixture.cs" />
+    <Compile Include="Csv\FieldValueFixture.cs" />
+    <Compile Include="DataReaderInspectorFixture.cs" />
+    <Compile Include="Factories\DbConnectionFactoryFixture.cs" />
+    <Compile Include="DbContextFixture.cs" />
+    <Compile Include="EffortConnectionStringBuilderFixture.cs" />
+    <Compile Include="Factories\EntityConnectionFactoryFixture.cs" />
+    <Compile Include="Features\BinaryKeyFixture.cs" />
+    <Compile Include="Features\CountFixture.cs" />
+    <Compile Include="Features\StringParseFixture.cs" />
+    <Compile Include="Features\FlagEnumFieldFixture.cs" />
+    <Compile Include="Features\StringConversionFixture.cs" />
+    <Compile Include="Features\StringFieldFixture.cs" />
+    <Compile Include="Features\TimestampIndexFixture.cs" />
+    <Compile Include="Features\IndexedFieldFixture.cs" />
+    <Compile Include="Features\MiscellaneousQueryFixture.cs" />
+    <Compile Include="Features\DecimalIdentityFieldFixture.cs" />
+    <Compile Include="Features\EnumFieldFixture.cs" />
+    <Compile Include="Features\KeyFixture.cs" />
+    <Compile Include="Features\RelationFixture.cs" />
+    <Compile Include="Features\RequiredFieldFixture.cs" />
+    <Compile Include="Features\LargeStringFieldFixture.cs" />
+    <Compile Include="Features\DateFieldFixture.cs" />
+    <Compile Include="Features\GuidKeyFixture.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorInvariantName.cs" />
+    <Compile Include="Internal\ExceptionHelper.cs" />
+    <Compile Include="Internal\Fakes\EffortConnectionMock.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\Fakes\FakeCachingTableDataLoaderStoreProxy.cs" />
+    <Compile Include="Internal\Fakes\DataLoaderConfigurationLatchMock.cs" />
+    <Compile Include="Internal\Fakes\FakeDataLoader.cs" />
+    <Compile Include="Internal\Fakes\FakeTableDataLoader.cs" />
+    <Compile Include="Internal\PlatformDetector.cs" />
+    <Compile Include="Internal\Fakes\ResultSetComposerMock.cs" />
+    <Compile Include="Internal\Queries\Correctness.cs" />
+    <Compile Include="Internal\Queries\ICorrectness.cs" />
+    <Compile Include="Internal\Queries\IQueryTester`1.cs" />
+    <Compile Include="Internal\Queries\NorthwindQueryTester.cs" />
+    <Compile Include="Internal\Queries\QueryTesterExtensions.cs" />
+    <Compile Include="Internal\Queries\ResultSetExtensions.cs" />
+    <Compile Include="Features\IncludeFixture.cs" />
+    <Compile Include="Features\ComplexQueryFixture.cs" />
+    <Compile Include="Features\JoinFixture.cs" />
+    <Compile Include="Features\ManipulationFixture.cs" />
+    <Compile Include="Internal\WrapperProviders\DbCommandDefinitionWrapper.cs" />
+    <Compile Include="Internal\WrapperProviders\DbCommandWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\WrapperProviders\DbConnectionWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\WrapperProviders\DbProviderFactoryBase.cs" />
+    <Compile Include="Internal\WrapperProviders\DbProviderManifestWrapper.cs" />
+    <Compile Include="Internal\WrapperProviders\DbProviderServicesBase.cs" />
+    <Compile Include="Internal\WrapperProviders\DbTransactionWrapper.cs" />
+    <Compile Include="Internal\WrapperProviders\EntityConnectionWrapperUtils.cs" />
+    <Compile Include="Schema\DbSchemaFixture.cs" />
+    <Compile Include="Schema\StorageSchemaModifierFixture.cs" />
+    <Compile Include="Features\AssociationFixture.cs" />
+    <Compile Include="Factories\ObjectContextFactoryFixture.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Features\BasicFixture.cs" />
+    <Compile Include="ResultSetFixture.cs" />
+    <Compile Include="TestInitialization.cs" />
+    <Compile Include="Features\TimestampFixture.cs" />
+    <Compile Include="Internal\ResultSets\OrderedResultSetComparer.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorDataReader.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorProviderConfiguration.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorProviderFactory.cs" />
+    <Compile Include="Internal\DataReaderInspector\DataReaderInspectorProviderServices.cs" />
+    <Compile Include="Internal\EntityConnectionHelper.cs" />
+    <Compile Include="Internal\ResultSets\DictionaryResultSet.cs" />
+    <Compile Include="Internal\ResultSets\DictionaryResultSetComposer.cs" />
+    <Compile Include="Internal\ResultSets\DictionaryResultSetElement.cs" />
+    <Compile Include="Internal\ResultSets\IResultSet.cs" />
+    <Compile Include="Internal\ResultSets\IResultSetComposer.cs" />
+    <Compile Include="Internal\ResultSets\IResultSetElement.cs" />
+    <Compile Include="Internal\ResultSets\JsonResultSet.cs" />
+    <Compile Include="Internal\Queries\QueryTester`1.cs" />
+    <Compile Include="Internal\ResultSets\ResultSetComparer.cs" />
+    <Compile Include="Internal\ResultSets\ResultSetJsonSerializer.cs" />
+    <Compile Include="Features\TransactionFixture.cs" />
+    <Compile Include="Features\ExpressionFixture.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="Internal\Resources\Foo.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Effort.Test.Data.EF6\Effort.Test.Data.EF6.csproj">
+      <Project>{0FC240A8-7D16-4F3F-BB4E-73DB0E398928}</Project>
+      <Name>Effort.Test.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Effort\Effort.csproj">
+      <Project>{E612D252-9081-4995-B717-5DBEF8240FB6}</Project>
+      <Name>Effort</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv3.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv2.net40.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv1.net45.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv1.net40.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Schema\Resources\StorageSchemaModifier\SSDLv2.net45.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Schema\Resources\DbSchema\CompoundKey.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Internal\Resources\EmptyResource.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

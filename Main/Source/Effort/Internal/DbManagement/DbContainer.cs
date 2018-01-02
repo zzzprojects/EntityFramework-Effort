@@ -98,6 +98,8 @@ namespace Effort.Internal.DbManagement
             get { return this.converter; }
         }
 
+        public bool IsCaseSensitive { get { return parameters.IsCaseSensitive; } }
+
         public IList<TableName> TableNames
         {
             get { return this.tableNames.AsReadOnly(); }

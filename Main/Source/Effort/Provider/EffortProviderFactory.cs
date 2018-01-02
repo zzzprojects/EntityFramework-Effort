@@ -22,6 +22,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System.Configuration;
+using System.Linq;
+
 namespace Effort.Provider
 {
     using System;
@@ -42,6 +45,8 @@ namespace Effort.Provider
         /// </summary>
         public static readonly EffortProviderFactory Instance = new EffortProviderFactory();
 
+        internal static bool IsCaseSensitiveDefault { get; } = GetDefaultCaseSensitiveConfig();
+
         /// <summary>
         ///     Prevents a default instance of the <see cref="EffortProviderFactory" /> class
         ///     from being created.
@@ -49,6 +54,17 @@ namespace Effort.Provider
         private EffortProviderFactory()
         {
         }
+
+        private static bool GetDefaultCaseSensitiveConfig()
+        {
+            var configValue = ConfigurationManager.AppSettings["effort:caseSensitive"];
+            // for sake of backwards compatibility, return true when app settings is not specified.
+            return
+                string.IsNullOrEmpty(configValue) ||
+                TrueValue.Any(v => string.Equals(v, configValue, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private static string[] TrueValue = new[] { "true", "1", "on" };
 
         /// <summary>
         ///     Returns a new instance of the <see cref="T:EffortConnection" /> class.
@@ -58,7 +74,21 @@ namespace Effort.Provider
         /// </returns>
         public override DbConnection CreateConnection()
         {
-            return new EffortConnection();
+            return CreateConnection(IsCaseSensitiveDefault);
+        }
+
+        /// <summary>
+        ///     Returns a new instance of the <see cref="T:EffortConnection" /> class.
+        /// </summary>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive; otherwise <c>false</c>.
+        /// </param>
+        /// <returns>
+        ///     A new instance of <see cref="T:EffortConnection" />.
+        /// </returns>
+        public DbConnection CreateConnection(bool isCaseSensitive)
+        {
+            return new EffortConnection(isCaseSensitive);
         }
 
         /// <summary>

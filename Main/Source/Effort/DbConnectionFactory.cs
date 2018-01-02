@@ -61,14 +61,57 @@ namespace Effort
         ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
         ///     in-memory database.
         /// </param>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive; otherwise <c>false</c>.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:DbConnection"/> object.
+        /// </returns>
+        public static DbConnection CreatePersistent(string instanceId, IDataLoader dataLoader, bool isCaseSensitive)
+        {
+            EffortConnection connection = Create(instanceId, dataLoader, isCaseSensitive);
+
+            return connection;
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory 
+        ///     database instance that lives during the complete application lifecycle. If the
+        ///     database is accessed the first time, then its state will be initialized by the
+        ///     provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <param name="instanceId">
+        ///     The identifier of the in-memory database.
+        /// </param>
+        /// <param name="dataLoader">
+        ///     The <see cref="T:IDataLoader"/> object that might initialize the state of the 
+        ///     in-memory database.
+        /// </param>
         /// <returns>
         ///     The <see cref="T:DbConnection"/> object.
         /// </returns>
         public static DbConnection CreatePersistent(string instanceId, IDataLoader dataLoader)
         {
-            EffortConnection connection = Create(instanceId, dataLoader);
+            EffortConnection connection = Create(instanceId, dataLoader, null);
 
             return connection;
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory 
+        ///     database instance that lives during the complete application lifecycle.
+        /// </summary>
+        /// <param name="instanceId">
+        ///     The identifier of the in-memory database.</param>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive; otherwise <c>false</c>.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:DbConnection"/> object.
+        /// </returns>
+        public static DbConnection CreatePersistent(string instanceId, bool isCaseSensitive)
+        {
+            return CreatePersistent(instanceId, null, isCaseSensitive);
         }
 
         /// <summary>
@@ -100,6 +143,33 @@ namespace Effort
         ///     The <see cref="T:IDataLoader"/> object that initializes the state of the 
         ///     in-memory database.
         /// </param>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive; otherwise <c>false</c>.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:DbConnection"/> object.
+        /// </returns>
+        public static DbConnection CreateTransient(IDataLoader dataLoader, bool isCaseSensitive)
+        {
+            string instanceId = Guid.NewGuid().ToString();
+
+            EffortConnection connection = Create(instanceId, dataLoader, isCaseSensitive);
+            connection.MarkAsPrimaryTransient();
+
+            return connection;
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory 
+        ///     database instance that lives during the connection object lifecycle. If the 
+        ///     connection object is disposed or garbage collected, then underlying database 
+        ///     will be garbage collected too. The initial state of the database is initialized
+        ///     by the provided <see cref="T:IDataLoader"/> object.
+        /// </summary>
+        /// <param name="dataLoader">
+        ///     The <see cref="T:IDataLoader"/> object that initializes the state of the 
+        ///     in-memory database.
+        /// </param>
         /// <returns>
         ///     The <see cref="T:DbConnection"/> object.
         /// </returns>
@@ -107,10 +177,27 @@ namespace Effort
         {
             string instanceId = Guid.NewGuid().ToString();
 
-            EffortConnection connection = Create(instanceId, dataLoader);
+            EffortConnection connection = Create(instanceId, dataLoader, null);
             connection.MarkAsPrimaryTransient();
 
             return connection;
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="T:DbConnection"/> object that rely on an in-memory
+        ///     database instance that lives during the connection object lifecycle. If the 
+        ///     connection object is disposed or garbage collected, then underlying database 
+        ///     will be garbage collected too.
+        /// </summary>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive; otherwise <c>false</c>.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="T:DbConnection"/> object.
+        /// </returns>
+        public static DbConnection CreateTransient(bool isCaseSensitive)
+        {
+            return CreateTransient(null, isCaseSensitive);
         }
 
         /// <summary>
@@ -128,6 +215,7 @@ namespace Effort
         }
 
         #endregion
+        
 
         /// <summary>
         ///     Creates an EffortConnection object with a connection string that represents the 
@@ -135,12 +223,15 @@ namespace Effort
         /// </summary>
         /// <param name="instanceId"> The instance id. </param>
         /// <param name="dataLoader"> The data loader. </param>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive, <c>false</c> if connection should not be, <c>null</c> if connection should default to configuration value.
+        /// </param>
         /// <returns> The EffortConnection object. </returns>
-        private static EffortConnection Create(string instanceId, IDataLoader dataLoader)
+        private static EffortConnection Create(string instanceId, IDataLoader dataLoader, bool? isCaseSensitive)
         {
             EffortProviderConfiguration.VerifyProvider();
 
-            EffortConnectionStringBuilder connectionString = 
+            EffortConnectionStringBuilder connectionString =
                 new EffortConnectionStringBuilder();
 
             connectionString.InstanceId = instanceId;
@@ -151,7 +242,7 @@ namespace Effort
                 connectionString.DataLoaderArgument = dataLoader.Argument;
             }
 
-            EffortConnection connection = new EffortConnection();
+            EffortConnection connection = isCaseSensitive.HasValue ? new EffortConnection(isCaseSensitive.Value) : new EffortConnection();
             connection.ConnectionString = connectionString.ConnectionString;
 
             return connection;

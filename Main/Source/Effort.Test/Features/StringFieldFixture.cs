@@ -22,6 +22,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System;
+using Effort.Provider;
+
 namespace Effort.Test.Features
 {
     using System.Data.Entity;
@@ -32,39 +35,61 @@ namespace Effort.Test.Features
     [TestFixture]
     public class StringFieldFixture
     {
-        private FeatureDbContext context;
+        private FeatureDbContext sensitiveContext;
+        private FeatureDbContext insensitiveContext;
 
         [SetUp]
         public void Initialize()
         {
-            this.context =
+            this.sensitiveContext =
                 new FeatureDbContext(
-                    Effort.DbConnectionFactory.CreateTransient(),
+                    Effort.DbConnectionFactory.CreateTransient(true),
+                    CompiledModels.GetModel<
+                        StringFieldEntity>());
+
+            this.insensitiveContext = new FeatureDbContext(
+                    Effort.DbConnectionFactory.CreateTransient(false),
                     CompiledModels.GetModel<
                         StringFieldEntity>());
         }
 
-        protected IDbSet<StringFieldEntity> Entities
+        protected IDbSet<StringFieldEntity> SensitiveEntities
         {
-            get { return this.context.StringFieldEntities; }
+            get { return this.sensitiveContext.StringFieldEntities; }
         }
 
-        protected void Add(params string[] values)
+        protected IDbSet<StringFieldEntity> InsensitiveEntities
+        {
+            get { return this.insensitiveContext.StringFieldEntities; }
+        }
+
+
+        protected void AddSensitive(params string[] values)
         {
             foreach (var value in values)
             {
-                this.Entities.Add(new StringFieldEntity { Value = value });
+                this.SensitiveEntities.Add(new StringFieldEntity { Value = value });
             }
 
-            this.context.SaveChanges();
+            this.sensitiveContext.SaveChanges();
+        }
+
+        protected void AddInsensitive(params string[] values)
+        {
+            foreach (var value in values)
+            {
+                this.InsensitiveEntities.Add(new StringFieldEntity { Value = value });
+            }
+
+            this.insensitiveContext.SaveChanges();
         }
 
         [Test]
         public void String_Equals()
         {
-            this.Add("John", "Doe");
+            this.AddSensitive("John", "Doe");
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value == "John")
                 .Count();
 
@@ -74,9 +99,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_Equals2()
         {
-            this.Add("John", null, null);
+            this.AddSensitive("John", null, null);
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value == null)
                 .Count();
 
@@ -86,9 +111,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_NotEquals()
         {
-            this.Add("John", "Doe", "John");
+            this.AddSensitive("John", "Doe", "John");
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value != "John")
                 .Count();
 
@@ -98,9 +123,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_NotEqualsNull()
         {
-            this.Add("John", "Doe", null);
+            this.AddSensitive("John", "Doe", null);
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value != null)
                 .Count();
 
@@ -110,9 +135,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_GreaterThan()
         {
-            this.Add("Indie", "Imp", "Huge");
+            this.AddSensitive("Indie", "Imp", "Huge");
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value.CompareTo("Imp") > 0)
                 .Count();
 
@@ -122,9 +147,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_GreaterThanOrEquals()
         {
-            this.Add("Indie", "Imp", "Huge");
+            this.AddSensitive("Indie", "Imp", "Huge");
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value.CompareTo("I") >= 0)
                 .Count();
 
@@ -134,9 +159,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_LessThan()
         {
-            this.Add("Indie", "Imp", "Huge");
+            this.AddSensitive("Indie", "Imp", "Huge");
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value.CompareTo("Imp") < 0)
                 .Count();
 
@@ -146,9 +171,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_LessThanOrEquals()
         {
-            this.Add("Indie", "Imp", "Huge");
+            this.AddSensitive("Indie", "Imp", "Huge");
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value.CompareTo("Imp") <= 0)
                 .Count();
 
@@ -158,9 +183,9 @@ namespace Effort.Test.Features
         [Test]
         public void String_CompareNull()
         {
-            this.Add("Indie", "Imp", null);
+            this.AddSensitive("Indie", "Imp", null);
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => x.Value.CompareTo(null) == -1)
                 .Count();
 
@@ -170,13 +195,38 @@ namespace Effort.Test.Features
         [Test]
         public void String_CompareNull2()
         {
-            this.Add("Indie", "Imp", null);
+            this.AddSensitive("Indie", "Imp", null);
 
-            var res = this.Entities
+            var res = this.SensitiveEntities
                 .Where(x => ((string)null).CompareTo(x.Value) == -1)
                 .Count();
 
             Assert.AreEqual(2, res);
         }
+
+        [Test]
+        public void String_EqualsIgnoreCase()
+        {
+            this.AddInsensitive("John", "Doe");
+
+            var res = this.InsensitiveEntities
+                .Where(x => x.Value.Equals("johN", StringComparison.OrdinalIgnoreCase))
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+
+        [Test]
+        public void String_NotEqualsIgnoreCase()
+        {
+            this.AddInsensitive("John", "Doe", "John");
+
+            var res = this.InsensitiveEntities
+                .Where(x => !x.Value.Equals("johN", StringComparison.OrdinalIgnoreCase))
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+        
     }
 }

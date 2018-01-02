@@ -241,10 +241,70 @@ namespace Effort
             string effortConnectionString, 
             bool persistent)
         {
-            MetadataWorkspace metadata = 
+            return CreateInternal(entityConnectionString, effortConnectionString, persistent, null);
+        }
+
+        /// <summary>
+        ///     Creates a new EntityConnection instance that wraps an EffortConnection object
+        ///     with the specified connection string.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        ///     The entity connection string that references the metadata and identifies the 
+        ///     persistent database.
+        /// </param>
+        /// <param name="effortConnectionString">
+        ///     The effort connection string that is passed to the EffortConnection object.
+        /// </param>
+        /// <param name="persistent">
+        ///     if set to <c>true</c> the ObjectContext uses a persistent database, otherwise 
+        ///     transient.
+        /// </param>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive, <c>false</c> if it should not be case sensitive, <c>null</c> if it should use the configuration value.
+        /// </param>
+        /// <returns>
+        ///     The EntityConnection object.
+        /// </returns>
+        public static EntityConnection Create(
+            string entityConnectionString, 
+            string effortConnectionString, 
+            bool persistent,
+            bool isCaseSensitive)
+        {
+            return CreateInternal(entityConnectionString, effortConnectionString, persistent, isCaseSensitive);
+        }
+
+        /// <summary>
+        ///     Creates a new EntityConnection instance that wraps an EffortConnection object
+        ///     with the specified connection string.
+        /// </summary>
+        /// <param name="entityConnectionString">
+        ///     The entity connection string that references the metadata and identifies the 
+        ///     persistent database.
+        /// </param>
+        /// <param name="effortConnectionString">
+        ///     The effort connection string that is passed to the EffortConnection object.
+        /// </param>
+        /// <param name="persistent">
+        ///     if set to <c>true</c> the ObjectContext uses a persistent database, otherwise 
+        ///     transient.
+        /// </param>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive, <c>false</c> if it should not be case sensitive, <c>null</c> if it should use the configuration value.
+        /// </param>
+        /// <returns>
+        ///     The EntityConnection object.
+        /// </returns>
+        private static EntityConnection CreateInternal(
+            string entityConnectionString,
+            string effortConnectionString,
+            bool persistent,
+            bool? isCaseSensitive)
+        {
+            MetadataWorkspace metadata =
                 GetEffortCompatibleMetadataWorkspace(ref entityConnectionString);
 
-            EffortConnectionStringBuilder ecsb = 
+            EffortConnectionStringBuilder ecsb =
                 new EffortConnectionStringBuilder(effortConnectionString);
 
             if (persistent)
@@ -256,8 +316,8 @@ namespace Effort
                 ecsb.InstanceId = Guid.NewGuid().ToString();
             }
 
-            EffortConnection connection = 
-                new EffortConnection() { ConnectionString = ecsb.ConnectionString };
+            EffortConnection connection =
+                new EffortConnection(isCaseSensitive) { ConnectionString = ecsb.ConnectionString };
 
             if (!persistent)
             {

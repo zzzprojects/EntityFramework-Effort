@@ -22,6 +22,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System.Configuration;
+using System.Linq;
+
 namespace Effort.Provider
 {
     using System;
@@ -36,6 +39,15 @@ namespace Effort.Provider
     /// </summary>
     public class EffortConnection : DbConnection
     {
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is case sensitive.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is case sensitive; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCaseSensitive { get; set; }
+
+
         private string connectionString;
 
         private string lastContainerId;
@@ -50,9 +62,21 @@ namespace Effort.Provider
         ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
         /// </summary>
         public EffortConnection()
+            : this(null)
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
+        /// </summary>
+        /// <param name="isCaseSensitive">
+        ///     <c>true</c> if connection should be case sensitive, <c>false</c> if it should not be case sensitive, <c>null</c> if it should use the configuration value.
+        /// </param>
+        public EffortConnection(bool? isCaseSensitive)
         {
             this.identifier = Guid.NewGuid();
             this.state = ConnectionState.Closed;
+            this.IsCaseSensitive = isCaseSensitive.GetValueOrDefault(EffortProviderFactory.IsCaseSensitiveDefault);
         }
 
         /// <summary>
@@ -356,6 +380,7 @@ namespace Effort.Provider
             }
 
             parameters.IsTransient = this.isPrimaryTransient;
+            parameters.IsCaseSensitive = this.IsCaseSensitive;
 
             return new DbContainer(parameters);
         }

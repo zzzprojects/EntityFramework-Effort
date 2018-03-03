@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,7 +13,7 @@ namespace Effort.Lab.EF6
         public Form_Request_LazyLoading()
         {
             InitializeComponent();
-
+            
             var connection = DbConnectionFactory.CreateTransient();
 
             // CLEAN
@@ -28,8 +30,8 @@ namespace Effort.Lab.EF6
                 var entity1 = context.EntitySimples.Add(new EntitySimple {ColumnInt = 1, EntitySimpleLazy = new List<EntitySimpleLazy>()});
                 entity1.EntitySimpleLazy.Add(new EntitySimpleLazy {ColumnInt = 10});
                 entity1.EntitySimpleLazy.Add(new EntitySimpleLazy {ColumnInt = 20});
-                context.EntitySimples.Add(new EntitySimple {ColumnInt = 2});
-                context.EntitySimples.Add(new EntitySimple {ColumnInt = 3});
+                context.EntitySimples.Add(new EntitySimple {ColumnInt = 2, ColumnGuid = Guid.NewGuid()});
+                context.EntitySimples.Add(new EntitySimple {ColumnInt = 3, ColumnGuid = Guid.NewGuid() });
                 context.SaveChanges();
 
                 // Proxy type are not created since entities (without proxy) already exists in the context
@@ -39,8 +41,12 @@ namespace Effort.Lab.EF6
             // TEST
             using (var context = new EntityContext(connection))
             {
+                var anotherGuid = Guid.NewGuid();
+                
                 // Proxy type are created since entities are loaded from the memory
-                var list = context.EntitySimples.ToList();
+                var list = context.EntitySimples
+                    .Where(x => x.ColumnGuid.CompareTo(anotherGuid) >= 0)
+                    .ToList();
             }
         }
 
@@ -48,7 +54,8 @@ namespace Effort.Lab.EF6
         {
             public EntityContext(DbConnection connection) : base(connection, true)
             {
-                //this.Configuration.LazyLoadingEnabled = true;
+                this.Configuration.LazyLoadingEnabled = false;
+                this.Configuration.ProxyCreationEnabled = false;
             }
 
             public DbSet<EntitySimple> EntitySimples { get; set; }
@@ -70,6 +77,8 @@ namespace Effort.Lab.EF6
         {
             public int ID { get; set; }
             public int ColumnInt { get; set; }
+
+            public Guid ColumnGuid { get; set; }
 
             public virtual ICollection<EntitySimpleLazy> EntitySimpleLazy { get; set; }
         }

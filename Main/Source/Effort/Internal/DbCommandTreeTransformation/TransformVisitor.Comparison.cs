@@ -53,6 +53,11 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 return CreateStringComparison(left, right, kind);
             }
 
+            else if (left.Type == typeof(Guid?) && right.Type == typeof(Guid?))
+            {
+                return CreateGuidComparison(left, right, kind);
+            }
+
             switch (kind)
             {
                 case DbExpressionKind.Equals:
@@ -82,6 +87,21 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private Expression CreateStringComparison(Expression left, Expression right, DbExpressionKind kind)
         {
             var method = Expression.Call(null, StringFunctions.CompareTo, left, right);
+            var mode = GetCompareMode(kind);
+
+            Expression res = Expression.Equal(method, Expression.Constant(mode.Item1));
+
+            if (!mode.Item2)
+            {
+                res = Expression.Not(res);
+            }
+
+            return res;
+        }
+
+        private Expression CreateGuidComparison(Expression left, Expression right, DbExpressionKind kind)
+        {
+            var method = Expression.Call(null, GuidFunctions.CompareTo, left, right);
             var mode = GetCompareMode(kind);
 
             Expression res = Expression.Equal(method, Expression.Constant(mode.Item1));

@@ -129,6 +129,7 @@
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\DoubleFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\DecimalFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\IntegerFunctions.cs" />
+    <Compile Include="Internal\DbCommandTreeTransformation\Functions\GuidFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\StringFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\DateTimeOffsetFunctions.cs" />
     <Compile Include="Internal\DbCommandTreeTransformation\Functions\TimeFunctions.cs" />

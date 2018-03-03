@@ -215,7 +215,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
                 return null;
             }
 
-            return string.Concat(a, b);
+            return String.Concat(a, b);
         }
 
         public static bool? Contains(string a, string b)
@@ -1027,6 +1027,25 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         #endregion
 
+        #region Guid
+
+        internal static int CompareTo(Guid? a, Guid? b)
+        {
+            if (a == null && b == null)
+            {
+                return 0;
+            }
+
+            if (a == null || b == null)
+            {
+                return -1;
+            }
+
+            return a.Value.CompareTo(b.Value);
+        }
+
+        #endregion
+
         #region Time
 
         public static TimeSpan? CreateTime(
@@ -1210,7 +1229,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
         {
             var format = CultureInfo.InvariantCulture;
 
-            return string.Format(format, "{0}", obj);
+            return String.Format(format, "{0}", obj);
         }
 
         public static T? TryParse<T>(string s) where T : struct

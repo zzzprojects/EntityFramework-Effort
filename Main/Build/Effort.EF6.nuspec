@@ -2,9 +2,9 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata>
         <id>Effort.EF6</id>
-        <version>1.3.1</version>
+        <version>1.3.2</version>
         <title />
-        <authors>tamasflamich, ZZZ Projects</authors>
+        <authors>ZZZ Projects, tamasflamich</authors>
         <owners>ZZZ Projects</owners>
 		<iconUrl>https://zzzprojects.github.io/images/logo/logo-64.png</iconUrl>
         <licenseUrl>https://github.com/zzzprojects/effort/blob/develop/LICENSE</licenseUrl>

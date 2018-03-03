@@ -17,9 +17,7 @@ It is basically an ADO.NET provider that executes all the data operations on a l
 ## Getting Started
  * [Download library](https://github.com/zzzprojects/EntityFramework-Effort/releases)
  * [Install NuGet package](https://github.com/zzzprojects/EntityFramework-Effort/wiki/NuGet-Packages)
- * [News](http://entityframework-effort.net/?z=codeplex)
+ * [News](http://entityframework-effort.net/)
  * [FAQ](http://entityframework-effort.net/faq)
  * [Tutorials](http://entityframework-effort.net/tutorials)
- * [Contribution](https://effort.codeplex.com/wikipage?title=Contribution)
- * [Nightly builds](http://development.flamich.net/oss-nightly/)
- * [GitHub home](https://github.com/zzzprojects/EntityFramework-Effort)
+ * [Contribution](http://www.zzzprojects.com/contribute)

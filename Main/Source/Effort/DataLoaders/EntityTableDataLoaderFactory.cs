@@ -25,8 +25,12 @@
 namespace Effort.DataLoaders
 {
     using System;
+    using System.Data.Common;
+    using System.Data.Entity;
 #if !EFOLD
     using System.Data.Entity.Core.EntityClient;
+    using System.Data.Entity.Core.Objects;
+    using System.Reflection;
 #else
     using System.Data.EntityClient;
 #endif
@@ -39,6 +43,20 @@ namespace Effort.DataLoaders
     {
         private Func<EntityConnection> connectionFactory;
         private EntityConnection connection;
+        
+        private EntityConnection GetEntityConnection(Database data)
+        {
+            object internalContext = data.GetType().GetField("_internalContext", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(data);
+
+
+            MethodInfo getObjectContext = internalContext.GetType().GetMethod("GetObjectContextWithoutDatabaseInitialization", BindingFlags.Public | BindingFlags.Instance);
+
+            var objectContext = (ObjectContext)getObjectContext.Invoke(internalContext, null);
+
+            DbConnection entityConnection = objectContext.Connection;
+
+            return (EntityConnection)entityConnection;
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EntityTableDataLoaderFactory" /> 
@@ -49,7 +67,18 @@ namespace Effort.DataLoaders
         /// </param>
         public EntityTableDataLoaderFactory(Func<EntityConnection> connectionFactory)
         {
-            this.connectionFactory = connectionFactory;
+            var entityConnectionString_Fields = connectionFactory.Target.GetType().GetField("entityConnectionString", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+
+            var entityConnectionString = entityConnectionString_Fields.GetValue(connectionFactory.Target);
+
+            if (entityConnectionString.Equals(""))
+            {
+                this.connectionFactory = () => GetEntityConnection(EntityFrameworkEffortManager.CreateFactoryContext(null).Database);
+            }
+            else
+            {
+                this.connectionFactory = connectionFactory;
+            }
         }
 
         /// <summary>

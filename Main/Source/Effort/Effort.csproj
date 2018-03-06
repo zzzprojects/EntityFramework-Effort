@@ -80,6 +80,7 @@
     <Compile Include="DataLoaders\ITableDataLoaderFactory.cs" />
     <Compile Include="DataLoaders\TableDescription.cs" />
     <Compile Include="DbConnectionFactory.cs" />
+    <Compile Include="EntityFrameworkEffortManager.cs" />
     <Compile Include="Exceptions\EffortException.cs" />
     <Compile Include="Exceptions\ExceptionMessages.cs" />
     <Compile Include="Internal\Caching\DataLoaderConfigurationLatchStore.cs" />

@@ -99,6 +99,10 @@ namespace Effort.Internal.Common
             ITable table, 
             IEnumerable<object> entities)
         {
+            if (table.EntityType.Name.Contains("_____MigrationHistory"))
+            {
+                return;
+            }
             try
             {
                 typeof(DatabaseReflectionHelper.WrapperMethods)

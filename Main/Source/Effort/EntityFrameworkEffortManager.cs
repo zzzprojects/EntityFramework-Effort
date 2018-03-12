@@ -1,4 +1,5 @@
- using System;
+#if !EFOLD
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -32,9 +33,8 @@ namespace Effort
                 } 
             } 
 
-            throw new Exception(
-                "A working context must be provided using EntityFrameworkEffortManager.ContextFactory." +
-                " This setting is required for some features like IncludeGraph. Read more: http://entityframework-extensions.net/context-factory");
+            throw new Exception("The specified code require a ContextFactory to work. Example: EntityFrmeworkEffortManager.ContextFactory = (currentContext) => new EntitiesContext()");
         }
     }
 }
+#endif

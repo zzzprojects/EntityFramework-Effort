@@ -259,6 +259,7 @@
     <Compile Include="Internal\Common\ReflectionHelper.cs" />
     <Compile Include="Internal\Common\TypeHelper.cs" />
     <Compile Include="EntityConnectionFactory.cs" />
+    <Compile Include="Internal\Extensions\Database.GetEntityConnection.cs" />
     <Compile Include="Internal\StorageSchema\CommonPropertyElementModifier.cs" />
     <Compile Include="Internal\StorageSchema\ModificationFunctionMappingModifier.cs" />
     <Compile Include="Internal\StorageSchema\ReturnTypeAttributeSelector.cs" />

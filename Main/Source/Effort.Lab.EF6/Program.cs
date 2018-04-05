@@ -16,7 +16,7 @@ namespace Effort.Lab.EF6
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form_Request_LazyLoading());
+            Application.Run(new Form_Request_SqlFunctions());
         }
     }
 }

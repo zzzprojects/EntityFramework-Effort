@@ -67,6 +67,12 @@
     <Compile Include="Form_Request_LazyLoading.Designer.cs">
       <DependentUpon>Form_Request_LazyLoading.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_SqlFunctions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_SqlFunctions.Designer.cs">
+      <DependentUpon>Form_Request_SqlFunctions.cs</DependentUpon>
+    </Compile>
     <Compile Include="My.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

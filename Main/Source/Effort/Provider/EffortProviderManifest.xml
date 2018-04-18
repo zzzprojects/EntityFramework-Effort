@@ -118,6 +118,11 @@
         <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
       </FacetDescriptions>
     </Type>
+    <Type Name="smalldatetime" PrimitiveTypeKind="DateTime">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type>
     <Type Name="time" PrimitiveTypeKind="Time">
       <FacetDescriptions>
         <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />

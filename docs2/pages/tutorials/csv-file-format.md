@@ -1,6 +1,4 @@
----
-permalink: csv-file-format
----
+# CSV File Format
 
 ## CSV file format in Effort
 

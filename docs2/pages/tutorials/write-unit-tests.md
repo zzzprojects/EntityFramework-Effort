@@ -1,6 +1,4 @@
----
-permalink: write-unit-tests
----
+# Write Unit Tests
 
 ## Introduction
 

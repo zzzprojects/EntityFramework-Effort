@@ -1,6 +1,4 @@
----
-permalink: export-data-to-csv
----
+# Export Data to Csv Files
 
 ## Introduction
 

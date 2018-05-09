@@ -1,6 +1,4 @@
----
-permalink: download
----
+# Download
 
 <div class="page-download-nuget">
 	<div class="container">

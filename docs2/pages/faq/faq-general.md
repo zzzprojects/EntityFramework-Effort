@@ -1,6 +1,4 @@
----
-permalink: faq-general
----
+# FAQ - General
 
 ## What's your average SLA response and resolution times?
 We try to provide an outstanding support service.

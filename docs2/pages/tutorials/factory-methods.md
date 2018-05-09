@@ -1,6 +1,4 @@
----
-permalink: factory-methods
----
+# Factory Methods
 
 ## Factory Methods
 

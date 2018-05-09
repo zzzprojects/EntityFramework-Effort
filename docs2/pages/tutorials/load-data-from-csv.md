@@ -1,6 +1,4 @@
----
-permalink: load-data-from-csv
----
+# Load Data from Csv Files
 
 ## Introduction
 

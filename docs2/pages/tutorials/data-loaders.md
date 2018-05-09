@@ -1,6 +1,4 @@
----
-permalink: data-loaders
----
+# Data Loaders
 
 ## Definition
 

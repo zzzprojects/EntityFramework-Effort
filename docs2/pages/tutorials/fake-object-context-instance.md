@@ -1,6 +1,4 @@
----
-permalink: fake-object-context-instance
----
+# Fake ObjectContext Instance
 
 ## Factory Classes
 

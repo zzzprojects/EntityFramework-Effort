@@ -1,6 +1,4 @@
----
-permalink: installing
----
+# Installing
 
 **Entity Framework Effort** can be installed through NuGet.
 

@@ -29,7 +29,7 @@ The purpose of **CsvDataLoader** is to read data records from CSV files. It is i
 
 {% include template-example.html %} 
 ```csharp
-var dataLoader = new CsvDataLoader(@@"C:\path\to\files");
+var dataLoader = new CsvDataLoader(@"C:\path\to\files");
 ```
 
 There is also a [tool](/export-data-to-csv) that helps the developers to export the data from an existing database into appropriately formatted CSV files.
@@ -44,7 +44,7 @@ The **CachingDataLoader** was designed to speed up the initialization process by
 
 {% include template-example.html %} 
 ```csharp
-var wrappedDataLoader = new CsvDataLoader(@@"C:\path\to\files");
+var wrappedDataLoader = new CsvDataLoader(@"C:\path\to\files");
  
 var dataLoader = new CachingDataLoader(wrappedDataLoader, false);
 ```

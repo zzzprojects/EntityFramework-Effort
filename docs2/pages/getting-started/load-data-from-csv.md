@@ -16,7 +16,7 @@ Place all your CSV files in a favorable directory, pass the path of the director
 {% include template-example.html %} 
 ```csharp
 
-IDataLoader loader = new Effort.DataLoaders.CsvDataLoader(@@"D:\CsvFiles")
+IDataLoader loader = new Effort.DataLoaders.CsvDataLoader(@"D:\CsvFiles")
     
 using (NorthwindEntities ctx = Effort.ObjectContextFactory.CreateTransient(loader))
 {

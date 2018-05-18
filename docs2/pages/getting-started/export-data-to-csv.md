@@ -6,7 +6,7 @@ Creating a CSV file could be tiresome, **Effort** provides an easy-to-use progra
 
 It is a GUI based tool.
 
-<img src="images/csv-tool-1.png">
+<img src="https://raw.githubusercontent.com/zzzprojects/EntityFramework-Effort/master/docs/images/csv-tool-1.png">
 
 ## Providers
 
@@ -20,7 +20,7 @@ This tool supports the following database providers.
 
 The provider can be selected from Provider dropdown list, and you can set different properties value for any provider such as connection string of your database etc.
 
-<img src="images/csv-tool-2.png">
+<img src="https://raw.githubusercontent.com/zzzprojects/EntityFramework-Effort/master/docs/images/csv-tool-2.png">
 
 In the **Export path** field you can specify the directory where you want to save all the **CSV** files. Click **Export** button you are done.
 

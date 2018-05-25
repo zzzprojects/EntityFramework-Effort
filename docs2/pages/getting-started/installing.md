@@ -1,7 +1,6 @@
 # Installing
 
 **Entity Framework Effort** can be installed through NuGet.
-
 <div class="row container-box-download">
                 <div class="col-lg-4 box-download">
                     <div class="box-content">

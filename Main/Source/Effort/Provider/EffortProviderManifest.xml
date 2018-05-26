@@ -57,6 +57,14 @@
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
     </Type>
+    <Type Name="nchar" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
     <Type Name="boolean" PrimitiveTypeKind="Boolean"/>
     <Type Name="bit" PrimitiveTypeKind="Boolean"/>
     <Type Name="byte" PrimitiveTypeKind="Byte"/>

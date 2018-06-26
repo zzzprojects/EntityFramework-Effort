@@ -57,6 +57,14 @@
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
     </Type>
+    <Type Name="nvarchar(max)" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
     <Type Name="nchar" PrimitiveTypeKind="String">
       <FacetDescriptions>
         <MaxLength DefaultValue="2147483647" Constant="false"

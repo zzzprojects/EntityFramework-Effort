@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
@@ -50,6 +51,7 @@ namespace Effort.Lab.EF6
         public class MyEntity
         {
             public int Id { get; set; }
+            [Column(TypeName = "nvarchar(max)")]
             public string Name { get; set; }
             public int WeekDay { get; set; }
         }

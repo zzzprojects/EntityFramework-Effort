@@ -71,10 +71,7 @@ namespace testString
 
     public class ExampleModelA : DbContext
     {
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
+
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)
@@ -184,10 +181,6 @@ namespace testNumber
 
     public class ExampleModelA : DbContext
     {
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)
@@ -271,10 +264,6 @@ namespace testBit
 
     public class ExampleModelA : DbContext
     {
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)
@@ -346,11 +335,6 @@ namespace testBinary
 
     public class ExampleModelA : DbContext
     {
-
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)

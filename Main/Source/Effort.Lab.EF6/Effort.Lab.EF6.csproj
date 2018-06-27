@@ -81,6 +81,8 @@
     </Compile>
     <Compile Include="My.cs" />
     <Compile Include="Program.cs" />
+     <Compile Include="test_dataAnoatationAfterChange.cs" />
+    <Compile Include="test_dataAnoatation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="__Form_Template.cs">
       <SubType>Form</SubType>

@@ -72,10 +72,6 @@ namespace AfterChangetestString
 
     public class ExampleModelA : DbContext
     {
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)
@@ -189,10 +185,6 @@ namespace AfterChangetestNumber
 
     public class ExampleModelA : DbContext
     {
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)
@@ -279,10 +271,6 @@ namespace AfterChangetestBit
 
     public class ExampleModelA : DbContext
     {
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)
@@ -353,11 +341,6 @@ namespace AfterChangetestBinary
 
     public class ExampleModelA : DbContext
     {
-
-        //public ExampleModel() : base(
-        //    "Server=DESKTOP-OMFLOMV;Initial Catalog=Z.Test.EntityFramework.Plus.EF6;Integrated Security=True;")
-        //{
-        //}
 
 
         public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)

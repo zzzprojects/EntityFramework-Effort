@@ -35,7 +35,7 @@ Choose the Entity Framework version and the Package Manager you want to use to d
                     <div class="box-content">
                         <div class="version">
                             <a href="https://www.nuget.org/packages/Effort" target="_blank" onclick="ga('send', 'event', { eventAction: 'download-efcore'});">
-                                EF<span class="caracter-highlight align-top"> Core</span>
+                                EF5
                             </a>
                         </div>
                         <a class="btn btn-lg btn-z wow zoomIn" role="button" href="https://www.nuget.org/packages/Effort" target="_blank" onclick="ga('send', 'event', { eventAction: 'download-efcore'});" style="visibility: visible; animation-name: zoomIn;">

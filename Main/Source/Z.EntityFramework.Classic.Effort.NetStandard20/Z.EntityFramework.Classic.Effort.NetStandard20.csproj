@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyName>Z.EntityFramework.Classic.Effort</AssemblyName>
+    <RootNamespace>Z.EntityFramework.Classic.Effort</RootNamespace>
+    <Authors>ZZZ Projects</Authors>
+    <FileVersion>1.3.5.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\Z.EntityFramework.Classic.Effort.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <Import Project="..\Effort.Shared\Effort.Shared.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <EmbeddedResource Include="Effort\Provider\EffortProviderManifest.xml">
+		<LogicalName>Effort.Provider.EffortProviderManifest.xml</LogicalName>
+	</EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="NMemory" Version="2.0.1" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="Z.EntityFramework.Classic" Version="7.0.0-beta8" />
+  </ItemGroup>
+
+</Project>

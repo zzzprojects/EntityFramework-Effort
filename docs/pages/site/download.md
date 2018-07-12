@@ -37,7 +37,7 @@ permalink: download
 						<h3>
 							<a href="https://www.nuget.org/packages/Effort" target="_blank"
 									onclick="ga('send', 'event', { eventAction: 'download-efcore'});">
-								Entity Framework (EF)
+								Entity Framework (EF5)
 							</a>
 						</h3>
 					</div>

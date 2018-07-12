@@ -26,3 +26,5 @@ set EnableNugetPackageRestore=true
 %msbuild% Build.targets /v:minimal /maxcpucount /nodeReuse:false %*
 
 timeout /t 2
+
+SLEEP 3

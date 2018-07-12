@@ -32,7 +32,7 @@ Choose the Entity Framework version and the Package Manager you want to use to d
 	<div class="col-lg-6">
 		<div class="card card-layout-z2 wow slideInRight">
 			<div class="card-header wow slideInDown">
-				<h3>Entity Framework (EF)</h3>
+				<h3>Entity Framework (EF5)</h3>
 			</div>
 			<div class="card-body wow slideInUp">
 				<a class="btn btn-lg btn-z" role="button" href="https://www.nuget.org/packages/Effort" onclick="ga('send', 'event', { eventAction: 'download'});" style="visibility: visible; animation-name: pulse;">

@@ -30,6 +30,21 @@ using(NorthwindEntities context = Effort.ObjectContextFactory.CreateTransient<No
 
 The term **Transient** refers to the lifecycle of the underlying in-memory database. 
 
+## Requirements
+
+### Entity Framework Version
+
+- Entity Framework 6.x
+- Entity Framework < 6
+
+### Database Provider
+
+- SQL Server 2008+
+- SQL Azure
+- SQL Compact
+- Oracle
+
+
 ## ObjectContext Lifecycle
 
 The owner ObjectContext (technically the DbConnection) will be using a unique database instance. If the context/connection is disposed, than the database will be disposed too. 

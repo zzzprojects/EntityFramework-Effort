@@ -30,6 +30,9 @@ using(NorthwindEntities context = Effort.ObjectContextFactory.CreateTransient<No
 
 The term **Transient** refers to the lifecycle of the underlying in-memory database. 
 
+## Installing & Upgrading
+Download the <a href="/download">NuGet Package</a>
+
 ## Requirements
 
 ### Entity Framework Version

@@ -57,11 +57,6 @@
     <Compile Include="Properties\AssemblyVisibility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Effort\Provider\EffortProviderManifest.xml">
-      <LogicalName>Effort.Provider.EffortProviderManifest.xml</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -17,12 +17,6 @@
   <Import Project="..\Effort.Shared\Effort.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
-    <EmbeddedResource Include="Effort\Provider\EffortProviderManifest.xml">
-		<LogicalName>Effort.Provider.EffortProviderManifest.xml</LogicalName>
-	</EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="NMemory" Version="2.0.1" />
     <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />

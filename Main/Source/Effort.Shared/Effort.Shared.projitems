@@ -292,6 +292,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Provider\IDbManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EffortProviderManifest.xml">
+		<LogicalName>Effort.Provider.EffortProviderManifest.xml</LogicalName>
+	</EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Internal\Csv\ExceptionMessages.resx">
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

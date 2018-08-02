@@ -60,11 +60,6 @@
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Effort\Provider\EffortProviderManifest.xml">
-      <LogicalName>Effort.Provider.EffortProviderManifest.xml</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="..\Effort.Shared\Effort.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

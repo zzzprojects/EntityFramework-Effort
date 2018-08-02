@@ -10,4 +10,7 @@ Main/Source/packages/
 Main/Source/TestResults/
 Main/Build/KeyPair.snk
 Main/Build/TestResult.xml
+Main/Source/.vs/
 */.vs/
+Main/Source/Z.Lab.EFClassic/
+Main/Source/Effort.Lab.EF6/

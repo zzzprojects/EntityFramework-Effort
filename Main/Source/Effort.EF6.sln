@@ -18,7 +18,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{BDA2CB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.Lab.EF6", "Effort.Lab.EF6\Effort.Lab.EF6.csproj", "{5D086FDF-2604-413F-8164-0B8FF1C2A522}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Effort.Shared", "Effort.Shared\Effort.Shared.shproj", "{E52E4EEB-6182-4CA3-82D3-C83ACA7308BA}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Effort.Shared\Effort.Shared.projitems*{e52e4eeb-6182-4ca3-82d3-c83aca7308ba}*SharedItemsImports = 13
+		Effort.Shared\Effort.Shared.projitems*{e612d252-9081-4995-b717-5dbef8240fb6}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_net40|Any CPU = Debug_net40|Any CPU
 		Debug_net45|Any CPU = Debug_net45|Any CPU

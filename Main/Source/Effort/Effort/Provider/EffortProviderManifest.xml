@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ <copyright file="EffortProviderManifest.xml" company="Effort Team">
+     Copyright (C) Effort Team
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to deal
+     in the Software without restriction, including without limitation the rights
+     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+     copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+     THE SOFTWARE.
+ </copyright>
+-->
+<ProviderManifest xmlns="http://schemas.microsoft.com/ado/2006/04/edm/providermanifest"
+  Namespace="Effort">
+  <Types>  
+    <Type Name="varchar" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="char" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="varchar(max)" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="nvarchar" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="nvarchar(max)" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="nchar" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="xml" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="boolean" PrimitiveTypeKind="Boolean"/>
+    <Type Name="bit" PrimitiveTypeKind="Boolean"/>
+    <Type Name="byte" PrimitiveTypeKind="Byte"/>
+    <Type Name="tinyint" PrimitiveTypeKind="Byte"/>
+    <Type Name="sbyte" PrimitiveTypeKind="SByte"/>
+    <Type Name="smallint" PrimitiveTypeKind="Int16"/>
+    <Type Name="int16" PrimitiveTypeKind="Int16"/>
+    <Type Name="int32" PrimitiveTypeKind="Int32"/>
+    <Type Name="int" PrimitiveTypeKind="Int32"/>
+    <Type Name="int64" PrimitiveTypeKind="Int64"/>
+    <Type Name="bigint" PrimitiveTypeKind="Int64"/>
+    <Type Name="double" PrimitiveTypeKind="Double" />
+    <Type Name="float" PrimitiveTypeKind="Double" />
+    <Type Name="real" PrimitiveTypeKind="Single"></Type>
+    <Type Name="single" PrimitiveTypeKind="Single" />
+    <Type Name="decimal" PrimitiveTypeKind="Decimal" >
+      <FacetDescriptions>
+        <Precision Minimum="1" Maximum="1000" DefaultValue="18" Constant="false" />
+        <Scale Minimum="0" Maximum="1000" DefaultValue="0" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="numeric" PrimitiveTypeKind="Decimal">
+      <FacetDescriptions>
+        <Precision Minimum="1" Maximum="1000" DefaultValue="18" Constant="false" />
+        <Scale Minimum="0" Maximum="1000" DefaultValue="0" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="smallmoney" PrimitiveTypeKind="Decimal">
+      <FacetDescriptions>
+        <Precision DefaultValue="10" Constant="true" />
+        <Scale DefaultValue="4" Constant="true" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="money" PrimitiveTypeKind="Decimal">
+      <FacetDescriptions>
+        <Precision Minimum="1" Maximum="1000" DefaultValue="18" Constant="false" />
+        <Scale Minimum="0" Maximum="1000" DefaultValue="0" Constant="false" />
+      </FacetDescriptions>
+    </Type> 
+    <Type Name="binary" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="image" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="datetime" PrimitiveTypeKind="DateTime">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="date" PrimitiveTypeKind="DateTime">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="datetime2" PrimitiveTypeKind="DateTime">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type> 
+    <Type Name="smalldatetime" PrimitiveTypeKind="DateTime">
+      <FacetDescriptions>
+        <Precision DefaultValue="0" Constant="true" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="time" PrimitiveTypeKind="Time">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="datetimeoffset" PrimitiveTypeKind="DateTimeOffset">
+      <FacetDescriptions>
+        <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="string" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="text" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="ntext" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="false"
+                   Minimum="0" Maximum="2147483647" />
+        <Unicode DefaultValue="true" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="uniqueidentifier" PrimitiveTypeKind="Guid" />
+    <Type Name="guid" PrimitiveTypeKind="Guid" />
+    <Type Name="rowversion" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="8" Constant="false"
+                   Minimum="0" Maximum="1000" />
+        <FixedLength DefaultValue="true" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="timestamp" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="8" Constant="false"
+                   Minimum="0" Maximum="1000" />
+        <FixedLength DefaultValue="true" Constant="false" />
+      </FacetDescriptions>
+    </Type>
+  </Types>
+</ProviderManifest>

@@ -78,7 +78,9 @@ namespace Effort.Internal.TypeConversion
             result = null;
 
             if (string.Equals("binary", primitiveType.Name, StringComparison.InvariantCultureIgnoreCase)
-                || string.Equals("image", primitiveType.Name, StringComparison.InvariantCultureIgnoreCase))
+                || string.Equals("image", primitiveType.Name, StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals("varbinary(MAX)", primitiveType.Name, StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals("varbinary", primitiveType.Name, StringComparison.InvariantCultureIgnoreCase))
             {
                 result = typeof(NMemory.Data.Binary);
                 return true;

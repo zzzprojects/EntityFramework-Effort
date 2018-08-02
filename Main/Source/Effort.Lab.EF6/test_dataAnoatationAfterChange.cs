@@ -326,8 +326,8 @@ namespace AfterChangetestBinary
 
                 test.image = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }; // valeur mit dedans, mais très mal indiquer 
                 test.binary = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }; // valeur mit dedans, mais très mal indiquer 
-     
-
+                test.binary2 = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }; // valeur mit dedans, mais très mal indiquer 
+                test.binary_varbinary = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }; // valeur mit dedans, mais très mal indiquer 
                 context.MyEntities.Add(test);
                 context.SaveChanges();
             }
@@ -364,7 +364,14 @@ namespace AfterChangetestBinary
 
 
         [Column("binary", TypeName = "binary")]
-        public byte[] binary { get; set; } 
+        public byte[] binary { get; set; }
+
+
+        [Column("varbinarie", TypeName = "varbinary")]
+        public byte[] binary_varbinary { get; set; }
+
+        [Column("binary2", TypeName = "varbinary(MAX)")]
+        public byte[] binary2 { get; set; }
 
     }
 } 

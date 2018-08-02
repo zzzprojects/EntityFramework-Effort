@@ -134,6 +134,18 @@
         <FixedLength DefaultValue="false" Constant="false" />
       </FacetDescriptions>
     </Type>
+    <Type Name="varbinary(max)" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength DefaultValue="2147483647" Constant="true" />
+        <FixedLength DefaultValue="false" Constant="true" />
+      </FacetDescriptions>
+    </Type>
+    <Type Name="varbinary" PrimitiveTypeKind="Binary">
+      <FacetDescriptions>
+        <MaxLength Minimum="1" Maximum="8000" DefaultValue="8000" Constant="false" />
+        <FixedLength DefaultValue="false" Constant="true" />
+      </FacetDescriptions>
+    </Type>
     <Type Name="datetime" PrimitiveTypeKind="DateTime">
       <FacetDescriptions>
         <Precision Minimum="0" Maximum="1000" DefaultValue="7" Constant="false" />

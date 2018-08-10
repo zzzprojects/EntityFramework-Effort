@@ -4,7 +4,7 @@
 
 This tutorial shows a fundamental approach to unit testing, and we are going to test a very simple data component.
 
-{% include template-example.html title='Product Service Class' %} 
+### Product Service Class
 ```csharp
 
 public class ProductService : IProductService
@@ -49,7 +49,7 @@ public void Initialize()
 
 The first test method verifies if an entity exist with a specific Id.
 
-{% include template-example.html title='ProductExist Test Method' %} 
+### ProductExist Test Method
 ```csharp
 [TestMethod]
 public void ProductExist()
@@ -70,7 +70,7 @@ The test is straightforward; the data component is created and requested to quer
 
 The second test method verifies if the data component can remove an entity from the database.
 
-{% include template-example.html title='DeleteProduct Test Method' %} 
+### DeleteProduct Test Method
 ```csharp
 [TestMethod]
 public void DeleteProduct()

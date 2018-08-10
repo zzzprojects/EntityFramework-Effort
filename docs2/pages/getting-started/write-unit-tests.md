@@ -34,7 +34,7 @@ The ProductService class provides two simple operations:
 
 The initializer method creates the fake object context for each unit test.
 
-{% include template-example.html title='Initialize Fake Object' %} 
+### Initialize Fake Object
 ```csharp
 
 private NorthwindEntities context;

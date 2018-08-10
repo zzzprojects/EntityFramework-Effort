@@ -4,7 +4,7 @@
 
 Effort makes it possible to fill your fake database with data gathered from CSV files. Here is a sample CSV file that can be consumed by the Effort provider to fill the Products table.
 
-{% include template-example.html title='Sample CSV File' %} 
+### Sample CSV File
 ```csharp
 ProductID,ProductName,SupplierID,CategoryID,QuantityPerUnit,UnitPrice,UnitsInStock
 "1","Chai","1","1","10 boxes x 20 bags","18.0000","39"

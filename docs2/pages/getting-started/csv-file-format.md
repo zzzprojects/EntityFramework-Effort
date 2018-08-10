@@ -19,7 +19,7 @@ There are some additional requirements that need to be taken into consideration.
 
 These are all the rules that need to be followed. The following example demonstrates the rules by representing a compatible CSV file.
 
-{% include template-example.html title='Sample CSV File' %} 
+### Sample CSV File
 ```csharp
 id,name,birthdate,reportto,storages,photo
 "JD","John Doe",01/23/1982,"MHS","\\\\server1\\share8\r\n\\\\server2\share3",

@@ -5,7 +5,7 @@
 **Effort** stands for **E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T**ool. It is a powerful tool that enables a convenient way to create automated tests for Entity Framework based applications.
 
  - It is basically an ADO.NET provider that executes all the data operations on a lightweight in-process main memory database instead of a traditional external database. 
- - It provides some intuitive helper methods too that make really easy to use this provider with existing ObjectContext or DbContext classes. 
+ - It provides some intuitive helper methods that makes this provider easy to use with ObjectContext or DbContext classes. 
  - A simple addition to existing code might be enough to create data-driven tests that can run without the presence of the external database.
 
 The following code returns all the categories stored in the database. 
@@ -49,7 +49,7 @@ Download the <a href="/download">NuGet Package</a>
 
 ## ObjectContext Lifecycle
 
-The owner ObjectContext (technically the DbConnection) will be using a unique database instance. If the context/connection is disposed, than the database will be disposed too. 
+The owner ObjectContext (technically the DbConnection) will be using a unique database instance. If the context/connection is disposed, then the database will be disposed too. 
 
 You could set the initial state of the database with Entity Framework, but Effort provides data loaders to do this more easily. The following example fetches the initial data from a real database.
 

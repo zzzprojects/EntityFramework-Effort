@@ -29,7 +29,7 @@ public class ProductService : IProductService
 
 The ProductService class provides two simple operations: 
 
- - Querying a product entity based on Id
+ - Querying a product entity based on Id.
  - Deleting a product entity from the database.
 
 The initializer method creates the fake object context for each unit test.

@@ -22,7 +22,7 @@ The provider can be selected from Provider dropdown list, and you can set differ
 
 <img src="https://raw.githubusercontent.com/zzzprojects/EntityFramework-Effort/master/docs/images/csv-tool-2.png">
 
-In the **Export path** field you can specify the directory where you want to save all the **CSV** files. Click **Export** button you are done.
+In the **Export path** field, you can specify the directory where you want to save all the **CSV** files. Click **Export** button and you are done.
 
 ## Note:
 

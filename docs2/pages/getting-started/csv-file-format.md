@@ -4,10 +4,10 @@
 
 **CsvDataLoader** component accepts files that follow the traditional CSV format:
 
- - The first row contains the header names
- - Comma ( , ) is the separator character
- - Double quote ( " ) is the delimiter character
- - Double double quote ( "" ) is used to express a single double quote between delimiters
+ - The first row contains the header names.
+ - Comma ( , ) is the separator character.
+ - Double quote ( " ) is the delimiter character.
+ - Double double quote ( "" ) is used to express a single double quote between delimiters.
 
 There are some additional requirements that need to be taken into consideration.
 

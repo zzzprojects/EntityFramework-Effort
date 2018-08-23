@@ -22,11 +22,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace Effort.Provider
 {
     using System;
+    using System.Collections.Generic;
 #if !EFOLD
     using System.Data.Entity.Core.Common;
     using System.Data.Entity.Core.Metadata.Edm;

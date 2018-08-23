@@ -96,7 +96,6 @@ namespace Effort.Provider
 
             // The primitive type name identifies the appropriate store type
 
-            //PrimitiveType storeType = this.StoreTypeNameToStorePrimitiveType[name];
             PrimitiveType storeType;
             if (!this.StoreTypeNameToStorePrimitiveType.TryGetValue(name, out storeType))
             {

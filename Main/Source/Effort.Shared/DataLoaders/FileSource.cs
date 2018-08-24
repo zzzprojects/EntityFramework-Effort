@@ -91,7 +91,12 @@ namespace Effort.DataLoaders
 
             if (uri == null)
             {
-                return new InvalidFileProvider();
+                //Try current directory + path
+                Uri.TryCreate(System.IO.Path.Combine(Environment.CurrentDirectory, path), UriKind.Absolute, out uri);
+                if (uri == null)
+                {
+                    return new InvalidFileProvider();
+                }
             }
 
             switch (uri.Scheme)

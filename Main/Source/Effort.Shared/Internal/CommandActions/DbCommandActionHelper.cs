@@ -87,6 +87,12 @@ namespace Effort.Internal.CommandActions
 
             return (ITable)container.GetTable(source.Target.GetFullTableName());
         }
+        
+         public static List<ITable> GetAllTable( 
+            DbContainer container)
+        {   
+            return (List<ITable>)container.GetAllTable();
+        }
 
         public static IDictionary<string, DbExpression> GetSetClauseExpressions(
             IList<DbModificationClause> clauses)

@@ -51,6 +51,16 @@ namespace Effort.Internal.DbManagement
 
             return table;
         }
+        
+        public static List<ITable> GetAllTable(this Database database)
+        {  
+            List<ITable> tables = database
+                .Tables
+                .GetAllTables().ToList();
+
+
+            return tables;
+        }
 
         public static bool ContainsTable(this Database database, TableName name)
         {

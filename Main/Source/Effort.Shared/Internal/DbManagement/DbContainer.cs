@@ -107,6 +107,11 @@ namespace Effort.Internal.DbManagement
         {
             return this.Internal.GetTable(name);
         }
+        
+        public object GetAllTable()
+        {
+            return this.Internal.GetAllTable();
+        }
 
         public void SetIdentityFields(bool enabled)
         {

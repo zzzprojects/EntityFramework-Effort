@@ -54,6 +54,36 @@ namespace Effort.Provider
             this.identifier = Guid.NewGuid();
             this.state = ConnectionState.Closed;
         }
+        
+        public void CleanEffort()
+        { 
+            if (this.DbContainer != null)
+            { 
+                ActionContext context = new ActionContext(this.DbContainer); 
+
+                var tables = DbCommandActionHelper.GetAllTable(context.DbContainer).ToList().Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
+
+                foreach (var table in tables)
+                {
+                    foreach (var index in table.Indexes)
+                    { 
+                        index.Clear();
+                    }
+
+                    var _RestoreIdentityField =  table.GetType().GetMethod("RestoreIdentityField",
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
+                        BindingFlags.FlattenHierarchy);
+
+
+                    if (_RestoreIdentityField != null)
+                    {
+                        _RestoreIdentityField.Invoke(table,
+                            BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
+                            BindingFlags.FlattenHierarchy, null, null, null);
+                    }
+                } 
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the string used to open the connection.

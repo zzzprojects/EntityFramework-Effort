@@ -108,9 +108,9 @@ namespace Effort.Internal.DbManagement
             return this.Internal.GetTable(name);
         }
         
-        public object GetAllTable()
+        public object GetAllTables()
         {
-            return this.Internal.GetAllTable();
+            return this.Internal.GetAllTables();
         }
 
         public void SetIdentityFields(bool enabled)

@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+
 namespace Effort.Internal.DbManagement
 {
     using System.Linq;
@@ -57,7 +59,6 @@ namespace Effort.Internal.DbManagement
             List<ITable> tables = database
                 .Tables
                 .GetAllTables().ToList();
-
 
             return tables;
         }

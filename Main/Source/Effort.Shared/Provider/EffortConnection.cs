@@ -22,6 +22,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System.Linq;
+using System.Reflection;
+using Effort.Internal.CommandActions;
+
 namespace Effort.Provider
 {
     using System;

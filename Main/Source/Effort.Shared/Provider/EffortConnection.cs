@@ -55,7 +55,7 @@ namespace Effort.Provider
             this.state = ConnectionState.Closed;
         }
         
-        public void CleanEffort()
+        public void ClearTables()
         { 
             if (this.DbContainer != null)
             { 

@@ -46,10 +46,12 @@ namespace Effort
             EffortProviderConfiguration.RegisterProvider();
         }
 
-        public static void SetLargeDataRowAttribute(int value)
+        public static int LargeDataRowAttribute
         {
-            LargeDataRowAttribute.LargePropertyCount = value;
+            get { return LargeDataRowAttribute.LargePropertyCount; }
+            set { LargeDataRowAttribute.LargePropertyCount = value; }
         }
+       
         #region Persistent
 
         /// <summary>

@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using Effort.Internal.TypeGeneration;
+
 namespace Effort
 {
     using System;
@@ -46,7 +48,9 @@ namespace Effort
             EffortProviderConfiguration.RegisterProvider();
         }
 
-        public static int LargeDataRowAttribute
+        /// <summary>Gets or sets the number of large properties.</summary>
+        /// <value>The number of large properties.</value>
+        public static int LargePropertyCount
         {
             get { return LargeDataRowAttribute.LargePropertyCount; }
             set { LargeDataRowAttribute.LargePropertyCount = value; }

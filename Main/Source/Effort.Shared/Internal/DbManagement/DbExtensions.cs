@@ -52,7 +52,7 @@ namespace Effort.Internal.DbManagement
             return table;
         }
         
-        public static List<ITable> GetAllTable(this Database database)
+        public static List<ITable> GetAllTables(this Database database)
         {  
             List<ITable> tables = database
                 .Tables

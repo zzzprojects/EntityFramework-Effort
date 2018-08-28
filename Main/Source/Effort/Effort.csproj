@@ -39,10 +39,8 @@
   </Choose>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6a46696d54971e6d, processorArchitecture=MSIL">
-      <HintPath>..\packages\$(PackageNMemoryDir)\lib\$(PackagePlatformDir)\NMemory.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
+    <Reference Include="NMemory, Version=2.0.0.0, Culture=neutral, PublicKeyToken=afc61983f100d280, processorArchitecture=MSIL">
+      <HintPath>..\packages\NMemory.2.0.3\lib\net45\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

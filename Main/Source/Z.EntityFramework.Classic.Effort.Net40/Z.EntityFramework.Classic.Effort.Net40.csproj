@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NMemory, Version=2.0.0.0, Culture=neutral, PublicKeyToken=afc61983f100d280, processorArchitecture=MSIL">
-      <HintPath>..\packages\NMemory.2.0.1\lib\net40\NMemory.dll</HintPath>
+      <HintPath>..\packages\NMemory.2.0.3\lib\net40\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

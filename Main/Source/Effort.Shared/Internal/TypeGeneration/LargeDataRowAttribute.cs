@@ -38,6 +38,6 @@ namespace Effort.Internal.TypeGeneration
         ///     Determines the minimum amount of properties that an annotated 
         ///     <see cref="DataRow"/> type should have.
         /// </summary>
-        internal const int LargePropertyCount = 8;
+        internal static int LargePropertyCount = 8;
     }
 }

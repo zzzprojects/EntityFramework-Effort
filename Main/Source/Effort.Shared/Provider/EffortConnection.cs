@@ -61,7 +61,7 @@ namespace Effort.Provider
             { 
                 ActionContext context = new ActionContext(this.DbContainer); 
 
-                var tables = DbCommandActionHelper.GetAllTable(context.DbContainer).ToList().Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
+                var tables = DbCommandActionHelper.GetAllTables(context.DbContainer).ToList().Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
 
                 foreach (var table in tables)
                 {

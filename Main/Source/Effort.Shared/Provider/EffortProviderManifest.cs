@@ -25,6 +25,7 @@
 namespace Effort.Provider
 {
     using System;
+    using System.Collections.Generic;
 #if !EFOLD
     using System.Data.Entity.Core.Common;
     using System.Data.Entity.Core.Metadata.Edm;
@@ -94,8 +95,12 @@ namespace Effort.Provider
             string name = edmType.EdmType.Name.ToLowerInvariant();
 
             // The primitive type name identifies the appropriate store type
-            PrimitiveType storeType = this.StoreTypeNameToStorePrimitiveType[name];
 
+            PrimitiveType storeType;
+            if (!this.StoreTypeNameToStorePrimitiveType.TryGetValue(name, out storeType))
+            {
+                throw new KeyNotFoundException("Unable to find store type for edmType " + name + ", Effort does not support this data type.");
+            }
             return ConvertTypeUsage(edmType, storeType);
         }
 

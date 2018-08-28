@@ -88,10 +88,10 @@ namespace Effort.Internal.CommandActions
             return (ITable)container.GetTable(source.Target.GetFullTableName());
         }
         
-         public static List<ITable> GetAllTable( 
+         public static List<ITable> GetAllTables( 
             DbContainer container)
         {   
-            return (List<ITable>)container.GetAllTable();
+            return (List<ITable>)container.GetAllTables();
         }
 
         public static IDictionary<string, DbExpression> GetSetClauseExpressions(

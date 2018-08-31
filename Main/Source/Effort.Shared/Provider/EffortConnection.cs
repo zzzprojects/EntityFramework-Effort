@@ -65,18 +65,14 @@ namespace Effort.Provider
         {
             get
             {
-
-                bool isCaseSensitive;
                 if (this.DbContainer != null)
                 {
-                    isCaseSensitive = this.DbContainer.IsCaseSensitive;
+                    return this.DbContainer.IsCaseSensitive;
                 }
                 else
                 {
                     throw new Exception("The connection must be open to gets or sets 'IsCaseSensitive' value. Please open the connection first with 'effortConnection.Open()'");
                 }
-
-                return isCaseSensitive;
             }
             set
             {

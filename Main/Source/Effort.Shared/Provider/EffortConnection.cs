@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using Effort.Internal.CommandActions;
@@ -90,21 +92,27 @@ namespace Effort.Provider
         }
         
         public void ClearTables()
-        { 
-            if (this.DbContainer != null)
-            { 
-                ActionContext context = new ActionContext(this.DbContainer); 
+        {
+            ClearTables(null);
+        }
 
-                var tables = DbCommandActionHelper.GetAllTables(context.DbContainer).ToList().Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
+        // clear ChangeTracker for global context never disposed.
+        public void ClearTables(DbContext context)
+        {
+            if (this.DbContainer != null)
+            {
+                ActionContext actionContext = new ActionContext(this.DbContainer);
+
+                var tables = DbCommandActionHelper.GetAllTables(actionContext.DbContainer).ToList().Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
 
                 foreach (var table in tables)
                 {
                     foreach (var index in table.Indexes)
-                    { 
+                    {
                         index.Clear();
                     }
 
-                    var _RestoreIdentityField =  table.GetType().GetMethod("RestoreIdentityField",
+                    var _RestoreIdentityField = table.GetType().GetMethod("RestoreIdentityField",
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
                         BindingFlags.FlattenHierarchy);
 
@@ -115,7 +123,16 @@ namespace Effort.Provider
                             BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
                             BindingFlags.FlattenHierarchy, null, null, null);
                     }
-                } 
+                }
+
+                if (context != null)
+                {
+                    var changedEntriesCopy = context.ChangeTracker.Entries()
+                        .ToList();
+
+                    foreach (var entry in changedEntriesCopy)
+                        entry.State = EntityState.Detached;
+                }
             }
         }
 

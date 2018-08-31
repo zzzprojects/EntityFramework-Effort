@@ -54,7 +54,7 @@ namespace Effort.Internal.DbManagement
         private List<TableName> tableNames;
         private ITypeConverter converter;
         private DbContainerParameters parameters;
-        public bool IsCaseSensitive;
+        public bool IsCaseSensitive = true;
 
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;

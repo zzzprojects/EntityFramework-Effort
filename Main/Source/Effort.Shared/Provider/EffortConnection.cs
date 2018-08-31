@@ -73,7 +73,7 @@ namespace Effort.Provider
                 }
                 else
                 {
-                    throw new Exception("Need a first connection.open() for set value on DbContainer");
+                    throw new Exception("The connection must be open to gets or sets 'IsCaseSensitive' value. Please open the connection first with 'effortConnection.Open()'");
                 }
 
                 return isCaseSensitive;
@@ -86,7 +86,7 @@ namespace Effort.Provider
                 }
                 else
                 {
-                    throw new Exception("Need a first connection.open() for set value on DbContainer");
+                    throw new Exception("The connection must be open to gets or sets 'IsCaseSensitive' value. Please open the connection first with 'effortConnection.Open()'");
                 }
             }
         }

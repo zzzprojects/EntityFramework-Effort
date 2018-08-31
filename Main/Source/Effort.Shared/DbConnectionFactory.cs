@@ -113,7 +113,7 @@ namespace Effort
         /// <returns>
         ///     The <see cref="T:DbConnection"/> object.
         /// </returns>
-        public static DbConnection CreateTransient(IDataLoader dataLoader)
+        public static EffortConnection CreateTransient(IDataLoader dataLoader)
         {
             string instanceId = Guid.NewGuid().ToString();
 
@@ -132,7 +132,7 @@ namespace Effort
         /// <returns>
         ///     The <see cref="T:DbConnection"/> object.
         /// </returns>
-        public static DbConnection CreateTransient()
+        public static EffortConnection CreateTransient()
         {
             return CreateTransient(null);
         }

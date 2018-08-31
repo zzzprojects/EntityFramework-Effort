@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using Effort.Internal.CommandActions;
@@ -59,22 +61,60 @@ namespace Effort.Provider
             this.state = ConnectionState.Closed;
         }
         
-        public void ClearTables()
-        { 
-            if (this.DbContainer != null)
-            { 
-                ActionContext context = new ActionContext(this.DbContainer); 
+        public bool IsCaseSensitive
+        {
+            get
+            {
+                if (this.DbContainer != null)
+                {
+                    return this.DbContainer.IsCaseSensitive;
+                }
+                else
+                {
+                    throw new Exception("The connection must be open to gets or sets 'IsCaseSensitive' value. Please open the connection first with 'effortConnection.Open()'");
+                }
+            }
+            set
+            {
+                if (this.DbContainer != null)
+                {
+                    this.DbContainer.IsCaseSensitive = value;
+                }
+                else
+                {
+                    throw new Exception("The connection must be open to gets or sets 'IsCaseSensitive' value. Please open the connection first with 'effortConnection.Open()'");
+                }
+            }
+        }
 
-                var tables = DbCommandActionHelper.GetAllTables(context.DbContainer).ToList().Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
+#if !EFOLD
+        /// <summary>
+        ///     Clear all tables from the effort connection. You must use a new context instance to clear all tracked entities, otherwise, use the ClearTables(DbContext) overload.
+        /// </summary>
+        public void ClearTables()
+        {
+            ClearTables(null);
+        }
+
+        /// <summary>
+        ///     Clear all tables from the effort connection and ChangeTracker entries.
+        /// </summary>
+        public void ClearTables(DbContext context)
+        {
+            if (this.DbContainer != null)
+            {
+                ActionContext actionContext = new ActionContext(this.DbContainer);
+
+                var tables = DbCommandActionHelper.GetAllTables(actionContext.DbContainer).ToList().Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
 
                 foreach (var table in tables)
                 {
                     foreach (var index in table.Indexes)
-                    { 
+                    {
                         index.Clear();
                     }
 
-                    var _RestoreIdentityField =  table.GetType().GetMethod("RestoreIdentityField",
+                    var _RestoreIdentityField = table.GetType().GetMethod("RestoreIdentityField",
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
                         BindingFlags.FlattenHierarchy);
 
@@ -85,9 +125,19 @@ namespace Effort.Provider
                             BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
                             BindingFlags.FlattenHierarchy, null, null, null);
                     }
-                } 
+                }
+
+                if (context != null)
+                {
+                    var changedEntriesCopy = context.ChangeTracker.Entries()
+                        .ToList();
+
+                    foreach (var entry in changedEntriesCopy)
+                        entry.State = EntityState.Detached;
+                }
             }
         }
+#endif
 
         /// <summary>
         ///     Gets or sets the string used to open the connection.

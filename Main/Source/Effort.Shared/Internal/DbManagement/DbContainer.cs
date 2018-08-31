@@ -54,7 +54,6 @@ namespace Effort.Internal.DbManagement
         private List<TableName> tableNames;
         private ITypeConverter converter;
         private DbContainerParameters parameters;
-
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;
 
@@ -92,6 +91,8 @@ namespace Effort.Internal.DbManagement
         {
             get { return this.transformCache; }
         }
+        
+        public bool IsCaseSensitive { get; set; } = true;
 
         public ITypeConverter TypeConverter
         {

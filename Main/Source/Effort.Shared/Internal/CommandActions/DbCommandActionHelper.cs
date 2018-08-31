@@ -121,7 +121,7 @@ namespace Effort.Internal.CommandActions
             DbContainer container, 
             out ITable table)
         {
-            TransformVisitor visitor = new TransformVisitor(container.TypeConverter);
+            TransformVisitor visitor = new TransformVisitor(container);
             visitor.TableProvider = container;
 
             // Get the source expression

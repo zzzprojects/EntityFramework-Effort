@@ -88,12 +88,17 @@ namespace Effort.Provider
         }
 
 #if !EFOLD
+        /// <summary>
+        ///     Clear all tables from the effort connection. You must use a new context instance to clear all tracked entities, otherwise, use the ClearTables(DbContext) overload.
+        /// </summary>
         public void ClearTables()
         {
             ClearTables(null);
         }
 
-        // clear ChangeTracker for global context never disposed.
+        /// <summary>
+        ///     Clear all tables from the effort connection and ChangeTracker entries.
+        /// </summary>
         public void ClearTables(DbContext context)
         {
             if (this.DbContainer != null)

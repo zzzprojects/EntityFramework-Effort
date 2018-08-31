@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // <copyright file="StringFieldFixture.cs" company="Effort Team">
 //     Copyright (C) Effort Team
 //
@@ -22,6 +22,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System;
+using System.Data.Common;
+using Effort.Provider;
+
 namespace Effort.Test.Features
 {
     using System.Data.Entity;
@@ -33,15 +37,23 @@ namespace Effort.Test.Features
     public class StringFieldFixture
     {
         private FeatureDbContext context;
+        public EffortConnection connection;
+
 
         [SetUp]
         public void Initialize()
         {
-            this.context =
-                new FeatureDbContext(
-                    Effort.DbConnectionFactory.CreateTransient(),
-                    CompiledModels.GetModel<
-                        StringFieldEntity>());
+            if (connection == null)
+            { 
+                connection = Effort.DbConnectionFactory.CreateTransient();
+                this.context =
+                    new FeatureDbContext(
+                        connection,
+                        CompiledModels.GetModel<
+                            StringFieldEntity>());
+
+                this.context.Database.CreateIfNotExists();
+            }
         }
 
         protected IDbSet<StringFieldEntity> Entities
@@ -51,12 +63,14 @@ namespace Effort.Test.Features
 
         protected void Add(params string[] values)
         {
+            this.connection.ClearTables(this.context);
             foreach (var value in values)
             {
                 this.Entities.Add(new StringFieldEntity { Value = value });
-            }
+            } 
 
             this.context.SaveChanges();
+ 
         }
 
         [Test]
@@ -122,13 +136,21 @@ namespace Effort.Test.Features
         [Test]
         public void String_GreaterThanOrEquals()
         {
-            this.Add("Indie", "Imp", "Huge");
+            try
+            {
+                this.connection.IsCaseSensitive = true;
+                this.Add("Indie", "Imp", "Huge");
 
-            var res = this.Entities
-                .Where(x => x.Value.CompareTo("I") >= 0)
-                .Count();
+                var res = this.Entities
+                    .Where(x => x.Value.CompareTo("I") >= 0)
+                    .Count();
 
-            Assert.AreEqual(2, res);
+                Assert.AreEqual(2, res);
+            }
+            finally
+            {
+                this.connection.IsCaseSensitive = true; 
+            }
         }
 
         [Test]
@@ -166,17 +188,159 @@ namespace Effort.Test.Features
 
             Assert.AreEqual(2, res);
         }
+         
+
 
         [Test]
-        public void String_CompareNull2()
+        public void String_EqualsSensitiveCase()
         {
-            this.Add("Indie", "Imp", null);
+            try
+            {
+                this.connection.IsCaseSensitive = false;
+                this.Add("john2", "DOE2");
+
+                var res = this.Entities
+                    .Where(x => x.Value == "John2").ToList();
+
+                Assert.AreEqual(1, res.Count);
+                Assert.AreEqual("john2", res.FirstOrDefault().Value);
+
+                 
+
+                var res2 = this.Entities
+                    .Where(x => x.Value == "doe2").ToList();
+
+                Assert.AreEqual(1, res2.Count);
+                Assert.AreEqual("DOE2", res2.FirstOrDefault().Value);
+            }
+            finally
+            {
+                this.connection.IsCaseSensitive = true;
+            }
+        }
+
+        [Test]
+        public void String_EqualsSensitiveCase2()
+        {
+            try
+            {
+                this.connection.IsCaseSensitive = false;
+                this.Add("John", null, null);
+
+                var res = this.Entities
+                    .Where(x => x.Value == null)
+                    .Count();
+
+                Assert.AreEqual(2, res);
+            }
+            finally
+            {
+                this.connection.IsCaseSensitive = true;
+            }
+        }
+
+        [Test]
+        public void String_NotEqualsSensitiveCase()
+        {
+            try
+            {
+                this.connection.IsCaseSensitive = false;
+                this.Add("John", "Doe", "John");
+
+                var res = this.Entities
+                    .Where(x => x.Value != "John")
+                    .Count();
+
+                Assert.AreEqual(1, res);
+            }
+            finally
+            {
+                this.connection.IsCaseSensitive = true;
+            }
+        }
+
+        [Test]
+        public void String_NotEqualsSensitiveCaseNull()
+        {
+            try
+            {
+                this.connection.IsCaseSensitive = false;
+                this.Add("John", "Doe", null);
+
+                var res = this.Entities
+                    .Where(x => x.Value != null)
+                    .Count();
+
+                Assert.AreEqual(2, res);
+            }
+            finally
+            {
+                this.connection.IsCaseSensitive = true;
+            }
+        }
+
+        [Test]
+        public void String_GreaterThanSensitiveCase()
+        {
+            try
+            {
+                this.connection.IsCaseSensitive = false;
+                this.Add("Indie", "Imp", "Huge");
+
+                var res = this.Entities
+                    .Where(x => x.Value.CompareTo("Imp") > 0)
+                    .Count();
+
+                Assert.AreEqual(1, res);
+            }
+            finally
+            {
+                this.connection.IsCaseSensitive = true;
+            }
+        }
+
+        [Test]
+        public void String_GreaterThanOrEqualsSensitiveCase()
+        {
+            try
+            {
+                this.connection.IsCaseSensitive = false;
+                this.Add("Indie", "Imp", "Huge");
+
+                var res = this.Entities
+                    .Where(x => x.Value.CompareTo("I") >= 0)
+                    .Count();
+
+                Assert.AreEqual(2, res);
+            }
+            finally
+            {
+                this.connection.IsCaseSensitive = true;
+            }
+        }
+
+        [Test]
+        public void String_LessThanSensitiveCase()
+        {
+            this.Add("Indie", "Imp", "Huge");
 
             var res = this.Entities
-                .Where(x => ((string)null).CompareTo(x.Value) == -1)
+                .Where(x => x.Value.CompareTo("Imp") < 0)
+                .Count();
+
+            Assert.AreEqual(1, res);
+        }
+
+        [Test]
+        public void String_LessThanOrEqualsSensitiveCase()
+        {
+            this.Add("Indie", "Imp", "Huge");
+
+            var res = this.Entities
+                .Where(x => x.Value.CompareTo("Imp") <= 0)
                 .Count();
 
             Assert.AreEqual(2, res);
-        }
+        } 
     }
 }

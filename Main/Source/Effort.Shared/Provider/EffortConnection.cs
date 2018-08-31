@@ -59,6 +59,30 @@ namespace Effort.Provider
             this.state = ConnectionState.Closed;
         }
         
+         public bool? IsCaseSensitive
+        {
+            get
+            {
+                if (this.DbContainer != null)
+                {
+                    return this.DbContainer.IsCaseSensitive;
+                }
+
+                return null; 
+            }
+            set
+            {
+                if (this.DbContainer != null)
+                {
+                    this.DbContainer.IsCaseSensitive = value;
+                }
+                else
+                {
+                    throw new Exception("Need a first connection.open() for set value on DbContainer");
+                }
+            }
+        }
+        
         public void ClearTables()
         { 
             if (this.DbContainer != null)

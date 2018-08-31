@@ -130,7 +130,7 @@ namespace Effort.Provider
                 if (context != null)
                 {
                     var changedEntriesCopy = context.ChangeTracker.Entries().ToList();
-                    changedEntriesCopy.ForEach(x => x.State = EntityState.Deleted);
+                    changedEntriesCopy.ForEach(x => x.State = EntityState.Detached);
                 }
             }
         }

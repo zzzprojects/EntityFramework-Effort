@@ -56,6 +56,7 @@ namespace Effort.Internal.DbManagement
         private DbContainerParameters parameters;
         private ILogger logger;
         private ConcurrentDictionary<string, IStoredProcedure> transformCache;
+        private bool isCaseSensitive = true;
 
         public DbContainer(DbContainerParameters parameters)
         {
@@ -91,8 +92,12 @@ namespace Effort.Internal.DbManagement
         {
             get { return this.transformCache; }
         }
-        
-        public bool IsCaseSensitive { get; set; } = true;
+
+        public bool IsCaseSensitive
+        {
+            get { return isCaseSensitive; }
+            set { isCaseSensitive = value; }
+        }
 
         public ITypeConverter TypeConverter
         {

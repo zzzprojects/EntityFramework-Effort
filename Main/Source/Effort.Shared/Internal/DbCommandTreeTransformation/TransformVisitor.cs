@@ -26,6 +26,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
     using System.Collections.Generic;
+    using Effort.Internal.DbManagement;
 #if !EFOLD
     using System.Data.Entity.Core.Common.CommandTrees;
     using System.Data.Entity.Core.Metadata.Edm;
@@ -55,10 +56,12 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private EdmTypeConverter edmTypeConverter;
 
         private VariableCollection currentVariables;
+        private DbContainer container;
 
-        public TransformVisitor(ITypeConverter converter)
+        public TransformVisitor(DbContainer container)
         {
-            this.converter = converter;
+            this.container = container;
+            this.converter = container.TypeConverter;
             this.edmTypeConverter = new EdmTypeConverter(converter);
 
             this.queryMethodExpressionBuilder = new LinqMethodExpressionBuilder();

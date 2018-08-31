@@ -90,7 +90,8 @@ namespace Effort.Provider
                 }
             }
         }
-        
+
+#if !EFOLD
         public void ClearTables()
         {
             ClearTables(null);
@@ -135,6 +136,7 @@ namespace Effort.Provider
                 }
             }
         }
+#endif
 
         /// <summary>
         ///     Gets or sets the string used to open the connection.

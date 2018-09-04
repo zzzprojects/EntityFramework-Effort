@@ -117,6 +117,7 @@ namespace Effort.Internal.DbManagement.Schema
             this.constraintFactories.Add(constraintFactory);
         }
 
+        // strictOrder never in true, just for keep info.
         public IKeyInfo FindKey(MemberInfo[] members, bool strictOrder, bool unique)
         {
             if (!strictOrder)

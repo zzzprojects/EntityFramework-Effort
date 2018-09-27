@@ -123,7 +123,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
             if (keyInfo == null)
             {
-                keyInfo = KeyInfoHelper.CreateKeyInfo(tableBuilder.EntityType, members);
+                keyInfo = KeyInfoHelper.CreateKeyInfo(tableBuilder.EntityType, members.OrderBy(m => m.Name).ToArray());
                 tableBuilder.AddKey(keyInfo, unique);
             }
 

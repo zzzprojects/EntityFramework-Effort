@@ -27,6 +27,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using Effort.Internal.CommandActions;
+using Effort.Shared.Provider;
+using Effort.Internal.CommandActions;
 
 namespace Effort.Provider
 {

@@ -290,6 +290,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Provider\EffortTransaction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Provider\EffortVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Provider\IDbManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Provider\Snapshot.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EffortProviderManifest.xml">

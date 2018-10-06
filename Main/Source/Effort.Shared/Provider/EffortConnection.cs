@@ -23,10 +23,12 @@
 // --------------------------------------------------------------------------------------------
 
 
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using Effort.Internal.CommandActions;
+using Effort.Shared.Provider;
 
 namespace Effort.Provider
 {
@@ -51,6 +53,7 @@ namespace Effort.Provider
         private Guid identifier;
         private ConnectionState state;
         private bool isPrimaryTransient;
+        public Snapshot Snapshot;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
@@ -88,19 +91,76 @@ namespace Effort.Provider
         }
 
 #if !EFOLD
+         /// <summary>
+        ///    Take Snapshot about Table on Effort.
+        /// </summary>
+        public void TakeSnapshot()
+        {
+            this.Snapshot = new Snapshot();
+
+            if (this.DbContainer != null)
+            {
+                ActionContext actionContext = new ActionContext(this.DbContainer);
+
+                var tables = DbCommandActionHelper.GetAllTables(actionContext.DbContainer).ToList()
+                    .Where(x => !x.EntityType.Name.Contains("_____MigrationHistory")).ToList();
+
+                foreach (var table in tables)
+                {
+                    foreach (var index in table.Indexes)
+                    {
+                        var dynamicIndex = (dynamic) index;
+                        var uniqueDataStructure = dynamicIndex.uniqueDataStructure;
+                        var entities = uniqueDataStructure.inner.Values;
+                        var list = new List<object>();
+
+                        foreach (var entity in entities)
+                        {
+                            list.Add(entity);
+                        }
+                         
+                        // TODO : when many index that take number of index * entity != good ==> that throw Error, because Key is Table.
+                        this.Snapshot.AllIndex.Add(table, list);
+                    }
+                }
+            }
+        }
+		
+		/// <summary>
+        ///    Use Snapshot about Table on Effort.
+        /// </summary>
+        public bool UseSnapshot()
+        {
+            if (this.Snapshot != null)
+            {
+                // note : that use the seed IdentityField normal logic.
+                this.Snapshot.UseSnapshot();
+
+                return true;
+            }
+
+            return false;
+        }
+        
+                
         /// <summary>
         ///     Clear all tables from the effort connection. You must use a new context instance to clear all tracked entities, otherwise, use the ClearTables(DbContext) overload.
         /// </summary>
-        public void ClearTables()
+        public void ClearTables(bool takeSnapshot = false)
         {
-            ClearTables(null);
+            ClearTables(null, takeSnapshot);
         }
 
         /// <summary>
         ///     Clear all tables from the effort connection and ChangeTracker entries.
         /// </summary>
-        public void ClearTables(DbContext context)
+        public void ClearTables(DbContext context, bool takeSnapshot = false)
         {
+            if (takeSnapshot)
+            {
+                TakeSnapshot();
+            }
+            
             if (this.DbContainer != null)
             {
                 ActionContext actionContext = new ActionContext(this.DbContainer);
@@ -134,6 +194,7 @@ namespace Effort.Provider
                 }
             }
         }
+        
 #endif
 
         /// <summary>

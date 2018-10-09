@@ -188,7 +188,8 @@ namespace Effort.Internal.DbManagement
                     tableInfo.EntityType,
                     (IKeyInfo)tableInfo.PrimaryKeyInfo,
                     tableInfo.IdentityField,
-                    tableInfo.ConstraintFactories);
+                    tableInfo.ConstraintFactories,
+                    tableInfo);
 
                 tables.Add(tableInfo.TableName, table);
                 tableNames.Add(tableInfo.TableName);

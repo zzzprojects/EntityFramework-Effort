@@ -93,9 +93,9 @@ namespace Effort.Provider
 
 #if !EFOLD 
         /// <summary>
-        ///   NEED TEXT ==> return DbTableInfo
+        ///   Get the Effort TableInfo
         /// </summary> 
-        public DbTableInfo GetEffortProperties(string schema, string name)
+        public DbTableInfo GetTableInfo(string schema, string name)
         {
             DbTableInfo TableInfo = null;
 

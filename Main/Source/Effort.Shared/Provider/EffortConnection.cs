@@ -108,7 +108,7 @@ namespace Effort.Provider
 
                 if (_TableInfo != null)
                 {
-                    TableInfo = (DbTableInfo)_TableInfo.GetValue(table);
+                    TableInfo = (DbTableInfo)_TableInfo.GetValue(table, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, null, null);
                 }
             }
 

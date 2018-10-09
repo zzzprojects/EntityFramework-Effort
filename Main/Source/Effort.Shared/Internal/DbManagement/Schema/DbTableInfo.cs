@@ -32,7 +32,7 @@ namespace Effort.Internal.DbManagement.Schema
     using Effort.Internal.Common;
     using NMemory.Indexes;
 
-    internal class DbTableInfo
+    public class DbTableInfo
     {
         private FastLazy<Func<object[], object>> initializer;
 

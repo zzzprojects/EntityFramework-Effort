@@ -95,7 +95,7 @@ namespace Effort.Provider
         /// <summary>
         ///   NEED TEXT ==> return DbTableInfo
         /// </summary> 
-        public object GetEffortProperties(string schema, string name)
+        public DbTableInfo GetEffortProperties(string schema, string name)
         {
             DbTableInfo TableInfo = null;
 

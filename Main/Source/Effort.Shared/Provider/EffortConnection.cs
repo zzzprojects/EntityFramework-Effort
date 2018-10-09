@@ -27,7 +27,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using Effort.Internal.CommandActions;
+using Effort.Internal.CommandActions; 
+using Effort.Internal.DbManagement.Schema;
 using Effort.Shared.Provider;
 
 namespace Effort.Provider

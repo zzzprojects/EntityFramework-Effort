@@ -34,13 +34,13 @@ namespace Effort.Internal.DbManagement.Engine
         public Table<TEntity, TPrimaryKey> CreateTable<TEntity, TPrimaryKey>(
             IKeyInfo<TEntity, TPrimaryKey> primaryKey, 
             IdentitySpecification<TEntity> identitySpecification, 
-            IDatabase database) 
+            IDatabase database, object tableInfo = null) 
             where TEntity : class
         {
             return new ExtendedTable<TEntity, TPrimaryKey>(
                 database,
                 primaryKey,
-                identitySpecification);
+                identitySpecification, tableInfo);
         }
     }
 }

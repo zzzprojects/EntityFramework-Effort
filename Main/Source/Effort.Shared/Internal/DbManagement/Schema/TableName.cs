@@ -26,7 +26,7 @@ using System;
 
 namespace Effort.Internal.DbManagement.Schema
 {
-    internal class TableName : IEquatable<TableName>, IComparable<TableName>
+    public class TableName : IEquatable<TableName>, IComparable<TableName>
     {
         public TableName(string schema, string name)
         {

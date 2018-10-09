@@ -54,7 +54,8 @@ namespace Effort.Internal.Common
             Type entityType,
             IKeyInfo primaryKeyInfo,
             MemberInfo identityField,
-            object[] constraintFactories)
+            object[] constraintFactories,
+            DbTableInfo tableInfo)
         {
             object identity = null;
 
@@ -76,7 +77,8 @@ namespace Effort.Internal.Common
                     database, 
                     primaryKeyInfo, 
                     identity,
-                    constraintFactories });
+                    constraintFactories,
+                    tableInfo});
 
             return table as ITable;
         }

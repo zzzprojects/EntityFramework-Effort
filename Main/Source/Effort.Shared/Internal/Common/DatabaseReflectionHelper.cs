@@ -54,7 +54,8 @@ namespace Effort.Internal.Common
             Type entityType,
             IKeyInfo primaryKeyInfo,
             MemberInfo identityField,
-            object[] constraintFactories)
+            object[] constraintFactories,
+            DbTableInfo tableInfo)
         {
             object identity = null;
 
@@ -76,7 +77,8 @@ namespace Effort.Internal.Common
                     database, 
                     primaryKeyInfo, 
                     identity,
-                    constraintFactories });
+                    constraintFactories,
+                    tableInfo});
 
             return table as ITable;
         }
@@ -298,13 +300,15 @@ namespace Effort.Internal.Common
                 Database database,
                 IKeyInfo<TEntity, TPrimaryKey> primaryKeyInfo,
                 Expression<Func<TEntity, long>> identity, 
-                object[] constraintFactories)
+                object[] constraintFactories,
+                DbTableInfo tableInfo)
 
                 where TEntity : class
             {
                 Table<TEntity, TPrimaryKey> table = database.Tables.Create<TEntity, TPrimaryKey>(
                     primaryKeyInfo,
-                    identity != null ? new IdentitySpecification<TEntity>(identity) : null);
+                    identity != null ? new IdentitySpecification<TEntity>(identity) : null,
+                    tableInfo);
 
                 foreach (var constraintFactory in 
                     constraintFactories.Cast<IConstraintFactory<TEntity>>())

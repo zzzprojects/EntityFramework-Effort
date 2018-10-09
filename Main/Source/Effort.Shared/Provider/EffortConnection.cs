@@ -27,7 +27,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using Effort.Internal.CommandActions;
+using Effort.Internal.CommandActions; 
+using Effort.Internal.DbManagement.Schema;
 using Effort.Shared.Provider;
 
 namespace Effort.Provider
@@ -90,7 +91,31 @@ namespace Effort.Provider
             }
         }
 
-#if !EFOLD
+#if !EFOLD 
+        /// <summary>
+        ///   Get the Effort TableInfo
+        /// </summary> 
+        public DbTableInfo GetTableInfo(string schema, string name)
+        {
+            DbTableInfo TableInfo = null;
+
+            if (this.DbContainer != null)
+            {
+                var table = this.DbContainer.GetTable(new TableName(schema, name));
+
+                var _TableInfo = table.GetType().GetProperty("TableInfo",
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+
+                if (_TableInfo != null)
+                {
+                    TableInfo = (DbTableInfo)_TableInfo.GetValue(table, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, null, null);
+                }
+            }
+
+            return TableInfo;
+        }
+	
+	
          /// <summary>
         ///    Take Snapshot about Table on Effort.
         /// </summary>

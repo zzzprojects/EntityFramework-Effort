@@ -43,8 +43,8 @@ namespace Effort.Internal.DbManagement.Engine
         public ExtendedTable(
             IDatabase database,
             IKeyInfo<TEntity, TPrimaryKey> primaryKey, 
-            IdentitySpecification<TEntity> identity) 
-            : base(database, primaryKey, identity)
+            IdentitySpecification<TEntity> identity, object tableInfo) 
+            : base(database, primaryKey, identity, tableInfo)
         {
         }
 

@@ -16,11 +16,8 @@ namespace Effort.Lab.EF6
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Request_OrderBy.Execute();
-            //test_dataAnoatation.test();
 
-
-            Application.Run(new Form_Request_Identity());
+            Application.Run(new Form_Request_EffortExtra());
         }
     }
 }

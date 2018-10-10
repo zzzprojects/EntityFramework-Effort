@@ -31,14 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Effort.Extra, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Effort.Extra.EF6.1.4.0\lib\net45\Effort.Extra.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="NMemory, Version=2.0.0.0, Culture=neutral, PublicKeyToken=afc61983f100d280, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NMemory.2.0.4\lib\net45\NMemory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -60,6 +60,12 @@
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Request_EffortExtra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_EffortExtra.Designer.cs">
+      <DependentUpon>Form_Request_EffortExtra.cs</DependentUpon>
     </Compile>
     <Compile Include="Form_Request_Identity.cs">
       <SubType>Form</SubType>
@@ -121,6 +127,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\nmemory\Main\Source\NMemory.Net45\NMemory.Net45.csproj">
+      <Project>{d90524e5-abe4-41e6-a7af-5148754bb5a6}</Project>
+      <Name>NMemory.Net45</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effort.EF6.Net45\Effort.EF6.Net45.csproj">
       <Project>{810b876c-4c73-4f0b-9fff-019fe4f30182}</Project>
       <Name>Effort.EF6.Net45</Name>

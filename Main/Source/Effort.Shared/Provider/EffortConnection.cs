@@ -23,6 +23,7 @@
 // --------------------------------------------------------------------------------------------
 
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -55,7 +56,8 @@ namespace Effort.Provider
         private Guid identifier;
         private ConnectionState state;
         private bool isPrimaryTransient;
-        public Snapshot Snapshot;
+        private EffortRestorePoint RestorePoint;
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
@@ -129,11 +131,11 @@ namespace Effort.Provider
 
 
         /// <summary>
-        ///    Take Snapshot about Table on Effort.
+        ///    Create a restore point of the database
         /// </summary>
-        public void TakeSnapshot()
+        public void CreateRestorePoint()
         {
-            this.Snapshot = new Snapshot();
+            this.RestorePoint = new EffortRestorePoint();
 
             if (this.DbContainer != null)
             {
@@ -146,9 +148,13 @@ namespace Effort.Provider
                 {
                     foreach (var index in table.Indexes)
                     {
-                        var dynamicIndex = (dynamic) index;
-                        var uniqueDataStructure = dynamicIndex.uniqueDataStructure;
-                        var entities = uniqueDataStructure.inner.Values;
+                        var uniqueDataStructureField = index.GetType().GetField("uniqueDataStructure", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        var uniqueDataStructure = uniqueDataStructureField.GetValue(index);
+
+                        var innerField = uniqueDataStructure.GetType().GetField("inner", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        var inner = (IDictionary)innerField.GetValue(uniqueDataStructure);
+
+                        var entities = inner.Values;
                         var list = new List<object>();
 
                         foreach (var entity in entities)
@@ -157,47 +163,54 @@ namespace Effort.Provider
                         }
                          
                         // TODO : when many index that take number of index * entity != good ==> that throw Error, because Key is Table.
-                        this.Snapshot.AllIndex.Add(table, list);
+                        this.RestorePoint.Indexes.Add(table, list);
                     }
                 }
+            }
+
+            else
+            {
+                throw new Exception("The connection must be open to create a restore point. Please open the connection first with 'effortConnection.Open()'");
             }
         }
 		
 		/// <summary>
-        ///    Use Snapshot about Table on Effort.
+        ///    Rollback changes to the latest restore point
         /// </summary>
-        public bool UseSnapshot()
+        public void RollbackToRestorePoint()
         {
-            if (this.Snapshot != null)
-            {
-                // note : that use the seed IdentityField normal logic.
-                this.Snapshot.UseSnapshot();
+            RollbackToRestorePoint(null);
+        }
 
-                return true;
+        /// <summary>
+        ///     Rollback changes to the latest restore point
+        /// </summary>
+        public void RollbackToRestorePoint(DbContext context)
+        {
+            if (this.RestorePoint == null)
+            {
+                throw new Exception("You must create a restore point first");
             }
 
-            return false;
+            ClearTables(context);
+
+            this.RestorePoint.Restore();
         }
-        
-                
+
         /// <summary>
-        ///     Clear all tables from the effort connection. You must use a new context instance to clear all tracked entities, otherwise, use the ClearTables(DbContext) overload.
+        /// Clear all tables from the effort connection. You must use a new context instance to clear all
+        /// tracked entities, otherwise, use the ClearTables(DbContext) overload.
         /// </summary>
-        public void ClearTables(bool takeSnapshot = false)
+        public void ClearTables()
         {
-            ClearTables(null, takeSnapshot);
+            ClearTables(null);
         }
 
         /// <summary>
         ///     Clear all tables from the effort connection and ChangeTracker entries.
         /// </summary>
-        public void ClearTables(DbContext context, bool takeSnapshot = false)
+        public void ClearTables(DbContext context)
         {
-            if (takeSnapshot)
-            {
-                TakeSnapshot();
-            }
-            
             if (this.DbContainer != null)
             {
                 ActionContext actionContext = new ActionContext(this.DbContainer);

@@ -11,7 +11,7 @@ namespace Effort.Lab.EF6
         {
             InitializeComponent();
 
-            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+            var connection = Effort.DbConnectionFactory.CreateTransient();
 
             // CLEAN
             using (var context = new EntityContext(connection))

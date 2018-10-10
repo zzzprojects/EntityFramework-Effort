@@ -5,18 +5,18 @@ using System.Text;
 
 namespace Effort.Shared.Provider
 {
-    public class Snapshot
+    public class EffortRestorePoint
     {
-        public Dictionary<Object, List<Object>> AllIndex { get; set; }
+        public Dictionary<Object, List<Object>> Indexes { get; set; }
 
-        public Snapshot()
+        public EffortRestorePoint()
         {
-            AllIndex = new Dictionary<Object, List<Object>>();
+            Indexes = new Dictionary<Object, List<Object>>();
         }
 
-        public void UseSnapshot()
+        public void Restore()
         {
-            foreach (var Entity in AllIndex)
+            foreach (var Entity in Indexes)
             {
                 var table = Entity.Key;
                 var dynamicTable = (dynamic)table;

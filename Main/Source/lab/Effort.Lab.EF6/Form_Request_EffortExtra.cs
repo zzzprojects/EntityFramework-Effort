@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Effort.Extra;
+using NMemory.Indexes;
 
 namespace Effort.Lab.EF6
 {
@@ -27,8 +29,8 @@ namespace Effort.Lab.EF6
 
             var objectDataLoader = new ObjectDataLoader(data);
 
-            var connection = Effort.DbConnectionFactory.CreateTransient(objectDataLoader);
-    
+            //var connection = Effort.DbConnectionFactory.CreateTransient(objectDataLoader);
+            var connection = Effort.DbConnectionFactory.CreateTransient();
             //// CLEAN
             //using (var context = new EntityContext(connection))
             //{
@@ -69,7 +71,7 @@ namespace Effort.Lab.EF6
             }
 
             public DbSet<EntitySimple> EntitySimples { get; set; }
-
+            public DbSet<AnotherTable> AnotherTables { get; set; }
 
             protected override void OnModelCreating(DbModelBuilder modelBuilder)
             {
@@ -80,6 +82,14 @@ namespace Effort.Lab.EF6
         public class EntitySimple
         {
             public int ID { get; set; }
+            public int ColumnInt { get; set; }
+        }
+
+        public class AnotherTable
+        {
+            public int ID { get; set; }
+
+            [Index]
             public int ColumnInt { get; set; }
         }
     }

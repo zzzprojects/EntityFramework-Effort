@@ -146,25 +146,23 @@ namespace Effort.Provider
 
                 foreach (var table in tables)
                 {
-                    foreach (var index in table.Indexes)
+                    var index = table.PrimaryKeyIndex;
+
+                    var uniqueDataStructureField = index.GetType().GetField("uniqueDataStructure", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    var uniqueDataStructure = uniqueDataStructureField.GetValue(index);
+
+                    var innerField = uniqueDataStructure.GetType().GetField("inner", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    var inner = (IDictionary)innerField.GetValue(uniqueDataStructure);
+
+                    var entities = inner.Values;
+                    var list = new List<object>();
+
+                    foreach (var entity in entities)
                     {
-                        var uniqueDataStructureField = index.GetType().GetField("uniqueDataStructure", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                        var uniqueDataStructure = uniqueDataStructureField.GetValue(index);
-
-                        var innerField = uniqueDataStructure.GetType().GetField("inner", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                        var inner = (IDictionary)innerField.GetValue(uniqueDataStructure);
-
-                        var entities = inner.Values;
-                        var list = new List<object>();
-
-                        foreach (var entity in entities)
-                        {
-                            list.Add(entity);
-                        }
-                         
-                        // TODO : when many index that take number of index * entity != good ==> that throw Error, because Key is Table.
-                        this.RestorePoint.Indexes.Add(table, list);
+                        list.Add(entity);
                     }
+
+                    this.RestorePoint.Indexes.Add(table, list);
                 }
             }
 

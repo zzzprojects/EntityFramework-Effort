@@ -46,7 +46,7 @@ namespace Effort.Lab.EF6
                 context.EntitySimples.Add(new EntitySimple { ColumnInt = 1 });
                 var list = context.EntitySimples.ToList();
                 context.SaveChanges();
-
+                connection.CreateRestorePoint();
 
                 context.EntitySimples.Add(new EntitySimple { ColumnInt = 2 });
                 context.EntitySimples.Add(new EntitySimple { ColumnInt = 3 });

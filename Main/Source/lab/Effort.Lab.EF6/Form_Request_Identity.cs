@@ -48,8 +48,6 @@ namespace Effort.Lab.EF6
                 context.SaveChanges();
                 var list = context.EntitySimples.ToList();
             }
-
-         
         }
 
         public class EntityContext : DbContext

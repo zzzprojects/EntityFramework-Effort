@@ -39,6 +39,7 @@ namespace Effort.Provider
     using Effort.DataLoaders;
     using Effort.Internal.Caching;
     using Effort.Internal.DbManagement;
+    using NMemory.Tables;
 
     /// <summary>
     ///     Represents a virtual connection towards an in-memory fake database.
@@ -91,7 +92,13 @@ namespace Effort.Provider
             }
         }
 
-#if !EFOLD 
+#if !EFOLD
+
+        public ITable GetTable(DbTableInfo tableInfo)
+        {
+            return (ITable)DbContainer.Internal.Tables.FindTable(tableInfo.EntityType);
+        }
+
         /// <summary>
         ///   Get the Effort TableInfo
         /// </summary> 
@@ -114,9 +121,14 @@ namespace Effort.Provider
 
             return TableInfo;
         }
-	
-	
-         /// <summary>
+
+        public List<ITable> GetAllTables()
+        {
+            return (List<ITable>)this.DbContainer.GetAllTables();
+        }
+
+
+        /// <summary>
         ///    Take Snapshot about Table on Effort.
         /// </summary>
         public void TakeSnapshot()

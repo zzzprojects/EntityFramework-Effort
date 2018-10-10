@@ -31,14 +31,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Z.Lab.EFClassic", "lab\Z.La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.Lab.EF6", "lab\Effort.Lab.EF6\Effort.Lab.EF6.csproj", "{5D086FDF-2604-413F-8164-0B8FF1C2A522}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nmemory", "nmemory", "{3F5A9B05-4756-46C1-90E6-957C655A4C5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NMemory.Net40", "..\..\..\nmemory\Main\Source\NMemory.Net40\NMemory.Net40.csproj", "{C0567FFE-0D52-4747-AC52-B55C5D85BB57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NMemory.Net45", "..\..\..\nmemory\Main\Source\NMemory.Net45\NMemory.Net45.csproj", "{D90524E5-ABE4-41E6-A7AF-5148754BB5A6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NMemory.NetStandard20", "..\..\..\nmemory\Main\Source\NMemory.NetStandard20\NMemory.NetStandard20.csproj", "{DE111472-1398-4DED-A09E-2BDB9782E637}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NMemory.Shared", "..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.shproj", "{148C0604-D59B-44A5-AAE4-EC17C6067EA7}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{148c0604-d59b-44a5-aae4-ec17c6067ea7}*SharedItemsImports = 13
 		Effort.Shared\Effort.Shared.projitems*{27851ba8-a98d-486f-ac6c-731bf11d5b52}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{779ecf7b-0379-419d-bc4d-286a8ec08f6d}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{810b876c-4c73-4f0b-9fff-019fe4f30182}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{827d4e48-5b82-437d-88dd-edf71e27afad}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{896d3ca3-a5bd-4aac-b384-8488ad59ee87}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{aa6b4a10-01c1-4cc0-8009-4a7c6aa28585}*SharedItemsImports = 4
+		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{c0567ffe-0d52-4747-ac52-b55c5d85bb57}*SharedItemsImports = 4
+		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{d90524e5-abe4-41e6-a7af-5148754bb5a6}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{e52e4eeb-6182-4ca3-82d3-c83aca7308ba}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +103,18 @@ Global
 		{5D086FDF-2604-413F-8164-0B8FF1C2A522}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D086FDF-2604-413F-8164-0B8FF1C2A522}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D086FDF-2604-413F-8164-0B8FF1C2A522}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0567FFE-0D52-4747-AC52-B55C5D85BB57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0567FFE-0D52-4747-AC52-B55C5D85BB57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0567FFE-0D52-4747-AC52-B55C5D85BB57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0567FFE-0D52-4747-AC52-B55C5D85BB57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D90524E5-ABE4-41E6-A7AF-5148754BB5A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D90524E5-ABE4-41E6-A7AF-5148754BB5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D90524E5-ABE4-41E6-A7AF-5148754BB5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D90524E5-ABE4-41E6-A7AF-5148754BB5A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE111472-1398-4DED-A09E-2BDB9782E637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE111472-1398-4DED-A09E-2BDB9782E637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE111472-1398-4DED-A09E-2BDB9782E637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE111472-1398-4DED-A09E-2BDB9782E637}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +124,10 @@ Global
 		{9D798C11-1A11-418F-A88B-7236261A95B3} = {8B6B0FA0-F52C-43D6-8D2B-69C2D49168B3}
 		{3876BF7C-7330-45EA-B867-B66C389A4A68} = {9AE7049D-3CF5-4F0D-AF8E-106913C4078E}
 		{5D086FDF-2604-413F-8164-0B8FF1C2A522} = {9AE7049D-3CF5-4F0D-AF8E-106913C4078E}
+		{C0567FFE-0D52-4747-AC52-B55C5D85BB57} = {3F5A9B05-4756-46C1-90E6-957C655A4C5C}
+		{D90524E5-ABE4-41E6-A7AF-5148754BB5A6} = {3F5A9B05-4756-46C1-90E6-957C655A4C5C}
+		{DE111472-1398-4DED-A09E-2BDB9782E637} = {3F5A9B05-4756-46C1-90E6-957C655A4C5C}
+		{148C0604-D59B-44A5-AAE4-EC17C6067EA7} = {3F5A9B05-4756-46C1-90E6-957C655A4C5C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D1EAEC4-8F9B-4EA3-8DA5-11000ED04600}

@@ -20,10 +20,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="NMemory" Version="2.0.4" />
     <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
     <PackageReference Include="Z.EntityFramework.Classic" Version="7.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\nmemory\Main\Source\NMemory.NetStandard20\NMemory.NetStandard20.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Windows.Forms;
 using Effort;
+using Z.EntityFramework.Classic;
 
 namespace Z.Lab.EFClassic
 {
@@ -13,7 +14,8 @@ namespace Z.Lab.EFClassic
         {
             InitializeComponent();
 
-            var connection = Effort.DbConnectionFactory.CreateTransient();
+            EntityFrameworkManager.ConfigSectionName = "entityFrameworkClassic";
+            var connection = DbConnectionFactory.CreateTransient();
 
             using (var context = new EntityContext(connection))
             {
@@ -25,9 +27,6 @@ namespace Z.Lab.EFClassic
 
                 context.Customers.AddRange(list);
                 context.SaveChanges();
-
-                context.Database.Delete();
-                context.Database.Create();
             }
 
             using (var context = new EntityContext(connection))

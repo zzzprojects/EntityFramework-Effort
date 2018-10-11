@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Effort.Extra;
+using Effort.DataLoaders;
 using NMemory.Indexes;
 
 namespace Effort.Lab.EF6
@@ -21,13 +21,13 @@ namespace Effort.Lab.EF6
         {
             InitializeComponent();
 
-            var data = new ObjectData(TableNamingStrategy.Pluralised);
+            //var data = new Effort.DataLoaders.ObjectData();
 
-            var entitySimples = data.Table<EntitySimple>();
-            entitySimples.Add(new EntitySimple { ID = 1, ColumnInt = -1 });
-            entitySimples.Add(new EntitySimple { ID = 2, ColumnInt = -2 });
+            //var entitySimples = data.Table<EntitySimple>();
+            //entitySimples.Add(new EntitySimple { ID = 1, ColumnInt = -1 });
+            //entitySimples.Add(new EntitySimple { ID = 2, ColumnInt = -2 });
 
-            var objectDataLoader = new ObjectDataLoader(data);
+            //var objectDataLoader = new ObjectDataLoader(data);
 
             //var connection = Effort.DbConnectionFactory.CreateTransient(objectDataLoader);
             var connection = Effort.DbConnectionFactory.CreateTransient();

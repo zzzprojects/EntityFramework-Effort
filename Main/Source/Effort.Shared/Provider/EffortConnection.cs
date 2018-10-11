@@ -222,16 +222,11 @@ namespace Effort.Provider
                         index.Clear();
                     }
 
-                    var _RestoreIdentityField = table.GetType().GetMethod("RestoreIdentityField",
-                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
-                        BindingFlags.FlattenHierarchy);
+                    var _restoreIdentityFieldMethod = table.GetType().GetMethod("RestoreIdentityField", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 
-
-                    if (_RestoreIdentityField != null)
+                    if (_restoreIdentityFieldMethod != null)
                     {
-                        _RestoreIdentityField.Invoke(table,
-                            BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
-                            BindingFlags.FlattenHierarchy, null, null, null);
+                        _restoreIdentityFieldMethod.Invoke(table, new object[0]);
                     }
                 }
 

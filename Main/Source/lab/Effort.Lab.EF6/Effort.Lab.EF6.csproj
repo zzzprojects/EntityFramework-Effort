@@ -50,6 +50,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Z.EntityFramework.Extensions">
+      <HintPath>..\..\..\..\..\..\..\..\..\prod\zEntityFramework\Z.EntityFramework.Extensions\bin\Debug\Z.EntityFramework.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">

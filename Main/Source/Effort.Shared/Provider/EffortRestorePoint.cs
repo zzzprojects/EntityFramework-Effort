@@ -10,11 +10,11 @@ namespace Effort.Shared.Provider
 {
     public class EffortRestorePoint
     {
-        public Dictionary<object, List<object>> Indexes { get; set; }
+        public Dictionary<object, List<object>> Entities { get; set; }
 
         public EffortRestorePoint()
         {
-            Indexes = new Dictionary<object, List<object>>();
+            Entities = new Dictionary<object, List<object>>();
         }
 
         public void AddToIndex(object obj, List<object> entities)
@@ -27,19 +27,18 @@ namespace Effort.Shared.Provider
                 list.Add(itemDeserialized);
             }
 
-            Indexes.Add(obj, list);
+            Entities.Add(obj, list);
         }
 
 
         public void Restore()
         {
-            foreach (var Entity in Indexes)
+            foreach (var entity in Entities)
             {
-                var table = Entity.Key;
-                var dynamicTable = (dynamic)table;
+                var table = entity.Key;
                 var methods = table.GetType().GetMethods().Where(x => x.Name == "Insert").ToList()[0];
 
-                foreach (var item in Entity.Value)
+                foreach (var item in entity.Value)
                 {
                     var obj = ShallowCopy(item);
                     methods.Invoke(table, new[] { obj }); 

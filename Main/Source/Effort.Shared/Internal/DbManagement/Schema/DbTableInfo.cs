@@ -137,8 +137,8 @@ namespace Effort.Internal.DbManagement.Schema
                 string.Format(
                     ExceptionMessages.EntityPropertyAssignFailed,
                     value ?? "[null]",
-                    property.PropertyType,
                     property.Name,
+                    property.PropertyType,
                     TableName);
 
             throw new EffortException(message, exception);

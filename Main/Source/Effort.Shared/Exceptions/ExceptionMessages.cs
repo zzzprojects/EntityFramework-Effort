@@ -82,7 +82,7 @@ namespace Effort.Exceptions
 
         public static readonly string EntityPropertyAssignFailed = 
              "An unhandled exception occurred while trying to assign value '{0}' to Property" +
-             "'{1}' of type '{2}' during entity initialization for table '{3}'";
+             " '{1}' of type '{2}' during entity initialization for table '{3}'";
 
         public static readonly string TableInitializationFailed =
             "Unhandled exception while trying to initialize the content of '{0}' table";

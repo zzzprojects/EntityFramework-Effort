@@ -45,12 +45,7 @@ namespace Effort.Lab.EF6
 
 
             protected override void OnModelCreating(DbModelBuilder modelBuilder)
-            {
-                modelBuilder.Types().Configure(x =>
-                    x.ToTable(GetType().DeclaringType != null
-                        ? GetType().DeclaringType.FullName.Replace(".", "_") + "_" + x.ClrType.Name
-                        : ""));
-
+            { 
                 base.OnModelCreating(modelBuilder);
             }
         }

@@ -162,7 +162,7 @@ namespace Effort.Provider
                         list.Add(entity);
                     }
 
-                    this.RestorePoint.Indexes.Add(table, list);
+                    this.RestorePoint.AddToIndex(table, list);
                 }
             }
 

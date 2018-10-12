@@ -58,6 +58,18 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Issue_DbComparisonExpressionTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Issue_DbComparisonExpressionTime.Designer.cs">
+      <DependentUpon>Form_Issue_DbComparisonExpressionTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Issue_Restore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Issue_Restore.Designer.cs">
+      <DependentUpon>Form_Issue_Restore.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_EffortExtra.cs">
       <SubType>Form</SubType>
     </Compile>

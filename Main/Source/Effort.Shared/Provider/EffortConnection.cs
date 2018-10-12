@@ -135,7 +135,7 @@ namespace Effort.Provider
         /// </summary>
         public void CreateRestorePoint()
         {
-            this.RestorePoint = new EffortRestorePoint();
+            this.RestorePoint = new EffortRestorePoint(this);
 
             if (this.DbContainer != null)
             {
@@ -164,8 +164,7 @@ namespace Effort.Provider
 
                     this.RestorePoint.AddToIndex(table, list);
                 }
-            }
-
+            } 
             else
             {
                 throw new Exception("The connection must be open to create a restore point. Please open the connection first with 'effortConnection.Open()'");
@@ -192,7 +191,7 @@ namespace Effort.Provider
 
             ClearTables(context);
 
-            this.RestorePoint.Restore();
+            this.RestorePoint.Restore(context);
         }
 
         /// <summary>

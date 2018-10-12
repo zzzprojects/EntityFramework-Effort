@@ -54,6 +54,12 @@ namespace Effort.Lab.EF6.Net40
 
             connection.CreateRestorePoint();
 
+            using (var context = new EntityContext(connection))
+            {
+                var list1 = context.AspNetUserss.Include(x => x.User).ToList();
+                var list2 = context.AspNetUserss1.Include(x => x.User).ToList();
+                var list3 = context.AspNetUserss2.Include(x => x.User).Include(x => x.User1).Include(x => x.User2).ToList();
+            }
 
             using (var context = new EntityContext(connection))
             { 
@@ -69,6 +75,22 @@ namespace Effort.Lab.EF6.Net40
                 var list1 = context.AspNetUserss.Include(x => x.User).ToList();
                 var list2 = context.AspNetUserss1.Include(x => x.User).ToList();
                 var list3 = context.AspNetUserss2.Include(x =>x.User).Include(x => x.User1).Include(x => x.User2).ToList();
+            }
+
+            using (var context = new EntityContext(connection))
+            {
+                var list = context.AspNetUserss.Include(x => x.User).ToList();
+                context.AspNetUserss.Add(new AspNetUsers() { Id = "2", UserName = "Test2", User = context.Users.ToList() });
+                context.SaveChanges();
+            }
+
+            connection.RollbackToRestorePoint();
+
+            using (var context = new EntityContext(connection))
+            {
+                var list1 = context.AspNetUserss.Include(x => x.User).ToList();
+                var list2 = context.AspNetUserss1.Include(x => x.User).ToList();
+                var list3 = context.AspNetUserss2.Include(x => x.User).Include(x => x.User1).Include(x => x.User2).ToList();
             }
         }
 

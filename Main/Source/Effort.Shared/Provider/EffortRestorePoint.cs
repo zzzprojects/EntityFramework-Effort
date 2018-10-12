@@ -40,7 +40,8 @@ namespace Effort.Shared.Provider
             {
                 var table = entity.Table;
                 var methods = table.GetType().GetMethods().Where(x => x.Name == "Insert").ToList()[0];
-                methods.Invoke(table, new[] {entity.Entity});
+                var obj = ShallowCopy(entity.Entity);
+                methods.Invoke(table, new[] {obj});
             }
         }
 

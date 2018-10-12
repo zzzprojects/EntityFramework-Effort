@@ -14,10 +14,11 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            new Form_Issue_DbComparisonExpressionTime();
 
-            Application.Run(new Form_Request_EffortExtra());
+            // new Form_Test_EFE();
+
+            //   AfterChangeDataAnotation.test();
         }
     }
 }

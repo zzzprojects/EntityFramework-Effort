@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System.Collections.Generic;
@@ -41,11 +43,29 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
             for (int i = expression.When.Count - 1; i >= 0; i--)
             {
+                var ifTrue = this.Visit(expression.Then[i]);
+                var ifFalse = cases.Last();
+
+                if (ifTrue.Type != ifFalse.Type)
+                {
+                    if (ifTrue.Type.IsGenericType
+                        && ifTrue.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
+                        && ifTrue.Type.GetGenericArguments()[0] == ifFalse.Type)
+                    {
+                        ifFalse = Expression.Convert(ifFalse, ifTrue.Type);
+                    }
+                    else if (ifFalse.Type.IsGenericType
+                        && ifFalse.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
+                        && ifFalse.Type.GetGenericArguments()[0] == ifTrue.Type)
+                    {
+                        ifTrue = Expression.Convert(ifTrue, ifFalse.Type);
+                    }
+                }
                 cases.Add(
                     Expression.Condition(
                         this.Visit(expression.When[i]),
-                        this.Visit(expression.Then[i]),
-                        cases.Last()));
+                        ifTrue,
+                        ifFalse));
             }
 
             return cases.Last();

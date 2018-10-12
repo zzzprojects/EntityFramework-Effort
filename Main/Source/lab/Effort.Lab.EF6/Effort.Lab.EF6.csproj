@@ -50,6 +50,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Z.EntityFramework.Extensions">
+      <HintPath>..\..\..\..\..\..\..\..\..\prod\zEntityFramework\Z.EntityFramework.Extensions\bin\Debug\Z.EntityFramework.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">
@@ -57,6 +60,18 @@
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Issue_DbComparisonExpressionTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Issue_DbComparisonExpressionTime.Designer.cs">
+      <DependentUpon>Form_Issue_DbComparisonExpressionTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Issue_Restore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Issue_Restore.Designer.cs">
+      <DependentUpon>Form_Issue_Restore.cs</DependentUpon>
     </Compile>
     <Compile Include="Form_Request_EffortExtra.cs">
       <SubType>Form</SubType>
@@ -87,6 +102,12 @@
     </Compile>
     <Compile Include="Form_Request_TransactionAuxiliary.Designer.cs">
       <DependentUpon>Form_Request_TransactionAuxiliary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Test_EFE.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Test_EFE.Designer.cs">
+      <DependentUpon>Form_Test_EFE.cs</DependentUpon>
     </Compile>
     <Compile Include="My.cs" />
     <Compile Include="Program.cs" />

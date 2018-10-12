@@ -17,7 +17,8 @@ namespace Effort.Lab.EF6
         public static void test()
         {
             AfterChangetestString.Test.testStrings();
-            AfterChangetestNumber.Test.testNumber();
+            AfterChangetestNumber2.Test.testNumber();
+            AfterChangetestNumber.Test.testNumber(); 
             AfterChangetestBit.Test.testBit();
             AfterChangetestBinary.Test.testBinary();
         }
@@ -56,7 +57,7 @@ namespace AfterChangetestString
                 test.Columnstring = "Columnstring";
 
                 context.MyEntities.Add(test);
-                context.SaveChanges();
+                context.BulkSaveChanges();
             }
 
             using (var context = new ExampleModelA(transit))
@@ -142,7 +143,7 @@ namespace AfterChangetestString
     }
 
 }
-namespace AfterChangetestNumber
+namespace AfterChangetestNumber2
 {
 
 
@@ -153,7 +154,7 @@ namespace AfterChangetestNumber
         {
             var transit = DbConnectionFactory.CreateTransient();
             using (var context = new ExampleModelA(transit))
-            {
+            { 
                 MyEntity test = new MyEntity();
 
                 test.Columnnint16 = 5;
@@ -173,7 +174,7 @@ namespace AfterChangetestNumber
 
 
                 context.MyEntities.Add(test);
-                context.SaveChanges();
+                context.BulkSaveChanges();
             }
 
             using (var context = new ExampleModelA(transit))
@@ -230,7 +231,101 @@ namespace AfterChangetestNumber
         [Column("Columnnsmoney", TypeName = "money")]
         public decimal Columnnsmoney { get; set; }
         [Column("Columnnssmallmoney", TypeName = "smallmoney")]
-        public decimal Columnnssmallmoney { get; set; } 
+        public decimal Columnnssmallmoney { get; set; }
+    }
+
+}
+namespace AfterChangetestNumber
+{
+
+
+    public class Test
+    {
+
+        public static void testNumber()
+        {
+            var transit = DbConnectionFactory.CreateTransient();
+            using (var context = new ExampleModelA(transit))
+            {
+               
+
+                MyEntity test = new MyEntity();
+
+                //test.Columnnint16 = 5;
+              //  test.Columnnsmallint = 5;
+             //   test.Columnnint32 = 5;
+                //test.Columnnint = 5;
+                //test.Columnnint64 = 5;
+                //test.Columnnbigint = 5;
+                //test.Columnndouble = 5;
+                //test.Columnnfloat = 5;
+                //test.Columnnsingle = 5;
+                //test.Columnndecimal = 5;
+                //test.Columnnsnumeric = 5;
+                //test.Columnnsmoney = 5;
+              //  test.Columnnssmallmoney = 5;
+                //test.Columnnreal = 5;
+
+
+                context.MyEntities.Add(test);
+                context.BulkSaveChanges();
+            }
+
+            using (var context = new ExampleModelA(transit))
+            {
+                var find1 = context.MyEntities.FirstOrDefault();
+            }
+        }
+    }
+
+    public class ExampleModelA : DbContext
+    {
+
+
+        public ExampleModelA(DbConnection dbConnection) : base(dbConnection, true)
+        {
+
+        }
+
+        // Add a DbSet for each entity type that you want to include in your model. For more information 
+        // on configuring and using a Code First model, see http://go.microsoft.com/fwlink/?LinkId=390109.
+
+        public virtual DbSet<MyEntity> MyEntities { get; set; }
+    }
+
+    public class MyEntity
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        //[Column("Columnnint16", TypeName = "int16")]
+        //public Int16 Columnnint16 { get; set; }
+     //   [Column("Columnnsmallint", TypeName = "smallint")]
+      //  public Int16 Columnnsmallint { get; set; }
+        //[Column("Columnnint32", TypeName = "int32")]
+        //public int Columnnint32 { get; set; }
+        //[Column("Columnnint", TypeName = "int")]
+        //public int Columnnint { get; set; }
+        //[Column("Columnnint64", TypeName = "int64")]
+        //public Int64 Columnnint64 { get; set; }
+        //[Column("Columnnbigint", TypeName = "bigint")]
+        //public Int64 Columnnbigint { get; set; }
+        //[Column("Columnndouble", TypeName = "double")]
+        //public double Columnndouble { get; set; }
+        //[Column("Columnnfloat", TypeName = "float")]
+        //public double Columnnfloat { get; set; }
+        //[Column("Columnnsingle", TypeName = "single")]
+        //public Single Columnnsingle { get; set; }
+        //[Column("Columnnreal", TypeName = "real")]
+        //public Single Columnnreal { get; set; }
+        //[Column("Columnnsdecimal", TypeName = "decimal")]
+        //public decimal Columnndecimal { get; set; }
+        //[Column("Columnnsnumeric", TypeName = "numeric")]
+        //public decimal Columnnsnumeric { get; set; }
+        //[Column("Columnnsmoney", TypeName = "money")]
+        //public decimal Columnnsmoney { get; set; }
+        //[Column("Columnnssmallmoney", TypeName = "smallmoney")]
+        //public decimal Columnnssmallmoney { get; set; } 
     }
 
 }
@@ -263,6 +358,31 @@ namespace AfterChangetestBit
             }
 
             using (var context = new ExampleModelA(transit))
+            {
+                var find1 = context.MyEntities.FirstOrDefault();
+            }
+
+            var transit2 = DbConnectionFactory.CreateTransient();
+            using (var context = new ExampleModelA(transit2))
+            {
+                MyEntity test = new MyEntity();
+
+
+
+                test.Columnnboolean = false;
+                test.Columnnsbit = false;
+                test.Columnnuniqueidentifier = Guid.NewGuid();
+                test.Columnnuniqueiguid = Guid.NewGuid();
+                test.Columnnbyte = Byte.MaxValue;
+                test.Columnnstinyint = Byte.MinValue;
+                test.Columnnsbyte = SByte.MinValue;
+
+                context.MyEntities.Add(test);
+               
+                context.BulkSaveChanges();
+            }
+
+            using (var context = new ExampleModelA(transit2))
             {
                 var find1 = context.MyEntities.FirstOrDefault();
             }
@@ -329,7 +449,7 @@ namespace AfterChangetestBinary
                 test.binary2 = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }; // valeur mit dedans, mais très mal indiquer 
                 test.binary_varbinary = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }; // valeur mit dedans, mais très mal indiquer 
                 context.MyEntities.Add(test);
-                context.SaveChanges();
+                context.BulkSaveChanges();
             }
 
             using (var context = new ExampleModelA(transit))

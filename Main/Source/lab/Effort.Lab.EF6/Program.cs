@@ -17,7 +17,7 @@ namespace Effort.Lab.EF6
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(new Form_Issue_Restore());
+            Application.Run(new Form_Issue_DbComparisonExpressionTime());
         }
     }
 }

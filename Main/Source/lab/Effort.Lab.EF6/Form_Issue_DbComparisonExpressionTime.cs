@@ -30,7 +30,7 @@ namespace Effort.Lab.EF6
             using (var context = new EntityContext(connection))
             {
                 context.EntitySimples.Add(new EntitySimple { ColumnInt = 1, StarDateTime = new DateTime(2010,01,01), EndDateTime = new DateTime(2020, 01, 01) });
-                context.EntitySimples.Add(new EntitySimple { ColumnInt = 2, StarDateTime = new DateTime(2010, 01, 01), EndDateTime = new DateTime(2020, 01, 01) } );
+                context.EntitySimples.Add(new EntitySimple { ColumnInt = 2, StarDateTime = new DateTime(2010, 01, 01) } );
                 context.EntitySimples.Add(new EntitySimple { ColumnInt = 3, StarDateTime = new DateTime(2010, 01, 01), EndDateTime = new DateTime(2020, 01, 01) } );
                 context.SaveChanges();
             }
@@ -38,23 +38,27 @@ namespace Effort.Lab.EF6
             // TEST
             using (var context = new EntityContext(connection))
             {
-                //var anyResult1 = context.EntitySimples
-                //    .AsQueryable()
-                //    .Select(t => new { t.StartDate, EndDate = t.EndDate ?? new DateTime(9999, 12, 31) })
-                //    .Any(t => t.StartDate >= t.EndDate);
+                var anyResult1 = context.EntitySimples
+                    .AsQueryable()
+                    .Select(t => new { t.StarDateTime, EndDate = t.EndDateTime ?? new DateTime(9999, 12, 31) })
+                    .Any(t => t.StarDateTime >= t.EndDate);
 
-                //var maxDate = new DateTime(9999, 12, 31);
+                DateTime maxDate = new DateTime(9999, 12, 31);
 
-                //var anyResult2 = context.EntitySimples
-                //    .AsQueryable()
-                //    .Select(t => new { t.StartDate, EndDate = t.EndDate ?? maxDate })
-                //    .Any(t => t.StartDate >= t.EndDate);
+                var anyResult2 = context.EntitySimples
+                    .AsQueryable()
+                    .Select(t => new { t.StarDateTime, EndDate = t.EndDateTime ?? maxDate })
+                    .Any(t => t.StarDateTime >= t.EndDate);
             }
         }
 
         public class EntityContext : DbContext
         {
             public EntityContext(DbConnection connection) : base(connection, true)
+            {
+            }
+
+            public EntityContext() : base("CodeFirstEntities")
             {
             }
 
@@ -72,7 +76,7 @@ namespace Effort.Lab.EF6
             public int ID { get; set; }
             public int ColumnInt { get; set; }
             public DateTime StarDateTime { get; set; }
-            public DateTime EndDateTime { get; set; }
+            public DateTime? EndDateTime { get; set; }
         }
     }
 }

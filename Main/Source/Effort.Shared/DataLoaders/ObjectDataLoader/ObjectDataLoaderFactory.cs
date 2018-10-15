@@ -1,51 +1,74 @@
-﻿
-//namespace Effort.DataLoaders
-//{
-//    using System;
-//    using Effort.DataLoaders;
+﻿using Effort.Internal.DbManagement.Schema;
 
-//    /// <summary>
-//    /// Implementation of <see cref="ITableDataLoaderFactory"/> for <see cref="ObjectData"/>.
-//    /// </summary>
-//    internal class ObjectDataLoaderFactory : ITableDataLoaderFactory
-//    {
-//        private static readonly Type LoaderType = typeof(ObjectTableDataLoader<>);
-//        private readonly ObjectData data;
+#if !EFOLD
+namespace Effort.DataLoaders
+{
+    using System;
+    using Effort.DataLoaders;
 
-//        /// <summary>
-//        /// Initializes a new instance of the <see cref="ObjectDataLoaderFactory"/> class.
-//        /// </summary>
-//        /// <param name="data">The data.</param>
-//        public ObjectDataLoaderFactory(ObjectData data)
-//        {
-//            if (data == null) throw new ArgumentNullException(nameof(data));
-//            this.data = data;
-//        }
+    /// <summary>
+    /// Implementation of <see cref="ITableDataLoaderFactory"/> for <see cref="ObjectData"/>.
+    /// </summary>
+    internal class ObjectDataLoaderFactory : ITableDataLoaderFactory
+    {
+        private static readonly Type LoaderType = typeof(ObjectTableDataLoader<>);
+        private readonly ObjectData data;
 
-//        /// <summary>
-//        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-//        /// </summary>
-//        public void Dispose() { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectDataLoaderFactory"/> class.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        public ObjectDataLoaderFactory(ObjectData data)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            this.data = data;
+        }
 
-//        /// <summary>
-//        /// Creates a data loader for the specified table.
-//        /// </summary>
-//        /// <param name="table">The metadata of the table.</param>
-//        /// <returns>
-//        /// The data loader for the table.
-//        /// </returns>
-//        public ITableDataLoader CreateTableDataLoader(TableDescription table)
-//        {
-//            if (table == null) throw new ArgumentNullException(nameof(table));
-//            if (!data.HasTable(table.Name)) return new EmptyTableDataLoader();
-//            var entityType = data.TableType(table.Name);
-//            var type = LoaderType.MakeGenericType(entityType);
-//            var constructor = type.GetConstructor(new[]
-//            {
-//                typeof (TableDescription), 
-//                typeof (ObjectDataTable<>).MakeGenericType(entityType)
-//            });
-//            return (ITableDataLoader)constructor?.Invoke(new[] { table, data.GetTable(table.Name) });
-//        }
-//    }
-//}
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose() { }
+
+        /// <summary>
+        /// Creates a data loader for the specified table.
+        /// </summary>
+        /// <param name="table">The metadata of the table.</param>
+        /// <returns>
+        /// The data loader for the table.
+        /// </returns>
+        public ITableDataLoader CreateTableDataLoader(TableDescription table, DbTableInfo tableInfo)
+        {
+            if (table == null) throw new ArgumentNullException(nameof(table));
+            if (data.HasTable(table.Name))
+            { 
+                var entityType = data.TableType(table.Name);
+                var type = LoaderType.MakeGenericType(entityType);
+                var constructor = type.GetConstructor(new[]
+                {
+                    typeof (TableDescription),
+                    typeof (ObjectDataTable<>).MakeGenericType(entityType)
+                });
+                return (ITableDataLoader)constructor?.Invoke(new[] { table, data.GetTable(table.Name) });
+            }
+            else
+            {
+                
+                string name = data.FindWithentitySet(tableInfo.EntityInfo.EntitySet);
+                if (name != null && data.HasTable(name))
+                {
+                    var entityType = data.TableType(name);
+                    var type = LoaderType.MakeGenericType(entityType);
+                    var constructor = type.GetConstructor(new[]
+                    {
+                        typeof (TableDescription),
+                        typeof (ObjectDataTable<>).MakeGenericType(entityType)
+                    });
+                    return (ITableDataLoader)constructor?.Invoke(new[] { table, data.GetTable(name) });
+                }
+            }
+
+            return new EmptyTableDataLoader();
+        }
+    }
+}
+#endif

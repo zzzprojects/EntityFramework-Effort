@@ -74,7 +74,7 @@ namespace Effort.DataLoaders
             TableDescription tableDescription = 
                 new TableDescription(table.TableName.Schema, table.TableName.Name, columns);
 
-            ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription);
+            ITableDataLoader loader = loaderFactory.CreateTableDataLoader(tableDescription,table);
 
             // Prefetch require info/object to increase performance
             Func<object[], object> initializer = table.EntityInitializer;

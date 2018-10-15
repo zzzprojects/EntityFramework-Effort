@@ -24,7 +24,7 @@
 
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
-    internal class IndexInfo
+    public class IndexInfo
     {
         public IndexInfo(string name, int order, bool unique)
         {

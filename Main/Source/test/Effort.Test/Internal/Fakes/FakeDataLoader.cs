@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using Effort.Internal.DbManagement.Schema;
+
 namespace Effort.Test.Internal.Fakes
 {
     using Effort.DataLoaders;
@@ -51,7 +53,7 @@ namespace Effort.Test.Internal.Fakes
             return this;
         }
 
-        public ITableDataLoader CreateTableDataLoader(TableDescription table)
+        public ITableDataLoader CreateTableDataLoader(TableDescription table, DbTableInfo tableInfo = null)
         {
             this.CreateTableDataLoaderCallCount++;
             return new FakeTableDataLoader();

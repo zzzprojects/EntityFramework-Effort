@@ -27,7 +27,7 @@ namespace Effort.Internal.TypeConversion
     /// <summary>
     ///     Contains EDM type facet information about a field.
     /// </summary>
-    internal class FacetInfo
+    public class FacetInfo
     {
         /// <summary>
         ///     Gets or sets a value indicating whether the field is nullable.

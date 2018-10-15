@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using Effort.Internal.DbManagement.Schema.Configuration;
+
 namespace Effort.Internal.DbManagement.Schema
 {
     using System;
@@ -44,7 +46,8 @@ namespace Effort.Internal.DbManagement.Schema
             IKeyInfo primaryKeyInfo,
             IKeyInfo[] uniqueKeys,
             IKeyInfo[] foreignKeys,
-            object[] constraintFactories)
+            object[] constraintFactories,
+            EntityInfo entityInfo)
         {
             this.TableName = tableName;
             this.EntityType = entityType;
@@ -54,10 +57,11 @@ namespace Effort.Internal.DbManagement.Schema
             this.PrimaryKeyInfo = primaryKeyInfo;
             this.UniqueKeys = uniqueKeys;
             this.ForeignKeys = foreignKeys;
-
+            this.EntityInfo = entityInfo;
             this.initializer = new FastLazy<Func<object[], object>>(CreateEntityInitializer);
         }
 
+        public EntityInfo EntityInfo { get; set; }
         public TableName TableName { get; private set; }
 
         public Type EntityType { get; private set; }

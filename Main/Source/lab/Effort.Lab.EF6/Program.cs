@@ -14,7 +14,7 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-            new Form_Request_TransactionIssue();
+            new Form_General_Mik();
 
             // new Form_Test_EFE();
 

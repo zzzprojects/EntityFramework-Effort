@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using Effort.Internal.DbManagement.Schema;
+
 namespace Effort.DataLoaders
 {
     /// <summary>
@@ -39,7 +41,7 @@ namespace Effort.DataLoaders
         /// <returns>
         ///     The <see cref="EmptyTableDataLoader" /> instance for the table.
         /// </returns>
-        public ITableDataLoader CreateTableDataLoader(TableDescription table)
+        public ITableDataLoader CreateTableDataLoader(TableDescription table, DbTableInfo tableInfo = null)
         {
             return new EmptyTableDataLoader();
         }

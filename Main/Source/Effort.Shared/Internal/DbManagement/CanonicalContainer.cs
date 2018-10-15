@@ -92,7 +92,8 @@ namespace Effort.Internal.DbManagement
                 yield return new EntityInfo(
                     new Schema.TableName(table.GetSchema(), table.GetTableName()),
                     this.GetProperties(properties, converter),
-                    keyProperties);
+                    keyProperties,
+                    table);
             }
         }
 

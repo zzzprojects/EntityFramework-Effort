@@ -39,6 +39,7 @@ namespace Effort.Internal.DbManagement.Schema
 
         private Type entityType;
         private ILookup<string, PropertyInfo> members;
+        public EntityInfo EntityInfo { get; set; }
 
         public DbTableInfoBuilder()
         {
@@ -170,7 +171,8 @@ namespace Effort.Internal.DbManagement.Schema
                 constraintFactories:    this.constraintFactories.ToArray(),
                 primaryKeyInfo:         this.PrimaryKey,
                 uniqueKeys:             this.uniqueKeys.ToArray(),
-                foreignKeys:            this.otherKeys.ToArray());
+                foreignKeys:            this.otherKeys.ToArray(),
+                entityInfo:             this.EntityInfo);
         }
     }
 }

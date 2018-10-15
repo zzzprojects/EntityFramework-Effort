@@ -30,7 +30,7 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
     using System.Collections.ObjectModel;
     using Effort.Internal.TypeConversion;
 
-    internal class EntityPropertyInfo
+    public class EntityPropertyInfo
     {
         private readonly string name;
         private readonly Type type;

@@ -21,7 +21,11 @@
 //     THE SOFTWARE.
 // </copyright>
 // --------------------------------------------------------------------------------------------
-
+#if EFOLD
+using System.Data.Metadata.Edm;
+#else
+using System.Data.Entity.Core.Metadata.Edm;
+#endif
 namespace Effort.Internal.DbManagement.Schema.Configuration
 {
     using System.Collections.Generic;
@@ -29,16 +33,19 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
     using System.Linq;
     using Effort.Internal.TypeConversion;
 
-    internal class EntityInfo
+    public class EntityInfo
     {
         private readonly ReadOnlyCollection<EntityPropertyInfo> properties;
         private readonly ReadOnlyCollection<EntityPropertyInfo> keyMembers;
         private readonly TableName tableName;
-             
+        public EntitySet EntitySet { get; set; }
+
+
         public EntityInfo(
             TableName tableName,
             IEnumerable<EntityPropertyInfo> properties, 
-            string[] keyMembers)
+            string[] keyMembers,
+            EntitySet entitySet)
         {
             this.tableName = tableName;
             this.properties = properties.ToList().AsReadOnly();
@@ -49,6 +56,8 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
                 .Select(x => lookup[x].Single())
                 .ToList()
                 .AsReadOnly();
+
+            this.EntitySet = entitySet;
         }
 
         public ReadOnlyCollection<EntityPropertyInfo> Properties

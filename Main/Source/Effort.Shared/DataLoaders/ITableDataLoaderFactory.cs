@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using Effort.Internal.DbManagement.Schema;
+
 namespace Effort.DataLoaders
 {
     using System;
@@ -36,6 +38,6 @@ namespace Effort.DataLoaders
         /// </summary>
         /// <param name="table"> The metadata of the table. </param>
         /// <returns> The data loader for the table. </returns>
-        ITableDataLoader CreateTableDataLoader(TableDescription table);
+        ITableDataLoader CreateTableDataLoader(TableDescription table, DbTableInfo tableInfo = null);
     }
 }

@@ -22,6 +22,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using Effort.Internal.DbManagement.Schema;
+
 namespace Effort.DataLoaders
 {
     using System;
@@ -63,7 +65,7 @@ namespace Effort.DataLoaders
         /// <returns>
         ///     The <see cref="CsvTableDataLoader" /> instance for the table.
         /// </returns>
-        public ITableDataLoader CreateTableDataLoader(TableDescription table)
+        public ITableDataLoader CreateTableDataLoader(TableDescription table, DbTableInfo tableInfo = null)
         {
             var options = new List<string>()
             {

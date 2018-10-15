@@ -58,6 +58,8 @@ namespace Effort.Internal.DbManagement.Schema
             {
                 DbTableInfoBuilder tableBuilder = new DbTableInfoBuilder();
 
+                tableBuilder.EntityInfo = entityInfo;
+
                 // Run all configurations
                 tableConfig.Configure(entityInfo, tableBuilder);
 

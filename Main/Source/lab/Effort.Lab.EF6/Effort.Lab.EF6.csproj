@@ -103,6 +103,12 @@
     <Compile Include="Form_Request_TransactionAuxiliary.Designer.cs">
       <DependentUpon>Form_Request_TransactionAuxiliary.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_TransactionIssue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_TransactionIssue.Designer.cs">
+      <DependentUpon>Form_Request_TransactionIssue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Test_EFE.cs">
       <SubType>Form</SubType>
     </Compile>

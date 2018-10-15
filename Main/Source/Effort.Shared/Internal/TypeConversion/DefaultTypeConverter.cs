@@ -73,6 +73,47 @@ namespace Effort.Internal.TypeConversion
             return obj;
         }
 
+        public object ConvertClrObjectReverse(object obj, Type type)
+        {
+   
+            if (type == typeof(NMemory.Data.Binary))
+            {
+                return (byte[])(NMemory.Data.Binary)obj;
+            }
+
+            if (type == typeof(NMemory.Data.Timestamp))
+            {
+                return (byte[])(NMemory.Data.Timestamp)obj;
+            }
+
+            if (type == typeof(byte[]))
+            {
+                if (obj == null)
+                {
+                    return null;
+                }
+
+                Type actualType = obj.GetType();
+
+                if (actualType == typeof(NMemory.Data.Binary))
+                {
+                    return (NMemory.Data.Binary)(byte[])obj;
+                }
+
+                if (actualType == typeof(NMemory.Data.Timestamp))
+                {
+                    return (NMemory.Data.Timestamp)(byte[])obj;
+                }
+            }
+
+            if (obj == null)
+            {
+                return DBNull.Value;
+            }
+
+            return obj;
+        }
+
         public bool TryConvertEdmType(PrimitiveType primitiveType, FacetInfo facets, out Type result)
         {
             result = null;

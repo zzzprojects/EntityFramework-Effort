@@ -90,6 +90,14 @@ namespace Effort.Provider
             return new EffortCommandDefinition(command);
         }
 
+#if !EFOLD
+        // NEED TEXT
+        public void Register()
+        {
+            EffortProviderConfiguration.RegisterDbConfiguration();
+        } 
+#endif
+
         /// <summary>
         ///     When overridden in a derived class, returns an instance of a class that derives 
         ///     from the <see cref="T:System.Data.Common.DbProviderManifest" />.

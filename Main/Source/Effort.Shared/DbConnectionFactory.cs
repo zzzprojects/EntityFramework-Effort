@@ -148,7 +148,9 @@ namespace Effort
         /// <returns> The EffortConnection object. </returns>
         private static EffortConnection Create(string instanceId, IDataLoader dataLoader)
         {
+#if !CLASSIC
             EffortProviderConfiguration.VerifyProvider();
+#endif
 
             EffortConnectionStringBuilder connectionString = 
                 new EffortConnectionStringBuilder();

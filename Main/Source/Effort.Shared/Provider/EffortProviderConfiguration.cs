@@ -69,8 +69,8 @@ namespace Effort.Provider
                     if (!isRegistered)
                     {
                         RegisterProvider(
-                            "Effort Provider", 
-                            ProviderInvariantName, 
+                            "Effort Provider",
+                            ProviderInvariantName,
                             typeof(EffortProviderFactory));
 
 #if !EFOLD
@@ -103,8 +103,8 @@ namespace Effort.Provider
         }
 
         private static void RegisterProvider(
-            string name, 
-            string invariantName, 
+            string name,
+            string invariantName,
             Type factoryType)
         {
             if (string.IsNullOrEmpty(name))
@@ -149,7 +149,7 @@ namespace Effort.Provider
         }
 
 #if !EFOLD
-        private static void RegisterDbConfigurationEventHandler()
+        public static void RegisterDbConfigurationEventHandler()
         {
             try
             {
@@ -162,7 +162,7 @@ namespace Effort.Provider
         }
 
         private static void OnDbConfigurationLoaded(
-            object sender, 
+            object sender,
             DbConfigurationLoadedEventArgs e)
         {
             e.AddDependencyResolver(
@@ -177,6 +177,43 @@ namespace Effort.Provider
                     EffortProviderFactory.Instance),
                 false);
         }
+
+        public static void RegisterDbConfiguration()
+        { 
+            if (!isRegistered)
+            {
+                lock (latch)
+                {
+                    if (!isRegistered)
+                    {
+                        RegisterProvider(
+                            "Effort Provider",
+                            ProviderInvariantName,
+                            typeof(EffortProviderFactory));
+
+
+                        try
+                        {
+                            new SingletonDependencyResolver<DbProviderServices>(
+                                EffortProviderServices.Instance,
+                                ProviderInvariantName);
+
+                            new SingletonDependencyResolver<IProviderInvariantName>(
+                                EffortProviderInvariantName.Instance,
+                                EffortProviderFactory.Instance);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new EffortException(ExceptionMessages.AutomaticRegistrationFailed, ex);
+                        }
+
+                        Thread.MemoryBarrier();
+                        isRegistered = true; 
+                    }
+                }
+            }
+        } 
 #endif
     }
 }

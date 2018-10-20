@@ -1,6 +1,6 @@
 ## Library Powered By
 
-This library is powered by [Entity Framework Extensions](http://entityframework-extensions.net/?z=github&y=entityframework-plus)
+This library is powered by [Entity Framework Extensions](https://entityframework-extensions.net/?z=github&y=entityframework-plus)
 
 <a href="http://entityframework-extensions.net/?z=github&y=entityframework-effort">
 <kbd>
@@ -17,7 +17,7 @@ It is basically an ADO.NET provider that executes all the data operations on a l
 ## Getting Started
  * [Download library](https://github.com/zzzprojects/EntityFramework-Effort/releases)
  * [Install NuGet package](https://github.com/zzzprojects/EntityFramework-Effort/wiki/NuGet-Packages)
- * [News](http://entityframework-effort.net/)
- * [FAQ](http://entityframework-effort.net/faq)
- * [Tutorials](http://entityframework-effort.net/tutorials)
- * [Contribution](http://www.zzzprojects.com/contribute)
+ * [News](https://entityframework-effort.net/)
+ * [FAQ](https://entityframework-effort.net/faq)
+ * [Tutorials](https://entityframework-effort.net/tutorials)
+ * [Contribution](https://zzzprojects.com/contribute)

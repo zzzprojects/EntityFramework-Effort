@@ -1,9 +1,13 @@
-﻿
+﻿// All credits for ObjectDataLoader (Effort.Extra): Chris Rodgers
+// GitHub: https://github.com/christophano
+
 namespace Effort.DataLoaders
 {
     using System;
     using System.Collections.Generic;
+#if !EFOLD
     using System.ComponentModel.DataAnnotations.Schema;
+#endif
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
@@ -73,9 +77,13 @@ namespace Effort.DataLoaders
 
         private static bool MatchColumnAttribute(PropertyInfo property, ColumnDescription column)
         {
+#if EFOLD
+            return false;
+#else
             var columnAttribute = property.GetCustomAttributes(typeof(ColumnAttribute), true).FirstOrDefault();
             if (columnAttribute == null) return false;
             return ((ColumnAttribute)columnAttribute).Name == column.Name;
+#endif
         }
 
         public IEnumerable<object[]> GetData()

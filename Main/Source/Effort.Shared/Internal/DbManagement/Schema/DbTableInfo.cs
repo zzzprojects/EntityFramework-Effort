@@ -32,11 +32,18 @@ namespace Effort.Internal.DbManagement.Schema
     using Effort.Internal.Common;
     using NMemory.Indexes;
 
+#if EFOLD
+    using System.Data.Metadata.Edm;
+#else
+    using System.Data.Entity.Core.Metadata.Edm;
+#endif
+
     public class DbTableInfo
     {
         private FastLazy<Func<object[], object>> initializer;
 
         public DbTableInfo(
+            EntitySet entitySet,
             TableName tableName, 
             Type entityType, 
             MemberInfo identityField,
@@ -46,6 +53,7 @@ namespace Effort.Internal.DbManagement.Schema
             IKeyInfo[] foreignKeys,
             object[] constraintFactories)
         {
+            this.EntitySet = entitySet;
             this.TableName = tableName;
             this.EntityType = entityType;
             this.IdentityField = identityField;
@@ -58,6 +66,7 @@ namespace Effort.Internal.DbManagement.Schema
             this.initializer = new FastLazy<Func<object[], object>>(CreateEntityInitializer);
         }
 
+        public EntitySet EntitySet { get; set; }
         public TableName TableName { get; private set; }
 
         public Type EntityType { get; private set; }

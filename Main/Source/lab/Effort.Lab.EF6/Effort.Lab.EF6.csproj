@@ -61,6 +61,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_General_Mik.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_General_Mik.Designer.cs">
+      <DependentUpon>Form_General_Mik.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Issue_DbComparisonExpressionTime.cs">
       <SubType>Form</SubType>
     </Compile>

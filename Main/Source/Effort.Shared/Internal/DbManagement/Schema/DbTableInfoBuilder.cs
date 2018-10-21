@@ -31,6 +31,12 @@ namespace Effort.Internal.DbManagement.Schema
     using Effort.Internal.DbManagement.Schema.Configuration;
     using NMemory.Indexes;
 
+#if EFOLD
+    using System.Data.Metadata.Edm;
+#else
+    using System.Data.Entity.Core.Metadata.Edm;
+#endif
+
     internal class DbTableInfoBuilder
     {
         private IList<IKeyInfo> uniqueKeys;
@@ -52,6 +58,8 @@ namespace Effort.Internal.DbManagement.Schema
         public MemberInfo IdentityField { get; set; }
 
         public TableName Name { get; set; }
+
+        public EntitySet EntitySet { get; set; }
 
         public Type EntityType 
         {
@@ -163,6 +171,7 @@ namespace Effort.Internal.DbManagement.Schema
         public DbTableInfo Create()
         {
             return new DbTableInfo(
+                entitySet:              this.EntitySet,
                 tableName:              this.Name,
                 entityType:             this.entityType,
                 identityField:          this.IdentityField,

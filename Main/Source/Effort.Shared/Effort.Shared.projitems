@@ -44,7 +44,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataLoaders\ObjectDataLoader\ObjectDataLoaderFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataLoaders\ObjectDataLoader\ObjectDataTable`1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataLoaders\ObjectDataLoader\ObjectTableDataLoader`1.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataLoaders\ObjectDataLoader\TableNamingStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataLoaders\ObjectLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataLoaders\TableDataLoaderBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataLoaders\TableDescription.cs" />

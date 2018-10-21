@@ -1,4 +1,6 @@
-﻿
+﻿// All credits for ObjectDataLoader (Effort.Extra): Chris Rodgers
+// GitHub: https://github.com/christophano
+
 namespace Effort.DataLoaders
 {
     using System;

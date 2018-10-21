@@ -49,6 +49,8 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
 
         public void Configure(EntityInfo entityInfo, DbTableInfoBuilder builder)
         {
+            builder.EntitySet = entityInfo.EntitySet;
+
             foreach (ITableConfiguration configuration in this.members)
             {
                 configuration.Configure(entityInfo, builder);

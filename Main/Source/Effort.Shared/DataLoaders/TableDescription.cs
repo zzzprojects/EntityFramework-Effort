@@ -27,22 +27,30 @@ namespace Effort.DataLoaders
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using Effort.Internal.DbManagement.Schema;
 
     /// <summary>
     ///     Stores the metadata of a table.
     /// </summary>
     public sealed class TableDescription
     {
-        internal TableDescription(string schema, string name, IEnumerable<ColumnDescription> columns)
+        internal TableDescription(DbTableInfo dbTableInfo, string schema, string name, IEnumerable<ColumnDescription> columns)
         {
+            this.TableInfo = dbTableInfo;
             this.Name = name;
             this.Schema = schema;
             this.Columns = columns.ToList().AsReadOnly();
         }
 
-        internal TableDescription(string name, IEnumerable<ColumnDescription> columns) : this(null, name, columns)
+        internal TableDescription(string schema, string name, IEnumerable<ColumnDescription> columns) : this(null, schema, name, columns)
         {
         }
+
+        internal TableDescription(string name, IEnumerable<ColumnDescription> columns) : this(null, null, name, columns)
+        {
+        }
+
+        public DbTableInfo TableInfo { get; set; }
 
         /// <summary>
         ///     Gets the name of the table.

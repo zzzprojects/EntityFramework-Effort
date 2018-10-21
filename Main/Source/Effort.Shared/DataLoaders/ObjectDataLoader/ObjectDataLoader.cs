@@ -1,4 +1,7 @@
-﻿namespace Effort.DataLoaders
+﻿// All credits for ObjectDataLoader (Effort.Extra): Chris Rodgers
+// GitHub: https://github.com/christophano
+
+namespace Effort.DataLoaders
 {
     using System;
     using System.Collections.Concurrent;

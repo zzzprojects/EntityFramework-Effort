@@ -90,6 +90,7 @@ namespace Effort.Internal.DbManagement
                     .ToArray();
 
                 yield return new EntityInfo(
+                    table,
                     new Schema.TableName(table.GetSchema(), table.GetTableName()),
                     this.GetProperties(properties, converter),
                     keyProperties);

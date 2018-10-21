@@ -29,6 +29,12 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
     using System.Linq;
     using Effort.Internal.TypeConversion;
 
+#if EFOLD
+    using System.Data.Metadata.Edm;
+#else
+    using System.Data.Entity.Core.Metadata.Edm;
+#endif
+
     internal class EntityInfo
     {
         private readonly ReadOnlyCollection<EntityPropertyInfo> properties;
@@ -36,10 +42,12 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
         private readonly TableName tableName;
              
         public EntityInfo(
+            EntitySet entitySet,
             TableName tableName,
             IEnumerable<EntityPropertyInfo> properties, 
             string[] keyMembers)
         {
+            this.EntitySet = entitySet;
             this.tableName = tableName;
             this.properties = properties.ToList().AsReadOnly();
 
@@ -66,5 +74,6 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
             get { return this.keyMembers; }
         }
 
+        public EntitySet EntitySet { get; private set; }
     }
 }

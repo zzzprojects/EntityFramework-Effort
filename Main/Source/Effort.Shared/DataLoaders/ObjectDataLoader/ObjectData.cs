@@ -1,10 +1,18 @@
-﻿
+﻿// All credits for ObjectDataLoader (Effort.Extra): Chris Rodgers
+// GitHub: https://github.com/christophano
+
 namespace Effort.DataLoaders
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
+
+#if EFOLD
+    using System.Data.Metadata.Edm;
+#else
+    using System.Data.Entity.Core.Metadata.Edm;
+#endif
 
     /// <summary>
     /// An object used to create and access collections of entities.
@@ -102,6 +110,29 @@ namespace Effort.DataLoaders
             IEnumerable table;
             tables.TryGetValue(tableName, out table);
             return table;
+        }
+
+
+        internal string FindWithEntitySet(EntitySet entitySet)
+        {
+            EntityContainer entityContainer = entitySet.EntityContainer;
+            string name = null;
+            foreach (var table in tables)
+            {
+                try
+                {
+                    if (entitySet == entityContainer.GetEntitySetByName(table.Key, true))
+                    {
+                        name = table.Key;
+                        break;
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                }
+            }
+
+            return name;
         }
     }
 }

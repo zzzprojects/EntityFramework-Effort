@@ -1,4 +1,6 @@
-﻿
+﻿// All credits for ObjectDataLoader (Effort.Extra): Chris Rodgers
+// GitHub: https://github.com/christophano
+
 namespace Effort.DataLoaders
 {
     using System;
@@ -37,15 +39,32 @@ namespace Effort.DataLoaders
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
-            if (!data.HasTable(table.Name)) return new EmptyTableDataLoader();
-            var entityType = data.TableType(table.Name);
-            var type = LoaderType.MakeGenericType(entityType);
-            var constructor = type.GetConstructor(new[]
+            if (data.HasTable(table.Name))
             {
-                typeof (TableDescription),
-                typeof (ObjectDataTable<>).MakeGenericType(entityType)
-            });
-            return (ITableDataLoader)constructor?.Invoke(new[] { table, data.GetTable(table.Name) });
+                var entityType = data.TableType(table.Name);
+                var type = LoaderType.MakeGenericType(entityType);
+                var constructor = type.GetConstructor(new[]
+                {
+                    typeof (TableDescription),
+                    typeof (ObjectDataTable<>).MakeGenericType(entityType)
+                });
+                return (ITableDataLoader)constructor?.Invoke(new[] { table, data.GetTable(table.Name) });
+            }
+
+            string name = data.FindWithEntitySet(table.TableInfo.EntitySet);
+            if (name != null && data.HasTable(name))
+            {
+                var entityType = data.TableType(name);
+                var type = LoaderType.MakeGenericType(entityType);
+                var constructor = type.GetConstructor(new[]
+                {
+                    typeof (TableDescription),
+                    typeof (ObjectDataTable<>).MakeGenericType(entityType)
+                });
+                return (ITableDataLoader)constructor?.Invoke(new[] { table, data.GetTable(name) });
+            }
+
+            return new EmptyTableDataLoader();
         }
     }
 }

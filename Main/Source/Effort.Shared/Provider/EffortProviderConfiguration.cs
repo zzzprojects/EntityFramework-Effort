@@ -149,7 +149,7 @@ namespace Effort.Provider
         }
 
 #if !EFOLD
-        public static void RegisterDbConfigurationEventHandler()
+        internal static void RegisterDbConfigurationEventHandler()
         {
             try
             {

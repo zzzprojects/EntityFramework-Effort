@@ -12,11 +12,11 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Z.EntityFramework.Classic.Effort.xml</DocumentationFile>
-    <DefineConstants>TRACE;CLASSIC</DefineConstants>
+    <DefineConstants>TRACE;EFCLASSIC</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;CLASSIC</DefineConstants>
+    <DefineConstants>TRACE;EFCLASSIC</DefineConstants>
   </PropertyGroup>
 
   <Import Project="..\Effort.Shared\Effort.Shared.projitems" Label="Shared" />

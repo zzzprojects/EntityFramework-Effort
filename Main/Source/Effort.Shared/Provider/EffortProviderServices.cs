@@ -91,7 +91,9 @@ namespace Effort.Provider
         }
 
 #if !EFOLD
-        // NEED TEXT
+        /// <summary>
+        ///     Register the Effort Providers.
+        /// </summary>
         public void Register()
         {
             EffortProviderConfiguration.RegisterDbConfiguration();

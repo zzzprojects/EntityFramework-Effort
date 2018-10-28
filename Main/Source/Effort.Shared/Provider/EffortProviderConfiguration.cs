@@ -178,7 +178,7 @@ namespace Effort.Provider
                 false);
         }
 
-        public static void RegisterDbConfiguration()
+        internal static void RegisterDbConfiguration()
         { 
             if (!isRegistered)
             {

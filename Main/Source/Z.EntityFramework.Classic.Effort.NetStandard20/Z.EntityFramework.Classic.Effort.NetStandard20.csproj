@@ -8,6 +8,7 @@
     <RootNamespace>Z.EntityFramework.Classic.Effort</RootNamespace>
     <Authors>ZZZ Projects</Authors>
     <Version>2.0.0</Version>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -92,7 +92,7 @@ namespace Effort.Provider
 
 #if !EFOLD
         /// <summary>
-        ///     Register the Effort Providers.
+        ///     Register the Effort Provider.
         /// </summary>
         public void Register()
         {

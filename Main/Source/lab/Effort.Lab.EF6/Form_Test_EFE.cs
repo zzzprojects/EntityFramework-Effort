@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
@@ -133,7 +134,9 @@ namespace Effort.Lab.EF6
             {
                 var list = context.TestEFs.ToList();
             }
-        }
+
+			 
+		}
 
         public class EntityContext : DbContext
         {
@@ -157,9 +160,9 @@ namespace Effort.Lab.EF6
             }
 
             public DbSet<EntitySimple> EntitySimples { get; set; }
-
-
-            protected override void OnModelCreating(DbModelBuilder modelBuilder)
+			public DbSet<EntitySimpleName> EntitySimpleName { get; set; }
+			 
+			protected override void OnModelCreating(DbModelBuilder modelBuilder)
             {
                 base.OnModelCreating(modelBuilder);
             }
@@ -187,7 +190,15 @@ namespace Effort.Lab.EF6
             public int ColumnInt { get; set; }
         }
 
-        public class TestEF
+	    public class EntitySimpleName
+	    {
+			[Key]
+		    public string Name { get; set; }
+		    public int ColumnInt { get; set; }
+	    }
+
+
+		public class TestEF
         {
             public int ID { get; set; }
             public int ColumnInt { get; set; }

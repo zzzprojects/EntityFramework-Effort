@@ -50,8 +50,8 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Z.EntityFramework.Extensions, Version=3.16.3.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Z.EntityFramework.Extensions.3.16.3\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
+    <Reference Include="Z.EntityFramework.Extensions, Version=3.16.9.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Z.EntityFramework.Extensions.3.16.9\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +124,7 @@
     <Compile Include="My.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Request_OrderBy.cs" />
+    <Compile Include="Request_StringIndex.cs" />
     <Compile Include="test_dataAnoatationAfterChange.cs" />
     <Compile Include="test_dataAnoatation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

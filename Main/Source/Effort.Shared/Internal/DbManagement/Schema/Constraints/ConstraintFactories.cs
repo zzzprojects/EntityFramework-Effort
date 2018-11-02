@@ -29,8 +29,8 @@ namespace Effort.Internal.DbManagement.Schema.Constraints
     using System.Reflection;
     using Effort.Internal.Common;
     using NMemory.Common;
-
-    internal static class ConstraintFactories
+	 
+	internal static class ConstraintFactories
     {
         public static object NotNull(MemberInfo member)
         {

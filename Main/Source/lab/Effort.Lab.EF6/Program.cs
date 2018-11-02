@@ -14,8 +14,7 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-			Request_StringIndex.Execute();
-				
-		}
+	        new Form_Request_GuidSetIdentityFields();
+        }
     }
 }

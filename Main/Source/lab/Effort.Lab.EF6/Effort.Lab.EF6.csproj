@@ -85,6 +85,12 @@
     <Compile Include="Form_Request_EffortExtra.Designer.cs">
       <DependentUpon>Form_Request_EffortExtra.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_GuidSetIdentityFields.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_GuidSetIdentityFields.Designer.cs">
+      <DependentUpon>Form_Request_GuidSetIdentityFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_Identity.cs">
       <SubType>Form</SubType>
     </Compile>

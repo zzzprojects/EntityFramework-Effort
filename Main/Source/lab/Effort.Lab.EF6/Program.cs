@@ -14,11 +14,8 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-            new Form_Request_EffortExtra();
-
-            // new Form_Test_EFE();
-
-            //   AfterChangeDataAnotation.test();
-        }
+			Request_StringIndex.Execute();
+				
+		}
     }
 }

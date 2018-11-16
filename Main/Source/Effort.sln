@@ -49,6 +49,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.Extra.Tests", "test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.Extra.EF6.Tests", "test\Effort.Extra.EF6.Tests\Effort.Extra.EF6.Tests.csproj", "{D93FD2C5-D490-4AE5-98D3-28CDF3B768D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "..\..\..\..\..\Desktop\PocEffort\UnitTest\UnitTest.csproj", "{045E9C78-6685-46C0-8B54-DFF082B7580B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "..\..\..\..\..\Desktop\PocEffort\Model\Model.csproj", "{DCA5709B-E53C-442D-BDFB-BEA668A30F31}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{148c0604-d59b-44a5-aae4-ec17c6067ea7}*SharedItemsImports = 13
@@ -139,6 +143,14 @@ Global
 		{D93FD2C5-D490-4AE5-98D3-28CDF3B768D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D93FD2C5-D490-4AE5-98D3-28CDF3B768D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D93FD2C5-D490-4AE5-98D3-28CDF3B768D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{045E9C78-6685-46C0-8B54-DFF082B7580B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045E9C78-6685-46C0-8B54-DFF082B7580B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045E9C78-6685-46C0-8B54-DFF082B7580B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045E9C78-6685-46C0-8B54-DFF082B7580B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCA5709B-E53C-442D-BDFB-BEA668A30F31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCA5709B-E53C-442D-BDFB-BEA668A30F31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCA5709B-E53C-442D-BDFB-BEA668A30F31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCA5709B-E53C-442D-BDFB-BEA668A30F31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

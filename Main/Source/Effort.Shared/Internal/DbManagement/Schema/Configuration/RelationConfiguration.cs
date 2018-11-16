@@ -119,11 +119,11 @@ namespace Effort.Internal.DbManagement.Schema.Configuration
             bool unique,
             DbTableInfoBuilder tableBuilder)
         {
-            IKeyInfo keyInfo = tableBuilder.FindKey(members, false, unique);
+            IKeyInfo keyInfo = tableBuilder.FindKey(members, true, unique);
 
             if (keyInfo == null)
             {
-                keyInfo = KeyInfoHelper.CreateKeyInfo(tableBuilder.EntityType, members.OrderBy(m => m.Name).ToArray());
+                keyInfo = KeyInfoHelper.CreateKeyInfo(tableBuilder.EntityType, members);
                 tableBuilder.AddKey(keyInfo, unique);
             }
 

@@ -216,5 +216,14 @@
         <FixedLength DefaultValue="true" Constant="false" />
       </FacetDescriptions>
     </Type>
+    <!-- ORACLE BEGIN -->
+    <Type Name="nvarchar2" PrimitiveTypeKind="String">
+      <FacetDescriptions>
+        <MaxLength Minimum="1" Maximum="4000" DefaultValue="4000" Constant="false" />
+        <Unicode DefaultValue="true" Constant="true" />
+        <FixedLength DefaultValue="false" Constant="true" />
+      </FacetDescriptions>
+    </Type>
+    <!-- ORACLE END -->
   </Types>
 </ProviderManifest>

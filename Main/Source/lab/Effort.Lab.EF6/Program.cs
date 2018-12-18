@@ -14,9 +14,7 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form_Request_ObjectContextFactory());
+			new Form_Request_GuidSetIdentityFields();
         }
     }
 }

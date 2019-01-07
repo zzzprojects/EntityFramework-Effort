@@ -57,12 +57,20 @@ namespace Effort.Provider
         private ConnectionState state;
         private bool isPrimaryTransient;
         private EffortRestorePoint RestorePoint;
+		
+	    private int? _connectionTimeout;
 
+	    public override int ConnectionTimeout => _connectionTimeout ?? base.ConnectionTimeout;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="EffortConnection" /> class.
-        /// </summary>
-        public EffortConnection()
+	    public void SetConnectionTimeout(int value)
+	    {
+		    _connectionTimeout = value;
+	    }
+
+		/// <summary>
+		///     Initializes a new instance of the <see cref="EffortConnection" /> class.
+		/// </summary>
+		public EffortConnection()
         {
             this.identifier = Guid.NewGuid();
             this.state = ConnectionState.Closed;

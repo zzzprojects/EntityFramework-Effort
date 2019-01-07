@@ -24,7 +24,7 @@ namespace Effort.Lab.EF6
 			// SEED
 			using (var context = new EntityContext(connection))
 			{
-				connection.TimeOut = 500000;
+				connection.SetConnectionTimeout(500000); 
 				
 				var list = new List<EntitySimple>();
 				for (int i = 0; i < 1000000; i++)

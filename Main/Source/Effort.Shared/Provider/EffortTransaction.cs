@@ -22,6 +22,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+
 namespace Effort.Provider
 {
     using System;
@@ -67,7 +68,7 @@ namespace Effort.Provider
                 new System.Transactions.TransactionOptions();
 
             options.IsolationLevel = TranslateIsolationLevel(isolationLevel);
-            options.Timeout = new TimeSpan(0, 0, connection.TimeOut ?? connection.ConnectionTimeout);
+            options.Timeout = new TimeSpan(0, 0, connection.ConnectionTimeout);
 
             this.systemTransaction = new System.Transactions.CommittableTransaction(options);
 

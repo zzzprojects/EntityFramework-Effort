@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
 using System.Data.Entity;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Effort.DataLoaders;
-using NMemory.Indexes;
 
 namespace Effort.Lab.EF6
 {
@@ -21,39 +13,30 @@ namespace Effort.Lab.EF6
         {
             InitializeComponent();
 
-            var data = new Effort.DataLoaders.ObjectData();
+            var data = new ObjectData();
 
             var entitySimples = data.Table<EntitySimple>();
-            entitySimples.Add(new EntitySimple { ID = 1, ColumnInt = -1 });
-            entitySimples.Add(new EntitySimple { ID = 2, ColumnInt = -2 });
+            entitySimples.Add(new EntitySimple {ID = 1, ColumnInt = -1});
+            entitySimples.Add(new EntitySimple {ID = 2, ColumnInt = -2});
 
             var objectDataLoader = new ObjectDataLoader(data);
 
-            var connection = Effort.DbConnectionFactory.CreateTransient(objectDataLoader);
-            //var connection = Effort.DbConnectionFactory.CreateTransient();
-            //// CLEAN
-            //using (var context = new EntityContext(connection))
-            //{
-            //    context.EntitySimples.RemoveRange(context.EntitySimples);
-            //    context.SaveChanges();
-            //}
+            var connection = DbConnectionFactory.CreateTransient(objectDataLoader);
 
             // SEED
             using (var context = new EntityContext(connection))
             {
                 context.Database.CreateIfNotExists();
-                connection.CreateRestorePoint();
 
-
-                context.EntitySimples.Add(new EntitySimple { ColumnInt = 1 });
+                context.EntitySimples.Add(new EntitySimple {ColumnInt = 1});
                 var list = context.EntitySimples.ToList();
                 context.SaveChanges();
                 connection.CreateRestorePoint();
 
-                context.EntitySimples.Add(new EntitySimple { ColumnInt = 2 });
-                context.EntitySimples.Add(new EntitySimple { ColumnInt = 3 });
+                context.EntitySimples.Add(new EntitySimple {ColumnInt = 2});
+                context.EntitySimples.Add(new EntitySimple {ColumnInt = 3});
                 context.SaveChanges();
-
+                var list2 = context.EntitySimples.ToList();
                 connection.RollbackToRestorePoint();
             }
 

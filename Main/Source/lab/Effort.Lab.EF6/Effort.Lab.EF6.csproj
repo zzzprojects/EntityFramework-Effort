@@ -137,6 +137,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Request_OrderBy.cs" />
     <Compile Include="Request_StringIndex.cs" />
+    <Compile Include="Request_TimeOut.cs" />
     <Compile Include="test_dataAnoatationAfterChange.cs" />
     <Compile Include="test_dataAnoatation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

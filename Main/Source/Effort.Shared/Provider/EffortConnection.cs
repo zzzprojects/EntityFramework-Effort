@@ -58,6 +58,8 @@ namespace Effort.Provider
         private bool isPrimaryTransient;
         private EffortRestorePoint RestorePoint;
 
+		public int? TimeOut { get; set; }
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortConnection" /> class.

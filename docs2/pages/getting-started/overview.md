@@ -11,8 +11,8 @@ The term **Transient** refers to the lifecycle of the underlying in-memory datab
 
 ## Installing
 
-NuGet (EF6): https://www.nuget.org/packages/Effort.EF6/
-NuGet (EF5): https://www.nuget.org/packages/Effort/
+- NuGet (EF6): https://www.nuget.org/packages/Effort.EF6/
+- NuGet (EF5): https://www.nuget.org/packages/Effort/
 
 To use Effort, you need to create a transient connection and use it for your context:
 

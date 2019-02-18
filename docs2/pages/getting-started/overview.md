@@ -10,7 +10,8 @@ Effort (**E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T*
 The term **Transient** refers to the lifecycle of the underlying in-memory database. 
 
 ## Installing
-NuGet: https://www.nuget.org/packages/Z.EntityFramework.Classic.Effort
+NuGet (EF6): https://www.nuget.org/packages/Effort.EF6/
+NuGet (EF5): https://www.nuget.org/packages/Effort/
 
 To use Effort, you need to create a transient connection and use it for your context:
 

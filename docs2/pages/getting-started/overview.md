@@ -1,51 +1,92 @@
 # Overview
 
-## Definition
-
-**Effort** stands for **E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T**ool. It is a powerful tool that enables a convenient way to create automated tests for Entity Framework based applications.
+## Description
+Effort (**E**ntity **F**ramework **F**ake **O**bjectContext **R**ealization **T**ool) is the official `In Memory` provider for Entity Framework Classic. It creates a fake or mock database that allows you to test the Business Logic Layer (BLL) without worrying about your Data Access Layer (DAL).
 
  - It is basically an ADO.NET provider that executes all the data operations on a lightweight in-process main memory database instead of a traditional external database. 
  - It provides some intuitive helper methods that makes this provider easy to use with ObjectContext or DbContext classes. 
  - A simple addition to existing code might be enough to create data-driven tests that can run without the presence of the external database.
 
-The following code returns all the categories stored in the database. 
-
-{% include template-example.html %} 
-```csharp
-using(NorthwindEntities context = new NorthwindEntities())
-{
-    return context.Categories.ToList();
-}
-```
-
-A simple modification is enough to make Entity Framework use a fake in-memory database.
-
-{% include template-example.html %} 
-```csharp
-using(NorthwindEntities context = Effort.ObjectContextFactory.CreateTransient<NorthwindEntities>())
-{
-    return context.Categories.ToList();
-}
-```
-
 The term **Transient** refers to the lifecycle of the underlying in-memory database. 
 
-## Installing & Upgrading
-Download the <a href="/download">NuGet Package</a>
+## Installing
+NuGet: https://www.nuget.org/packages/Z.EntityFramework.Classic.Effort
+
+To use Effort, you need to create a transient connection and use it for your context:
+
+```csharp
+var connection = Effort.DbConnectionFactory.CreateTransient();
+var context = new EntityContext(connection));
+```
+
+## Examples
+
+```csharp
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.Entity;
+using System.Linq;
+using System.Windows.Forms;
+using Effort;
+
+namespace Z.Lab.EFClassic
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+            var connection = DbConnectionFactory.CreateTransient();
+
+            using (var context = new EntityContext(connection))
+            {
+                var list = new List<Customer>();
+                for (var i = 0; i < 10; i++)
+                {
+                    list.Add(new Customer {Name = "ZZZ_" + i});
+                }
+
+                context.Customers.AddRange(list);
+                context.SaveChanges();
+            }
+
+            using (var context = new EntityContext(connection))
+            {
+                var list = context.Customers.Where(x => x.ID > 3).ToList();
+            }
+        }
+
+        public class EntityContext : DbContext
+        {
+            public EntityContext(DbConnection connection) : base(connection, false)
+            {
+            }
+
+            public DbSet<Customer> Customers { get; set; }
+        }
+
+        public class Customer
+        {
+            public int ID { get; set; }
+            public string Name { get; set; }
+        }
+    }
+}
+```
 
 ## Requirements
 
 ### Entity Framework Version
 - Entity Framework 6.x
-- Entity Framework < 6
+- Entity Framework 5
+- Entity Framework 4
 
 ### Database Provider
 - SQL Server 2008+
 - SQL Azure
 - SQL Compact
 - Oracle
-
-
 
 ## ObjectContext Lifecycle
 
@@ -80,13 +121,3 @@ using(NorthwindEntities context =
     return context.Categories.ToList();
 }
 ```
-## Contribute
-
-The best way to contribute is by spreading the word about the library:
-
- - Blog it
- - Comment it
- - Fork it
- - Star it
- - Share it
- - A **HUGE THANKS** for your help.

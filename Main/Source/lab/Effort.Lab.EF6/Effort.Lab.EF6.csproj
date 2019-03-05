@@ -79,6 +79,12 @@
     <Compile Include="Form_Issue_Restore.Designer.cs">
       <DependentUpon>Form_Issue_Restore.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_NotMapped.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_NotMapped.Designer.cs">
+      <DependentUpon>Form_NotMapped.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_EffortExtra.cs">
       <SubType>Form</SubType>
     </Compile>

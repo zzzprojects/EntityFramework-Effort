@@ -34,8 +34,8 @@ namespace Effort.Lab.EF6
 			// SEED
 			using (var context = new EntityContext(connection))
 			{
-				context.EntitySimples.Add(new EntitySimple { ColumnInt = 1, Computed = int.MaxValue });
-				context.EntitySimples.Add(new EntitySimple { ColumnInt = 2, LastModified = DateTime.Now });
+				context.EntitySimples.Add(new EntitySimple { ColumnInt = 1 });
+				context.EntitySimples.Add(new EntitySimple { ColumnInt = 2 });
 				context.EntitySimples.Add(new EntitySimple { ColumnInt = 3 });
 				context.SaveChanges();
 			}
@@ -75,10 +75,12 @@ namespace Effort.Lab.EF6
 			public int ID { get; set; }
 			public int ColumnInt { get; set; }
 
-			[Column, DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-			public DateTime?  LastModified { get; set; }
 			[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+			public DateTime  LastModified { get; set; }
+            [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 			public int Computed { get; set; }
-		}
+		    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+		    public string UserId { get; set; }
+        }
 	}
 }

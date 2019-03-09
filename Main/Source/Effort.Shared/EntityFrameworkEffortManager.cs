@@ -14,10 +14,18 @@ namespace Effort
         /// <summary>The context factory.</summary>
         public static Func<DbContext, DbContext> ContextFactory;
 
-	    public static bool DisableNullableConstraint
-	    {
-		    get { return NMemoryManager.DisableNullableConstraint; }
-		    set { NMemoryManager.DisableNullableConstraint = value; }
+        /// <summary>
+        /// Gets or sets a value indicating if a default value should be used for a not nullable column
+        /// with a null value.
+        /// </summary>
+        /// <value>
+        /// A value indicating if a default value should be used for a not nullable column with a null
+        /// value.
+        /// </value>
+	    public static bool UseDefaultForNotNullable
+        {
+		    get { return NMemoryManager.UseDefaultForNotNullable; }
+		    set { NMemoryManager.UseDefaultForNotNullable = value; }
 	    }
 
 

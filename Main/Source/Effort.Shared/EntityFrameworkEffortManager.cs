@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using NMemory;
 
 namespace Effort
 {
@@ -12,6 +13,12 @@ namespace Effort
     {
         /// <summary>The context factory.</summary>
         public static Func<DbContext, DbContext> ContextFactory;
+
+	    public static bool DisableNullableConstraint
+	    {
+		    get { return NMemoryManager.DisableNullableConstraint; }
+		    set { NMemoryManager.DisableNullableConstraint = value; }
+	    }
 
 
         internal static DbContext CreateFactoryContext(DbContext context) 

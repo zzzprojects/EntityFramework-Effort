@@ -23,10 +23,11 @@ namespace Effort.Lab.EF6
 			InitializeComponent();
 
 			var connection = Effort.DbConnectionFactory.CreateTransient();
-
+		 	//Effort.EntityFrameworkEffortManager.DisableNullableConstraint = true;
 			// CLEAN
 			using (var context = new EntityContext(connection))
 			{
+
 				context.EntitySimples.RemoveRange(context.EntitySimples);
 				context.SaveChanges();
 			}
@@ -66,6 +67,10 @@ namespace Effort.Lab.EF6
 
 			protected override void OnModelCreating(DbModelBuilder modelBuilder)
 			{
+			//	 modelBuilder.Entity<EntitySimple>().Property(x => x.UserId).IsRequired();
+				modelBuilder.Entity<EntitySimple>().Property(x => x.UserI2d).IsRequired();
+				modelBuilder.Entity<EntitySimple>().Property(x => x.LastModified).HasColumnType("DateTime").IsRequired();
+			//	modelBuilder.Entity<EntitySimple>().Property(x => x.Computed).IsRequired(); 
 				base.OnModelCreating(modelBuilder);
 			}
 		}
@@ -76,11 +81,17 @@ namespace Effort.Lab.EF6
 			public int ColumnInt { get; set; }
 
 			[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-			public DateTime  LastModified { get; set; }
+			public DateTime?  LastModified { get; set; }
             [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-			public int Computed { get; set; }
-		    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-		    public string UserId { get; set; }
-        }
+			public int? Computed { get; set; }
+		    [DatabaseGenerated(DatabaseGeneratedOption.Computed)] 
+			public string UserId { get; set; }
+
+			[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+			public long UserI2d { get; set; }
+
+			[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+			public Guid guid { get; set; }
+		}
 	}
 }

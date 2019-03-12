@@ -19,5 +19,4 @@ _Note: If you are not able to provide code we can run and that reproduce the iss
 
 ### Further technical details
 - EF version:
-- EF Plus version:
 - Database Provider:

@@ -212,7 +212,7 @@ namespace Effort.CsvTool.ViewModels
                             cmd.CommandText = string.Format("SELECT * FROM [{0}].[{1}]", schemaName, name);
                             cmd.CommandType = CommandType.Text;
 
-                            FileInfo file = new FileInfo(Path.Combine(dir.FullName, string.Format("{0}.csv", name)));
+							FileInfo file = new FileInfo(Path.Combine(dir.FullName, string.Format("{0}.{1}.csv", schemaName, name)));
 
                             if (!dir.Exists)
                             {

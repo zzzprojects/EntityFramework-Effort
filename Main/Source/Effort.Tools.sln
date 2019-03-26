@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.CsvTool", "Effort.CsvTool\Effort.CsvTool.csproj", "{E0FD26F8-DE04-4D6A-8EAD-1BB3001DF6D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.CsvTool", "misc\Effort.CsvTool\Effort.CsvTool.csproj", "{E0FD26F8-DE04-4D6A-8EAD-1BB3001DF6D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

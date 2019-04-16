@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Windows.Forms;
 using Effort.Provider;
 
@@ -19,7 +20,7 @@ namespace Effort.Lab.EF6
         public Form_Request_TransactionIssue()
         {
             InitializeComponent();
-            //  Testing_connection();
+            // Testing_connection();
             Testing_no_connection();
         }
 
@@ -48,8 +49,10 @@ namespace Effort.Lab.EF6
         public void Testing_no_connection() // Fails with Transaction Aborted
         {
             var context = new FakeContext(Effort.DbConnectionFactory.CreateTransient());
-            var test = context.DummyObjects.ToList();
-            using (var unit = context.Database.BeginTransaction())
+            //var test = context.DummyObjects.ToList();
+
+            using(var transactionScope = new TransactionScope())
+            //using (var unit = context.Database.BeginTransaction())
             {
                // Console.WriteLine(unit.UnderlyingTransaction.IsolationLevel);
                 var fake = new DummyObject
@@ -60,12 +63,14 @@ namespace Effort.Lab.EF6
                 context.DummyObjects.Add(fake);
                 context.SaveChanges();
            
-                // This is the line that takes 20+ seconds to run causing the transaction to timeout
-                var results = context.DummyObjects.ToList();
-                unit.Commit();
 
-                //   unit.Commit();
+                //unit.Commit();
+                
+               transactionScope.Complete();
             }
+
+            // This is the line that takes 20+ seconds to run causing the transaction to timeout
+            var results = context.DummyObjects.ToList();
         }
 
         public class FakeContext : DbContext

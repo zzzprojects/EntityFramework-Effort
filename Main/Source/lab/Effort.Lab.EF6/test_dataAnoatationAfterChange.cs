@@ -55,9 +55,10 @@ namespace AfterChangetestString
                 test.Columvartext = "Columvartext";
                 test.Columntext = "Columntext";
                 test.Columnstring = "Columnstring";
+	            test.OracleXMLTYPE = "OracleXMLTYPE"; 
 
-                context.MyEntities.Add(test);
-                context.BulkSaveChanges();
+				context.MyEntities.Add(test);
+                context.SaveChanges();
             }
 
             using (var context = new ExampleModelA(transit))
@@ -140,7 +141,10 @@ namespace AfterChangetestString
         public DateTime datetimeTwo { get; set; }
         [Column("datetimesmalldate", TypeName = "smalldatetime")]
         public DateTime datetimesmalldate { get; set; }
-    }
+
+		[Column("OracleXMLTYPE", TypeName = "XMLTYPE")]
+		public string OracleXMLTYPE { get; set; }
+	}
 
 }
 namespace AfterChangetestNumber2

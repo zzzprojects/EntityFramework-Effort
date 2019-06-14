@@ -14,8 +14,9 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-            new Form_Request_TransactionIssue();
-        }
+	        AfterChangeDataAnotation.test();
+
+		}
         //[STAThread]
         //static async Task Main(string[] args)
         //{

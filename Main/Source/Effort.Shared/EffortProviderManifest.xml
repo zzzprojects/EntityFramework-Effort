@@ -237,7 +237,7 @@
         <Unicode DefaultValue="false" Constant="true" />
         <FixedLength DefaultValue="false" Constant="true" />
       </FacetDescriptions>
-    </Type>
+    </Type> 
     <!-- ORACLE END -->
   </Types>
 </ProviderManifest>

@@ -11,8 +11,11 @@ namespace Effort
     /// <summary>Manager for entity framework efforts.</summary>
     public class EntityFrameworkEffortManager
     {
-        /// <summary>The context factory.</summary>
-        public static Func<DbContext, DbContext> ContextFactory;
+		// need text
+	    public static string PathCustomeManifest = null;
+
+		/// <summary>The context factory.</summary>
+		public static Func<DbContext, DbContext> ContextFactory;
 
         /// <summary>
         /// Gets or sets a value indicating if a default value should be used for a not nullable column

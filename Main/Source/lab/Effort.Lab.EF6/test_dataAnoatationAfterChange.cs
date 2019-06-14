@@ -16,7 +16,9 @@ namespace Effort.Lab.EF6
     {
         public static void test()
         {
-            AfterChangetestString.Test.testStrings();
+	       Effort.EntityFrameworkEffortManager.PathCustomeManifest = @"testa.xml";
+
+			AfterChangetestString.Test.testStrings();
             AfterChangetestNumber2.Test.testNumber();
             AfterChangetestNumber.Test.testNumber(); 
             AfterChangetestBit.Test.testBit();
@@ -55,7 +57,8 @@ namespace AfterChangetestString
                 test.Columvartext = "Columvartext";
                 test.Columntext = "Columntext";
                 test.Columnstring = "Columnstring";
-	            test.OracleXMLTYPE = "OracleXMLTYPE"; 
+	            test.OracleXMLTYPE = "OracleXMLTYPE";
+	            test.TestData = "test";
 
 				context.MyEntities.Add(test);
                 context.SaveChanges();
@@ -99,7 +102,7 @@ namespace AfterChangetestString
 
 
         [Column("Columvartext", TypeName = "text")]
-        public string Columvartext { get; set; }
+        public string Columvartext { get; set; } 
 
         [Column("Columvarchar", TypeName = "varchar")]
         public string Columvarchar { get; set; }
@@ -144,6 +147,8 @@ namespace AfterChangetestString
 
 		[Column("OracleXMLTYPE", TypeName = "XMLTYPE")]
 		public string OracleXMLTYPE { get; set; }
+	    [Column("TestData", TypeName = "TestData")]
+	    public string TestData { get; set; }
 	}
 
 }

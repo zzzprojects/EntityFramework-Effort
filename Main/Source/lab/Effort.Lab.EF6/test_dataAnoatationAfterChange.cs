@@ -16,7 +16,7 @@ namespace Effort.Lab.EF6
     {
         public static void test()
         {
-	       Effort.EntityFrameworkEffortManager.PathCustomeManifest = @"testa.xml";
+	       Effort.EntityFrameworkEffortManager.CustomManifestPath = @"testa.xml";
 
 			AfterChangetestString.Test.testStrings();
             AfterChangetestNumber2.Test.testNumber();

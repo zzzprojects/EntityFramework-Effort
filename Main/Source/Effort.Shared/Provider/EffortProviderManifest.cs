@@ -123,23 +123,21 @@ namespace Effort.Provider
         private static XmlReader GetProviderManifest()
         {
             Assembly effortAssembly = typeof(EffortProviderManifest).Assembly;
-	        FileStream SourceStream = null;
-	        Stream stream = null;
+            Stream stream = null;
 #if !EFOLD
-			if (EntityFrameworkEffortManager.PathCustomeManifest != null)
-	        { 
-		        SourceStream = File.Open(EntityFrameworkEffortManager.PathCustomeManifest, FileMode.Open, FileAccess.Read, FileShare.Read);
-			}
-	        else
+			if (EntityFrameworkEffortManager.CustomManifestPath != null)
 	        {
-#endif
-				stream = effortAssembly.GetManifestResourceStream(MetadataResource);
-#if !EFOLD
+                stream = File.Open(EntityFrameworkEffortManager.CustomManifestPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 			}
+            else
+            {
+                stream = effortAssembly.GetManifestResourceStream(MetadataResource);
+            }
+#else
+            stream = effortAssembly.GetManifestResourceStream(MetadataResource);
 #endif
 
-			// if bad path, EF give error : FileNotFoundException: Could not find file '...\Effort.Lab.EF6\bin\Debug\testa.xml'.
-			return XmlReader.Create(SourceStream ?? stream);
+            return XmlReader.Create(stream);
         }
 
         private static TypeUsage ConvertTypeUsage(TypeUsage original, PrimitiveType goal)

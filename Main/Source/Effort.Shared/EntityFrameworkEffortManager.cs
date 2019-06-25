@@ -11,8 +11,8 @@ namespace Effort
     /// <summary>Manager for entity framework efforts.</summary>
     public class EntityFrameworkEffortManager
     {
-		// need text
-	    public static string PathCustomeManifest = null;
+        /// <summary>Full pathname of the custom manifest file.</summary>
+        public static string CustomManifestPath = null;
 
 		/// <summary>The context factory.</summary>
 		public static Func<DbContext, DbContext> ContextFactory;

@@ -44,7 +44,7 @@ namespace Effort.Provider
     public class EffortProviderManifest : DbXmlEnabledProviderManifest
     {
         private const string MetadataResource = "Effort.Provider.EffortProviderManifest.xml";
-        private EffortVersion version;
+		private EffortVersion version;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EffortProviderManifest" /> class.
@@ -123,10 +123,23 @@ namespace Effort.Provider
         private static XmlReader GetProviderManifest()
         {
             Assembly effortAssembly = typeof(EffortProviderManifest).Assembly;
+	        FileStream SourceStream = null;
+	        Stream stream = null;
+#if !EFOLD
+			if (EntityFrameworkEffortManager.PathCustomeManifest != null)
+	        { 
+		        SourceStream = File.Open(EntityFrameworkEffortManager.PathCustomeManifest, FileMode.Open, FileAccess.Read, FileShare.Read);
+			}
+	        else
+	        {
+#endif
+				stream = effortAssembly.GetManifestResourceStream(MetadataResource);
+#if !EFOLD
+			}
+#endif
 
-            Stream stream = effortAssembly.GetManifestResourceStream(MetadataResource);
-
-            return XmlReader.Create(stream);
+			// if bad path, EF give error : FileNotFoundException: Could not find file '...\Effort.Lab.EF6\bin\Debug\testa.xml'.
+			return XmlReader.Create(SourceStream ?? stream);
         }
 
         private static TypeUsage ConvertTypeUsage(TypeUsage original, PrimitiveType goal)

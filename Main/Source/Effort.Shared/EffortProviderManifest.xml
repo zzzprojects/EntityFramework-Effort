@@ -231,13 +231,6 @@
         <FixedLength DefaultValue="false" Constant="true" />
       </FacetDescriptions>
     </Type>
-    <Type Name="XMLTYPE" PrimitiveTypeKind="String">
-      <FacetDescriptions>
-        <MaxLength Minimum="1" Maximum="4000" DefaultValue="4000" Constant="false" />
-        <Unicode DefaultValue="false" Constant="true" />
-        <FixedLength DefaultValue="false" Constant="true" />
-      </FacetDescriptions>
-    </Type> 
     <!-- ORACLE END -->
   </Types>
 </ProviderManifest>

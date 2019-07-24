@@ -71,7 +71,7 @@ namespace Effort.Internal.Common
 
         public static DbConnection CreateConnection(string providerInvariantName)
         {
-#if NETSTANDARD
+#if NETSTANDARD && !EF6
             DbProviderFactory factory = DbProviderFactoriesCore.GetFactory(providerInvariantName);
 #else
             DbProviderFactory factory = DbProviderFactories.GetFactory(providerInvariantName);

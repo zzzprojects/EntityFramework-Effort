@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>KeyPair.snk</AssemblyOriginatorKeyFile>
+    <Version>2.2.0</Version>
+    <AssemblyName>Effort</AssemblyName>
+    <RootNamespace>Effort</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;EF6</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.3.0-preview7-19363-02" />
+    <PackageReference Include="NMemory" Version="3.1.0" />
+  </ItemGroup>
+
+  <Import Project="..\Effort.Shared\Effort.Shared.projitems" Label="Shared" />
+
+</Project>

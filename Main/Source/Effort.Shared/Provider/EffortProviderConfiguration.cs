@@ -88,7 +88,7 @@ namespace Effort.Provider
         {
             try
             {
-#if NETSTANDARD
+#if NETSTANDARD && !EF6
                 DbProviderFactoriesCore.GetFactory(ProviderInvariantName);
 #else
                 DbProviderFactories.GetFactory(ProviderInvariantName);
@@ -122,7 +122,7 @@ namespace Effort.Provider
                 throw new ArgumentNullException("factoryType");
             }
 
-#if NETSTANDARD
+#if NETSTANDARD && !EF6
             System.Data.Common.DbProviderFactoriesCore.RegisterFactory(invariantName, factoryType);
 #else
             string assemblyName = factoryType.AssemblyQualifiedName;

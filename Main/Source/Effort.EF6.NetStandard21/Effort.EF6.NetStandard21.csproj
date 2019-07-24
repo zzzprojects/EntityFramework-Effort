@@ -11,6 +11,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;EF6</DefineConstants>
+    <DocumentationFile>\Effort.EF6.NetStandard21\Effort.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

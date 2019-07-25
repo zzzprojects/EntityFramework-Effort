@@ -14,6 +14,10 @@
     <DocumentationFile>\Effort.EF6.NetStandard21\Effort.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;EF6</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.3.0-preview7-19363-02" />
     <PackageReference Include="NMemory" Version="3.1.0" />

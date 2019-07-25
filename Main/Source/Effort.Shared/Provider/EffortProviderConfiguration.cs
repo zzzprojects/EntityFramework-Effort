@@ -128,23 +128,27 @@ namespace Effort.Provider
             string assemblyName = factoryType.AssemblyQualifiedName;
 
             DataSet data = (DataSet)ConfigurationManager.GetSection("system.data");
-            DataTable providerFactories = data.Tables["DbProviderFactories"];
 
-            foreach (DataRow providerFactory in providerFactories.Rows)
+            if (data != null)
             {
-                string providerFactoryInvariantName = 
-                    providerFactory["InvariantName"] as string;
+                DataTable providerFactories = data.Tables["DbProviderFactories"];
 
-                if (invariantName.Equals(
-                        providerFactoryInvariantName, 
-                        StringComparison.InvariantCulture))
+                foreach (DataRow providerFactory in providerFactories.Rows)
                 {
-                    // Provider is already registered
-                    return;
-                }
-            }
+                    string providerFactoryInvariantName =
+                        providerFactory["InvariantName"] as string;
 
-            providerFactories.Rows.Add(name, name, invariantName, assemblyName);
+                    if (invariantName.Equals(
+                        providerFactoryInvariantName,
+                        StringComparison.InvariantCulture))
+                    {
+                        // Provider is already registered
+                        return;
+                    }
+                }
+
+                providerFactories.Rows.Add(name, name, invariantName, assemblyName);
+            }
 #endif
         }
 

@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.Lab.EF6.Net40", "Eff
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NMemory.Lab", "..\..\..\nmemory\Main\Source\NMemory.Lab\NMemory.Lab.csproj", "{C7F6F7DD-6650-47D8-9A85-182BAB3F3146}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effort.EF6.NetStandard21", "Effort.EF6.NetStandard21\Effort.EF6.NetStandard21.csproj", "{DB49C43E-352C-4CC0-88C7-2C4AE4279567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Effort.EF6.NetStandard21", "Effort.EF6.NetStandard21\Effort.EF6.NetStandard21.csproj", "{DB49C43E-352C-4CC0-88C7-2C4AE4279567}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

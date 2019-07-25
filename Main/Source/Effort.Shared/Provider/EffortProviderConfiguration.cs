@@ -128,7 +128,7 @@ namespace Effort.Provider
             string assemblyName = factoryType.AssemblyQualifiedName;
 
 #if NETSTANDARD && EF6
-			DbProviderFactories.RegisterFactory(invariantName,factoryType ); 
+			DbProviderFactories.RegisterFactory(invariantName, factoryType); 
 #else
 			DataSet data = (DataSet)ConfigurationManager.GetSection("system.data");
 

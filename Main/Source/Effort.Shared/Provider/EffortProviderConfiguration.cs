@@ -62,7 +62,7 @@ namespace Effort.Provider
         /// </summary>
         public static void RegisterProvider()
         {
-            if (!isRegistered)
+	        if (!isRegistered)
             {
                 lock (latch)
                 {
@@ -86,21 +86,21 @@ namespace Effort.Provider
 
         internal static void VerifyProvider()
         {
-            try
-            {
+	        try
+	        {
 #if NETSTANDARD && !EF6
                 DbProviderFactoriesCore.GetFactory(ProviderInvariantName);
-#else
-                DbProviderFactories.GetFactory(ProviderInvariantName);
+#else 
+				DbProviderFactories.GetFactory(ProviderInvariantName);
 #endif
-            }
-            catch (Exception ex)
-            {
-                throw new EffortException(
-                    ExceptionMessages.AutomaticRegistrationFailed,
-                    ex);
-            }
-        }
+			}  
+	        catch (Exception ex)
+	        {
+		        throw new EffortException(
+			        ExceptionMessages.AutomaticRegistrationFailed,
+			        ex);
+	        } 
+		}
 
         private static void RegisterProvider(
             string name,
@@ -127,33 +127,39 @@ namespace Effort.Provider
 #else
             string assemblyName = factoryType.AssemblyQualifiedName;
 
-            DataSet data = (DataSet)ConfigurationManager.GetSection("system.data");
+#if NETSTANDARD && EF6
+			DbProviderFactories.RegisterFactory(invariantName,factoryType ); 
+#else
+			DataSet data = (DataSet)ConfigurationManager.GetSection("system.data");
 
-            if (data != null)
-            {
-                DataTable providerFactories = data.Tables["DbProviderFactories"];
+			if (data != null)
+			{
+				DataTable providerFactories = data.Tables["DbProviderFactories"];
 
-                foreach (DataRow providerFactory in providerFactories.Rows)
-                {
-                    string providerFactoryInvariantName =
-                        providerFactory["InvariantName"] as string;
+				foreach (DataRow providerFactory in providerFactories.Rows)
+				{
+					string providerFactoryInvariantName =
+						providerFactory["InvariantName"] as string;
 
-                    if (invariantName.Equals(
-                        providerFactoryInvariantName,
-                        StringComparison.InvariantCulture))
-                    {
-                        // Provider is already registered
-                        return;
-                    }
-                }
+					if (invariantName.Equals(
+						providerFactoryInvariantName,
+						StringComparison.InvariantCulture))
+					{
+						// Provider is already registered
+						return;
+					}
+				}
 
-                providerFactories.Rows.Add(name, name, invariantName, assemblyName);
-            }
+				providerFactories.Rows.Add(name, name, invariantName, assemblyName);
+			}
 #endif
-        }
+
+
+#endif
+		}
 
 #if !EFOLD
-        internal static void RegisterDbConfigurationEventHandler()
+		internal static void RegisterDbConfigurationEventHandler()
         {
             try
             {

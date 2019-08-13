@@ -86,6 +86,12 @@
     <Compile Include="Form_NotMapped.Designer.cs">
       <DependentUpon>Form_NotMapped.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_CaseSensitive.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_CaseSensitive.Designer.cs">
+      <DependentUpon>Form_Request_CaseSensitive.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_EffortExtra.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -14,9 +14,9 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-	        AfterChangeDataAnotation.test();
+	        new Form_Request_CaseSensitive();
 
-		}
+        }
         //[STAThread]
         //static async Task Main(string[] args)
         //{

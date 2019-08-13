@@ -100,30 +100,28 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         private void AddStringMappings(DbContainer container)
         {
-	        if (container.IsCaseSensitive)
-	        {
+            if (container.IsCaseSensitive)
+            {
+            	this.Map("Edm.Contains", StringFunctions.Contains);
 
-		        this.Map("Edm.Contains", StringFunctions.Contains);
+            	this.Map("Edm.IndexOf", StringFunctions.IndexOf);
 
-		        this.Map("Edm.IndexOf", StringFunctions.IndexOf);
+            	this.Map("Edm.StartsWith", StringFunctions.StartsWith);
 
-		        this.Map("Edm.StartsWith", StringFunctions.StartsWith);
+            	this.Map("Edm.EndsWith", StringFunctions.EndsWith);
+            }
+            else
+            {
+            	this.Map("Edm.Contains", StringFunctions.ContainsCaseInsensitive);
 
-		        this.Map("Edm.EndsWith", StringFunctions.EndsWith);
-			}
-	        else
-	        {
-				// TODO
-				this.Map("Edm.Contains", StringFunctions.ContainsCaseInsensitive);
+            	this.Map("Edm.IndexOf", StringFunctions.IndexOfCaseInsensitive);
 
-				this.Map("Edm.IndexOf", StringFunctions.IndexOfCaseInsensitive);
+            	this.Map("Edm.StartsWith", StringFunctions.StartsWithCaseInsensitive);
 
-				this.Map("Edm.StartsWith", StringFunctions.StartsWithCaseInsensitive);
-
-				this.Map("Edm.EndsWith", StringFunctions.EndsWithCaseInsensitive);
-			}
-
-			this.Map("Edm.Concat", StringFunctions.Concat);  
+            	this.Map("Edm.EndsWith", StringFunctions.EndsWithCaseInsensitive);
+            }
+		
+            this.Map("Edm.Concat", StringFunctions.Concat);  
 
             this.Map("Edm.Left", StringFunctions.Left);
 

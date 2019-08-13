@@ -86,7 +86,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
 
         private Expression CreateStringComparison(Expression left, Expression right, DbExpressionKind kind)
         {
-             if (this.container.IsCaseSensitive == false)
+			// see internal class StringFunctions for otther string compare with case sensitive.
+			if (this.container.IsCaseSensitive == false)
             {
                 left = Expression.Call(null, StringFunctions.ToLower, left);
                 right = Expression.Call(null, StringFunctions.ToLower, right);

@@ -78,7 +78,8 @@ namespace Effort.Internal.DbCommandTreeTransformation.Functions
         public static readonly MethodInfo EndsWith =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.EndsWith(string.Empty, string.Empty));
 
-        public static readonly MethodInfo CompareTo =
+        // see "private Expression CreateStringComparison(Expression left, Expression right, DbExpressionKind kind)", for case sensitive.
+		public static readonly MethodInfo CompareTo =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.CompareTo(string.Empty, string.Empty));
 
         public static readonly MethodInfo ConvertToString =
@@ -86,5 +87,17 @@ namespace Effort.Internal.DbCommandTreeTransformation.Functions
 
         public static readonly MethodInfo ParseString =
             ReflectionHelper.GetMethodInfo(() => DbFunctions.TryParse<int>(null), makeGeneric: true);
-    }
+
+        public static readonly MethodInfo ContainsCaseInsensitive =
+	        ReflectionHelper.GetMethodInfo(() => DbFunctions.ContainsCaseInsensitive(string.Empty, string.Empty));
+
+        public static readonly MethodInfo IndexOfCaseInsensitive =
+	        ReflectionHelper.GetMethodInfo(() => DbFunctions.IndexOfCaseInsensitive(string.Empty, string.Empty));
+
+        public static readonly MethodInfo StartsWithCaseInsensitive =
+	        ReflectionHelper.GetMethodInfo(() => DbFunctions.StartsWithCaseInsensitive(string.Empty, string.Empty));
+
+        public static readonly MethodInfo EndsWithCaseInsensitive =
+	        ReflectionHelper.GetMethodInfo(() => DbFunctions.EndsWithCaseInsensitive(string.Empty, string.Empty));
+	}
 }

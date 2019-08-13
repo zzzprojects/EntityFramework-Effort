@@ -344,6 +344,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return data.Length;
         }
 
+		// need case sensitive ??
         public static string Replace(string data, string oldValue, string newValue)
         {
             if (data == null || oldValue == null || newValue == null)
@@ -376,7 +377,8 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return b.EndsWith(a);
         }
 
-        internal static int CompareTo(string a, string b)
+		// see "private Expression CreateStringComparison(Expression left, Expression right, DbExpressionKind kind)", for case sensitive.
+		internal static int CompareTo(string a, string b)
         {
             if (a == null && b == null)
             {
@@ -391,11 +393,55 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return a.CompareTo(b);
         }
 
-        #endregion
+	public static bool? ContainsCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
+		{
+			return null;
+		}
 
-        #region Datetime
+		// TODO: culture
+		return a.ToLowerInvariant().Contains(b.ToLowerInvariant());
+	}
 
-        public static DateTime? CurrentDateTime()
+	public static int? IndexOfCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
+		{
+			return null;
+		}
+
+		// TODO: culture?
+		return b.IndexOf(a, StringComparison.OrdinalIgnoreCase) + 1;
+	}
+
+	public static bool? StartsWithCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
+		{
+			return null;
+		}
+
+		// TODO: culture
+		return b.StartsWith(a, StringComparison.OrdinalIgnoreCase);
+	}
+
+	public static bool? EndsWithCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
+		{
+			return null;
+		}
+
+		// TODO: culture
+		return b.EndsWith(a, StringComparison.OrdinalIgnoreCase);
+	}
+
+	#endregion
+
+	#region Datetime
+
+	public static DateTime? CurrentDateTime()
         {
             return DateTime.Now;
         }

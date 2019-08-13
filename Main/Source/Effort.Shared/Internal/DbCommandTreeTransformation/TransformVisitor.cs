@@ -68,7 +68,7 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.currentVariables = new VariableCollection();
             this.parameters = new Dictionary<string, Tuple<TypeUsage, int>>();
 
-            this.functionMapper = new CanonicalFunctionMapper(converter);
+            this.functionMapper = new CanonicalFunctionMapper(converter, container);
             this.methodProvider = new Effort.Internal.DbManagement.DbMethodProvider();
         }
 

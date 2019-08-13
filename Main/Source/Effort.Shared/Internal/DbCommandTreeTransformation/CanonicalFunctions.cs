@@ -26,8 +26,9 @@ namespace Effort.Internal.DbCommandTreeTransformation
 {
     using System;
     using System.Collections.Generic;
+    using Effort.Internal.DbManagement;
 #if !EFOLD
-    using System.Data.Entity.Core.Metadata.Edm;
+	using System.Data.Entity.Core.Metadata.Edm;
 #else
     using System.Data.Metadata.Edm;
 #endif
@@ -43,12 +44,12 @@ namespace Effort.Internal.DbCommandTreeTransformation
         private readonly Dictionary<string, Func<EdmFunction, Expression[], Expression>> mappings;
         private EdmTypeConverter converter;
 
-        public CanonicalFunctionMapper(ITypeConverter converter)
+        public CanonicalFunctionMapper(ITypeConverter converter, DbContainer container)
         {
             this.converter = new EdmTypeConverter(converter);
             this.mappings = new Dictionary<string, Func<EdmFunction, Expression[], Expression>>();
 
-            this.AddStringMappings();
+            this.AddStringMappings(container);
             this.AddDateTimeMappings();
             this.AddMathMappings();
             this.AddBitwiseMappings();
@@ -97,15 +98,30 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.mappings["Edm.Abs"] = (f, args) => MapAbs(f, args);
         }
 
-        private void AddStringMappings()
+        private void AddStringMappings(DbContainer container)
         {
-            this.Map("Edm.Concat", StringFunctions.Concat);
+            if (container.IsCaseSensitive)
+            {
+            	this.Map("Edm.Contains", StringFunctions.Contains);
 
-            this.Map("Edm.Contains", StringFunctions.Contains);
+            	this.Map("Edm.IndexOf", StringFunctions.IndexOf);
 
-            this.Map("Edm.EndsWith", StringFunctions.EndsWith);
+            	this.Map("Edm.StartsWith", StringFunctions.StartsWith);
 
-            this.Map("Edm.IndexOf", StringFunctions.IndexOf);
+            	this.Map("Edm.EndsWith", StringFunctions.EndsWith);
+            }
+            else
+            {
+            	this.Map("Edm.Contains", StringFunctions.ContainsCaseInsensitive);
+
+            	this.Map("Edm.IndexOf", StringFunctions.IndexOfCaseInsensitive);
+
+            	this.Map("Edm.StartsWith", StringFunctions.StartsWithCaseInsensitive);
+
+            	this.Map("Edm.EndsWith", StringFunctions.EndsWithCaseInsensitive);
+            }
+		
+            this.Map("Edm.Concat", StringFunctions.Concat);  
 
             this.Map("Edm.Left", StringFunctions.Left);
 
@@ -120,8 +136,6 @@ namespace Effort.Internal.DbCommandTreeTransformation
             this.Map("Edm.Right", StringFunctions.Right);
 
             this.Map("Edm.RTrim", StringFunctions.RTrim);
-
-            this.Map("Edm.StartsWith", StringFunctions.StartsWith);
 
             this.Map("Edm.Substring", StringFunctions.Substring);
 

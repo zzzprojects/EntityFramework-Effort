@@ -393,55 +393,55 @@ namespace Effort.Internal.DbCommandTreeTransformation
             return a.CompareTo(b);
         }
 
-		public static bool? ContainsCaseInsensitive(string a, string b)
+	public static bool? ContainsCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
 		{
-			if (a == null || b == null)
-			{
-				return null;
-			}
-
-			// TODO: culture
-			return a.ToLowerInvariant().Contains(b.ToLowerInvariant());
+			return null;
 		}
 
-		public static int? IndexOfCaseInsensitive(string a, string b)
-		{
-			if (a == null || b == null)
-			{
-				return null;
-			}
+		// TODO: culture
+		return a.ToLowerInvariant().Contains(b.ToLowerInvariant());
+	}
 
-			// TODO: culture?
-			return b.IndexOf(a, StringComparison.OrdinalIgnoreCase) + 1;
+	public static int? IndexOfCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
+		{
+			return null;
 		}
 
-		public static bool? StartsWithCaseInsensitive(string a, string b)
-		{
-			if (a == null || b == null)
-			{
-				return null;
-			}
+		// TODO: culture?
+		return b.IndexOf(a, StringComparison.OrdinalIgnoreCase) + 1;
+	}
 
-			// TODO: culture
-			return b.StartsWith(a, StringComparison.OrdinalIgnoreCase);
+	public static bool? StartsWithCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
+		{
+			return null;
 		}
 
-		public static bool? EndsWithCaseInsensitive(string a, string b)
-		{
-			if (a == null || b == null)
-			{
-				return null;
-			}
+		// TODO: culture
+		return b.StartsWith(a, StringComparison.OrdinalIgnoreCase);
+	}
 
-			// TODO: culture
-			return b.EndsWith(a, StringComparison.OrdinalIgnoreCase);
+	public static bool? EndsWithCaseInsensitive(string a, string b)
+	{
+		if (a == null || b == null)
+		{
+			return null;
 		}
 
-		#endregion
+		// TODO: culture
+		return b.EndsWith(a, StringComparison.OrdinalIgnoreCase);
+	}
 
-		#region Datetime
+	#endregion
 
-		public static DateTime? CurrentDateTime()
+	#region Datetime
+
+	public static DateTime? CurrentDateTime()
         {
             return DateTime.Now;
         }

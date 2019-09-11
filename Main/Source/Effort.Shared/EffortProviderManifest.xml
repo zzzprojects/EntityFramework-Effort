@@ -238,6 +238,7 @@
         <FixedLength DefaultValue="false" Constant="true" />
       </FacetDescriptions>
     </Type>
+    <Type Name="number" PrimitiveTypeKind="Int32"/>
     <!-- ORACLE END -->
   </Types>
 </ProviderManifest>

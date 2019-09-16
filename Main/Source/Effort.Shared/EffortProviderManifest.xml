@@ -238,6 +238,12 @@
         <FixedLength DefaultValue="false" Constant="true" />
       </FacetDescriptions>
     </Type>
+    <Type Name="number" PrimitiveTypeKind="Decimal">
+      <FacetDescriptions>
+        <Precision Minimum="1" Maximum="38" Constant="false" DefaultValue="38" />
+        <Scale Minimum="0" Maximum="38" Constant="false" DefaultValue="0" />
+      </FacetDescriptions>
+    </Type>
     <!-- ORACLE END -->
   </Types>
 </ProviderManifest>

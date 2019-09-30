@@ -124,10 +124,11 @@ namespace Effort.DataLoaders
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
+	        var schema = table.Schema ?? "";
             CachingTableDataLoaderKey key =
                 new CachingTableDataLoaderKey(
                     new DataLoaderConfigurationKey(this.wrappedDataLoader), 
-                    table.Name);
+                    schema + table.Name);
 
             // If the table data cache does not exists, then the data loader configuration
             // should be locked

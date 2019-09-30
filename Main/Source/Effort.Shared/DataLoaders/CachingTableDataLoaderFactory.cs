@@ -124,7 +124,7 @@ namespace Effort.DataLoaders
         /// </returns>
         public ITableDataLoader CreateTableDataLoader(TableDescription table)
         {
-	        var schema = table.Schema ?? "";
+            var schema = table.Schema ?? "";
             CachingTableDataLoaderKey key =
                 new CachingTableDataLoaderKey(
                     new DataLoaderConfigurationKey(this.wrappedDataLoader), 

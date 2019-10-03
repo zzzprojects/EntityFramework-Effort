@@ -1,0 +1,6 @@
+- Getting Started
+   - [Getting Started](getting-started/overview.md)
+   - [Release Notes](https://github.com/zzzprojects/EntityFramework-Effort/releases)
+- [Knowledge Base](/knowledge-base)
+- [Online Examples](/online-examples)
+- [GitHub](https://github.com/zzzprojects/EntityFramework-Effort)

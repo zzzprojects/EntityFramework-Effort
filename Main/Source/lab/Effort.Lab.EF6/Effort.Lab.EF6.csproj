@@ -98,6 +98,12 @@
     <Compile Include="Form_Request_CaseSensitive.Designer.cs">
       <DependentUpon>Form_Request_CaseSensitive.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_DbConnectionFactory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_DbConnectionFactory.Designer.cs">
+      <DependentUpon>Form_Request_DbConnectionFactory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_EffortExtra.cs">
       <SubType>Form</SubType>
     </Compile>

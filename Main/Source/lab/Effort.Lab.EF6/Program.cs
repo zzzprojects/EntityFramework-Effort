@@ -14,7 +14,7 @@ namespace Effort.Lab.EF6
         [STAThread]
         static void Main()
         {
-	        new Form_Request_CaseSensitive();
+	        new Form_Request_DbConnectionFactory();
         }
     }
 }

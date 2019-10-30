@@ -92,6 +92,12 @@
     <Compile Include="Form_NotMapped.Designer.cs">
       <DependentUpon>Form_NotMapped.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_CacheDataLoader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_CacheDataLoader.Designer.cs">
+      <DependentUpon>Form_Request_CacheDataLoader.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_CaseSensitive.cs">
       <SubType>Form</SubType>
     </Compile>

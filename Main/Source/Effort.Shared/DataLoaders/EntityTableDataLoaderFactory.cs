@@ -59,7 +59,7 @@ namespace Effort.DataLoaders
 
             var entityConnectionString = entityConnectionString_Fields.GetValue(connectionFactory.Target);
 
-            if (entityConnectionString.Equals(""))
+            if (entityConnectionString == null || entityConnectionString.Equals(""))
             {
                 this.connectionFactory = () => EntityFrameworkEffortManager.CreateFactoryContext(null).Database.GetEntityConnection();
             }

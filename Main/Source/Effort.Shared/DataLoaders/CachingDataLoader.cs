@@ -128,9 +128,9 @@ namespace Effort.DataLoaders
 
                 if (this.wrappedDataLoader != null)
                 {
-                    builder[WrappedType] = 
+                    builder[WrappedType] =
                         this.wrappedDataLoader.GetType().AssemblyQualifiedName;
-                    builder[WrappedArgument] = 
+                    builder[WrappedArgument] =
                         this.wrappedDataLoader.Argument;
                 }
 
@@ -144,11 +144,13 @@ namespace Effort.DataLoaders
 
                 string typeName = builder[WrappedType] as string;
 
-                this.wrappedDataLoader = 
+                this.wrappedDataLoader =
                     Activator.CreateInstance(Type.GetType(typeName)) as IDataLoader;
 
-                this.wrappedDataLoader.Argument = 
-                    builder[WrappedArgument] as string;
+                if (builder.TryGetValue(WrappedArgument, out var builderValue))
+                {
+                    this.wrappedDataLoader.Argument = builderValue as string;
+                }
             }
         }
 

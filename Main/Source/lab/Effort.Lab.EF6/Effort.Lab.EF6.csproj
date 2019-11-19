@@ -110,6 +110,12 @@
     <Compile Include="Form_Request_DbConnectionFactory.Designer.cs">
       <DependentUpon>Form_Request_DbConnectionFactory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_DisableFK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_DisableFK.Designer.cs">
+      <DependentUpon>Form_Request_DisableFK.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_EffortExtra.cs">
       <SubType>Form</SubType>
     </Compile>

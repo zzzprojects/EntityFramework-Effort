@@ -86,5 +86,23 @@ namespace Effort.Internal.DbManagement
                 relation.IsEnabled = enabled;
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the foreign key constraint is enabled.
+        /// </summary>
+        /// <value>True if the foreign key constraint is enabled, false if not.</value>
+        public bool IsForeignKeyConstraintEnabled
+        {
+            get { return true; }
+            set
+            {
+                var db = this.container.Internal;
+
+                foreach (var relation in db.Tables.GetAllRelations())
+                {
+                    relation.Options.IsForeignKeyConstraintEnabled = value;
+                }
+            }
+        }
     }
 }

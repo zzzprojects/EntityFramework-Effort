@@ -47,5 +47,11 @@ namespace Effort.Provider
         ///     Deletes all data from the database tables.
         /// </summary>
         void ClearTables();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the foreign key constraint is enabled.
+        /// </summary>
+        /// <value>True if the foreign key constraint is enabled, false if not.</value>
+        bool IsForeignKeyConstraintEnabled { get; set; }
     }
 }

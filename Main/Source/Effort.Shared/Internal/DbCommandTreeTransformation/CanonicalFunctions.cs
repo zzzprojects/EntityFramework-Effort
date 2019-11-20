@@ -491,6 +491,153 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     firstArg.Name));
         }
 
+        internal static Type GetTypeBinary(Type leftType, Type rightType)
+        {
+            var leftTypeCode = Type.GetTypeCode(leftType);
+            var rightTypeCode = Type.GetTypeCode(rightType);
+
+            if (leftTypeCode < rightTypeCode)
+            {
+                var backupLeftType = leftType;
+                var backupLeftTypeCode = leftTypeCode;
+
+                leftType = rightType;
+                leftTypeCode = rightTypeCode;
+
+                rightType = backupLeftType;
+                rightTypeCode = backupLeftTypeCode;
+            }
+
+            Type type = null;
+
+            if ((leftTypeCode == TypeCode.Object) || (rightTypeCode == TypeCode.Object))
+            {
+                type = typeof(object);
+            }
+            else if ((leftTypeCode == rightTypeCode) && (leftTypeCode != TypeCode.Char) && (leftTypeCode != TypeCode.SByte) && (leftTypeCode != TypeCode.Byte) && (leftTypeCode != TypeCode.Int16) && (leftTypeCode != TypeCode.UInt16))
+            {
+                type = leftType.IsEnum && rightType.IsEnum ? rightType : leftType.IsEnum ? rightType : leftType;
+            }
+            else
+            {
+                switch (leftTypeCode)
+                {
+                    case TypeCode.Char:
+                    case TypeCode.SByte:
+                    case TypeCode.Byte:
+                    case TypeCode.Int16:
+                    case TypeCode.UInt16:
+                    case TypeCode.Int32:
+                        switch (rightTypeCode)
+                        {
+                            case TypeCode.Char:
+                            case TypeCode.SByte:
+                            case TypeCode.Byte:
+                            case TypeCode.Int16:
+                            case TypeCode.UInt16:
+                                type = typeof(int);
+                                break;
+                        }
+                        break;
+                    case TypeCode.UInt32:
+                        switch (rightTypeCode)
+                        {
+                            case TypeCode.Char:
+                            case TypeCode.Byte:
+                            case TypeCode.UInt16:
+                                type = typeof(uint);
+                                break;
+                            case TypeCode.SByte:
+                            case TypeCode.Int16:
+                            case TypeCode.Int32:
+                                type = typeof(long);
+                                break;
+                        }
+                        break;
+                    case TypeCode.Int64:
+                        switch (rightTypeCode)
+                        {
+                            case TypeCode.Char:
+                            case TypeCode.SByte:
+                            case TypeCode.Byte:
+                            case TypeCode.Int16:
+                            case TypeCode.UInt16:
+                            case TypeCode.Int32:
+                            case TypeCode.UInt32:
+                                type = typeof(long);
+                                break;
+                        }
+                        break;
+                    case TypeCode.UInt64:
+                        switch (rightTypeCode)
+                        {
+                            case TypeCode.Char:
+                            case TypeCode.Byte:
+                            case TypeCode.UInt16:
+                            case TypeCode.UInt32:
+                                type = typeof(ulong);
+                                break;
+                        }
+                        break;
+                    case TypeCode.Single:
+                        switch (rightTypeCode)
+                        {
+                            case TypeCode.Char:
+                            case TypeCode.SByte:
+                            case TypeCode.Byte:
+                            case TypeCode.Int16:
+                            case TypeCode.UInt16:
+                            case TypeCode.Int32:
+                            case TypeCode.UInt32:
+                            case TypeCode.Int64:
+                            case TypeCode.UInt64:
+                                type = typeof(float);
+                                break;
+                        }
+                        break;
+                    case TypeCode.Double:
+                        switch (rightTypeCode)
+                        {
+                            case TypeCode.Char:
+                            case TypeCode.SByte:
+                            case TypeCode.Byte:
+                            case TypeCode.Int16:
+                            case TypeCode.UInt16:
+                            case TypeCode.Int32:
+                            case TypeCode.UInt32:
+                            case TypeCode.Int64:
+                            case TypeCode.UInt64:
+                            case TypeCode.Single:
+                                type = typeof(double);
+                                break;
+                        }
+                        break;
+                    case TypeCode.Decimal:
+                        switch (rightTypeCode)
+                        {
+                            case TypeCode.Char:
+                            case TypeCode.SByte:
+                            case TypeCode.Byte:
+                            case TypeCode.Int16:
+                            case TypeCode.UInt16:
+                            case TypeCode.Int32:
+                            case TypeCode.UInt32:
+                            case TypeCode.Int64:
+                            case TypeCode.UInt64:
+                                type = typeof(decimal);
+                                break;
+                        }
+                        break;
+                    case TypeCode.DateTime:
+                    case TypeCode.String:
+                        type = typeof(string);
+                        break;
+                }
+            }
+
+            return type;
+        }
+
         private static Expression[] FixArguments(MethodInfo method, Expression[] args)
         {
             var converted = new Expression[args.Length];
@@ -522,6 +669,35 @@ namespace Effort.Internal.DbCommandTreeTransformation
                     string.Format(
                         "Missing mapping for '{0}' function",
                         function.FullName));
+            }
+
+            if (function.Name == "BitwiseOr" || function.Name == "BitwiseAnd" || function.Name == "BitwiseXor" || function.Name == "BitwiseNot")
+            {
+                var leftExpression = arguments[0];
+                var rightExpression = arguments[1];
+
+                var type = GetTypeBinary(leftExpression.Type, rightExpression.Type);
+
+                if (type == typeof(object))
+                {
+                    if (leftExpression.Type.IsGenericType && (leftExpression.Type.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                    {
+                        if (!rightExpression.Type.IsGenericType || (leftExpression.Type.GetGenericTypeDefinition() != rightExpression.Type.GetGenericTypeDefinition()))
+                        {
+                            rightExpression = Expression.Convert(rightExpression, leftExpression.Type);
+                        }
+                    }
+                    else if (rightExpression.Type.IsGenericType && (rightExpression.Type.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                    {
+                        if (!leftExpression.Type.IsGenericType|| (leftExpression.Type.GetGenericTypeDefinition() != rightExpression.Type.GetGenericTypeDefinition()))
+                        {
+                            leftExpression = Expression.Convert(leftExpression, rightExpression.Type);
+                        }
+                    }
+                }
+
+                arguments[0] = leftExpression;
+                arguments[1] = rightExpression;
             }
 
             return mapper(function, arguments);

@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.3.0-preview7-19363-02" />
+    <PackageReference Include="EntityFramework" Version="6.3.0" />
     <PackageReference Include="NMemory" Version="3.1.0" />
   </ItemGroup>
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
+using Effort.Internal.DbManagement;
+using Effort.Internal.DbManagement.Engine;
 using Effort.Provider;
 
 namespace Effort.Shared.Provider
@@ -28,12 +30,22 @@ namespace Effort.Shared.Provider
             }
         }
 
-        public void Restore(DbContext context)
+        public void Restore(DbContext context, object dbContainer)
         {
             if (OrderedEntities == null)
             {
                 CreateOrderedEntities();
                 EffortConnection.ClearTables(context);
+            }
+
+            Dictionary<IExtendedTable, bool> oldIdentityFieldDictionary = new Dictionary<IExtendedTable, bool>();
+            if (dbContainer != null)
+            {
+                foreach (IExtendedTable table in ((DbContainer)dbContainer).Internal.Tables.GetAllTables())
+                {
+                    oldIdentityFieldDictionary.Add(table, table.IsIdentityFieldEnabled);
+                    table.IsIdentityFieldEnabled = false;
+                }
             }
 
             foreach (var entity in OrderedEntities)
@@ -42,6 +54,11 @@ namespace Effort.Shared.Provider
                 var methods = table.GetType().GetMethods().Where(x => x.Name == "Insert").ToList()[0];
                 var obj = ShallowCopy(entity.Entity);
                 methods.Invoke(table, new[] {obj});
+            }
+
+            foreach( var dicTable in oldIdentityFieldDictionary)
+            {
+                dicTable.Key.IsIdentityFieldEnabled = dicTable.Value;
             }
         }
 

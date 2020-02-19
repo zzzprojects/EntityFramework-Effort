@@ -16,8 +16,8 @@ namespace Effort.Lab.EF6
             var data = new ObjectData();
 
             var entitySimples = data.Table<EntitySimple>();
-            entitySimples.Add(new EntitySimple {ID = 1, ColumnInt = -1});
-            entitySimples.Add(new EntitySimple {ID = 2, ColumnInt = -2});
+            entitySimples.Add(new EntitySimple { ID = 1, ColumnInt = -1 });
+            entitySimples.Add(new EntitySimple { ID = 2, ColumnInt = -2 });
 
             var objectDataLoader = new ObjectDataLoader(data);
 
@@ -28,16 +28,38 @@ namespace Effort.Lab.EF6
             {
                 context.Database.CreateIfNotExists();
 
-                context.EntitySimples.Add(new EntitySimple {ColumnInt = 1});
-                var list = context.EntitySimples.ToList();
+                context.EntitySimples.Add(new EntitySimple { ColumnInt = 1 });
+                context.EntitySimples.Add(new EntitySimple { ColumnInt = 2 });
+                context.EntitySimples.Add(new EntitySimple { ColumnInt = 3 });
                 context.SaveChanges();
+                var entity = context.EntitySimples.Where(x => x.ColumnInt == 2).First();
+
+                context.EntitySimples.Remove(entity);
+
+                context.EntitySimples.Add(new EntitySimple { ColumnInt = 4 });
+
+                context.SaveChanges();
+
+                var entity2 = context.EntitySimples.Where(x => x.ColumnInt == 4).First();
+
+
                 connection.CreateRestorePoint();
 
-                context.EntitySimples.Add(new EntitySimple {ColumnInt = 2});
-                context.EntitySimples.Add(new EntitySimple {ColumnInt = 3});
+
+                context.EntitySimples.Add(new EntitySimple { ColumnInt = 5 });
                 context.SaveChanges();
+
                 var list2 = context.EntitySimples.ToList();
-                connection.RollbackToRestorePoint();
+                connection.RollbackToRestorePoint(context);
+
+                context.EntitySimples.Add(new EntitySimple { ColumnInt = 9 });
+                context.SaveChanges();
+                var list3 = context.EntitySimples.ToList();
+
+                var entity3 = context.EntitySimples.Where(x => x.ColumnInt == 4).First();
+
+
+
             }
 
             // TEST

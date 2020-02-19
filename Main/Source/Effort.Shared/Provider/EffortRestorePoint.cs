@@ -4,6 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using Effort.Provider;
+using Effort.Internal.DbManagement;
+using Effort.Internal.DbManagement.Engine;
 
 namespace Effort.Shared.Provider
 {
@@ -28,21 +30,41 @@ namespace Effort.Shared.Provider
             }
         }
 
-        public void Restore(DbContext context)
+        public void Restore(DbContext context, object dbContainer)
         {
-            if (OrderedEntities == null)
-            {
-                CreateOrderedEntities();
-                EffortConnection.ClearTables(context);
-            }
+	        Dictionary<IExtendedTable, bool> oldIdentityFieldDictionary = new Dictionary<IExtendedTable, bool>();
+	        try
+	        {
+		        if (dbContainer != null)
+		        {
+			        foreach (IExtendedTable table in ((DbContainer)dbContainer).Internal.Tables.GetAllTables())
+			        {
+				        oldIdentityFieldDictionary.Add(table, table.IsIdentityFieldEnabled);
+				        table.IsIdentityFieldEnabled = false;
+			        }
+		        }
 
-            foreach (var entity in OrderedEntities)
-            {
-                var table = entity.Table;
-                var methods = table.GetType().GetMethods().Where(x => x.Name == "Insert").ToList()[0];
-                var obj = ShallowCopy(entity.Entity);
-                methods.Invoke(table, new[] {obj});
-            }
+		        if (OrderedEntities == null)
+		        {
+			        CreateOrderedEntities();
+			        EffortConnection.ClearTables(context);
+		        }
+
+		        foreach (var entity in OrderedEntities)
+		        {
+			        var table = entity.Table;
+			        var methods = table.GetType().GetMethods().Where(x => x.Name == "Insert").ToList()[0];
+			        var obj = ShallowCopy(entity.Entity);
+			        methods.Invoke(table, new[] { obj });
+		        }
+	        }
+	        finally
+	        {
+		        foreach (var dicTable in oldIdentityFieldDictionary)
+		        {
+			        dicTable.Key.IsIdentityFieldEnabled = dicTable.Value;
+		        }
+	        }
         }
 
         public void CreateOrderedEntities()

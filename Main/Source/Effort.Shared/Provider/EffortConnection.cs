@@ -199,7 +199,7 @@ namespace Effort.Provider
 
             ClearTables(context);
 
-            this.RestorePoint.Restore(context);
+            this.RestorePoint.Restore(context, this.DbContainer);
         }
 
         /// <summary>

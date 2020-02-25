@@ -7,7 +7,7 @@
     <AssemblyName>Z.EntityFramework.Classic.Effort</AssemblyName>
     <RootNamespace>Z.EntityFramework.Classic.Effort</RootNamespace>
     <Authors>ZZZ Projects</Authors>
-    <Version>2.0.0</Version>
+    <Version>2.2.9</Version>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
@@ -26,7 +26,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
-    <PackageReference Include="Z.EntityFramework.Classic" Version="7.0.15" />
+    <PackageReference Include="Z.EntityFramework.Classic" Version="7.1.24" />
   </ItemGroup>
 
   <ItemGroup>

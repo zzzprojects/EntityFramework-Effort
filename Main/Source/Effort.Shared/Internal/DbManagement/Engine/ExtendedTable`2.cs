@@ -66,7 +66,7 @@ namespace Effort.Internal.DbManagement.Engine
 
                 if (this.identityEnabled && this.wasRecordAdded)
                 {
-                    this.CalculateIdentityFeed();
+                    this.CalculateIdentityFeed(true);
                 }
 
                 this.wasRecordAdded = false;

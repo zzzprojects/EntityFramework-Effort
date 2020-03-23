@@ -30,9 +30,9 @@ namespace Effort.Lab.EF6
             // SEED
             using (var context = new EntityContextNoIdentity(connection))
             {
-                context.EntitySimples.Add(new EntitySimple {ID = 4, ColumnInt = 1});
-                context.EntitySimples.Add(new EntitySimple {ID = 12, ColumnInt = 2});
-                context.EntitySimples.Add(new EntitySimple {ID = 24, ColumnInt = 3});
+                context.EntitySimples.Add(new EntitySimple {ID = -44, ColumnInt = 1});
+                context.EntitySimples.Add(new EntitySimple {ID = -4, ColumnInt = 2});
+                context.EntitySimples.Add(new EntitySimple {ID = -5, ColumnInt = 3});
                 context.SaveChanges();
             }
 
@@ -45,6 +45,7 @@ namespace Effort.Lab.EF6
             using (var context = new EntityContext(connection))
             {
                 context.EntitySimples.Add(new EntitySimple() {ColumnInt = 4});
+                context.EntitySimples.Add(new EntitySimple() { ColumnInt = 4 });
                 context.SaveChanges();
                 var list = context.EntitySimples.ToList();
             }

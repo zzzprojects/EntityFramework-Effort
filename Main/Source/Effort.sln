@@ -53,6 +53,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{148c0604-d59b-44a5-aae4-ec17c6067ea7}*SharedItemsImports = 13
 		Effort.Shared\Effort.Shared.projitems*{27851ba8-a98d-486f-ac6c-731bf11d5b52}*SharedItemsImports = 4
+		Effort.Shared\Effort.Shared.projitems*{743a34df-2b8c-4d54-9129-ca64c408676c}*SharedItemsImports = 5
 		Effort.Shared\Effort.Shared.projitems*{779ecf7b-0379-419d-bc4d-286a8ec08f6d}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{810b876c-4c73-4f0b-9fff-019fe4f30182}*SharedItemsImports = 4
 		Effort.Shared\Effort.Shared.projitems*{827d4e48-5b82-437d-88dd-edf71e27afad}*SharedItemsImports = 4
@@ -60,6 +61,8 @@ Global
 		Effort.Shared\Effort.Shared.projitems*{aa6b4a10-01c1-4cc0-8009-4a7c6aa28585}*SharedItemsImports = 4
 		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{c0567ffe-0d52-4747-ac52-b55c5d85bb57}*SharedItemsImports = 4
 		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{d90524e5-abe4-41e6-a7af-5148754bb5a6}*SharedItemsImports = 4
+		Effort.Shared\Effort.Shared.projitems*{db49c43e-352c-4cc0-88c7-2c4ae4279567}*SharedItemsImports = 5
+		..\..\..\nmemory\Main\Source\NMemory.Shared\NMemory.Shared.projitems*{de111472-1398-4ded-a09e-2bdb9782e637}*SharedItemsImports = 5
 		Effort.Shared\Effort.Shared.projitems*{e52e4eeb-6182-4ca3-82d3-c83aca7308ba}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

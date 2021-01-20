@@ -22,6 +22,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
+using System.Linq;
+
 namespace Effort.Internal.CommandActions
 {
     using System;
@@ -144,15 +147,24 @@ namespace Effort.Internal.CommandActions
             throw new NotSupportedException();
         }
 
+        public static ConcurrentDictionary<string, Delegate> DictCreateAndInsertEntityDelegate = new ConcurrentDictionary<string, Delegate>();
+
         private static object CreateAndInsertEntity(ITable table, IList<MemberBinding> memberBindings, Transaction transaction)
         {
-            LambdaExpression expression =
-               Expression.Lambda(
-                   Expression.MemberInit(
-                       Expression.New(table.EntityType),
-                       memberBindings));
+            //var key = table.GetHashCode() + ";zzz;" + string.Join(";", memberBindings.Select(x => x.Member.Name));
+            
+            //if(!DictCreateAndInsertEntityDelegate.TryGetValue(key, out var factory))
+            //{
+                LambdaExpression expression =
+                    Expression.Lambda(
+                        Expression.MemberInit(
+                            Expression.New(table.EntityType),
+                            memberBindings));
 
-            Delegate factory = expression.Compile();
+                var factory = expression.Compile();
+
+            //    DictCreateAndInsertEntityDelegate[key] = factory;
+            //}
 
             object newEntity = factory.DynamicInvoke();
 

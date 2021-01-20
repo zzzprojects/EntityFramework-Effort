@@ -29,7 +29,7 @@ namespace Effort.Lab.EF6
                 {
                     var categories = new List<Categories>();
 
-                    for (int i = 1; i < 15000; i++)
+                    for (int i = 1; i < 5000; i++)
                     {
                         var category = new Categories()
                         {

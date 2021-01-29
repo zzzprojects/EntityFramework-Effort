@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,9 @@ namespace Effort.Lab.EF6
                 var connection = Effort.DbConnectionFactory.CreateTransient();
                 //connection.SetConnectionTimeout(0);
 
+                var clock = new Stopwatch();
+                clock.Start();
+                
                 using (var inMemoryContext = new EntityContext(connection))
                 {
                     var categories = new List<Categories>();
@@ -62,6 +66,8 @@ namespace Effort.Lab.EF6
                     inMemoryContext.SaveChanges();
                 }
 
+                clock.Stop();
+                var ms = clock.ElapsedMilliseconds;
                 Console.WriteLine("Finished");
                 Console.ReadLine();
             }

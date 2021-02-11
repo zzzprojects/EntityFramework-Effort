@@ -234,6 +234,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Internal\Diagnostics\ILogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\Diagnostics\Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\Extensions\Database.GetEntityConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\Helper\CreateEntityHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\StorageSchema\CommonPropertyElementModifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\StorageSchema\EffortProviderInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\StorageSchema\EntityTypePropertyElementSelector.cs" />

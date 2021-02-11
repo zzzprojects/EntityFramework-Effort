@@ -13,8 +13,8 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: Guid("810b876c-4c73-4f0b-9fff-019fe4f30182")]
 
-[assembly: AssemblyVersion("2.2.10")]
-[assembly: AssemblyFileVersion("2.2.10")]
+[assembly: AssemblyVersion("2.2.11")]
+[assembly: AssemblyFileVersion("2.2.11")]
 
 //[assembly: InternalsVisibleTo("Effort.Test")]
 //[assembly: InternalsVisibleTo("Effort.Extra.EF6.Tests")]

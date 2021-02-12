@@ -21,8 +21,6 @@ NuGet:https://www.nuget.org/packages/Effort/
 - [Website](https://entityframework-effort.net/)
 - [Documentation](https://entityframework-effort.net/overview)
 - [Online Examples](https://entityframework-effort.net/online-examples) 
-- You can also consult thousands of HAP questions on 
-[Stack Overflow](https://stackoverflow.com/questions/tagged/html-agility-pack)
 
 ## Contribute
 

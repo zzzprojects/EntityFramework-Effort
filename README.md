@@ -16,7 +16,7 @@ It is basically an ADO.NET provider that executes all the data operations on a l
 
 NuGet:https://www.nuget.org/packages/Effort/
 
-## Usefull links
+## Useful links
 
 - [Website](https://entityframework-effort.net/)
 - [Documentation](https://entityframework-effort.net/overview)

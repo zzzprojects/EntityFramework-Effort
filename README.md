@@ -12,7 +12,7 @@ This library is powered by [Entity Framework Extensions](https://entityframework
 
 Effort is a powerful tool that enables a convenient way to create automated tests for Entity Framework based applications. 
 
-It is basically an ADO.NET provider that executes all the data operations on a lightweight in-process main memory database instead of a traditional external database. It also provides some intuitive helper methods that make this provider really easy to use with existing ObjectContext or DbContext classes. A simple addition to existing code might be enough to create data driven tests that can run without the presence of the external database.
+It is basically an ADO.NET provider that executes all the data operations on a lightweight in-process main memory database instead of a traditional external database. It also provides some intuitive helper methods that make this provider really easy to use with existing ObjectContext or DbContext classes. A simple addition to existing code might be enough to create data-driven tests that can run without the external database's presence.
 
 NuGet:https://www.nuget.org/packages/Effort/
 

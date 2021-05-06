@@ -7,7 +7,7 @@
     <AssemblyName>Z.EntityFramework.Classic.Effort</AssemblyName>
     <RootNamespace>Z.EntityFramework.Classic.Effort</RootNamespace>
     <Authors>ZZZ Projects</Authors>
-    <Version>2.2.9</Version>
+    <Version>2.2.13</Version>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 

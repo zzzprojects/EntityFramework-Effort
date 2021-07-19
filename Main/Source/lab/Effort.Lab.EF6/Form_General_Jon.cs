@@ -19,63 +19,54 @@ namespace Effort.Lab.EF6
         public Form_General_Jon()
         {
             InitializeComponent();
-
-
-            using (var effortConnection = Effort.DbConnectionFactory.CreateTransient())
             {
-                using (var db = new EntityDbContext(effortConnection))
+                var connection = Effort.DbConnectionFactory.CreateTransient();
+
+                // SEED
+                using (var context = new EntityContext(connection))
                 {
-                    {
-                        var set = db.Tests;
 
+                    context.EntitySimples.Add(new EntitySimple { ColumnInt = 1 });
+                    context.EntitySimples.Add(new EntitySimple { ColumnInt = 2 });
+                    context.EntitySimples.Add(new EntitySimple { ColumnInt = 3 });
+                    context.SaveChanges();
 
-                        // Throws exception
-                        var bitMask = 1;
-                        var query = (from entity in set
-                                     where (entity.Bitvalues & bitMask) == bitMask
-                                     select entity).ToList();
+                    connection.Open();
+                    connection.DbManager.SetIdentity<EntitySimple>(50, 5);
+                    //connection.DbManager.SetIdentity("TableTest", 50, 5);
 
-                        // Works fine
-                        var query2 = (from entity in set
-                            where (entity.Bitvalues & 1) == 1
-                            select entity).ToList();
-                    }
-                    {
-                        //db.Database.CreateIfNotExists();
-                        //effortConnection.IsCaseSensitive = false;
-                        //db.Tests.Add(new Test {Name = "aa"});
-                        //db.SaveChanges();
-                        //// Simple case-insensitive equality works
-                        //var results1 = db.Tests.Where(p => p.Name == "AA").ToList();
-                        //Console.WriteLine($"results1 count = {results1.Count}");
-                        //// However case-insensitive StartsWith does not work (works with SQL server)
-                        //var results2 = db.Tests.Where(p => p.Name.StartsWith("A")).ToList();
-                        //Console.WriteLine($"results2 count = {results2.Count}");
-                        //// StartsWith will work as long as it can be case-sensitive.
-                        //var results3 = db.Tests.Where(p => p.Name.StartsWith("a")).ToList();
-                        //Console.WriteLine($"results3 count = {results3.Count}");
-                    }
+                    context.EntitySimples.Add(new EntitySimple { ColumnInt = 1 });
+                    context.EntitySimples.Add(new EntitySimple { ColumnInt = 1 });
+                    context.SaveChanges();
+                }
 
-                    Console.ReadLine();
+                // TEST
+                using (var context = new EntityContext(connection))
+                {
+                    var list1 = context.EntitySimples.ToList(); 
                 }
             }
         }
-    }
 
-    public class EntityDbContext : DbContext
-    {
-        public EntityDbContext(DbConnection dbConnection) : base(dbConnection, false)
+        public class EntityContext : DbContext
         {
+            public EntityContext(DbConnection connection) : base(connection, true)
+            {
+            }
+
+            public DbSet<EntitySimple> EntitySimples { get; set; }
+
+            protected override void OnModelCreating(DbModelBuilder modelBuilder)
+            {
+                base.OnModelCreating(modelBuilder);
+            }
         }
 
-        public virtual DbSet<Test> Tests { get; set; }
-    }
-
-    public class Test
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public int Bitvalues { get; set; }
+        //[Table("TableTest")]
+        public class EntitySimple
+        {
+            public int ID { get; set; }
+            public int ColumnInt { get; set; }
+        }
     }
 }

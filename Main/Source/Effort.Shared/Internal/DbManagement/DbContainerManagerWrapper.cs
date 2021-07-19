@@ -25,9 +25,11 @@
 namespace Effort.Internal.DbManagement
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Effort.Internal.DbManagement.Engine;
     using Effort.Internal.DbManagement.Schema;
     using Effort.Provider;
+    using NMemory.Tables;
 
     internal class DbContainerManagerWrapper : IDbManager
     {
@@ -43,6 +45,38 @@ namespace Effort.Internal.DbManagement
         public void SetIdentityFields(bool enabled)
         {
             this.container.SetIdentityFields(enabled);
+        }
+
+        public void SetIdentity<TEntity>(int? seed, int? increment)
+        {
+            var tables = ((List<ITable>)container.GetAllTables());
+            var table = tables.Where(x => x.EntityType.Name.Contains(typeof(TEntity).Name)).FirstOrDefault() as IExtendedTable;
+
+            if (table != null)
+            {
+                //table.TableInfo
+                //var table2 = 
+                table.SetIdentity(seed, increment);
+            }
+            else
+            {
+                throw new System.Exception("Invalid table name");
+            }
+        }
+
+        public void SetIdentity(string tableName, int? seed, int? increment)
+        {
+            var containerTableName = this.container.TableNames.FirstOrDefault(x => x.Name == tableName);
+
+            if(containerTableName != null)
+            {
+                var table = this.container.GetTable(containerTableName) as IExtendedTable;
+                table.SetIdentity(seed, increment);
+            }
+            else
+            {
+                throw new System.Exception("Invalid table name");
+            }
         }
 
         public void ClearMigrationHistory()

@@ -30,6 +30,8 @@ namespace Effort.Internal.DbManagement
     using Effort.Internal.DbManagement.Schema;
     using Effort.Provider;
     using NMemory.Tables;
+    using System;
+    using System.Reflection;
 
     internal class DbContainerManagerWrapper : IDbManager
     {
@@ -45,39 +47,54 @@ namespace Effort.Internal.DbManagement
         public void SetIdentityFields(bool enabled)
         {
             this.container.SetIdentityFields(enabled);
-        }
+        } 
 
         public void SetIdentity<TEntity>(int? seed, int? increment)
         {
+            if (container.database == null)
+            {
+                // BD not create...
+                throw new Exception("NEED TEXT!");
+            } 
+
             var tables = ((List<ITable>)container.GetAllTables());
-            var table = tables.Where(x => x.EntityType.Name.Contains(typeof(TEntity).Name)).FirstOrDefault() as IExtendedTable;
+
+            Dictionary<string, DbTableInfo> listDbTableInfo = new Dictionary<string, DbTableInfo>();
+
+            foreach(var tableToFindDbTableInfo in tables)
+            {
+                // copy past  public DbTableInfo GetTableInfo(string schema, string name) from EffortConnection
+                {
+                    var _TableInfo = tableToFindDbTableInfo.GetType().GetProperty("TableInfo",
+                          BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+
+                    if (_TableInfo != null)
+                    {
+                        var TableInfo = (DbTableInfo)_TableInfo.GetValue(tableToFindDbTableInfo, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, null, null);
+                        if (TableInfo != null && TableInfo.EntitySet != null && TableInfo.EntitySet.Name != null)
+                        {
+                            listDbTableInfo.Add(TableInfo.EntitySet.Name, TableInfo);
+                        }
+                    } 
+                }
+            }
+
+            DbTableInfo dbTableInfo = null;
+            IExtendedTable table = null;
+            if (listDbTableInfo.TryGetValue((typeof(TEntity).Name), out dbTableInfo))
+            {   
+                table = tables.Where(x => x.EntityType.FullName == dbTableInfo.EntityType.FullName).FirstOrDefault() as IExtendedTable; 
+            } 
 
             if (table != null)
-            {
-                //table.TableInfo
-                //var table2 = 
+            { 
                 table.SetIdentity(seed, increment);
             }
             else
             {
-                throw new System.Exception("Invalid table name");
+                throw new Exception("Invalid table name");
             }
-        }
-
-        public void SetIdentity(string tableName, int? seed, int? increment)
-        {
-            var containerTableName = this.container.TableNames.FirstOrDefault(x => x.Name == tableName);
-
-            if (containerTableName != null)
-            {
-                var table = this.container.GetTable(containerTableName) as IExtendedTable;
-                table.SetIdentity(seed, increment);
-            }
-            else
-            {
-                throw new System.Exception("Invalid table name");
-            }
-        }
+        } 
 
         public void ClearMigrationHistory()
         {

@@ -140,6 +140,12 @@
     <Compile Include="Form_Request_ObjectContextFactory.Designer.cs">
       <DependentUpon>Form_Request_ObjectContextFactory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Request_SetIdentity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Request_SetIdentity.Designer.cs">
+      <DependentUpon>Form_Request_SetIdentity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Request_SqlFunctions.cs">
       <SubType>Form</SubType>
     </Compile>

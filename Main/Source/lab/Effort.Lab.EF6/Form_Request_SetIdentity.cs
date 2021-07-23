@@ -19,8 +19,9 @@ namespace Effort.Lab.EF6
         {
             InitializeComponent();
 
-            var connection = Effort.DbConnectionFactory.CreateTransient(); 
+            var connection = Effort.DbConnectionFactory.CreateTransient();
 
+            connection.DbManager.SetIdentityFields(false);
 
             // CLEAN
             using (var context = new EntityContext(connection))
@@ -28,7 +29,7 @@ namespace Effort.Lab.EF6
                 context.Database.CreateIfNotExists();
                 connection.Open();
 
-                connection.DbManager.SetIdentity<EntitySimple>(50, 1);
+                connection.DbManager.SetIdentity<EntitySimple>(50);
                 connection.DbManager.SetIdentity<EntitySimple2>(100, 2);
                 connection.Close();
                 context.EntitySimples.RemoveRange(context.EntitySimples);

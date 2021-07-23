@@ -32,6 +32,7 @@ namespace Effort.Internal.DbManagement
     using NMemory.Tables;
     using System;
     using System.Reflection;
+    using Effort.Exceptions;
 
     internal class DbContainerManagerWrapper : IDbManager
     {
@@ -49,42 +50,9 @@ namespace Effort.Internal.DbManagement
             this.container.SetIdentityFields(enabled);
         } 
 
-        public void SetIdentity<TEntity>(int? seed, int? increment)
+        public void SetIdentity<TEntity>(int? seed, int? increment = null)
         {
-            if (container.database == null)
-            {
-                // BD not create...
-                throw new Exception("NEED TEXT!");
-            } 
-
-            var tables = ((List<ITable>)container.GetAllTables());
-
-            Dictionary<string, DbTableInfo> listDbTableInfo = new Dictionary<string, DbTableInfo>();
-
-            foreach(var tableToFindDbTableInfo in tables)
-            {
-                // copy past  public DbTableInfo GetTableInfo(string schema, string name) from EffortConnection
-                {
-                    var _TableInfo = tableToFindDbTableInfo.GetType().GetProperty("TableInfo",
-                          BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-
-                    if (_TableInfo != null)
-                    {
-                        var TableInfo = (DbTableInfo)_TableInfo.GetValue(tableToFindDbTableInfo, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, null, null);
-                        if (TableInfo != null && TableInfo.EntitySet != null && TableInfo.EntitySet.Name != null)
-                        {
-                            listDbTableInfo.Add(TableInfo.EntitySet.Name, TableInfo);
-                        }
-                    } 
-                }
-            }
-
-            DbTableInfo dbTableInfo = null;
-            IExtendedTable table = null;
-            if (listDbTableInfo.TryGetValue((typeof(TEntity).Name), out dbTableInfo))
-            {   
-                table = tables.Where(x => x.EntityType.FullName == dbTableInfo.EntityType.FullName).FirstOrDefault() as IExtendedTable; 
-            } 
+            var table = TryGetTable<TEntity>();
 
             if (table != null)
             { 
@@ -136,6 +104,45 @@ namespace Effort.Internal.DbManagement
             {
                 relation.IsEnabled = enabled;
             }
+        }
+
+        internal IExtendedTable TryGetTable<TEntity>()
+        {
+            if (container.database == null)
+            {
+                throw new Exception(ExceptionMessages.DatabaseNotInitialized);
+            }
+
+            var tables = ((List<ITable>)container.GetAllTables());
+
+            Dictionary<string, DbTableInfo> listDbTableInfo = new Dictionary<string, DbTableInfo>();
+
+            foreach (var tableToFindDbTableInfo in tables)
+            {
+                // copy & paste  public DbTableInfo GetTableInfo(string schema, string name) from EffortConnection
+                {
+                    var _TableInfo = tableToFindDbTableInfo.GetType().GetProperty("TableInfo",
+                          BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+
+                    if (_TableInfo != null)
+                    {
+                        var TableInfo = (DbTableInfo)_TableInfo.GetValue(tableToFindDbTableInfo, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, null, null);
+                        if (TableInfo != null && TableInfo.EntitySet != null && TableInfo.EntitySet.Name != null)
+                        {
+                            listDbTableInfo.Add(TableInfo.EntitySet.Name, TableInfo);
+                        }
+                    }
+                }
+            }
+
+            DbTableInfo dbTableInfo = null;
+            IExtendedTable table = null;
+            if (listDbTableInfo.TryGetValue((typeof(TEntity).Name), out dbTableInfo))
+            {
+                table = tables.Where(x => x.EntityType.FullName == dbTableInfo.EntityType.FullName).FirstOrDefault() as IExtendedTable;
+            }
+
+            return table;
         }
     }
 }

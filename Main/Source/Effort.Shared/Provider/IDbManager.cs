@@ -40,7 +40,7 @@ namespace Effort.Provider
         /// <summary>Set identity information.</summary>
         /// <param name="seed">The identity seed.</param>
         /// <param name="increment">The identity increment.</param>
-        void SetIdentity<TEntity>(int? seed, int? increment);
+        void SetIdentity<TEntity>(int? seed, int? increment = null);
 
         /// <summary>
         ///     Clears Entity Framework migration history by deleting all records from the 

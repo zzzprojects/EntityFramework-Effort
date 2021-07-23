@@ -21,7 +21,6 @@ namespace Effort.Lab.EF6
 
             var connection = Effort.DbConnectionFactory.CreateTransient();
 
-            connection.DbManager.SetIdentityFields(false);
 
             // CLEAN
             using (var context = new EntityContext(connection))

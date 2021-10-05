@@ -21,7 +21,7 @@ namespace Effort.Shared.Internal
 
 
                 // CREATE key by combining the table and all member name
-                var key = table.GetHashCode() + ";zzz;" + string.Join(";", memberBindings.Select(x => x.Member.Name));
+                var key = table.GetHashCode() + ";zzz;" + table.EntityType.FullName + ";zzz;" + string.Join(";", memberBindings.Select(x => x.Member.Name));
 
                 // CHECK if already compiled, otherwise we compile it
                 if (!DictCreateAndInsertEntityDelegate.TryGetValue(key, out var factory))

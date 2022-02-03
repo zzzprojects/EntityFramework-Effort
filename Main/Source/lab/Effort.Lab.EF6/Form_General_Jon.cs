@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Effort.DataLoaders;
+using Effort.Provider;
 
 namespace Effort.Lab.EF6
 {
@@ -25,38 +26,10 @@ namespace Effort.Lab.EF6
             {
                 using (var db = new EntityDbContext(effortConnection))
                 {
-                    {
-                        var set = db.Tests;
+                    db.Tests.Add(new Test() { Name = "z", Generated="z2" });
+                    db.SaveChanges();
 
-
-                        // Throws exception
-                        var bitMask = 1;
-                        var query = (from entity in set
-                                     where (entity.Bitvalues & bitMask) == bitMask
-                                     select entity).ToList();
-
-                        // Works fine
-                        var query2 = (from entity in set
-                            where (entity.Bitvalues & 1) == 1
-                            select entity).ToList();
-                    }
-                    {
-                        //db.Database.CreateIfNotExists();
-                        //effortConnection.IsCaseSensitive = false;
-                        //db.Tests.Add(new Test {Name = "aa"});
-                        //db.SaveChanges();
-                        //// Simple case-insensitive equality works
-                        //var results1 = db.Tests.Where(p => p.Name == "AA").ToList();
-                        //Console.WriteLine($"results1 count = {results1.Count}");
-                        //// However case-insensitive StartsWith does not work (works with SQL server)
-                        //var results2 = db.Tests.Where(p => p.Name.StartsWith("A")).ToList();
-                        //Console.WriteLine($"results2 count = {results2.Count}");
-                        //// StartsWith will work as long as it can be case-sensitive.
-                        //var results3 = db.Tests.Where(p => p.Name.StartsWith("a")).ToList();
-                        //Console.WriteLine($"results3 count = {results3.Count}");
-                    }
-
-                    Console.ReadLine();
+                    var list = db.Tests.AsNoTracking().ToList();
                 }
             }
         }
@@ -64,8 +37,21 @@ namespace Effort.Lab.EF6
 
     public class EntityDbContext : DbContext
     {
+        public bool IsEffort = false;
+
         public EntityDbContext(DbConnection dbConnection) : base(dbConnection, false)
         {
+            IsEffort = dbConnection is EffortConnection;
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {    
+            if(IsEffort)
+            {
+                modelBuilder.Entity<Test>().Property(x => x.Generated).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            }           
+
+            base.OnModelCreating(modelBuilder);
         }
 
         public virtual DbSet<Test> Tests { get; set; }
@@ -75,7 +61,8 @@ namespace Effort.Lab.EF6
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string Generated { get; set; }
 
-        public int Bitvalues { get; set; }
     }
 }

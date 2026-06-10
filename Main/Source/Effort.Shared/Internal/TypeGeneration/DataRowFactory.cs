@@ -39,7 +39,7 @@ namespace Effort.Internal.TypeGeneration
         private static readonly AssemblyBuilder assemblyBuilder;
 
         private static readonly ModuleBuilder moduleBuilder;
-        private static readonly object moduleBuilderLock;
+        private static readonly object typeGeneratorLock;
 
         private static readonly ConcurrentCache<TypeCacheEntryKey, Type> typeCache;
 
@@ -61,7 +61,7 @@ namespace Effort.Internal.TypeGeneration
 #endif
 
             moduleBuilder = assemblyBuilder.DefineDynamicModule("EffortDataRowTypeLib");
-            moduleBuilderLock = new object();
+            typeGeneratorLock = new object();
 
             typeCache = new ConcurrentCache<TypeCacheEntryKey, Type>();
         }
@@ -138,7 +138,7 @@ namespace Effort.Internal.TypeGeneration
 
             TypeBuilder typeBuilder;
 
-            lock (moduleBuilderLock)
+            lock (typeGeneratorLock)
             {
                 typeCount++;
                 typeBuilder =
@@ -149,128 +149,128 @@ namespace Effort.Internal.TypeGeneration
                         typeof(DataRow),
                     // No interfaces
                         Type.EmptyTypes);
-            }
 
-            bool isLarge = LargeDataRowAttribute.LargePropertyCount <= properties.Count;
+                bool isLarge = LargeDataRowAttribute.LargePropertyCount <= properties.Count;
 
 #region LargeDataRowAttribute
 
-            if (isLarge)
-            {
-                ConstructorInfo largeDataRowAttrCtor =
-                    typeof(LargeDataRowAttribute).GetConstructor(
-                        BindingFlags.Instance | BindingFlags.Public,
-                        null,
-                        Type.EmptyTypes,
-                        null);
+                if (isLarge)
+                {
+                    ConstructorInfo largeDataRowAttrCtor =
+                        typeof(LargeDataRowAttribute).GetConstructor(
+                            BindingFlags.Instance | BindingFlags.Public,
+                            null,
+                            Type.EmptyTypes,
+                            null);
 
-                typeBuilder.SetCustomAttribute(
-                    new CustomAttributeBuilder(largeDataRowAttrCtor, new object[0]));
-            }
+                    typeBuilder.SetCustomAttribute(
+                        new CustomAttributeBuilder(largeDataRowAttrCtor, new object[0]));
+                }
 
 #endregion
 
 #region Properties and fields
 
-            FieldBuilder[] fields = new FieldBuilder[properties.Count];
+                FieldBuilder[] fields = new FieldBuilder[properties.Count];
 
-            for (int i = 0; i < properties.Count; i++)
-            {
-                string name = propertyNames[i];
-                Type type = propertyTypes[i];
+                for (int i = 0; i < properties.Count; i++)
+                {
+                    string name = propertyNames[i];
+                    Type type = propertyTypes[i];
 
-                FieldBuilder field = CreateFieldAndProperty(typeBuilder, name, i, type);
+                    FieldBuilder field = CreateFieldAndProperty(typeBuilder, name, i, type);
 
-                fields[i] = field;
-            }
+                    fields[i] = field;
+                }
 
 #endregion
 
 #region Constructor
 
-            ConstructorBuilder ctorBuilder =
-                typeBuilder.DefineConstructor(
-                    MethodAttributes.Public,
-                    CallingConventions.Standard,
-                    isLarge ? 
-                        new Type[] { typeof(object[]) } : 
-                        propertyTypes);
+                ConstructorBuilder ctorBuilder =
+                    typeBuilder.DefineConstructor(
+                        MethodAttributes.Public,
+                        CallingConventions.Standard,
+                        isLarge ? 
+                            new Type[] { typeof(object[]) } : 
+                            propertyTypes);
 
-            if (isLarge)
-            {
-                ctorBuilder.DefineParameter(0, ParameterAttributes.None, "args");
-            }
-            else
-            {
-                for (int i = 0; i < propertyNames.Length; i++)
+                if (isLarge)
                 {
-                    ctorBuilder.DefineParameter(
-                        i,
-                        ParameterAttributes.None,
-                        propertyNames[i]);
+                    ctorBuilder.DefineParameter(0, ParameterAttributes.None, "args");
                 }
-            }
+                else
+                {
+                    for (int i = 0; i < propertyNames.Length; i++)
+                    {
+                        ctorBuilder.DefineParameter(
+                            i,
+                            ParameterAttributes.None,
+                            propertyNames[i]);
+                    }
+                }
 
-            GenerateConstructorIL(ctorBuilder.GetILGenerator(), fields, isLarge);
+                GenerateConstructorIL(ctorBuilder.GetILGenerator(), fields, isLarge);
 
 #endregion
 
 #region GetHashCode
 
-            MethodBuilder getHashCodeBuilder =
-            typeBuilder.DefineMethod(
-                "GetHashCode",
-                MethodAttributes.Public |
-                MethodAttributes.Virtual |
-                MethodAttributes.HideBySig,
-                null,
-                Type.EmptyTypes);
+                MethodBuilder getHashCodeBuilder =
+                typeBuilder.DefineMethod(
+                    "GetHashCode",
+                    MethodAttributes.Public |
+                    MethodAttributes.Virtual |
+                    MethodAttributes.HideBySig,
+                    null,
+                    Type.EmptyTypes);
 
-            getHashCodeBuilder.SetReturnType(typeof(int));
+                getHashCodeBuilder.SetReturnType(typeof(int));
 
-            GenerateGetHashcodeIL(getHashCodeBuilder.GetILGenerator(), fields);
+                GenerateGetHashcodeIL(getHashCodeBuilder.GetILGenerator(), fields);
 
 #endregion
 
 #region Equals
 
-            MethodBuilder equalsBuilder =
-                typeBuilder.DefineMethod(
-                    "Equals",
-                    MethodAttributes.Public |
-                    MethodAttributes.Virtual |
-                    MethodAttributes.HideBySig,
-                    null,
-                    Type.EmptyTypes);
+                MethodBuilder equalsBuilder =
+                    typeBuilder.DefineMethod(
+                        "Equals",
+                        MethodAttributes.Public |
+                        MethodAttributes.Virtual |
+                        MethodAttributes.HideBySig,
+                        null,
+                        Type.EmptyTypes);
 
-            equalsBuilder.SetParameters(new Type[] { typeof(object) });
-            equalsBuilder.SetReturnType(typeof(bool));
-            GenerateEqualsIL(equalsBuilder.GetILGenerator(), fields, typeBuilder);
+                equalsBuilder.SetParameters(new Type[] { typeof(object) });
+                equalsBuilder.SetReturnType(typeof(bool));
+                GenerateEqualsIL(equalsBuilder.GetILGenerator(), fields, typeBuilder);
 
 #endregion
 
 #region GetValue
 
-            MethodBuilder getValueBuilder =
-                typeBuilder.DefineMethod(
-                    GetValueNameMethod.Name,
-                    MethodAttributes.Public |
-                    MethodAttributes.Virtual |
-                    MethodAttributes.HideBySig,
-                    null,
-                    Type.EmptyTypes);
+                MethodBuilder getValueBuilder =
+                    typeBuilder.DefineMethod(
+                        GetValueNameMethod.Name,
+                        MethodAttributes.Public |
+                        MethodAttributes.Virtual |
+                        MethodAttributes.HideBySig,
+                        null,
+                        Type.EmptyTypes);
 
-            getValueBuilder.SetParameters(new Type[] { typeof(int) });
-            getValueBuilder.SetReturnType(typeof(object));
-            GenerateGetValueIL(getValueBuilder.GetILGenerator(), fields, typeBuilder);
+                getValueBuilder.SetParameters(new Type[] { typeof(int) });
+                getValueBuilder.SetReturnType(typeof(object));
+                GenerateGetValueIL(getValueBuilder.GetILGenerator(), fields, typeBuilder);
 
 #endregion
 
 #if NETSTANDARD
-            return typeBuilder.CreateTypeInfo();
+                return typeBuilder.CreateTypeInfo();
 #else
-            return typeBuilder.CreateType();
+                return typeBuilder.CreateType();
 #endif
+            }
         }
 
         private static FieldBuilder CreateFieldAndProperty(
